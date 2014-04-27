@@ -1,4 +1,4 @@
-package com.locate.rmds;
+package com.locate;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
@@ -6,6 +6,8 @@ import org.apache.log4j.chainsaw.Main;
 import org.apache.log4j.xml.DOMConfigurator;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
+
+import com.locate.rmds.RFAServerManager;
 
 /**
  * 

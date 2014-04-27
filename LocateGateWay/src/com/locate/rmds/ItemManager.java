@@ -6,6 +6,8 @@ import org.apache.log4j.Logger;
 import org.dom4j.Document;
 
 
+import com.locate.gate.GateWayResponser;
+import com.locate.gate.GateWayServer;
 import com.locate.gate.GatewayServerHandler;
 import com.locate.rmds.util.GenericOMMParser;
 import com.reuters.rfa.common.Client;
@@ -48,6 +50,7 @@ public class ItemManager implements Client
 
     private	String	_className = "ItemManager";
 
+	private Integer channelID = 0;
     // constructor
 //    public ItemManager(QSConsumerProxy mainApp, ItemGroupManager itemGroupManager,String clientName)
 //    {
@@ -62,8 +65,9 @@ public class ItemManager implements Client
         this._itemGroupManager = itemGroupManager;
     }
     // creates streaming request messages for items and register them to RFA
-    public void sendRequest(String pItemName,byte responseMsgType)
+    public void sendRequest(String pItemName,byte responseMsgType, int channelID)
     {
+    	this.channelID = channelID;
     	this.responseMessageType = responseMsgType;
     	_logger.info(_className+".sendRequest: Sending item("+pItemName+") requests to server ");
         String serviceName = _mainApp._serviceName;
@@ -98,6 +102,13 @@ public class ItemManager implements Client
 
 			// Set the message into interest spec
 			ommItemIntSpec.setMsg(ommmsg);
+			/**
+			 * 重要逻辑:
+			 * 向datasource注册感兴趣的Item,EventQueue使用QSConsumerProxy的Queue,监听器就是itemManager自己.
+			 * dataSource产生感兴趣的时间后通过eventQueue向外发布.ItemManager能够收到这个事件.
+			 * ItemManager由于持有channelId,可以向gaichannel写返回的数据,
+			 * 该channel对应订阅了该item的client.
+			 */
 			itemHandle = _mainApp.getOMMConsumer().registerClient(_mainApp.getEventQueue(), ommItemIntSpec, this, null);
 			_itemGroupManager.addItem(serviceName, itemName, itemHandle);
 		}
@@ -127,13 +138,14 @@ public class ItemManager implements Client
         _logger.info(_className+".processEvent: Received Item("+clientRequestItemName+") Event from server ");
         if (event.getType() != Event.OMM_ITEM_EVENT) 
         {
-            _logger.info("ERROR: "+_className+" Received an unsupported Event type.");
+        	//这里程序太危险了,因为RFA给的消息有误就要退出程序.恐怖的逻辑啊.
+            _logger.error("ERROR: "+_className+" Received an unsupported Event type.");
             _mainApp.cleanup();
             return;
         }
 
-        OMMItemEvent ie = (OMMItemEvent) event;
-        OMMMsg respMsg = ie.getMsg();
+        OMMItemEvent ommItemEvent = (OMMItemEvent) event;
+        OMMMsg respMsg = ommItemEvent.getMsg();
         // Status response can contain group id
         if ((respMsg.getMsgType() == OMMMsg.MsgType.REFRESH_RESP)
                 || (respMsg.getMsgType() == OMMMsg.MsgType.STATUS_RESP && respMsg
@@ -143,21 +155,20 @@ public class ItemManager implements Client
             Handle itemHandle = event.getHandle();
             _itemGroupManager.applyGroup(itemHandle, group);
         }
-        
+        GateWayResponser.sentResponseMsg(respMsg, channelID);
         Document responseMsg =  GenericOMMParser.parse(respMsg,clientRequestItemName);
         
-//        if(responseMsg != null){
-//        	List<String> clientNameList =  RFASocketServer._requestItemNameList.get(clientRequestItemName);
-//        	IoSession session = null;
+        if(responseMsg != null){
+//        	List<String> clientNameList =  GateWayServer._requestItemNameList.get(clientRequestItemName);
 //        	if(clientNameList != null){
 //	        	for(String clientName : clientNameList){
 //		        	session = RFASocketServer._clientRequestSession.get(clientName+clientRequestItemName);
-//		        	RFAResponse.sentResponseMsg(responseMessageType, responseMsg, session);
+        	
 //	        	}
 //        	}
-//        	long endTime = System.currentTimeMillis();
+        	long endTime = System.currentTimeMillis();
 //            _mainApp.updateResponseStat((endTime-startTime),responseMsg);
-//        }
+        }
         
     }
 }

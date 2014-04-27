@@ -7,6 +7,7 @@ import org.apache.log4j.Logger;
 import org.dom4j.Document;
 import org.dom4j.Element;
 
+import com.locate.gate.GateWayServer;
 import com.locate.gate.GatewayServerHandler;
 import com.locate.rmds.ItemManager;
 import com.locate.rmds.QSConsumerProxy;
@@ -14,6 +15,12 @@ import com.locate.rmds.util.RFAExceptionTypes;
 import com.locate.rmds.util.RFAMessageTypes;
 import com.locate.rmds.util.RFANodeconstant;
 
+/**
+ * 该类主要被netty框架开发的gateway调用
+ * 客户发送过来的请求通过该类处理后转发给RFA.
+ * @author cloud wei
+ *
+ */
 public class ClientHandle {
 	
 	static Logger _logger = Logger.getLogger(ClientHandle.class.getName());
@@ -165,11 +172,11 @@ public class ClientHandle {
 			return errorCode=RFAExceptionTypes.USER_BUSINESS_NUMBER_OUT;
 		_logger.info("Begin register client request "+clientName);
 		for(String itemName : itemNames){
-			GatewayServerHandler._clientResponseType.put(itemName, responseMsgType);
+			GateWayServer._clientResponseType.put(itemName, responseMsgType);
 			_logger.info("Register client request item "+itemName);
-			GatewayServerHandler._clientRequestSession.put(clientName+itemName, channelId);
+			GateWayServer._clientRequestSession.put(clientName+itemName, channelId);
 			if(regiestItemNameForClient(itemName,clientName)){
-				ItemManager clientInstance = _mainApp.itemRequests(itemName,responseMsgType);
+				ItemManager clientInstance = _mainApp.itemRequests(itemName,responseMsgType, channelId);
 				regiestItemRequestManager(itemName,clientInstance);
 			}
 			regiestClientRequestItem(clientName,itemName);
@@ -179,7 +186,7 @@ public class ClientHandle {
 	}
 	
 	private boolean regiestItemNameForClient(String itemName,String clientName){
-		List<String> clientNameList = GatewayServerHandler._requestItemNameList.get(itemName);
+		List<String> clientNameList = GateWayServer._requestItemNameList.get(itemName);
 		if(clientNameList != null){
 			if(! clientNameList.contains(clientName)){
 				clientNameList.add(clientName);
@@ -190,18 +197,18 @@ public class ClientHandle {
 			clientNameList = new ArrayList();
 			clientNameList.add(clientName);
 		}
-		GatewayServerHandler._requestItemNameList.put(itemName,clientNameList);
+		GateWayServer._requestItemNameList.put(itemName,clientNameList);
 		return true;
 	}
 	
 	private void regiestClientRequestItem(String clientName,String itemName){
 		List<String> clientRequestItem;
-		clientRequestItem = GatewayServerHandler._clientRequestItemName.get(clientName);
+		clientRequestItem = GateWayServer._clientRequestItemName.get(clientName);
 		if(clientRequestItem == null){
 			clientRequestItem =  new ArrayList();
 		}
 		clientRequestItem.add(clientName+itemName);
-		GatewayServerHandler._clientRequestItemName.put(clientName, clientRequestItem);
+		GateWayServer._clientRequestItemName.put(clientName, clientRequestItem);
 	}
 	
 //	private void regiestItemRequestManager(String itemName,ItemManager instance){
@@ -214,7 +221,7 @@ public class ClientHandle {
 //	}
 	
 	private void regiestItemRequestManager(String itemName,ItemManager instance){
-		GatewayServerHandler._clientRequestItemManager.put(itemName,instance);
+		GateWayServer._clientRequestItemManager.put(itemName,instance);
 //		ItemManager itemRequestManager = RFASocketServer._clientRequestItemManager.get(itemName);
 //		if(itemRequestManagerList == null){
 //			itemRequestManagerList = new ArrayList();

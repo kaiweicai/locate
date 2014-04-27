@@ -2,6 +2,7 @@ package com.locate.rmds;
 
 import java.io.DataInputStream;
 import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.prefs.InvalidPreferencesFormatException;
@@ -11,7 +12,7 @@ import org.apache.log4j.Logger;
 import org.dom4j.Document;
 import org.springframework.web.util.HtmlUtils;
 
-import com.locate.GateWayServer;
+import com.locate.gate.GateWayServer;
 import com.locate.gate.GatewayServerHandler;
 import com.locate.rmds.client.RFAUserManagement;
 import com.locate.rmds.util.GenericOMMParser;
@@ -34,7 +35,7 @@ import com.reuters.rfa.session.omm.OMMConsumer;
 *  ÀàËµÃ÷  netty game  
 */  
 public class QSConsumerProxy {
-	static Logger _logger = Logger.getLogger(QSConsumerProxy.class.getName());
+	static Logger logger = Logger.getLogger(QSConsumerProxy.class.getName());
 
 	// RFA objects
 	protected Session _session;
@@ -87,12 +88,12 @@ public class QSConsumerProxy {
 		SystemProperties.init(_configFile);
 		
 		try {
-            Preferences.importPreferences(new DataInputStream(new FileInputStream(SystemProperties.getProperties(SystemProperties.RFA_CONFIG_FILE))));
+            Preferences.importPreferences(new FileInputStream(SystemProperties.getProperties(SystemProperties.RFA_CONFIG_FILE)));
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("RFA file import error!",e);
             System.exit(-1);
         } catch (InvalidPreferencesFormatException e) {
-            e.printStackTrace();
+        	logger.error("preference format error!",e);
             System.exit(-1);
         }
 		// 2. Create an Event Queue
@@ -100,8 +101,10 @@ public class QSConsumerProxy {
 
 		// 3. Acquire a Session
 		_session = Session.acquire("myNamespace::consSession");
+//		_session = Session.acquire("myNamespace::mySession");
+		
 		if (_session == null) {
-			_logger.info("Could not acquire session.");
+			logger.error("Could not acquire session.");
 			Context.uninitialize();
 			System.exit(1);
 		}
@@ -119,8 +122,8 @@ public class QSConsumerProxy {
 		try {
 			dictionary = GenericOMMParser.initializeDictionary(	fieldDictionaryFilename, enumDictionaryFilename);
 		} catch (DictionaryException ex) {
-			_logger.info("ERROR: Unable to initialize dictionaries");
-			_logger.info(ex.getMessage());
+			logger.error("ERROR: Unable to initialize dictionaries");
+			logger.error(ex.getMessage());
 			if (ex.getCause() != null)
 				System.err.println(": " + ex.getCause().getMessage());
 			cleanup();
@@ -167,16 +170,16 @@ public class QSConsumerProxy {
 	// This method is called by _loginClient upon receiving successful login
 	// response.
 	public void processLogin() {
-		_logger.info("QSConsumerDemo" + " Login successful");
+		logger.info("QSConsumerDemo" + " Login successful");
 //		newsItemRequests();
 	}
 
 	// This method is called when the login was not successful
 	// The application exits
 	public void loginFailure() {
-		_logger.info("OMMConsumerDemo"
+		logger.info("OMMConsumerDemo"
 				+ ": Login has been denied / rejected / closed");
-		_logger.info("OMMConsumerDemo" + ": Preparing to clean up and exiting");
+		logger.info("OMMConsumerDemo" + ": Preparing to clean up and exiting");
 		_loginClient = null;
 		cleanup();
 	}
@@ -194,11 +197,11 @@ public class QSConsumerProxy {
 	// }
 
 	// This method utilizes ItemManager class to request items
-	public ItemManager itemRequests(String itemName, byte responseMsgType) {
+	public ItemManager itemRequests(String itemName, byte responseMsgType, int channelID) {
 		// Initialize item manager for item domains
 		ItemManager _itemManager = new ItemManager(this, _itemGroupManager);
 		// Send requests
-		_itemManager.sendRequest(itemName, responseMsgType);
+		_itemManager.sendRequest(itemName, responseMsgType, channelID);
 		return _itemManager;
 	}
 
@@ -241,6 +244,7 @@ public class QSConsumerProxy {
 
 	// This method dispatches events
 	public void startDispatch() throws Exception {
+		while(true)
 		_eventQueue.dispatch(0);
 	}
 
@@ -255,7 +259,7 @@ public class QSConsumerProxy {
 	// 6. Release session
 	// 7. Uninitialize context
 	public void cleanup() {
-		_logger.info(Context.string());
+		logger.info(Context.string());
 
 		// 1. Deactivate event queue
 		if(_eventQueue!=null)
@@ -284,7 +288,7 @@ public class QSConsumerProxy {
 		// 7. Uninitialize context
 		Context.uninitialize();
 
-		_logger.info(getClass().toString() + " exiting");
+		logger.info("Application is cleanuping and exiting");
 		System.exit(0);
 		// RFApplication.stop = true;
 	}
@@ -353,7 +357,7 @@ public class QSConsumerProxy {
 
 		byte type = 4;
 		// demo.itemRequests("AFX=", "test", type);
-		demo.itemRequests("APRE", type);
+		demo.itemRequests("APRE", type, 0);
 		// Dispatch events
 		try {
 			demo.startDispatch();

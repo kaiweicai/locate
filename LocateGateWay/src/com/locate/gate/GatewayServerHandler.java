@@ -11,6 +11,7 @@ import org.apache.log4j.Logger;
 import org.dom4j.Document;
 import org.jboss.netty.channel.Channel;
 import org.jboss.netty.channel.ChannelHandlerContext;
+import org.jboss.netty.channel.ChannelStateEvent;
 import org.jboss.netty.channel.ExceptionEvent;
 import org.jboss.netty.channel.MessageEvent;
 import org.jboss.netty.channel.SimpleChannelHandler;
@@ -39,20 +40,7 @@ public class GatewayServerHandler extends SimpleChannelHandler {
 	/** A counter incremented for every recieved message */
 	private AtomicInteger numberOfReceived = new AtomicInteger(0);
 	// Client IP -- Client User Name
-	public static Map<String, String> _userConnection = new HashMap();
-	// Client User Name+itemName -- IoSession
-	public static Map<String, Integer> _clientRequestSession = new HashMap();
-	// News's itemName -- ( client IP -- IoSession)
-	public static Map<String, Map<String, Integer>> _clientNewsRequest = new HashMap();
-	// Client User Name -- Client User Name + ItemName
-	public static Map<String, List<String>> _clientRequestItemName = new HashMap();
-	// Item name-- Client User Name
-	public static Map<String, List<String>> _requestItemNameList = new HashMap();
-	// public static Map<String,List<ItemManager>> _clientRequestItemManager =
-	// new HashMap();//
-	public static Map<String, ItemManager> _clientRequestItemManager = new HashMap();//
 
-	public static Map<String,Byte> _clientResponseType = new HashMap();
 
 	QSConsumerProxy _mainApp;
 
@@ -68,18 +56,18 @@ public class GatewayServerHandler extends SimpleChannelHandler {
 
 	public  void requestAgain(){
 		//Re-request item
-		for(String clientName : _clientRequestItemName.keySet()){
-			List<String> itemNames = _clientRequestItemName.get(clientName);
+		for(String clientName : GateWayServer._clientRequestItemName.keySet()){
+			List<String> itemNames = GateWayServer._clientRequestItemName.get(clientName);
 			for(String itemName : itemNames){
 				System.out.println("clientName "+clientName);
 				itemName = itemName.replaceAll(clientName, "");
 				_logger.info("Register client request item "+itemName);
 				System.out.println("Register client request item "+itemName);
-				System.out.println("_clientResponseType size "+_clientResponseType.size());
-				byte responseMsgType  =  _clientResponseType.get(itemName);
-				if( GatewayServerHandler._requestItemNameList.get(itemName) != null){
-					ItemManager clientInstance = _mainApp.itemRequests(itemName,responseMsgType);
-					GatewayServerHandler._clientRequestItemManager.put(itemName,clientInstance);
+				System.out.println("_clientResponseType size "+GateWayServer._clientResponseType.size());
+				byte responseMsgType  =  GateWayServer._clientResponseType.get(itemName);
+				if( GateWayServer._requestItemNameList.get(itemName) != null){
+					ItemManager clientInstance = _mainApp.itemRequests(itemName,responseMsgType, 0);
+					GateWayServer._clientRequestItemManager.put(itemName,clientInstance);
 				}
 			}
 		}
@@ -97,9 +85,9 @@ public class GatewayServerHandler extends SimpleChannelHandler {
 	@Deprecated
 	private void updateServerStatInfo() {
 		// need to modify the monitor socke connected.
-		RFApplication.currentUserNumber.setText(String.valueOf(_userConnection.size()));
+		RFApplication.currentUserNumber.setText(String.valueOf(GateWayServer._userConnection.size()));
 		int currentRequestItemNum = 0;
-		for (List<String> list : _clientRequestItemName.values()) {
+		for (List<String> list : GateWayServer._clientRequestItemName.values()) {
 			currentRequestItemNum += list.size();
 		}
 		RFApplication.currentRequestNumber.setText(String.valueOf(currentRequestItemNum));
@@ -125,7 +113,7 @@ public class GatewayServerHandler extends SimpleChannelHandler {
 			Channel channel = e.getChannel();
 			
 			if(msgType != RFAMessageTypes.LOGIN){
-		    	userName = _userConnection.get(clientIP);
+		    	userName = GateWayServer._userConnection.get(clientIP);
 		    	if(userName == null){
 		    		int errorCode = RFAExceptionTypes.USER_NOT_LOGIN;
 					Document wrongMsg = RFAUserResponse.createErrorDocument(errorCode,
@@ -138,6 +126,8 @@ public class GatewayServerHandler extends SimpleChannelHandler {
 					return;
 		    	}
 		    }
+			//将channelId和对应的channel放到map中,会写客户端的时候可以根据该id找到对应的channel.
+			GateWayServer.channelMap.put(channel.getId(), channel);
 		    ClientHandle clientHandle = new ClientHandle(_mainApp,clientIP,msgType);
 	    	clientHandle.process(userRequest,userName,channel.getId());
 		} catch (Throwable throwable) {
@@ -145,6 +135,11 @@ public class GatewayServerHandler extends SimpleChannelHandler {
 		}
 	}
 
+	@Override
+	public void channelClosed(ChannelHandlerContext ctx, ChannelStateEvent e) throws Exception {
+		GateWayServer.channelMap.remove(e.getChannel().getId());
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 */

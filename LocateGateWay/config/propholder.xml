@@ -9,10 +9,11 @@
             http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">  
   
      <bean id="consumerProxy" class="com.locate.rmds.QSConsumerProxy"
-		scope="singleton" init-method="init">
+		scope="singleton" init-method="init" destroy-method="cleanup">
 	</bean>
 
 	<bean id="gateWayServer" class="com.locate.gate.GateWayServer" scope="singleton">
+		<property name="app" ref="consumerProxy" />
     </bean>
 	
   <!--

@@ -7,6 +7,7 @@ import org.dom4j.Document;
 import org.dom4j.Node;
 import org.jboss.netty.channel.Channel;
 
+import com.locate.gate.GateWayServer;
 import com.locate.gate.GatewayServerHandler;
 import com.locate.gate.tcp.model.RFAUserResponse;
 import com.locate.rmds.util.RFAExceptionTypes;
@@ -33,7 +34,7 @@ public class ClientUserLogin {
 //				InetSocketAddress sa = (InetSocketAddress) channel.getLocalAddress();
 //				String address = String.valueOf(sa.getAddress().getAddress());
 				RFAUserManagement.setUserAddress(userName, clientIp);
-				GatewayServerHandler._userConnection.put(clientIP, userName);
+				GateWayServer._userConnection.put(clientIP, userName);
 				_logger.info("User " + userName + " passed authentication");
 			} else {
 				// User's password is wrong

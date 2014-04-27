@@ -67,6 +67,7 @@ public class LoginClient implements Client
     {
         String username = "guest";
         try { username = System.getProperty("user.name"); }  catch( Exception e ) {}
+        username = "deve01";
         String application = "256";
         String position = "1.1.1.1/net";
         try { position = InetAddress.getLocalHost().getHostAddress() + "/" +
@@ -121,7 +122,7 @@ public class LoginClient implements Client
     		return;
     	}
 
-        _logger.info(_className+".processEvent: Received Login Response ");
+//        _logger.info(_className+".processEvent: Received Login Response ");
 
         OMMItemEvent ie = (OMMItemEvent) event;
         OMMMsg respMsg = ie.getMsg();
@@ -147,7 +148,7 @@ public class LoginClient implements Client
         }
         else // This message is sent by RFA indicating that RFA is processing the login 
         {
-            _logger.info (_className+": Received Login Response - "+ OMMMsg.MsgType.toString(respMsg.getMsgType()));
+            _logger.error ("Login not success.Please check!\n Received Login Response - "+ OMMMsg.MsgType.toString(respMsg.getMsgType()));
             GenericOMMParser.parse(respMsg,null);
         }
     }

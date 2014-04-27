@@ -1,10 +1,14 @@
-package com.locate;
+package com.locate.gate;
 
 import java.net.InetSocketAddress;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Executors;
 
 import org.apache.log4j.Logger;
 import org.jboss.netty.bootstrap.ServerBootstrap;
+import org.jboss.netty.channel.Channel;
 import org.jboss.netty.channel.ChannelFactory;
 import org.jboss.netty.channel.ChannelPipeline;
 import org.jboss.netty.channel.ChannelPipelineFactory;
@@ -12,13 +16,29 @@ import org.jboss.netty.channel.Channels;
 import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.locate.gate.GatewayServerHandler;
-import com.locate.gate.LocateEncoder;
+import com.locate.rmds.ItemManager;
 import com.locate.rmds.QSConsumerProxy;
 
 public class GateWayServer {
 	static Logger logger = Logger.getLogger(GateWayServer.class.getName());
-	@Autowired
+
+	public static Map<String, String> _userConnection = new HashMap();
+	// Client User Name+itemName -- IoSession
+	public static Map<String, Integer> _clientRequestSession = new HashMap();
+	// News's itemName -- ( client IP -- IoSession)
+	public static Map<String, Map<String, Integer>> _clientNewsRequest = new HashMap();
+	// Client User Name -- Client User Name + ItemName
+	public static Map<String, List<String>> _clientRequestItemName = new HashMap();
+	// Item name-- Client User Name
+	public static Map<String, List<String>> _requestItemNameList = new HashMap();
+	// public static Map<String,List<ItemManager>> _clientRequestItemManager =
+	// new HashMap();//
+	public static Map<String, ItemManager> _clientRequestItemManager = new HashMap();//
+
+	public static Map<String,Byte> _clientResponseType = new HashMap();
+	//管理channelId和channel的映射关系.
+	public static Map<Integer,Channel> channelMap = new HashMap<Integer,Channel>();
+	
 	private QSConsumerProxy app;
 	public GateWayServer() {
 		init();
