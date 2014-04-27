@@ -1,4 +1,4 @@
-package com.locate.gate;
+package com.locate;
 
 import java.net.InetSocketAddress;
 import java.util.concurrent.Executors;
@@ -12,6 +12,8 @@ import org.jboss.netty.channel.Channels;
 import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.locate.gate.GatewayServerHandler;
+import com.locate.gate.LocateEncoder;
 import com.locate.rmds.QSConsumerProxy;
 
 public class GateWayServer {
@@ -71,5 +73,13 @@ public class GateWayServer {
 		bootstrap.setOption("child.keepalive", true);
 		bootstrap.bind(new InetSocketAddress(8888));
 		logger.info("gate way Server ended");
+	}
+
+	public QSConsumerProxy getApp() {
+		return app;
+	}
+
+	public void setApp(QSConsumerProxy app) {
+		this.app = app;
 	}
 }

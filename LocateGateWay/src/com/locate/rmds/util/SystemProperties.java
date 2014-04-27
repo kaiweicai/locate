@@ -22,6 +22,7 @@ public class SystemProperties {
 	public static final String RFA_NEWS_CODE = "news.code";
 	public static final String RFA_SERVICE_NAME = "rfa.service.name";
 	public static final String USE_SOCKET_MINA = "socket.mina";
+	public static final String RFA_CONFIG_FILE = "rfa.config.file";
 
 	public static void init(String propertiesFile) {
 		// InputStream inputStream = this.getClass().getResourceAsStream(propertiesFile);

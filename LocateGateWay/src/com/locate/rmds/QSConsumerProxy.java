@@ -1,12 +1,17 @@
 package com.locate.rmds;
 
+import java.io.DataInputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.text.DecimalFormat;
+import java.util.prefs.InvalidPreferencesFormatException;
+import java.util.prefs.Preferences;
 
 import org.apache.log4j.Logger;
 import org.dom4j.Document;
 import org.springframework.web.util.HtmlUtils;
 
-import com.locate.gate.GateWayServer;
+import com.locate.GateWayServer;
 import com.locate.gate.GatewayServerHandler;
 import com.locate.rmds.client.RFAUserManagement;
 import com.locate.rmds.util.GenericOMMParser;
@@ -69,14 +74,27 @@ public class QSConsumerProxy {
 	public void init() {
 		// Context.initialize();
 		// 1. Initialize system config
-		ConfigDb configDb = new ConfigDb();
-		configDb.addVariable("myNamespace.Connections.consConnection.connectionType", "RSSL");
+//		ConfigDb configDb = new ConfigDb();
+//		configDb.addVariable("myNamespace.Connections.consConnection.connectionType", "RSSL");
 //		configDb.addVariable("myNamespace.Connections.consConnection.serverList", "10.34.9.91");
-		configDb.addVariable("myNamespace.Connections.consConnection.portNumber", "14002");
-		configDb.addVariable("myNamespace.Sessions.consSession.connectionList", "consConnection");
-		Context.initialize(configDb);
+//		configDb.addVariable("myNamespace.Connections.consConnection.serverList", "192.168.6.1");
+//		configDb.addVariable("myNamespace.Connections.consConnection.portNumber", "14002");
+//		configDb.addVariable("myNamespace.Sessions.consSession.connectionList", "consConnection");
+		Context.initialize();
+		
+		
 		//
 		SystemProperties.init(_configFile);
+		
+		try {
+            Preferences.importPreferences(new DataInputStream(new FileInputStream(SystemProperties.getProperties(SystemProperties.RFA_CONFIG_FILE))));
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.exit(-1);
+        } catch (InvalidPreferencesFormatException e) {
+            e.printStackTrace();
+            System.exit(-1);
+        }
 		// 2. Create an Event Queue
 		_eventQueue = EventQueue.create("myEventQueue");
 
@@ -128,6 +146,12 @@ public class QSConsumerProxy {
 //				cleanup();
 //				_logger.error("Initial RFA socket server failed.", e);
 //			}
+		}
+		login();
+		try {
+			startDispatch();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -216,7 +240,7 @@ public class QSConsumerProxy {
 //	}
 
 	// This method dispatches events
-	public void run() throws Exception {
+	public void startDispatch() throws Exception {
 		_eventQueue.dispatch(0);
 	}
 
@@ -332,7 +356,7 @@ public class QSConsumerProxy {
 		demo.itemRequests("APRE", type);
 		// Dispatch events
 		try {
-			demo.run();
+			demo.startDispatch();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

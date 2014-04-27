@@ -25,7 +25,7 @@ public class RFAServerManager extends Thread {
 			
 			while(!RFApplication.stop){
 				//start Dispatch events
-				demo.run();
+				demo.startDispatch();
 			}
 		} catch (Exception e) {
 			_logger.error(e.getMessage(), e);
