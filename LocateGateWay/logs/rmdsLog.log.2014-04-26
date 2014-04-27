@@ -1,0 +1,11 @@
+2014-04-26 05:58:37 [com.locate.rmds.tcp.client.RFAUserManagement]-[INFO] Completed loading user config.
+ 2014-04-26 05:59:41 [com.locate.rmds.tcp.client.RFAUserManagement]-[INFO] Completed loading user config.
+ 2014-04-26 06:01:53 [com.locate.rmds.tcp.client.RFAUserManagement]-[INFO] Completed loading user config.
+ 2014-04-26 15:18:47 [com.reuters.rfa.util.GenericOMMParser]-[INFO] field dictionary read from RDMFieldDictionary file
+ 2014-04-26 15:18:47 [com.reuters.rfa.util.GenericOMMParser]-[INFO] enum dictionary read from enumtype.def file
+ 2014-04-26 15:18:48 [com.locate.rmds.tcp.client.RFAUserManagement]-[INFO] Completed loading user config.
+ 2014-04-26 15:18:51 [com.locate.rmds.QSConsumerProxy]-[INFO] RWF: 14.0
+RFA: Version = 7.4.1.L1.all.rrg, Date = Tue Apr 15 09:39:52 CST 2014, Jar Path = D:\workspace\LocateGateWay\lib\rfa.jar, Jar Size = 1910996
+
+ 2014-04-26 15:18:51 [com.locate.rmds.QSConsumerProxy]-[INFO] class com.locate.rmds.QSConsumerProxy exiting
+ 
