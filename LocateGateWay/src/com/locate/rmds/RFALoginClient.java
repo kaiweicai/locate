@@ -36,16 +36,16 @@ import com.reuters.rfa.session.omm.OMMItemIntSpec;
 //							application uses this handle to identify this client
 // QSConsumerDemo _mainApp - main application class
 
-public class LoginClient implements Client
+public class RFALoginClient implements Client
 {
     Handle _loginHandle;
     QSConsumerProxy _mainApp;
-    static Logger _logger = Logger.getLogger(LoginClient.class.getName());
+    static Logger _logger = Logger.getLogger(RFALoginClient.class.getName());
 //    static Logger _logger;
 	private String _className = "LoginClient";
 
 	// constructor
-	public LoginClient(QSConsumerProxy mainApp)
+	public RFALoginClient(QSConsumerProxy mainApp)
     {
         _mainApp = mainApp;
 //        _logger = _mainApp._logger;
@@ -65,9 +65,8 @@ public class LoginClient implements Client
     // Encodes request message for login
     private OMMMsg encodeLoginReqMsg()
     {
-        String username = "guest";
-        try { username = System.getProperty("user.name"); }  catch( Exception e ) {}
-        username = "deve01";
+        String username = "deve01";
+//        try { username = System.getProperty("user.name"); }  catch( Exception e ) {}
         String application = "256";
         String position = "1.1.1.1/net";
         try { position = InetAddress.getLocalHost().getHostAddress() + "/" +

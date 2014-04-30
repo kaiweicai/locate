@@ -6,9 +6,10 @@ import org.apache.log4j.Logger;
 import org.dom4j.Document;
 
 
-import com.locate.gate.GateWayResponser;
+import com.locate.common.RFAMessageTypes;
 import com.locate.gate.GateWayServer;
-import com.locate.gate.GatewayServerHandler;
+import com.locate.gate.hanlder.GatewayServerHandler;
+import com.locate.rmds.response.gateway.GateWayResponser;
 import com.locate.rmds.util.GenericOMMParser;
 import com.reuters.rfa.common.Client;
 import com.reuters.rfa.common.Event;
@@ -138,26 +139,24 @@ public class ItemManager implements Client
         _logger.info(_className+".processEvent: Received Item("+clientRequestItemName+") Event from server ");
         if (event.getType() != Event.OMM_ITEM_EVENT) 
         {
-        	//这里程序太危险了,因为RFA给的消息有误就要退出程序.恐怖的逻辑啊.
+        	//这里程序太危险了,因为RFA给的消息有误就要退出程序.恐怖的逻辑啊.还是去掉cleanup好了.
             _logger.error("ERROR: "+_className+" Received an unsupported Event type.");
-            _mainApp.cleanup();
+//            _mainApp.cleanup();
             return;
         }
 
         OMMItemEvent ommItemEvent = (OMMItemEvent) event;
         OMMMsg respMsg = ommItemEvent.getMsg();
         // Status response can contain group id
-        if ((respMsg.getMsgType() == OMMMsg.MsgType.REFRESH_RESP)
-                || (respMsg.getMsgType() == OMMMsg.MsgType.STATUS_RESP && respMsg
-                        .has(OMMMsg.HAS_ITEM_GROUP)))
-        {
-            OMMItemGroup group = respMsg.getItemGroup();
-            Handle itemHandle = event.getHandle();
-            _itemGroupManager.applyGroup(itemHandle, group);
-        }
-        GateWayResponser.sentResponseMsg(respMsg, channelID);
-        Document responseMsg =  GenericOMMParser.parse(respMsg,clientRequestItemName);
+		if ((respMsg.getMsgType() == OMMMsg.MsgType.REFRESH_RESP)
+				|| (respMsg.getMsgType() == OMMMsg.MsgType.STATUS_RESP && respMsg.has(OMMMsg.HAS_ITEM_GROUP))) {
+			OMMItemGroup group = respMsg.getItemGroup();
+			Handle itemHandle = event.getHandle();
+			_itemGroupManager.applyGroup(itemHandle, group);
+		}
         
+		Document responseMsg = GenericOMMParser.parse(respMsg, clientRequestItemName);
+		GateWayResponser.sentResponseMsg(respMsg.getMsgType(), responseMsg, channelID);
         if(responseMsg != null){
 //        	List<String> clientNameList =  GateWayServer._requestItemNameList.get(clientRequestItemName);
 //        	if(clientNameList != null){

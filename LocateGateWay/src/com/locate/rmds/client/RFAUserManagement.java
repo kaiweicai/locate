@@ -14,9 +14,9 @@ import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 import org.junit.Test;
 
+import com.locate.common.RFAMessageTypes;
 import com.locate.rmds.user.RFAUser;
 import com.locate.rmds.user.RFAUserPermission;
-import com.locate.rmds.util.RFAMessageTypes;
 import com.locate.rmds.util.RFANodeconstant;
 import com.locate.rmds.util.RFAUtils;
 import com.locate.rmds.util.SystemProperties;
@@ -103,7 +103,6 @@ public class RFAUserManagement {
 		try {
 			userRightPwd = RFAUtils.output(userRightPwd);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			return false;
 		}
 		if(userRightPwd.equals(pwd)){

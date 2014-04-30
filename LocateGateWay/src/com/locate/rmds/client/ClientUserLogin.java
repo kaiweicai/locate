@@ -7,15 +7,15 @@ import org.dom4j.Document;
 import org.dom4j.Node;
 import org.jboss.netty.channel.Channel;
 
+import com.locate.common.RFAExceptionTypes;
 import com.locate.gate.GateWayServer;
-import com.locate.gate.GatewayServerHandler;
-import com.locate.gate.tcp.model.RFAUserResponse;
-import com.locate.rmds.util.RFAExceptionTypes;
+import com.locate.gate.hanlder.GatewayServerHandler;
+import com.locate.gate.model.RFAUserResponse;
 import com.locate.rmds.util.RFANodeconstant;
 
 public class ClientUserLogin {
 
-	static Logger _logger = Logger.getLogger(ClientUserLogin.class.getName());
+	static Logger logger = Logger.getLogger(ClientUserLogin.class.getName());
 	private String clientIp;
 	public ClientUserLogin(String clientIp) {
 		this.clientIp = clientIp;
@@ -35,20 +35,22 @@ public class ClientUserLogin {
 //				String address = String.valueOf(sa.getAddress().getAddress());
 				RFAUserManagement.setUserAddress(userName, clientIp);
 				GateWayServer._userConnection.put(clientIP, userName);
-				_logger.info("User " + userName + " passed authentication");
+				logger.info("User " + userName + " passed authentication");
 			} else {
 				// User's password is wrong
 				authentication = RFAExceptionTypes.RFAUserAuthentication.PasswordIsWrong;
+				logger.warn("User's password is wrong , user name is "+userName+ " password is "+password);
 			}
 		} else {
 			// User not exist
 			authentication = RFAExceptionTypes.RFAUserAuthentication.UserNotExist;
+			logger.warn("User not exist , user name is "+userName+ " password is "+password);
 		}
 		/**
 		 * I think this authenticate is NOT work. 
 		 */
 		Document userResponse = RFAUserResponse.createAuthenResponse(authentication);
-		_logger.error("User authenticate result for " + userName + userResponse.asXML());
+		logger.info("User authenticate result for " + userName + userResponse.asXML());
 		return userResponse;
 	}
 

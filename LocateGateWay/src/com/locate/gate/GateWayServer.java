@@ -14,8 +14,12 @@ import org.jboss.netty.channel.ChannelPipeline;
 import org.jboss.netty.channel.ChannelPipelineFactory;
 import org.jboss.netty.channel.Channels;
 import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
+import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.locate.gate.coder.GateWayDecoder;
+import com.locate.gate.coder.GateWayEncoder;
+import com.locate.gate.hanlder.GatewayServerHandler;
 import com.locate.rmds.ItemManager;
 import com.locate.rmds.QSConsumerProxy;
 
@@ -40,9 +44,6 @@ public class GateWayServer {
 	public static Map<Integer,Channel> channelMap = new HashMap<Integer,Channel>();
 	
 	private QSConsumerProxy app;
-	public GateWayServer() {
-		init();
-	}
 
 	/**
 	 * Create the TCP server
@@ -84,7 +85,33 @@ public class GateWayServer {
 			@Override
 			public ChannelPipeline getPipeline() throws Exception {
 				
-				return Channels.pipeline(gateWayServerHandler,new LocateEncoder());
+				return Channels.pipeline(new GateWayDecoder(),new GateWayEncoder(),gateWayServerHandler);
+			}
+		};
+		ServerBootstrap bootstrap = new ServerBootstrap(factory);
+		bootstrap.setPipelineFactory(pipelineFactory);
+		bootstrap.setOption("tcpNodelay", true);
+		bootstrap.setOption("child.keepalive", true);
+		bootstrap.bind(new InetSocketAddress(8888));
+		logger.info("gate way Server ended");
+	}
+
+	@Test
+	public void testServer(){
+		GateWayServer server= new GateWayServer();
+		server.init();
+	}
+	
+	public static void main(String[] args){
+		ChannelFactory factory = new NioServerSocketChannelFactory(Executors.newCachedThreadPool(),
+				Executors.newCachedThreadPool());
+		final GatewayServerHandler gateWayServerHandler = new GatewayServerHandler();
+//		gateWayServerHandler.set_mainApp(app);
+		ChannelPipelineFactory pipelineFactory = new ChannelPipelineFactory() {
+			@Override
+			public ChannelPipeline getPipeline() throws Exception {
+				
+				return Channels.pipeline(gateWayServerHandler,new GateWayEncoder());
 			}
 		};
 		ServerBootstrap bootstrap = new ServerBootstrap(factory);
@@ -92,9 +119,8 @@ public class GateWayServer {
 		bootstrap.setOption("child.tcpNodelay", true);
 		bootstrap.setOption("child.keepalive", true);
 		bootstrap.bind(new InetSocketAddress(8888));
-		logger.info("gate way Server ended");
 	}
-
+	
 	public QSConsumerProxy getApp() {
 		return app;
 	}

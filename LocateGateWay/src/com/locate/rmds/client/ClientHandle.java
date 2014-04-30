@@ -7,12 +7,13 @@ import org.apache.log4j.Logger;
 import org.dom4j.Document;
 import org.dom4j.Element;
 
+import com.locate.common.RFAExceptionTypes;
+import com.locate.common.RFAMessageTypes;
 import com.locate.gate.GateWayServer;
-import com.locate.gate.GatewayServerHandler;
+import com.locate.gate.hanlder.GatewayServerHandler;
 import com.locate.rmds.ItemManager;
 import com.locate.rmds.QSConsumerProxy;
-import com.locate.rmds.util.RFAExceptionTypes;
-import com.locate.rmds.util.RFAMessageTypes;
+import com.locate.rmds.response.gateway.GateWayResponser;
 import com.locate.rmds.util.RFANodeconstant;
 
 /**
@@ -47,7 +48,7 @@ public class ClientHandle {
 		    case RFAMessageTypes.LOGIN : 
 		    	responseMsgType = RFAMessageTypes.RESPONSE_LOGIN;
 		    	responseData = clientUserLogin.authUserLogin(request,clientIP);
-//		    	RFAResponse.sentResponseMsg(responseMsgType, responseData, channel);
+		    	GateWayResponser.sentResponseMsg(RFAMessageTypes.RESPONSE_LOGIN, responseData, channelID);
 		    	break;
 		    case RFAMessageTypes.STOCK_REQUEST:
 		    	processRequest(request,clientName,RFAMessageTypes.RESPONSE_STOCK,channelID);
@@ -56,9 +57,9 @@ public class ClientHandle {
 //		    	processOneTimesRequest(request,clientName,RFAMessageTypes.RESPONSE_STOCK_LINK);
 //		    	break;
 //
-//		    case RFAMessageTypes.CURRENCY_REQUEST:
-//		    	processRequest(request,clientName,RFAMessageTypes.RESPONSE_CURRENCY);
-//		    	break;
+		    case RFAMessageTypes.CURRENCY_REQUEST:
+		    	processRequest(request,clientName,RFAMessageTypes.RESPONSE_CURRENCY,channelID);
+		    	break;
 //		    case RFAMessageTypes.CURRENCY_LINK_REQUEST:
 //		    	processOneTimesRequest(request,clientName,RFAMessageTypes.RESPONSE_CURRENCY_LINK);
 //		    	break;
@@ -69,9 +70,9 @@ public class ClientHandle {
 //		    case RFAMessageTypes.OPTION_LINK_REQUEST:
 //		    	processOneTimesRequest(request,clientName,RFAMessageTypes.RESPONSE_OPTION_LINK);
 //		    	break;
-//		    case RFAMessageTypes.FUTURE_REQUEST:
-//		    	processRequest(request,clientName,RFAMessageTypes.RESPONSE_FUTURE);
-//		    	break;
+		    case RFAMessageTypes.FUTURE_REQUEST:
+		    	processRequest(request,clientName,RFAMessageTypes.RESPONSE_FUTURE , channelID);
+		    	break;
 //		    case RFAMessageTypes.FUTURE_LINK_REQUEST:
 //		    	processOneTimesRequest(request,clientName,RFAMessageTypes.RESPONSE_FUTURE_LINK);
 //		    	break;

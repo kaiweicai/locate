@@ -124,6 +124,7 @@ public final class GenericOMMParser
      */
     public static final Document parse(OMMMsg msg,String itemName)
     {
+    	_logger.info("orignal OMMMsg is "+ msg);
     	if(itemName == null)
     		itemName = "";
     	StringBuffer logMsg = new StringBuffer();
@@ -139,11 +140,11 @@ public final class GenericOMMParser
 
         _logger.info(logMsg.toString());
         _logger.info(responseMsg.asXML());
-        if(fields.elements().size() > 0){
+//        if(fields.elements().size() > 0){
         	return responseMsg;
-        }else{
-        	return null;
-        }
+//        }else{
+//        	return null;
+//        }
     }
 
     private static final String hintString(OMMMsg msg)
@@ -235,190 +236,155 @@ public final class GenericOMMParser
         parseMsg(msg, logMsg, 0,fieldsElement);
     }
 
-    static final void parseMsg(OMMMsg msg, StringBuffer logMsg, int tabLevel,Element fieldsElement)
-    {
-        msg.getMsgType();
-        logMsg.append("\n MESSAGE");
-        
-        logMsg.append("\n Msg Type: " + OMMMsg.MsgType.toString(msg.getMsgType()));
-        
-        logMsg.append("\n Msg Model Type: " + RDMMsgTypes.toString(msg.getMsgModelType()));
-        
-        logMsg.append("\n Indication Flags: " + OMMMsg.Indication.indicationString(msg));
+	static final void parseMsg(OMMMsg msg, StringBuffer logMsg, int tabLevel, Element fieldsElement) {
+		msg.getMsgType();
+		logMsg.append("\n MESSAGE");
 
-        
-        logMsg.append("\n Hint Flags: " + hintString(msg));
+		logMsg.append("\n Msg Type: " + OMMMsg.MsgType.toString(msg.getMsgType()));
 
-        if ((msg.getDataType() == OMMTypes.ANSI_PAGE) && msg.isSet(OMMMsg.Indication.CLEAR_CACHE))
-        {
-            CURRENT_PAGE = null;
-        }
+		logMsg.append("\n Msg Model Type: " + RDMMsgTypes.toString(msg.getMsgModelType()));
 
-        if (msg.has(OMMMsg.HAS_STATE))
-        {
-            
-        	logMsg.append("\n State: " + msg.getState());
-        }
-        if (msg.has(OMMMsg.HAS_PRIORITY))
-        {
-            
-            OMMPriority p = msg.getPriority();
-            if (p != null)
-            	logMsg.append("\n Priority: " + p.getPriorityClass() + "," + p.getCount());
-            else
-            	logMsg.append("\n Priority: Error flag recieved but there is not priority present");
-        }
-        if (msg.has(OMMMsg.HAS_QOS))
-        {
-            
-        	logMsg.append("\n Qos: " + msg.getQos());
-        }
-        if (msg.has(OMMMsg.HAS_QOS_REQ))
-        {
-            
-        	logMsg.append("\n QosReq: " + msg.getQosReq());
-        }
-        if (msg.has(OMMMsg.HAS_ITEM_GROUP))
-        {
-            
-        	logMsg.append("\n Group: " + msg.getItemGroup());
-        }
-        if (msg.has(OMMMsg.HAS_PERMISSION_DATA))
-        {
-        	byte[] permdata = msg.getPermissionData();
-        	
-            
-        	logMsg.append("\n PermissionData: " + HexDump.toHexString(permdata, false)
-            		+" ( " + HexDump.formatHexString(permdata) + " ) ");
-        }
-        if (msg.has(OMMMsg.HAS_SEQ_NUM))
-        {
-            
-        	logMsg.append("\n SeqNum: " + msg.getSeqNum());
-        }
+		logMsg.append("\n Indication Flags: " + OMMMsg.Indication.indicationString(msg));
 
-        if (msg.has(OMMMsg.HAS_CONFLATION_INFO))
-        {
-            
-        	logMsg.append("\n Conflation Count: " + msg.getConflationCount());
-            
-        	logMsg.append("\n Conflation Time: " + msg.getConflationTime());
-        }
+		logMsg.append("\n Hint Flags: " + hintString(msg));
 
-        if (msg.has(OMMMsg.HAS_RESP_TYPE_NUM))
-        {
-            
-        	logMsg.append("\n RespTypeNum: " + msg.getRespTypeNum());
-            dumpRespTypeNum(msg, logMsg);
-        }
+		if ((msg.getDataType() == OMMTypes.ANSI_PAGE) && msg.isSet(OMMMsg.Indication.CLEAR_CACHE)) {
+			CURRENT_PAGE = null;
+		}
 
-        if (msg.has(OMMMsg.HAS_ID))
-        {
-            
-        	logMsg.append("\n Id: " + msg.getId());
-        }
+		if (msg.has(OMMMsg.HAS_STATE)) {
 
-        if ((msg.has(OMMMsg.HAS_PUBLISHER_INFO)) || (msg.getMsgType() == OMMMsg.MsgType.POST))
-        {
-            PublisherPrincipalIdentity pi = (PublisherPrincipalIdentity)msg.getPrincipalIdentity();
-            if (pi != null)
-            {
-                
-            	logMsg.append("\n Publisher Address: 0x" + Long.toHexString(pi.getPublisherAddress()));
-                
-            	logMsg.append("\n Publisher Id: " + pi.getPublisherId());
-            }
-        }
+			logMsg.append("\n State: " + msg.getState());
+		}
+		if (msg.has(OMMMsg.HAS_PRIORITY)) {
 
-        if (msg.has(OMMMsg.HAS_USER_RIGHTS) )
-        {
-        	
-        	logMsg.append("\n User Rights Mask: " + OMMMsg.UserRights.userRightsString(msg.getUserRightsMask()));
-        }
+			OMMPriority p = msg.getPriority();
+			if (p != null)
+				logMsg.append("\n Priority: " + p.getPriorityClass() + "," + p.getCount());
+			else
+				logMsg.append("\n Priority: Error flag recieved but there is not priority present");
+		}
+		if (msg.has(OMMMsg.HAS_QOS)) {
 
-        if (msg.has(OMMMsg.HAS_ATTRIB_INFO))
-        {
-            
-        	logMsg.append("\n AttribInfo");
-            OMMAttribInfo ai = msg.getAttribInfo();
-            if (ai.has(OMMAttribInfo.HAS_SERVICE_NAME))
-            {
-                
-            	logMsg.append("\n ServiceName: " + ai.getServiceName());
-            }
-            if (ai.has(OMMAttribInfo.HAS_SERVICE_ID))
-            {
-                
-            	logMsg.append("\n ServiceId: " + ai.getServiceID());
-            }
-            if (ai.has(OMMAttribInfo.HAS_NAME))
-            {
-                
-            	logMsg.append("\n Name: " + ai.getName());
-            }
-            if (ai.has(OMMAttribInfo.HAS_NAME_TYPE))
-            {
-                
-            	logMsg.append("\n NameType: " + ai.getNameType());
-                if (msg.getMsgModelType() == RDMMsgTypes.LOGIN)
-                {
-                	logMsg.append(" (" + RDMUser.NameType.toString(ai.getNameType()) + ")");
-                }
-                else if (RDMInstrument.isInstrumentMsgModelType(msg.getMsgModelType()))
-                {
+			logMsg.append("\n Qos: " + msg.getQos());
+		}
+		if (msg.has(OMMMsg.HAS_QOS_REQ)) {
 
-                	logMsg.append(" (" + RDMInstrument.NameType.toString(ai.getNameType()) + ")");
-                }
-//                else
-//                {
-//                    _logger.info("");
-//                }
-            }
-            if (ai.has(OMMAttribInfo.HAS_FILTER))
-            {
-                
-            	logMsg.append("\n Filter: " + ai.getFilter());
-                if (msg.getMsgModelType() == RDMMsgTypes.DIRECTORY)
-                {
-                	logMsg.append(" (" + RDMService.Filter.toString(ai.getFilter()) + ")");
-                }
-                else if (msg.getMsgModelType() == RDMMsgTypes.DICTIONARY)
-                {
-                	logMsg.append(" (" + RDMDictionary.Filter.toString(ai.getFilter()) + ")");
-                }
-//                else
-//                {
-//                    _logger.info();
-//                }
-            }
-            if (ai.has(OMMAttribInfo.HAS_ID))
-            {
-                
-            	logMsg.append("\n ID: " + ai.getId());
-            }
-            if (ai.has(OMMAttribInfo.HAS_ATTRIB))
-            {
-                
-            	logMsg.append("\n Attrib");
-                parseData(ai.getAttrib(), logMsg, tabLevel + 2,fieldsElement);
-                logMsg.append("\n");
-            }
-        }
+			logMsg.append("\n QosReq: " + msg.getQosReq());
+		}
+		if (msg.has(OMMMsg.HAS_ITEM_GROUP)) {
 
-        
-        logMsg.append("\n Payload: ");
-        if (msg.getDataType() != OMMTypes.NO_DATA)
-        {
-        			
-        	logMsg.append("\n "+msg.getPayload().getEncodedLength() + " bytes");
-            parseData(msg.getPayload(), logMsg, tabLevel + 1,fieldsElement);
-            logMsg.append("\n ");
-        }
-        else
-        {
-        	logMsg.append("\n None \n");
-        }
-    }
+			logMsg.append("\n Group: " + msg.getItemGroup());
+		}
+		if (msg.has(OMMMsg.HAS_PERMISSION_DATA)) {
+			byte[] permdata = msg.getPermissionData();
+
+			logMsg.append("\n PermissionData: " + HexDump.toHexString(permdata, false) + " ( "
+					+ HexDump.formatHexString(permdata) + " ) ");
+		}
+		if (msg.has(OMMMsg.HAS_SEQ_NUM)) {
+
+			logMsg.append("\n SeqNum: " + msg.getSeqNum());
+		}
+
+		if (msg.has(OMMMsg.HAS_CONFLATION_INFO)) {
+
+			logMsg.append("\n Conflation Count: " + msg.getConflationCount());
+
+			logMsg.append("\n Conflation Time: " + msg.getConflationTime());
+		}
+
+		if (msg.has(OMMMsg.HAS_RESP_TYPE_NUM)) {
+
+			logMsg.append("\n RespTypeNum: " + msg.getRespTypeNum());
+			dumpRespTypeNum(msg, logMsg);
+		}
+
+		if (msg.has(OMMMsg.HAS_ID)) {
+
+			logMsg.append("\n Id: " + msg.getId());
+		}
+
+		if ((msg.has(OMMMsg.HAS_PUBLISHER_INFO)) || (msg.getMsgType() == OMMMsg.MsgType.POST)) {
+			PublisherPrincipalIdentity pi = (PublisherPrincipalIdentity) msg.getPrincipalIdentity();
+			if (pi != null) {
+
+				logMsg.append("\n Publisher Address: 0x" + Long.toHexString(pi.getPublisherAddress()));
+
+				logMsg.append("\n Publisher Id: " + pi.getPublisherId());
+			}
+		}
+
+		if (msg.has(OMMMsg.HAS_USER_RIGHTS)) {
+
+			logMsg.append("\n User Rights Mask: " + OMMMsg.UserRights.userRightsString(msg.getUserRightsMask()));
+		}
+
+		if (msg.has(OMMMsg.HAS_ATTRIB_INFO)) {
+
+			logMsg.append("\n AttribInfo");
+			OMMAttribInfo ai = msg.getAttribInfo();
+			if (ai.has(OMMAttribInfo.HAS_SERVICE_NAME)) {
+
+				logMsg.append("\n ServiceName: " + ai.getServiceName());
+			}
+			if (ai.has(OMMAttribInfo.HAS_SERVICE_ID)) {
+
+				logMsg.append("\n ServiceId: " + ai.getServiceID());
+			}
+			if (ai.has(OMMAttribInfo.HAS_NAME)) {
+
+				logMsg.append("\n Name: " + ai.getName());
+			}
+			if (ai.has(OMMAttribInfo.HAS_NAME_TYPE)) {
+
+				logMsg.append("\n NameType: " + ai.getNameType());
+				if (msg.getMsgModelType() == RDMMsgTypes.LOGIN) {
+					logMsg.append(" (" + RDMUser.NameType.toString(ai.getNameType()) + ")");
+				} else if (RDMInstrument.isInstrumentMsgModelType(msg.getMsgModelType())) {
+
+					logMsg.append(" (" + RDMInstrument.NameType.toString(ai.getNameType()) + ")");
+				}
+				// else
+				// {
+				// _logger.info("");
+				// }
+			}
+			if (ai.has(OMMAttribInfo.HAS_FILTER)) {
+
+				logMsg.append("\n Filter: " + ai.getFilter());
+				if (msg.getMsgModelType() == RDMMsgTypes.DIRECTORY) {
+					logMsg.append(" (" + RDMService.Filter.toString(ai.getFilter()) + ")");
+				} else if (msg.getMsgModelType() == RDMMsgTypes.DICTIONARY) {
+					logMsg.append(" (" + RDMDictionary.Filter.toString(ai.getFilter()) + ")");
+				}
+				// else
+				// {
+				// _logger.info();
+				// }
+			}
+			if (ai.has(OMMAttribInfo.HAS_ID)) {
+
+				logMsg.append("\n ID: " + ai.getId());
+			}
+			if (ai.has(OMMAttribInfo.HAS_ATTRIB)) {
+
+				logMsg.append("\n Attrib");
+				parseData(ai.getAttrib(), logMsg, tabLevel + 2, fieldsElement);
+				logMsg.append("\n");
+			}
+		}
+
+		logMsg.append("\n Payload: ");
+		if (msg.getDataType() != OMMTypes.NO_DATA) {
+
+			logMsg.append("\n " + msg.getPayload().getEncodedLength() + " bytes");
+			parseData(msg.getPayload(), logMsg, tabLevel + 1, fieldsElement);
+			logMsg.append("\n ");
+		} else {
+			logMsg.append("\n None \n");
+		}
+	}
 
     /**
      * parse msg and print it in a table-nested format to the provided

@@ -1,4 +1,4 @@
-package com.locate.gate;
+package com.locate.gate.hanlder;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -16,16 +16,17 @@ import org.jboss.netty.channel.ExceptionEvent;
 import org.jboss.netty.channel.MessageEvent;
 import org.jboss.netty.channel.SimpleChannelHandler;
 
-import com.locate.gate.GatewayServerHandler;
-import com.locate.gate.tcp.model.LocateMessage;
-import com.locate.gate.tcp.model.RFAUserResponse;
+import com.locate.common.RFAExceptionTypes;
+import com.locate.common.RFAMessageTypes;
+import com.locate.gate.GateWayServer;
+import com.locate.gate.hanlder.GatewayServerHandler;
+import com.locate.gate.model.LocateMessage;
+import com.locate.gate.model.RFAUserResponse;
 import com.locate.rmds.ItemManager;
 import com.locate.rmds.QSConsumerProxy;
 import com.locate.rmds.RFApplication;
 import com.locate.rmds.client.ClientHandle;
 import com.locate.rmds.util.RFACommon;
-import com.locate.rmds.util.RFAExceptionTypes;
-import com.locate.rmds.util.RFAMessageTypes;
 import com.locate.rmds.util.SystemProperties;
 
 public class GatewayServerHandler extends SimpleChannelHandler {
@@ -77,9 +78,8 @@ public class GatewayServerHandler extends SimpleChannelHandler {
 	
 	@Override
 	public void exceptionCaught(ChannelHandlerContext ctx, ExceptionEvent e) throws Exception {
-		_logger.error("Unexpect Exception from downstream!+e.getCause()");
-		System.out.println(e.getCause());
-		e.getChannel().close();
+		_logger.error("Unexpect Exception from downstream! please contact the developer!"+e.getCause());
+//		e.getChannel().close();
 	}
 
 	@Deprecated
@@ -111,16 +111,14 @@ public class GatewayServerHandler extends SimpleChannelHandler {
 			_logger.info("Client request :" + userRequest.asXML());
 			
 			Channel channel = e.getChannel();
-			
+			//这段逻辑不应该在这里判断,用户是否登录系统应该放到clientHandle里面去判断.
 			if(msgType != RFAMessageTypes.LOGIN){
 		    	userName = GateWayServer._userConnection.get(clientIP);
 		    	if(userName == null){
 		    		int errorCode = RFAExceptionTypes.USER_NOT_LOGIN;
 					Document wrongMsg = RFAUserResponse.createErrorDocument(errorCode,
 							RFAExceptionTypes.RFAExceptionEnum.getExceptionDescription(errorCode));
-					LocateMessage message = new LocateMessage();
-					message.setMsgType(RFAMessageTypes.ERROR);
-					message.setDocument(wrongMsg);
+					LocateMessage message = new LocateMessage(RFAMessageTypes.ERROR,wrongMsg);
 					e.getChannel().write(message);
 					_logger.error("Client didn't login system. sent error message to client");
 					return;
@@ -129,6 +127,7 @@ public class GatewayServerHandler extends SimpleChannelHandler {
 			//将channelId和对应的channel放到map中,会写客户端的时候可以根据该id找到对应的channel.
 			GateWayServer.channelMap.put(channel.getId(), channel);
 		    ClientHandle clientHandle = new ClientHandle(_mainApp,clientIP,msgType);
+		    //RFAClientHandler process message and send the request to RFA.
 	    	clientHandle.process(userRequest,userName,channel.getId());
 		} catch (Throwable throwable) {
 			_logger.error("Unexpected error ocurres", throwable);

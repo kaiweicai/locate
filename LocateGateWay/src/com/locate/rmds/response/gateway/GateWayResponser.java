@@ -1,4 +1,4 @@
-package com.locate.gate;
+package com.locate.rmds.response.gateway;
 
 import java.nio.charset.Charset;
 
@@ -6,6 +6,8 @@ import org.apache.log4j.Logger;
 import org.dom4j.Document;
 import org.jboss.netty.channel.Channel;
 
+import com.locate.gate.GateWayServer;
+import com.locate.gate.model.LocateMessage;
 import com.reuters.rfa.omm.OMMMsg;
 
 /**
@@ -16,11 +18,16 @@ import com.reuters.rfa.omm.OMMMsg;
 public class GateWayResponser {
 	
 	public static final Charset CHARSET = Charset.forName("UTF-8");
-	static Logger _logger = Logger.getLogger(GateWayResponser.class.getName());
+	static Logger logger = Logger.getLogger(GateWayResponser.class.getName());
 	
-	public static void sentResponseMsg(OMMMsg response,Integer channelId){
+	public static void sentResponseMsg(byte msgType,Document response,Integer channelId){
+		LocateMessage message = new LocateMessage(msgType, response);
 		Channel channel = GateWayServer.channelMap.get(channelId);
-		channel.write(response);
+		if(channel!=null&&channel.isConnected()){
+			channel.write(message);
+		}else{
+			logger.error("The channel had been closed when write login response to client. Channel ID is "+ channelId);
+		}
 //		if(channelId != null && channelId.isConnected()){
 //	        IoBuffer buffer = IoBuffer.allocate(2048);
 //	        buffer.setAutoShrink(true);

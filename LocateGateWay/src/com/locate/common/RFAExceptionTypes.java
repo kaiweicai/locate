@@ -1,4 +1,4 @@
-package com.locate.rmds.util;
+package com.locate.common;
 
 public class RFAExceptionTypes {
 	public static int USER_NOT_LOGIN = 100;
@@ -8,13 +8,15 @@ public class RFAExceptionTypes {
 	public static int USER_BUSINESS_NO_SUBSCRIBE = 104;
 	public static int BUSINESS_REQUEST_FAILED = 105;
 	public static int USER_REQUEST_FAILTED = 106;
+	
+	public static int NETTY_UNKONW_ERROR = 1000;
 
 	public enum RFAExceptionEnum {
 		BusinessNumberOut("User's business number out", USER_BUSINESS_NUMBER_OUT), 
 		NotSubscribeBusiness("User has not right for this option", USER_BUSINESS_NO_SUBSCRIBE),
 		BusinessReqFailed("Request business failed", BUSINESS_REQUEST_FAILED), 
 		UserRequestFailed("Request data is wrong, Please check!", USER_REQUEST_FAILTED);
-
+		
 		String exception;
 		int errorCode;
 
@@ -64,6 +66,44 @@ public class RFAExceptionTypes {
 		}
 
 		public static String getDescription(int code) {
+			for (RFAExceptionEnum c : RFAExceptionEnum.values()) {
+				if (c.getErrorCode() == code) {
+					return c.exception;
+				}
+			}
+			return null;
+		}
+
+		public String getException() {
+			return exception;
+		}
+
+		public void setException(String exception) {
+			this.exception = exception;
+		}
+
+		public int getErrorCode() {
+			return errorCode;
+		}
+
+		public void setErrorCode(int errorCode) {
+			this.errorCode = errorCode;
+		}
+
+	}
+	
+	public enum NETTYExceptionEnum {
+		NettyUnknowError("Netty NIO framework error, Please contact the developer!", NETTY_UNKONW_ERROR);
+		
+		String exception;
+		int errorCode;
+
+		private NETTYExceptionEnum(String exception, int errorCode) {
+			this.exception = exception;
+			this.errorCode = errorCode;
+		}
+
+		public static String getExceptionDescription(int code) {
 			for (RFAExceptionEnum c : RFAExceptionEnum.values()) {
 				if (c.getErrorCode() == code) {
 					return c.exception;

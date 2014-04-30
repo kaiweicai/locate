@@ -13,11 +13,13 @@ import org.dom4j.Document;
 import org.springframework.web.util.HtmlUtils;
 
 import com.locate.gate.GateWayServer;
-import com.locate.gate.GatewayServerHandler;
+import com.locate.gate.hanlder.GatewayServerHandler;
 import com.locate.rmds.client.RFAUserManagement;
 import com.locate.rmds.util.GenericOMMParser;
 import com.locate.rmds.util.SystemProperties;
 import com.reuters.rfa.common.Context;
+import com.reuters.rfa.common.DeactivatedException;
+import com.reuters.rfa.common.DispatchQueueInGroupException;
 import com.reuters.rfa.common.EventQueue;
 import com.reuters.rfa.common.EventSource;
 import com.reuters.rfa.common.Handle;
@@ -34,14 +36,14 @@ import com.reuters.rfa.session.omm.OMMConsumer;
 *  创建时间：2014.5.26   
 *  类说明  netty game  
 */  
-public class QSConsumerProxy {
+public class QSConsumerProxy extends Thread{
 	static Logger logger = Logger.getLogger(QSConsumerProxy.class.getName());
 
 	// RFA objects
 	protected Session _session;
 	protected EventQueue _eventQueue;
 	protected OMMConsumer _consumer;
-	protected LoginClient _loginClient;
+	protected RFALoginClient _loginClient;
 	protected ItemGroupManager _itemGroupManager;
 
 	protected OMMEncoder _encoder;
@@ -100,7 +102,7 @@ public class QSConsumerProxy {
 		_eventQueue = EventQueue.create("myEventQueue");
 
 		// 3. Acquire a Session
-		_session = Session.acquire("myNamespace::consSession");
+		_session = Session.acquire("myNamespace::mySession");
 //		_session = Session.acquire("myNamespace::mySession");
 		
 		if (_session == null) {
@@ -151,17 +153,13 @@ public class QSConsumerProxy {
 //			}
 		}
 		login();
-		try {
-			startDispatch();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		this.start();
 	}
 
 	// This method utilizes the LoginClient class to send login request
 	public void login() {
 		// Initialize client for login domain.
-		_loginClient = new LoginClient(this);
+		_loginClient = new RFALoginClient(this);
 
 		// Send login request
 		_loginClient.sendRequest();
@@ -170,7 +168,7 @@ public class QSConsumerProxy {
 	// This method is called by _loginClient upon receiving successful login
 	// response.
 	public void processLogin() {
-		logger.info("QSConsumerDemo" + " Login successful");
+		logger.info("QSConsumerDemo Login successful");
 //		newsItemRequests();
 	}
 
@@ -242,10 +240,20 @@ public class QSConsumerProxy {
 //		// newsItemManager.sendRequest("nASA0590H");
 //	}
 
+	public void run(){
+		startDispatch();
+	}
+	
 	// This method dispatches events
-	public void startDispatch() throws Exception {
+	public void startDispatch(){
 		while(true)
-		_eventQueue.dispatch(0);
+			try {
+				_eventQueue.dispatch(0);
+			} catch (DeactivatedException e) {
+				e.printStackTrace();
+			} catch (DispatchQueueInGroupException e) {
+				e.printStackTrace();
+			}
 	}
 
 	// This method cleans up resources when the application exits

@@ -1,13 +1,13 @@
-package com.locate.gate.tcp.model;
+package com.locate.gate.model;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentFactory;
 import org.dom4j.Element;
 
-import com.locate.rmds.util.RFAExceptionTypes;
-import com.locate.rmds.util.RFAMessageTypes;
+import com.locate.common.RFAExceptionTypes;
+import com.locate.common.RFAMessageTypes;
+import com.locate.common.RFAExceptionTypes.RFAUserAuthentication;
 import com.locate.rmds.util.RFANodeconstant;
-import com.locate.rmds.util.RFAExceptionTypes.RFAUserAuthentication;
 
 public class RFAUserResponse extends LocateMessage{
 	

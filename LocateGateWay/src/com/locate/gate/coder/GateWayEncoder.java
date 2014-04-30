@@ -1,4 +1,4 @@
-package com.locate.gate;
+package com.locate.gate.coder;
 
 import org.apache.log4j.Logger;
 import org.jboss.netty.buffer.ChannelBuffer;
@@ -8,17 +8,17 @@ import org.jboss.netty.channel.Channels;
 import org.jboss.netty.channel.MessageEvent;
 import org.jboss.netty.channel.SimpleChannelHandler;
 
-import com.locate.gate.tcp.model.LocateMessage;
+import com.locate.gate.model.LocateMessage;
 
-public class LocateEncoder extends SimpleChannelHandler {
+public class GateWayEncoder extends SimpleChannelHandler {
 
-	Logger logger = Logger.getLogger(LocateEncoder.class);
+	Logger logger = Logger.getLogger(GateWayEncoder.class);
 
 	private final ChannelBuffer buffer = ChannelBuffers.dynamicBuffer();
 
-	
 	@Override
 	public void writeRequested(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
+		buffer.clear();
 		LocateMessage messgae = (LocateMessage) e.getMessage();
 		buffer.writeByte(messgae.getMsgType());
 		String xml = messgae.getDocument().asXML();
@@ -27,6 +27,7 @@ public class LocateEncoder extends SimpleChannelHandler {
 		buffer.writeInt(dataLength);
 		buffer.writeBytes(content);
 		Channels.write(ctx, e.getFuture(), buffer);
+//		buffer.clear();
 		logger.info("Send message to client:\n" + messgae);
 		// byte[] len ;
 		// if("true".equalsIgnoreCase(SystemProperties.getProperties(SystemProperties.USE_SOCKET_MINA))){

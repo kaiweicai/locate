@@ -1,7 +1,7 @@
-package com.locate.rmds.util;
+package com.locate.common;
+
 
 public class RFAMessageTypes {
-	public static final byte UNKNOW = -1;
 	public static final byte ERROR = 0;	               //
 	public static final byte LOGIN = 1;	               //
 	public static final byte STOCK_REQUEST = 2;        //
@@ -10,6 +10,10 @@ public class RFAMessageTypes {
 	public static final byte OPTION_REQUEST = 5;       //
 	public static final byte INDEX_REQUEST = 6;       //
 	public static final byte NEWS_REQUEST = 7;       //
+	public static final byte NEWS_COMPOSE_REQUEST = 8;       //
+	public static final byte ONE_TIMES_REQUEST = 9;       //
+	public static final byte LOGINWRONGUSER = 10;	 
+	public static final byte LOGINWRONGPASSWORD = 11;	 //
 	
 	
 	public static final byte STOCK_LINK_REQUEST = 22;  //
@@ -25,6 +29,8 @@ public class RFAMessageTypes {
 	public static final byte RESPONSE_OPTION = 44;
 	public static final byte RESPONSE_INDEX = 45;
 	public static final byte RESPONSE_NEWS = 46;
+	public static final byte RESPONSE_NEWS_COMPOSE = 47;
+	public static final byte RESPONSE_ONE_TIMES = 48;
 	
 
 	public static final byte RESPONSE_STOCK_LINK = 61;
@@ -35,7 +41,7 @@ public class RFAMessageTypes {
 	
 	
 	public enum RFAMessageName{
-		STOCK("STOCK",41),CURRENT("CURRENCY",42),FUTURE("FUTURE",43),OPTION("OPTION",44),INDEX("INDEX",45),NEWS("NEWS",7);
+		LOGIN("LOGIN",40),STOCK("STOCK",41),CURRENT("CURRENCY",42),FUTURE("FUTURE",43),OPTION("OPTION",44),INDEX("INDEX",45),NEWS("NEWS",7),ECONCN("ECONCN",48);
 		
 		String businessName;
 		int businessCode;
