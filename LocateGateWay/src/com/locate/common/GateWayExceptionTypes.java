@@ -1,6 +1,6 @@
 package com.locate.common;
 
-public class RFAExceptionTypes {
+public class GateWayExceptionTypes {
 	public static int USER_NOT_LOGIN = 100;
 	public static int USER_NOT_EXIST = 101;
 	public static int USER_WRONG_PASSEORD = 102;

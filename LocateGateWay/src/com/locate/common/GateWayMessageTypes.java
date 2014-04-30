@@ -1,7 +1,7 @@
 package com.locate.common;
 
 
-public class RFAMessageTypes {
+public class GateWayMessageTypes {
 	public static final byte ERROR = 0;	               //
 	public static final byte LOGIN = 1;	               //
 	public static final byte STOCK_REQUEST = 2;        //
