@@ -6,10 +6,10 @@ import org.apache.log4j.Logger;
 import org.dom4j.Document;
 
 
-import com.locate.common.RFAMessageTypes;
+import com.locate.bridge.GateWayResponser;
+import com.locate.common.GateWayMessageTypes;
 import com.locate.gate.GateWayServer;
 import com.locate.gate.hanlder.GatewayServerHandler;
-import com.locate.rmds.response.gateway.GateWayResponser;
 import com.locate.rmds.util.GenericOMMParser;
 import com.reuters.rfa.common.Client;
 import com.reuters.rfa.common.Event;

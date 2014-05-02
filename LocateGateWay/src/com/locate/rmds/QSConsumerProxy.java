@@ -23,7 +23,6 @@ import com.reuters.rfa.common.DispatchQueueInGroupException;
 import com.reuters.rfa.common.EventQueue;
 import com.reuters.rfa.common.EventSource;
 import com.reuters.rfa.common.Handle;
-import com.reuters.rfa.config.ConfigDb;
 import com.reuters.rfa.dictionary.DictionaryException;
 import com.reuters.rfa.dictionary.FieldDictionary;
 import com.reuters.rfa.omm.OMMEncoder;
@@ -53,7 +52,6 @@ public class QSConsumerProxy extends Thread{
 	protected static String _configFile = "config/rfaConfig.properties";
 	FieldDictionary dictionary;
 	DecimalFormat dataFormat = new DecimalFormat("0.00");
-
 	// class constructor
 	public QSConsumerProxy() {
 		System.out
@@ -169,17 +167,18 @@ public class QSConsumerProxy extends Thread{
 	// response.
 	public void processLogin() {
 		logger.info("QSConsumerDemo Login successful");
+		RFAServerManager.setConnectedDataSource(true);
 //		newsItemRequests();
 	}
 
 	// This method is called when the login was not successful
 	// The application exits
 	public void loginFailure() {
-		logger.info("OMMConsumerDemo"
-				+ ": Login has been denied / rejected / closed");
-		logger.info("OMMConsumerDemo" + ": Preparing to clean up and exiting");
+		logger.error("Login has been denied / rejected / closed");
+		logger.error("Preparing to clean up and exiting");
+		RFAServerManager.setConnectedDataSource(false);
 		_loginClient = null;
-		cleanup();
+//		cleanup();
 	}
 
 	// This method utilizes ItemManager class to request items
@@ -246,7 +245,7 @@ public class QSConsumerProxy extends Thread{
 	
 	// This method dispatches events
 	public void startDispatch(){
-		while(true)
+		while(true){
 			try {
 				_eventQueue.dispatch(0);
 			} catch (DeactivatedException e) {
@@ -254,6 +253,7 @@ public class QSConsumerProxy extends Thread{
 			} catch (DispatchQueueInGroupException e) {
 				e.printStackTrace();
 			}
+		}
 	}
 
 	// This method cleans up resources when the application exits
@@ -370,7 +370,6 @@ public class QSConsumerProxy extends Thread{
 		try {
 			demo.startDispatch();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 

@@ -1,4 +1,4 @@
-package com.locate.rmds.client;
+package com.locate.bridge;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,58 +7,78 @@ import org.apache.log4j.Logger;
 import org.dom4j.Document;
 import org.dom4j.Element;
 
-import com.locate.common.RFAExceptionTypes;
-import com.locate.common.RFAMessageTypes;
+import com.locate.common.GateWayExceptionTypes;
+import com.locate.common.GateWayMessageTypes;
+import com.locate.common.GateWayExceptionTypes.RFAExceptionEnum;
 import com.locate.gate.GateWayServer;
 import com.locate.gate.hanlder.GatewayServerHandler;
+import com.locate.gate.model.ClientInfo;
+import com.locate.gate.model.LocateMessage;
+import com.locate.gate.model.RFAUserResponse;
 import com.locate.rmds.ItemManager;
 import com.locate.rmds.QSConsumerProxy;
-import com.locate.rmds.response.gateway.GateWayResponser;
+import com.locate.rmds.RFAServerManager;
+import com.locate.rmds.client.ClientUserLogin;
+import com.locate.rmds.client.RFAUserManagement;
 import com.locate.rmds.util.RFANodeconstant;
 
 /**
- * 该类主要被netty框架开发的gateway调用
- * 客户发送过来的请求通过该类处理后转发给RFA.
+ * 所有gateway系统向RFA系统发送的的请求必须通过该类代为发送.
+ * 起到沟通gateway和RFA沟通的桥梁作用.
  * @author cloud wei
  *
  */
 public class ClientHandle {
 	
 	static Logger _logger = Logger.getLogger(ClientHandle.class.getName());
-	private byte _msgType;
-	QSConsumerProxy _mainApp;
-	String clientIP ;
-	private ClientUserLogin clientUserLogin = null;
+	QSConsumerProxy mainApp;
 	
-//	private Map<String,String> userConnection = new HashMap();
-	
-	public ClientHandle(QSConsumerProxy app,String clientIP,byte msgType){
-		this._mainApp = app;
-		this.clientIP = clientIP;
-		this._msgType = msgType;
-		clientUserLogin= new ClientUserLogin(clientIP);
+	public ClientHandle(QSConsumerProxy mainApp){
+		this.mainApp = mainApp;
 	}
 	
-	public int process(Document request,String clientName,int channelID){
-		int error =-1;
+	public int process(ClientInfo clientInfo){
+		int channelID = clientInfo.getChannelID();
+		Document request =clientInfo.getUserRquest();
+		String clientName=clientInfo.getUserName();
+		String clientIP = clientInfo.getClientIP();
+		byte _msgType=clientInfo.getMsgType();
+		ClientUserLogin clientUserLogin = new ClientUserLogin(clientIP);
+		
+		int resultCode =-1;
 		byte responseMsgType = -1;
 		Document responseData = null;
-//		clientIP = ((InetSocketAddress)channel.getRemoteAddress()).getAddress().getHostAddress();
+		
+		if(_msgType != GateWayMessageTypes.LOGIN){
+	    	String userName = GateWayServer._userConnection.get(clientIP);
+	    	if(userName == null){
+	    		resultCode = GateWayExceptionTypes.USER_NOT_LOGIN;
+				Document wrongMsg = RFAUserResponse.createErrorDocument(resultCode,
+						GateWayExceptionTypes.RFAExceptionEnum.getExceptionDescription(resultCode));
+				GateWayResponser.sentResponseMsg(GateWayMessageTypes.RESPONSE_LOGIN, wrongMsg, channelID,resultCode);
+				_logger.error("Client didn't login system. sent error message to client");
+				return -1;
+	    	}
+	    }
+		
+		
 		switch( _msgType){
-		    case RFAMessageTypes.LOGIN : 
-		    	responseMsgType = RFAMessageTypes.RESPONSE_LOGIN;
+		    case GateWayMessageTypes.LOGIN : 
+		    	responseMsgType = GateWayMessageTypes.RESPONSE_LOGIN;
 		    	responseData = clientUserLogin.authUserLogin(request,clientIP);
-		    	GateWayResponser.sentResponseMsg(RFAMessageTypes.RESPONSE_LOGIN, responseData, channelID);
-		    	break;
-		    case RFAMessageTypes.STOCK_REQUEST:
-		    	processRequest(request,clientName,RFAMessageTypes.RESPONSE_STOCK,channelID);
+		    	GateWayResponser.sentResponseMsg(GateWayMessageTypes.RESPONSE_LOGIN, responseData, channelID);
+		    	return 0;
+		    case GateWayMessageTypes.STOCK_REQUEST:
+		    	responseMsgType = GateWayMessageTypes.RESPONSE_STOCK;
+		    	resultCode = processRequest(request,clientName,responseMsgType,channelID);
 		    	break;
 //		    case RFAMessageTypes.STOCK_LINK_REQUEST:
 //		    	processOneTimesRequest(request,clientName,RFAMessageTypes.RESPONSE_STOCK_LINK);
 //		    	break;
 //
-		    case RFAMessageTypes.CURRENCY_REQUEST:
-		    	processRequest(request,clientName,RFAMessageTypes.RESPONSE_CURRENCY,channelID);
+		    case GateWayMessageTypes.CURRENCY_REQUEST:
+		    	responseMsgType = GateWayMessageTypes.RESPONSE_CURRENCY;
+		    	resultCode=processRequest(request,clientName,responseMsgType,channelID);
 		    	break;
 //		    case RFAMessageTypes.CURRENCY_LINK_REQUEST:
 //		    	processOneTimesRequest(request,clientName,RFAMessageTypes.RESPONSE_CURRENCY_LINK);
@@ -70,8 +90,9 @@ public class ClientHandle {
 //		    case RFAMessageTypes.OPTION_LINK_REQUEST:
 //		    	processOneTimesRequest(request,clientName,RFAMessageTypes.RESPONSE_OPTION_LINK);
 //		    	break;
-		    case RFAMessageTypes.FUTURE_REQUEST:
-		    	processRequest(request,clientName,RFAMessageTypes.RESPONSE_FUTURE , channelID);
+		    case GateWayMessageTypes.FUTURE_REQUEST:
+		    	responseMsgType = GateWayMessageTypes.RESPONSE_FUTURE;
+		    	resultCode = processRequest(request,clientName,responseMsgType , channelID);
 		    	break;
 //		    case RFAMessageTypes.FUTURE_LINK_REQUEST:
 //		    	processOneTimesRequest(request,clientName,RFAMessageTypes.RESPONSE_FUTURE_LINK);
@@ -94,7 +115,14 @@ public class ClientHandle {
 //		    	processRequest(request,clientName,RFAMessageTypes.RESPONSE_ONE_TIMES);
 //		    	break;
 	    }
-		return error;
+		//resultCode大于零,表示处理存在错误需要向客户端发送错误信息.
+		if(resultCode>0){
+			responseData = RFAUserResponse.createErrorDocument(resultCode,
+					RFAExceptionEnum.getExceptionDescription(resultCode));
+			GateWayResponser.sentResponseMsg(responseMsgType, responseData, channelID , resultCode);
+		}
+		
+		return resultCode;
 	}
 	
 //	private void processNewsComponseRequest(Document req,String clientName,byte responseMsgType){
@@ -169,15 +197,19 @@ public class ClientHandle {
 	private int processRequest(Document req,String clientName,byte responseMsgType,int channelId){
 		int errorCode = -1;
 		List<String> itemNames = pickupClientReqItem(req);
+		if(!RFAServerManager.isConnectedDataSource()){
+			_logger.warn("The RFA Datasource not connected.Can not register the intresting Product!");
+			return GateWayExceptionTypes.RFA_SERVER_NOT_READY;
+		}
 		if(!checkRequestItem(responseMsgType,clientName,itemNames))
-			return errorCode=RFAExceptionTypes.USER_BUSINESS_NUMBER_OUT;
+			return errorCode=GateWayExceptionTypes.USER_BUSINESS_NUMBER_OUT;
 		_logger.info("Begin register client request "+clientName);
 		for(String itemName : itemNames){
 			GateWayServer._clientResponseType.put(itemName, responseMsgType);
 			_logger.info("Register client request item "+itemName);
 			GateWayServer._clientRequestSession.put(clientName+itemName, channelId);
 			if(regiestItemNameForClient(itemName,clientName)){
-				ItemManager clientInstance = _mainApp.itemRequests(itemName,responseMsgType, channelId);
+				ItemManager clientInstance = mainApp.itemRequests(itemName,responseMsgType, channelId);
 				regiestItemRequestManager(itemName,clientInstance);
 			}
 			regiestClientRequestItem(clientName,itemName);
@@ -246,7 +278,7 @@ public class ClientHandle {
 	}
 	
 	private boolean checkRequestItem(byte msgType,String userName,List<String> itemNames){
-		String businessName = RFAMessageTypes.RFAMessageName.getRFAMessageName(msgType).toUpperCase();
+		String businessName = GateWayMessageTypes.RFAMessageName.getRFAMessageName(msgType).toUpperCase();
 		if(!RFAUserManagement.checkMaxBusinessValiable(userName,businessName,itemNames)){
 //			RFAUserResponse.sentWrongMsgResponse(RFAExceptionTypes.USER_BUSINESS_NUMBER_OUT, channel);
 	        _logger.error("Client request's business number over.");

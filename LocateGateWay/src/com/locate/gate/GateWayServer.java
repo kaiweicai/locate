@@ -76,11 +76,11 @@ public class GateWayServer {
 		// }
 		//
 		// _logger.info("Server started...");
-		logger.info("gate way Server started...");
+		logger.info("gate way Server starting...");
 		ChannelFactory factory = new NioServerSocketChannelFactory(Executors.newCachedThreadPool(),
 				Executors.newCachedThreadPool());
 		final GatewayServerHandler gateWayServerHandler = new GatewayServerHandler();
-		gateWayServerHandler.set_mainApp(app);
+//		gateWayServerHandler.set_mainApp(app);
 		ChannelPipelineFactory pipelineFactory = new ChannelPipelineFactory() {
 			@Override
 			public ChannelPipeline getPipeline() throws Exception {
@@ -93,7 +93,7 @@ public class GateWayServer {
 		bootstrap.setOption("tcpNodelay", true);
 		bootstrap.setOption("child.keepalive", true);
 		bootstrap.bind(new InetSocketAddress(8888));
-		logger.info("gate way Server ended");
+		logger.info("gate way Server started success!");
 	}
 
 	@Test

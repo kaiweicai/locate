@@ -23,16 +23,12 @@ public class GateWayDecoder extends FrameDecoder {
 			logger.error("read bytes less than 4");
 			return null;
 		}
-//		if (channelBuffer.readable()) {
-//			channelBuffer.readBytes(this.buffer, channelBuffer.readableBytes());
-//		}
-		
 		byte msgType = channelBuffer.readByte();
+		int errorCode = channelBuffer.readInt();
 		int msgLength = channelBuffer.readInt();
 		String content = new String( channelBuffer.readBytes(msgLength).array(),"UTF-8");
 		Document doc = DocumentHelper.parseText(content);
-		LocateMessage message = new LocateMessage(msgType,doc);
-//		buffer.clear();
+		LocateMessage message = new LocateMessage(msgType,doc, errorCode);
 		return message;
 	}
 

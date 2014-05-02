@@ -9,13 +9,18 @@ public class GateWayExceptionTypes {
 	public static int BUSINESS_REQUEST_FAILED = 105;
 	public static int USER_REQUEST_FAILTED = 106;
 	
+	
+	public static int RFA_SERVER_NOT_READY= 2000;
+	
 	public static int NETTY_UNKONW_ERROR = 1000;
 
 	public enum RFAExceptionEnum {
 		BusinessNumberOut("User's business number out", USER_BUSINESS_NUMBER_OUT), 
 		NotSubscribeBusiness("User has not right for this option", USER_BUSINESS_NO_SUBSCRIBE),
 		BusinessReqFailed("Request business failed", BUSINESS_REQUEST_FAILED), 
-		UserRequestFailed("Request data is wrong, Please check!", USER_REQUEST_FAILTED);
+		UserRequestFailed("Request data is wrong, Please check!", USER_REQUEST_FAILTED),
+		RFANotConnneted("The server can not conneted to Data Source of RFA Server!", RFA_SERVER_NOT_READY);
+		
 		
 		String exception;
 		int errorCode;
@@ -31,7 +36,7 @@ public class GateWayExceptionTypes {
 					return c.exception;
 				}
 			}
-			return null;
+			return "Not redefine error!";
 		}
 
 		public String getException() {

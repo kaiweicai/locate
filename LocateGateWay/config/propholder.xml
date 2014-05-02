@@ -13,9 +13,12 @@
 	</bean>
 
 	<bean id="gateWayServer" class="com.locate.gate.GateWayServer" scope="singleton" init-method="init">
-		<property name="app" ref="consumerProxy" />
     </bean>
 	
+	
+	<bean id="clientHandler" class="com.locate.bridge.ClientHandle" scope="singleton">
+		<constructor-arg ref="consumerProxy"/>
+    </bean>
   <!--
     <bean id="appHandler" class="com.cp.netty.ServerHandler"  
         init-method="init">  

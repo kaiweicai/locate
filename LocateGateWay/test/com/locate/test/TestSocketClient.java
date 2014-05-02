@@ -1,9 +1,7 @@
 package com.locate.test;
 
 
-import java.io.UnsupportedEncodingException;
 import java.net.InetSocketAddress;
-import java.sql.Time;
 import java.util.concurrent.Executors;
 
 import org.dom4j.Document;
@@ -26,12 +24,11 @@ import org.jboss.netty.channel.socket.nio.NioClientSocketChannelFactory;
 import org.junit.Test;
 import org.springframework.web.util.HtmlUtils;
 
-
+import com.locate.common.GateWayMessageTypes;
+import com.locate.common.GateWayMessageTypes.RFAMessageName;
 import com.locate.gate.coder.GateWayDecoder;
 import com.locate.gate.coder.GateWayEncoder;
 import com.locate.gate.model.LocateMessage;
-import com.locate.test.common.RFAMessageTypes;
-import com.locate.test.common.RFAMessageTypes.RFAMessageName;
 
 
 public class TestSocketClient{
@@ -118,7 +115,7 @@ public class TestSocketClient{
 
 	
 	private void sentMessageToServer(byte msgType,Document doc){
-		LocateMessage message = new LocateMessage(msgType, doc);
+		LocateMessage message = new LocateMessage(msgType, doc, 0);
 		ChannelFuture future = channel.write(message);
 		future.awaitUninterruptibly();
 	}
@@ -177,32 +174,32 @@ public class TestSocketClient{
 		DocumentFactory documentFactory = DocumentFactory.getInstance();
 	    Document requestDoc =  documentFactory.createDocument();
 		switch( msgType){
-		    case RFAMessageTypes.ERROR : 
+		    case GateWayMessageTypes.ERROR : 
 				System.out.println("收到包含错误信息的消息");
 		    	break;
-		    case RFAMessageTypes.LOGINWRONGUSER :
+		    case GateWayMessageTypes.LOGINWRONGUSER :
 		    	createWrongLoginRequest(requestDoc);
-			    sentMessageToServer(RFAMessageTypes.LOGIN, requestDoc);
+			    sentMessageToServer(GateWayMessageTypes.LOGIN, requestDoc);
 		    	break;
-		    case RFAMessageTypes.LOGINWRONGPASSWORD :
+		    case GateWayMessageTypes.LOGINWRONGPASSWORD :
 		    	createWrongPasswordRequest(requestDoc);
-			    sentMessageToServer(RFAMessageTypes.LOGIN, requestDoc);
+			    sentMessageToServer(GateWayMessageTypes.LOGIN, requestDoc);
 		    	break;
-		    case RFAMessageTypes.LOGIN:
+		    case GateWayMessageTypes.LOGIN:
 		    	createLoginRequest(requestDoc);
-		    	sentMessageToServer(RFAMessageTypes.LOGIN, requestDoc);
+		    	sentMessageToServer(GateWayMessageTypes.LOGIN, requestDoc);
 		    	break;
-		    case RFAMessageTypes.CURRENCY_REQUEST : 
+		    case GateWayMessageTypes.CURRENCY_REQUEST : 
 		    	createCurrencyRequest(requestDoc);
-		    	sentMessageToServer(RFAMessageTypes.CURRENCY_REQUEST,requestDoc);
+		    	sentMessageToServer(GateWayMessageTypes.CURRENCY_REQUEST,requestDoc);
 		    	break;
-		    case RFAMessageTypes.FUTURE_REQUEST : 
+		    case GateWayMessageTypes.FUTURE_REQUEST : 
 		    	createFutureRequest(requestDoc);
-		    	sentMessageToServer(RFAMessageTypes.FUTURE_REQUEST,requestDoc);
+		    	sentMessageToServer(GateWayMessageTypes.FUTURE_REQUEST,requestDoc);
 		    break;
-		    case RFAMessageTypes.ONE_TIMES_REQUEST : 
+		    case GateWayMessageTypes.ONE_TIMES_REQUEST : 
 		    	createOneTimesRequest(requestDoc);
-		    	sentMessageToServer(RFAMessageTypes.ONE_TIMES_REQUEST,requestDoc);
+		    	sentMessageToServer(GateWayMessageTypes.ONE_TIMES_REQUEST,requestDoc);
 //		    	requestDoc =  factory.createDocument();
 //		    	createNewsRequest(requestDoc);
 //		    	requestDoc = parseFile();
@@ -210,10 +207,10 @@ public class TestSocketClient{
 		    	
 		    	//Parse messageContext to xml document and pick up data to handle it
 		    	break;
-		    case RFAMessageTypes.RESPONSE_STOCK:
+		    case GateWayMessageTypes.RESPONSE_STOCK:
 		    	//Parse messageContext to xml document and pick up data to handle it
 		    	break;
-		    case RFAMessageTypes.RESPONSE_STOCK_LINK:
+		    case GateWayMessageTypes.RESPONSE_STOCK_LINK:
 		    	//Parse messageContext to xml document and pick up data to handle it
 	    }
 	}
@@ -227,8 +224,8 @@ public class TestSocketClient{
 //		testSendRequest(RFAMessageTypes.LOGINWRONGUSER);
 //		testSendRequest(RFAMessageTypes.LOGINWRONGPASSWORD);
 //		testSendRequest(RFAMessageTypes.FUTURE_REQUEST);
-		testSendRequest(RFAMessageTypes.LOGIN);
-		testSendRequest(RFAMessageTypes.FUTURE_REQUEST);
+		testSendRequest(GateWayMessageTypes.LOGIN);
+		testSendRequest(GateWayMessageTypes.FUTURE_REQUEST);
 		
 		
 		channel.getCloseFuture().awaitUninterruptibly();

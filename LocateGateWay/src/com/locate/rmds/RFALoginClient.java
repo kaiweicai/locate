@@ -135,21 +135,20 @@ public class RFALoginClient implements Client
         	return;
         }
 
-        // The login is successful, RFA forwards the message from the network
-        if ((respMsg.getMsgType() == OMMMsg.MsgType.STATUS_RESP) &&
-                (respMsg.has(OMMMsg.HAS_STATE)) &&
-                (respMsg.getState().getStreamState() == OMMState.Stream.OPEN) &&
-                (respMsg.getState().getDataState() == OMMState.Data.OK) )
-        {
-            _logger.info(_className+": Received Login STATUS OK Response");
-            GenericOMMParser.parse(respMsg,null);
-            _mainApp.processLogin();
-        }
-        else // This message is sent by RFA indicating that RFA is processing the login 
-        {
-            _logger.error ("Login not success.Please check!\n Received Login Response - "+ OMMMsg.MsgType.toString(respMsg.getMsgType()));
-            GenericOMMParser.parse(respMsg,null);
-        }
+		// The login is successful, RFA forwards the message from the network
+		if ((respMsg.getMsgType() == OMMMsg.MsgType.STATUS_RESP) && (respMsg.has(OMMMsg.HAS_STATE))
+				&& (respMsg.getState().getStreamState() == OMMState.Stream.OPEN)
+				&& (respMsg.getState().getDataState() == OMMState.Data.OK)) {
+			_logger.info(_className + ": Received Login STATUS OK Response");
+			GenericOMMParser.parse(respMsg, "RFALogin");
+			_mainApp.processLogin();
+		} else // This message is sent by RFA indicating that RFA is processing the login
+		{
+			_logger.error("Login not success.Please check!\n Received Login Response - "
+					+ OMMMsg.MsgType.toString(respMsg.getMsgType()));
+			_mainApp.loginFailure();
+			GenericOMMParser.parse(respMsg, "RFALogin");
+		}
     }
     
     public Handle getHandle()

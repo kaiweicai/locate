@@ -124,7 +124,7 @@ public final class GenericOMMParser
      */
     public static final Document parse(OMMMsg msg,String itemName)
     {
-    	_logger.info("orignal OMMMsg is "+ msg);
+//    	_logger.info("orignal OMMMsg is "+ msg);
     	if(itemName == null)
     		itemName = "";
     	StringBuffer logMsg = new StringBuffer();
@@ -238,177 +238,178 @@ public final class GenericOMMParser
 
 	static final void parseMsg(OMMMsg msg, StringBuffer logMsg, int tabLevel, Element fieldsElement) {
 		msg.getMsgType();
-		logMsg.append("\n MESSAGE");
-
-		logMsg.append("\n Msg Type: " + OMMMsg.MsgType.toString(msg.getMsgType()));
-
-		logMsg.append("\n Msg Model Type: " + RDMMsgTypes.toString(msg.getMsgModelType()));
-
-		logMsg.append("\n Indication Flags: " + OMMMsg.Indication.indicationString(msg));
-
-		logMsg.append("\n Hint Flags: " + hintString(msg));
+		logMsg.append('\n');
+		dumpIndent(logMsg, tabLevel);
+		logMsg.append("MESSAGE");
+		dumpIndent(logMsg, tabLevel + 1);
+		logMsg.append("Msg Type: " + OMMMsg.MsgType.toString(msg.getMsgType()));
+		dumpIndent(logMsg, tabLevel + 1);
+		logMsg.append("Msg Model Type: " + RDMMsgTypes.toString(msg.getMsgModelType()));
+		dumpIndent(logMsg, tabLevel + 1);
+		logMsg.append("Indication Flags: " + OMMMsg.Indication.indicationString(msg));
+		dumpIndent(logMsg, tabLevel + 1);
+		logMsg.append("Hint Flags: " + hintString(msg));
 
 		if ((msg.getDataType() == OMMTypes.ANSI_PAGE) && msg.isSet(OMMMsg.Indication.CLEAR_CACHE)) {
 			CURRENT_PAGE = null;
 		}
 
 		if (msg.has(OMMMsg.HAS_STATE)) {
-
-			logMsg.append("\n State: " + msg.getState());
+			dumpIndent(logMsg, tabLevel + 1);
+			logMsg.append("State: " + msg.getState());
 		}
 		if (msg.has(OMMMsg.HAS_PRIORITY)) {
-
+			dumpIndent(logMsg, tabLevel + 1);
 			OMMPriority p = msg.getPriority();
 			if (p != null)
-				logMsg.append("\n Priority: " + p.getPriorityClass() + "," + p.getCount());
+				logMsg.append("Priority: " + p.getPriorityClass() + "," + p.getCount());
 			else
-				logMsg.append("\n Priority: Error flag recieved but there is not priority present");
+				logMsg.append("Priority: Error flag recieved but there is not priority present");
 		}
 		if (msg.has(OMMMsg.HAS_QOS)) {
-
-			logMsg.append("\n Qos: " + msg.getQos());
+			dumpIndent(logMsg, tabLevel + 1);
+			logMsg.append("Qos: " + msg.getQos());
 		}
 		if (msg.has(OMMMsg.HAS_QOS_REQ)) {
-
-			logMsg.append("\n QosReq: " + msg.getQosReq());
+			dumpIndent(logMsg, tabLevel + 1);
+			logMsg.append("QosReq: " + msg.getQosReq());
 		}
 		if (msg.has(OMMMsg.HAS_ITEM_GROUP)) {
-
-			logMsg.append("\n Group: " + msg.getItemGroup());
+			dumpIndent(logMsg, tabLevel + 1);
+			logMsg.append("Group: " + msg.getItemGroup());
 		}
 		if (msg.has(OMMMsg.HAS_PERMISSION_DATA)) {
 			byte[] permdata = msg.getPermissionData();
-
-			logMsg.append("\n PermissionData: " + HexDump.toHexString(permdata, false) + " ( "
+			dumpIndent(logMsg, tabLevel + 1);
+			logMsg.append("PermissionData: " + HexDump.toHexString(permdata, false) + " ( "
 					+ HexDump.formatHexString(permdata) + " ) ");
 		}
 		if (msg.has(OMMMsg.HAS_SEQ_NUM)) {
-
-			logMsg.append("\n SeqNum: " + msg.getSeqNum());
+			dumpIndent(logMsg, tabLevel + 1);
+			logMsg.append("SeqNum: " + msg.getSeqNum());
 		}
 
 		if (msg.has(OMMMsg.HAS_CONFLATION_INFO)) {
-
-			logMsg.append("\n Conflation Count: " + msg.getConflationCount());
-
-			logMsg.append("\n Conflation Time: " + msg.getConflationTime());
+			dumpIndent(logMsg, tabLevel + 1);
+			logMsg.append("Conflation Count: " + msg.getConflationCount());
+			dumpIndent(logMsg, tabLevel + 1);
+			logMsg.append("Conflation Time: " + msg.getConflationTime());
 		}
 
 		if (msg.has(OMMMsg.HAS_RESP_TYPE_NUM)) {
-
-			logMsg.append("\n RespTypeNum: " + msg.getRespTypeNum());
+			dumpIndent(logMsg, tabLevel + 1);
+			logMsg.append("RespTypeNum: " + msg.getRespTypeNum());
 			dumpRespTypeNum(msg, logMsg);
 		}
 
 		if (msg.has(OMMMsg.HAS_ID)) {
-
-			logMsg.append("\n Id: " + msg.getId());
+			dumpIndent(logMsg, tabLevel + 1);
+			logMsg.append("Id: " + msg.getId());
 		}
 
 		if ((msg.has(OMMMsg.HAS_PUBLISHER_INFO)) || (msg.getMsgType() == OMMMsg.MsgType.POST)) {
 			PublisherPrincipalIdentity pi = (PublisherPrincipalIdentity) msg.getPrincipalIdentity();
 			if (pi != null) {
-
-				logMsg.append("\n Publisher Address: 0x" + Long.toHexString(pi.getPublisherAddress()));
-
-				logMsg.append("\n Publisher Id: " + pi.getPublisherId());
+				dumpIndent(logMsg, tabLevel + 1);
+				logMsg.append("Publisher Address: 0x" + Long.toHexString(pi.getPublisherAddress()));
+				dumpIndent(logMsg, tabLevel + 1);
+				logMsg.append("Publisher Id: " + pi.getPublisherId());
 			}
 		}
 
 		if (msg.has(OMMMsg.HAS_USER_RIGHTS)) {
-
-			logMsg.append("\n User Rights Mask: " + OMMMsg.UserRights.userRightsString(msg.getUserRightsMask()));
+			dumpIndent(logMsg, tabLevel + 1);
+			logMsg.append("User Rights Mask: " + OMMMsg.UserRights.userRightsString(msg.getUserRightsMask()));
 		}
 
 		if (msg.has(OMMMsg.HAS_ATTRIB_INFO)) {
-
-			logMsg.append("\n AttribInfo");
+			dumpIndent(logMsg, tabLevel + 1);
+			logMsg.append("AttribInfo");
 			OMMAttribInfo ai = msg.getAttribInfo();
 			if (ai.has(OMMAttribInfo.HAS_SERVICE_NAME)) {
-
-				logMsg.append("\n ServiceName: " + ai.getServiceName());
+				dumpIndent(logMsg, tabLevel + 2);
+				logMsg.append("ServiceName: " + ai.getServiceName());
 			}
 			if (ai.has(OMMAttribInfo.HAS_SERVICE_ID)) {
-
-				logMsg.append("\n ServiceId: " + ai.getServiceID());
+				dumpIndent(logMsg, tabLevel + 2);
+				logMsg.append("ServiceId: " + ai.getServiceID());
 			}
 			if (ai.has(OMMAttribInfo.HAS_NAME)) {
-
-				logMsg.append("\n Name: " + ai.getName());
+				dumpIndent(logMsg, tabLevel + 2);
+				logMsg.append("Name: " + ai.getName());
 			}
 			if (ai.has(OMMAttribInfo.HAS_NAME_TYPE)) {
-
-				logMsg.append("\n NameType: " + ai.getNameType());
+				dumpIndent(logMsg, tabLevel + 2);
+				logMsg.append("NameType: " + ai.getNameType());
+				dumpIndent(logMsg, tabLevel + 3);
 				if (msg.getMsgModelType() == RDMMsgTypes.LOGIN) {
-					logMsg.append(" (" + RDMUser.NameType.toString(ai.getNameType()) + ")");
-				} else if (RDMInstrument.isInstrumentMsgModelType(msg.getMsgModelType())) {
-
-					logMsg.append(" (" + RDMInstrument.NameType.toString(ai.getNameType()) + ")");
+					logMsg.append("(" + RDMUser.NameType.toString(ai.getNameType()) + ")");
+				}else if (RDMInstrument.isInstrumentMsgModelType(msg.getMsgModelType())) {
+					logMsg.append("(" + RDMInstrument.NameType.toString(ai.getNameType()) + ")");
+				}else{
+					logMsg.append('\n');
 				}
-				// else
-				// {
-				// _logger.info("");
-				// }
 			}
 			if (ai.has(OMMAttribInfo.HAS_FILTER)) {
-
-				logMsg.append("\n Filter: " + ai.getFilter());
+				dumpIndent(logMsg, tabLevel + 2);
+				logMsg.append(" Filter: " + ai.getFilter());
+				dumpIndent(logMsg, tabLevel + 3);
 				if (msg.getMsgModelType() == RDMMsgTypes.DIRECTORY) {
 					logMsg.append(" (" + RDMService.Filter.toString(ai.getFilter()) + ")");
 				} else if (msg.getMsgModelType() == RDMMsgTypes.DICTIONARY) {
 					logMsg.append(" (" + RDMDictionary.Filter.toString(ai.getFilter()) + ")");
+				}else{
+					logMsg.append('\n');
 				}
-				// else
-				// {
-				// _logger.info();
-				// }
 			}
 			if (ai.has(OMMAttribInfo.HAS_ID)) {
-
-				logMsg.append("\n ID: " + ai.getId());
+				dumpIndent(logMsg, tabLevel + 2);
+				logMsg.append("ID: " + ai.getId());
 			}
 			if (ai.has(OMMAttribInfo.HAS_ATTRIB)) {
-
-				logMsg.append("\n Attrib");
+				dumpIndent(logMsg, tabLevel + 2);
+				logMsg.append("Attrib");
 				parseData(ai.getAttrib(), logMsg, tabLevel + 2, fieldsElement);
 				logMsg.append("\n");
 			}
 		}
-
-		logMsg.append("\n Payload: ");
+		dumpIndent(logMsg, tabLevel + 1);
+		logMsg.append(" Payload: ");
 		if (msg.getDataType() != OMMTypes.NO_DATA) {
-
-			logMsg.append("\n " + msg.getPayload().getEncodedLength() + " bytes");
+			
+			logMsg.append(" " + msg.getPayload().getEncodedLength() + " bytes");
 			parseData(msg.getPayload(), logMsg, tabLevel + 1, fieldsElement);
 			logMsg.append("\n ");
 		} else {
-			logMsg.append("\n None \n");
+			dumpIndent(logMsg, tabLevel + 2);
+			logMsg.append(" None ");
 		}
 	}
 
     /**
      * parse msg and print it in a table-nested format to the provided
      * PrintStream
+     * @param sb TODO
      */
-    public static final void parseDataDefinition(OMMDataDefs datadefs, short dbtype, int tabLevel)
+    public static final void parseDataDefinition(OMMDataDefs datadefs, short dbtype, StringBuffer sb, int tabLevel)
     {
         DataDefDictionary listDefDb = DataDefDictionary.create(dbtype);
         DataDefDictionary.decodeOMMDataDefs(listDefDb, datadefs);
 
-        _logger.info("DATA_DEFINITIONS ");
+        sb.append("DATA_DEFINITIONS ");
         for (Iterator listDefDbIter = listDefDb.iterator(); listDefDbIter.hasNext();)
         {
             DataDef listdef = (DataDef)listDefDbIter.next();
 
-            _logger.info("Count: "+listdef.getCount()+" DefId: "+listdef.getDataDefId());
+            sb.append("Count: "+listdef.getCount()+" DefId: "+listdef.getDataDefId());
 
             if (dbtype == OMMTypes.ELEMENT_LIST_DEF_DB)
             {
                 for (Iterator listdefIter = listdef.iterator(); listdefIter.hasNext();)
                 {
                     ElementEntryDef ommEntry = (ElementEntryDef)listdefIter.next();
-                    
-                    _logger.info("ELEMENT_ENTRY_DEF "
+                    dumpIndent(sb, tabLevel + 1);
+                    sb.append("ELEMENT_ENTRY_DEF "
                     		+"Name: "+ommEntry.getName()
                     		+" Type: "+OMMTypes.toString(ommEntry.getDataType()));
                 }
@@ -419,7 +420,7 @@ public final class GenericOMMParser
                 {
                     FieldEntryDef ommEntry = (FieldEntryDef)listdefIter.next();
                     
-                    _logger.info("FIELD_ENTRY_DEF "
+                    sb.append("FIELD_ENTRY_DEF "
                     		+	"FID: "+ommEntry.getFieldId()
                     		+" Type: "+OMMTypes.toString(ommEntry.getDataType()));
                 }
@@ -460,7 +461,7 @@ public final class GenericOMMParser
         for (Iterator iter = ((OMMIterable)data).iterator(); iter.hasNext();)
         {
         	field = fields.addElement("Field");
-        	logMsg.append("\n");
+//        	logMsg.append("\n");
             OMMEntry entry = (OMMEntry)iter.next();
             parseEntry(entry, logMsg, tabLevel + 1,field);
             
@@ -470,12 +471,13 @@ public final class GenericOMMParser
     /**
      * parse data and print it in a table-nested format to the provided
      * PrintStream
+     * data is OMMMessage Attribute
      */
     public static final void parseData(OMMData data, StringBuffer logMsg, int tabLevel,Element fieldsElement)
     {
     	
         if (data.isBlank())
-        	logMsg.append(" ");
+        	logMsg.append("\n");
         else if (OMMTypes.isAggregate(data.getType()))
             parseAggregate(data, logMsg, tabLevel + 1,fieldsElement);
         else if ((data.getType() == OMMTypes.RMTES_STRING)
@@ -502,18 +504,18 @@ public final class GenericOMMParser
         {
             if (data.getEncodedLength() <= 20)
             {
-                
+            	dumpIndent(logMsg, tabLevel + 1);
                 // for small strings, print hex and try to print ASCII
-            	logMsg.append("\n "+HexDump.toHexString(((OMMDataBuffer)data).getBytes(), false)+" | "+data);
+            	logMsg.append(HexDump.toHexString(((OMMDataBuffer)data).getBytes(), false)+" | "+data);
             }
             else
             {
                 if (INTERNAL_DEBUG)
                 {
-                	logMsg.append("\n  Hex Format and Data Bytes: ");
-                	logMsg.append("\n "+HexDump.hexDump(((OMMDataBuffer)data).getBytes(), 50));
+                	logMsg.append("Hex Format and Data Bytes: ");
+                	logMsg.append(HexDump.hexDump(((OMMDataBuffer)data).getBytes(), 50));
 
-                	logMsg.append("\n Hex Format: ");
+                	logMsg.append("Hex Format: ");
                 }
 
                 int lineSize = 32;
@@ -537,7 +539,7 @@ public final class GenericOMMParser
                     j = j + lineSize;
                 }
 
-                logMsg.append("\n Data Bytes: ");
+                logMsg.append("Data Bytes: ");
                 logMsg.append(data.toString());
             }
         }
@@ -562,9 +564,9 @@ public final class GenericOMMParser
 
     private static final void parseAggregateHeader(OMMData data, StringBuffer logMsg, int tabLevel,Element fields )
     {
-        
+    	dumpIndent(logMsg, tabLevel);
         short dataType = data.getType();
-        logMsg.append("\n "+OMMTypes.toString(dataType));
+        logMsg.append(OMMTypes.toString(dataType));
         switch (dataType)
         {
             case OMMTypes.FIELD_LIST:
@@ -580,16 +582,16 @@ public final class GenericOMMParser
                 OMMSeries s = (OMMSeries)data;
                 if (s.has(OMMSeries.HAS_SUMMARY_DATA))
                 {
-                    
-                	logMsg.append("\n SUMMARY");
+                	dumpIndent(logMsg, tabLevel+1);
+                	logMsg.append("SUMMARY");
                     parseData(s.getSummaryData(), logMsg, tabLevel + 1,fields);
                 }
                 if (s.has(OMMSeries.HAS_DATA_DEFINITIONS))
                 {
-                    
+                	dumpIndent(logMsg, tabLevel+1);
                     short dbtype = s.getDataType() == OMMTypes.FIELD_LIST ? OMMTypes.FIELD_LIST_DEF_DB
                             : OMMTypes.ELEMENT_LIST_DEF_DB;
-                    parseDataDefinition(s.getDataDefs(), dbtype,  tabLevel + 1);
+                    parseDataDefinition(s.getDataDefs(), dbtype,  logMsg, tabLevel + 1);
                 }
             }
                 break;
@@ -598,13 +600,13 @@ public final class GenericOMMParser
                 OMMMap s = (OMMMap)data;
 
                 String flagsString = ExampleUtil.mapFlagsString(s);
-                
-                logMsg.append(" \n flags: "+flagsString);
+                dumpIndent(logMsg, tabLevel);
+                logMsg.append("flags: "+flagsString);
 
                 if (s.has(OMMMap.HAS_SUMMARY_DATA))
                 {
-                    
-                	logMsg.append(" \n SUMMARY");
+                	dumpIndent(logMsg, tabLevel);
+                	logMsg.append("SUMMARY");
                     parseData(s.getSummaryData(), logMsg, tabLevel + 1,fields);
                 }
             }
@@ -614,13 +616,13 @@ public final class GenericOMMParser
                 OMMVector s = (OMMVector)data;
 
                 String flagsString = ExampleUtil.vectorFlagsString(s);
-                
-                logMsg.append(" \n flags: "+flagsString);
+                dumpIndent(logMsg, tabLevel);
+                logMsg.append("flags: "+flagsString);
 
                 if (s.has(OMMVector.HAS_SUMMARY_DATA))
                 {
-                    
-                	logMsg.append(" \n SUMMARY");
+                	dumpIndent(logMsg, tabLevel+1);
+                	logMsg.append("SUMMARY");
                     parseData(s.getSummaryData(), logMsg, tabLevel + 1,fields);
                 }
             }
@@ -630,19 +632,26 @@ public final class GenericOMMParser
                 OMMFilterList s = (OMMFilterList)data;
 
                 String flagsString = ExampleUtil.filterListFlagsString(s);
-                
-                logMsg.append(" \n flags: "+flagsString);
+                dumpIndent(logMsg, tabLevel);
+                logMsg.append("flags: "+flagsString);
             }
                 break;
         }
     }
 
+    private static final void dumpBlank(StringBuilder sb)
+    {
+    	sb.append('\n');
+    }
 
-//    private static final void dumpIndent(PrintStream ps, int tabLevel)
-//    {
-//        for (int i = 0; i < tabLevel; i++)
-//            _logger.info("\t");
-//    }
+    private static final void dumpIndent(StringBuffer sb, int tabLevel)
+    {
+    	sb.append("\n");
+        for (int i = 0; i < tabLevel; i++)
+        	sb.append("\t");
+    }
+    
+    
 
     private static final void parseEntry(OMMEntry entry, StringBuffer logMsg, int tabLevel,Element field)
     {
@@ -658,12 +667,12 @@ public final class GenericOMMParser
                     if (CURRENT_DICTIONARY != null)
                     {
                         FidDef fiddef = CURRENT_DICTIONARY.getFidDef(fe.getFieldId());
-                        String fieldProp = CURRENT_DICTIONARY.getFieldProperty(fiddef.getName());
+//                        String fieldProp = CURRENT_DICTIONARY.getFieldProperty(fiddef.getName());
                         
 //                        CURRENT_DICTIONARY.get][
                         if (fiddef != null)
                         {
-                            dumpFieldEntryHeader(fe, fiddef, logMsg, tabLevel,field);
+                            dumpFieldEntryHeader(fe, fiddef, logMsg, tabLevel+1,field);
                             OMMData data = null;
                             if (fe.getDataType() == OMMTypes.UNKNOWN)
                                 data = fe.getData(fiddef.getOMMType());
@@ -677,6 +686,7 @@ public final class GenericOMMParser
                             {
                             	String aa = CURRENT_DICTIONARY.expandedValueFor(fiddef.getFieldId(),
                                 		((OMMEnum)data).getValue());
+                            	dumpIndent(logMsg,tabLevel);
                             	logMsg.append(aa);
                             	field.addElement(RFANodeconstant.RESPONSE_FIELDS_FIELD_VALUE_NODE).addText(aa);
 //                            	logMsg.append(CURRENT_DICTIONARY.expandedValueFor(fiddef.getFieldId(),
@@ -687,6 +697,7 @@ public final class GenericOMMParser
                         }
                         else
                         {
+                        	dumpIndent(logMsg,tabLevel);
                         	logMsg.append("Received field id: " + fe.getFieldId()
                                     + " - Not defined in dictionary");
                         }
@@ -697,6 +708,7 @@ public final class GenericOMMParser
                         if (fe.getDataType() == OMMTypes.UNKNOWN)
                         {
                             OMMDataBuffer data = (OMMDataBuffer)fe.getData();
+                            dumpIndent(logMsg,tabLevel);
                             logMsg.append(HexDump.toHexString(data.getBytes(), false));
                         }
                         else
@@ -709,7 +721,7 @@ public final class GenericOMMParser
                 }
                     break;
                 case OMMTypes.ELEMENT_ENTRY:
-                    dumpElementEntryHeader((OMMElementEntry)entry, logMsg, tabLevel);
+                    dumpElementEntryHeader((OMMElementEntry)entry, logMsg, tabLevel+1,field);
                     parseData(entry.getData(), logMsg, tabLevel,field);
                     break;
                 case OMMTypes.MAP_ENTRY:
@@ -756,6 +768,7 @@ public final class GenericOMMParser
     {
     	
     	field.addElement(RFANodeconstant.RESPONSE_FIELDS_FIELD_ID_NODE).addText(String.valueOf(entry.getFieldId()));
+    	dumpIndent(logMsg,tabLevel);
         logMsg.append(OMMTypes.toString(entry.getType())+" "+entry.getFieldId());
         if (def == null)
         {
@@ -764,24 +777,23 @@ public final class GenericOMMParser
         else
         {
         	field.addElement(RFANodeconstant.RESPONSE_FIELDS_FIELD_NAME_NODE).addText(def.getName());
+        	dumpIndent(logMsg,tabLevel);
         	logMsg.append("/");
         	logMsg.append(def.getName()); 
         	logMsg.append(": ");
             if ((def.getOMMType() >= OMMTypes.BASE_FORMAT) || (def.getOMMType() == OMMTypes.ARRAY))
-            	logMsg.append(" ");
+            	dumpIndent(logMsg,tabLevel);
         }
     }
 
-    private static final void dumpElementEntryHeader(OMMElementEntry entry, StringBuffer logMsg,
-            int tabLevel)
-    {
-        
-    	logMsg.append("\n "+OMMTypes.toString(entry.getType())+" "+entry.getName()+": ");
-        if ((entry.getDataType() >= OMMTypes.BASE_FORMAT)
-                || (entry.getDataType() == OMMTypes.ARRAY))
-        	logMsg.append("\n  ");
-
-    }
+	private static final void dumpElementEntryHeader(OMMElementEntry entry, StringBuffer logMsg, int tabLevel,
+			Element field) {
+		dumpIndent(logMsg, tabLevel);
+		logMsg.append(OMMTypes.toString(entry.getType()) + " " + entry.getName() + ": ");
+		field.addAttribute(OMMTypes.toString(entry.getType()), entry.getName());
+		if ((entry.getDataType() >= OMMTypes.BASE_FORMAT) || (entry.getDataType() == OMMTypes.ARRAY))
+			logMsg.append("\n  ");
+	}
 
     private static final void dumpFilterEntryHeader(OMMFilterEntry entry, StringBuffer logMsg,
             int tabLevel)

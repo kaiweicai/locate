@@ -8,6 +8,7 @@ public class RFAServerManager extends Thread {
 
 	QSConsumerProxy demo = new QSConsumerProxy();
 	
+	private static boolean connectedDataSource;
 
 	public void init() {
 		// Startup and initialization
@@ -37,5 +38,13 @@ public class RFAServerManager extends Thread {
 		System.out.println("Start execute init event.");
 		// Startup and initialization
 		startServer();
+	}
+
+	public static boolean isConnectedDataSource() {
+		return connectedDataSource;
+	}
+
+	public static void setConnectedDataSource(boolean connectedDataSource) {
+		RFAServerManager.connectedDataSource = connectedDataSource;
 	}
 }

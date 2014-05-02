@@ -19,40 +19,15 @@ public class GateWayEncoder extends SimpleChannelHandler {
 	@Override
 	public void writeRequested(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
 		buffer.clear();
-		LocateMessage messgae = (LocateMessage) e.getMessage();
-		buffer.writeByte(messgae.getMsgType());
-		String xml = messgae.getDocument().asXML();
+		LocateMessage message = (LocateMessage) e.getMessage();
+		buffer.writeByte(message.getMsgType());
+		buffer.writeInt(message.getErrorCode());
+		String xml = message.getDocument().asXML();
 		byte[] content = xml.getBytes("UTF-8");
 		int dataLength = content.length;
 		buffer.writeInt(dataLength);
 		buffer.writeBytes(content);
 		Channels.write(ctx, e.getFuture(), buffer);
-//		buffer.clear();
-		logger.info("Send message to client:\n" + messgae);
-		// byte[] len ;
-		// if("true".equalsIgnoreCase(SystemProperties.getProperties(SystemProperties.USE_SOCKET_MINA))){
-		// dataLength = SizeCalculator.calcSize(response)+5;
-		// len = RFATypeConvert.intToByteArray1(dataLength);
-		// buffer.put(len);
-		// buffer.putObject(response);
-		//
-		// _logger.info("Send message to client:\n"+xml);
-		// }else{
-		// byte[] xmlbyte = xml.getBytes(CHARSET);
-		// dataLength = xmlbyte.length+5;
-		// len = RFATypeConvert.intToByteArray1(dataLength);
-		// buffer.put(len);
-		// buffer.put(xmlbyte);
-		// }
-		//
-		// buffer.flip();
-		// _logger.info("Send message to client:\n"+buffer);
-		// try{
-		// _session.write(buffer);
-		// }catch(Exception e){
-		// _logger.error("Message sent failed.");
-		// _logger.error(e.getMessage(),e);
-		// }
-
+		logger.info("Send message to client:\n" + message);
 	}
 }

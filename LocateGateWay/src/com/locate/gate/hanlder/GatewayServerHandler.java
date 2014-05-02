@@ -16,16 +16,18 @@ import org.jboss.netty.channel.ExceptionEvent;
 import org.jboss.netty.channel.MessageEvent;
 import org.jboss.netty.channel.SimpleChannelHandler;
 
-import com.locate.common.RFAExceptionTypes;
-import com.locate.common.RFAMessageTypes;
+import com.locate.LocateGateWayMain;
+import com.locate.bridge.ClientHandle;
+import com.locate.common.GateWayExceptionTypes;
+import com.locate.common.GateWayMessageTypes;
 import com.locate.gate.GateWayServer;
 import com.locate.gate.hanlder.GatewayServerHandler;
+import com.locate.gate.model.ClientInfo;
 import com.locate.gate.model.LocateMessage;
 import com.locate.gate.model.RFAUserResponse;
 import com.locate.rmds.ItemManager;
 import com.locate.rmds.QSConsumerProxy;
 import com.locate.rmds.RFApplication;
-import com.locate.rmds.client.ClientHandle;
 import com.locate.rmds.util.RFACommon;
 import com.locate.rmds.util.SystemProperties;
 
@@ -42,20 +44,7 @@ public class GatewayServerHandler extends SimpleChannelHandler {
 	private AtomicInteger numberOfReceived = new AtomicInteger(0);
 	// Client IP -- Client User Name
 
-
-	QSConsumerProxy _mainApp;
-
-	public QSConsumerProxy get_mainApp() {
-		return _mainApp;
-	}
-
-
-	public void set_mainApp(QSConsumerProxy _mainApp) {
-		this._mainApp = _mainApp;
-	}
-
-
-	public  void requestAgain(){
+	private  void requestAgain(){
 		//Re-request item
 		for(String clientName : GateWayServer._clientRequestItemName.keySet()){
 			List<String> itemNames = GateWayServer._clientRequestItemName.get(clientName);
@@ -67,8 +56,9 @@ public class GatewayServerHandler extends SimpleChannelHandler {
 				System.out.println("_clientResponseType size "+GateWayServer._clientResponseType.size());
 				byte responseMsgType  =  GateWayServer._clientResponseType.get(itemName);
 				if( GateWayServer._requestItemNameList.get(itemName) != null){
-					ItemManager clientInstance = _mainApp.itemRequests(itemName,responseMsgType, 0);
-					GateWayServer._clientRequestItemManager.put(itemName,clientInstance);
+					ClientHandle clientHandle = (ClientHandle)LocateGateWayMain.springContext.getBean("clientHandler"); 
+//					ItemManager clientInstance = mainAppProxy.itemRequests(itemName,responseMsgType, 0);
+//					GateWayServer._clientRequestItemManager.put(itemName,clientInstance);
 				}
 			}
 		}
@@ -112,23 +102,14 @@ public class GatewayServerHandler extends SimpleChannelHandler {
 			
 			Channel channel = e.getChannel();
 			//这段逻辑不应该在这里判断,用户是否登录系统应该放到clientHandle里面去判断.
-			if(msgType != RFAMessageTypes.LOGIN){
-		    	userName = GateWayServer._userConnection.get(clientIP);
-		    	if(userName == null){
-		    		int errorCode = RFAExceptionTypes.USER_NOT_LOGIN;
-					Document wrongMsg = RFAUserResponse.createErrorDocument(errorCode,
-							RFAExceptionTypes.RFAExceptionEnum.getExceptionDescription(errorCode));
-					LocateMessage message = new LocateMessage(RFAMessageTypes.ERROR,wrongMsg);
-					e.getChannel().write(message);
-					_logger.error("Client didn't login system. sent error message to client");
-					return;
-		    	}
-		    }
+			
 			//将channelId和对应的channel放到map中,会写客户端的时候可以根据该id找到对应的channel.
 			GateWayServer.channelMap.put(channel.getId(), channel);
-		    ClientHandle clientHandle = new ClientHandle(_mainApp,clientIP,msgType);
+			
+			ClientInfo clientInfo = new ClientInfo(userRequest, userName, channel.getId(), msgType, clientIP);
+		    ClientHandle clientHandle = (ClientHandle)LocateGateWayMain.springContext.getBean("clientHandler"); 
 		    //RFAClientHandler process message and send the request to RFA.
-	    	clientHandle.process(userRequest,userName,channel.getId());
+	    	clientHandle.process(clientInfo);
 		} catch (Throwable throwable) {
 			_logger.error("Unexpected error ocurres", throwable);
 		}

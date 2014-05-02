@@ -7,7 +7,7 @@ import org.dom4j.Document;
 import org.dom4j.Node;
 import org.jboss.netty.channel.Channel;
 
-import com.locate.common.RFAExceptionTypes;
+import com.locate.common.GateWayExceptionTypes;
 import com.locate.gate.GateWayServer;
 import com.locate.gate.hanlder.GatewayServerHandler;
 import com.locate.gate.model.RFAUserResponse;
@@ -27,7 +27,7 @@ public class ClientUserLogin {
 		String userName = userNameNode.getText();
 		Node userPwdNode = userRequest.selectSingleNode(RFANodeconstant.USER_LOGIN_USER_PASSWORD);
 		String password = userPwdNode.getText();
-		RFAExceptionTypes.RFAUserAuthentication authentication = null;
+		GateWayExceptionTypes.RFAUserAuthentication authentication = null;
 		// Judge user is lawful
 		if (RFAUserManagement.hasUser(userName)) {
 			if (RFAUserManagement.isCurrectPassword(userName, password)) {
@@ -38,12 +38,12 @@ public class ClientUserLogin {
 				logger.info("User " + userName + " passed authentication");
 			} else {
 				// User's password is wrong
-				authentication = RFAExceptionTypes.RFAUserAuthentication.PasswordIsWrong;
+				authentication = GateWayExceptionTypes.RFAUserAuthentication.PasswordIsWrong;
 				logger.warn("User's password is wrong , user name is "+userName+ " password is "+password);
 			}
 		} else {
 			// User not exist
-			authentication = RFAExceptionTypes.RFAUserAuthentication.UserNotExist;
+			authentication = GateWayExceptionTypes.RFAUserAuthentication.UserNotExist;
 			logger.warn("User not exist , user name is "+userName+ " password is "+password);
 		}
 		/**
