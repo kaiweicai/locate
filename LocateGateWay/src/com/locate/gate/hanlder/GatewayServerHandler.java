@@ -1,10 +1,9 @@
 package com.locate.gate.hanlder;
 
-import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.log4j.Logger;
@@ -15,21 +14,16 @@ import org.jboss.netty.channel.ChannelStateEvent;
 import org.jboss.netty.channel.ExceptionEvent;
 import org.jboss.netty.channel.MessageEvent;
 import org.jboss.netty.channel.SimpleChannelHandler;
+import org.jboss.netty.channel.group.ChannelGroup;
+import org.jboss.netty.channel.group.DefaultChannelGroup;
 
 import com.locate.LocateGateWayMain;
 import com.locate.bridge.ClientHandle;
-import com.locate.common.GateWayExceptionTypes;
 import com.locate.common.GateWayMessageTypes;
 import com.locate.gate.GateWayServer;
-import com.locate.gate.hanlder.GatewayServerHandler;
 import com.locate.gate.model.ClientInfo;
 import com.locate.gate.model.LocateMessage;
-import com.locate.gate.model.RFAUserResponse;
-import com.locate.rmds.ItemManager;
-import com.locate.rmds.QSConsumerProxy;
 import com.locate.rmds.RFApplication;
-import com.locate.rmds.util.RFACommon;
-import com.locate.rmds.util.SystemProperties;
 
 public class GatewayServerHandler extends SimpleChannelHandler {
 	static Logger _logger = Logger.getLogger(GatewayServerHandler.class.getName());
@@ -43,7 +37,10 @@ public class GatewayServerHandler extends SimpleChannelHandler {
 	/** A counter incremented for every recieved message */
 	private AtomicInteger numberOfReceived = new AtomicInteger(0);
 	// Client IP -- Client User Name
-
+	
+//	private ClientHandle clientHandle = (ClientHandle)LocateGateWayMain.springContext.getBean("clientHandler"); 
+	private ClientHandle clientHandle;
+	
 	private  void requestAgain(){
 		//Re-request item
 		for(String clientName : GateWayServer._clientRequestItemName.keySet()){
@@ -56,7 +53,7 @@ public class GatewayServerHandler extends SimpleChannelHandler {
 				System.out.println("_clientResponseType size "+GateWayServer._clientResponseType.size());
 				byte responseMsgType  =  GateWayServer._clientResponseType.get(itemName);
 				if( GateWayServer._requestItemNameList.get(itemName) != null){
-					ClientHandle clientHandle = (ClientHandle)LocateGateWayMain.springContext.getBean("clientHandler"); 
+//					ClientHandle clientHandle = (ClientHandle)LocateGateWayMain.springContext.getBean("clientHandler"); 
 //					ItemManager clientInstance = mainAppProxy.itemRequests(itemName,responseMsgType, 0);
 //					GateWayServer._clientRequestItemManager.put(itemName,clientInstance);
 				}
@@ -101,13 +98,25 @@ public class GatewayServerHandler extends SimpleChannelHandler {
 			_logger.info("Client request :" + userRequest.asXML());
 			
 			Channel channel = e.getChannel();
-			//这段逻辑不应该在这里判断,用户是否登录系统应该放到clientHandle里面去判断.
 			
 			//将channelId和对应的channel放到map中,会写客户端的时候可以根据该id找到对应的channel.
-			GateWayServer.channelMap.put(channel.getId(), channel);
-			
+			GateWayServer.allChannelGroup.add(channel);
 			ClientInfo clientInfo = new ClientInfo(userRequest, userName, channel.getId(), msgType, clientIP);
-		    ClientHandle clientHandle = (ClientHandle)LocateGateWayMain.springContext.getBean("clientHandler"); 
+//		    ClientHandle clientHandle = (ClientHandle)LocateGateWayMain.springContext.getBean("clientHandler"); 
+		    if(msgType != GateWayMessageTypes.LOGIN){
+				for (String subcribeItemName : clientHandle.pickupClientReqItem(userRequest)) {
+					Map<String, ChannelGroup> subscribeChannelMap = GateWayServer.itemNameChannelMap;
+					ChannelGroup subChannelGroup = subscribeChannelMap.get(subcribeItemName);
+					if (subChannelGroup == null) {
+						subChannelGroup = new DefaultChannelGroup();
+					}
+					if (!subChannelGroup.contains(channel)) {
+						subChannelGroup.add(channel);
+					}
+				}
+		    }
+		    
+		    
 		    //RFAClientHandler process message and send the request to RFA.
 	    	clientHandle.process(clientInfo);
 		} catch (Throwable throwable) {
@@ -117,7 +126,31 @@ public class GatewayServerHandler extends SimpleChannelHandler {
 
 	@Override
 	public void channelClosed(ChannelHandlerContext ctx, ChannelStateEvent e) throws Exception {
-		GateWayServer.channelMap.remove(e.getChannel().getId());
+		Channel channel = e.getChannel();
+		GateWayServer.allChannelGroup.remove(channel);
+		//遍历所有的channelgoup,发现有该channel的就remove掉.如果该channelGroup为空,
+		for(Entry<String,ChannelGroup> entry:GateWayServer.itemNameChannelMap.entrySet()){
+			String itemName = entry.getKey();
+			ChannelGroup channelGroup = entry.getValue();
+			if(channelGroup.contains(channel)){
+				channelGroup.remove(channel);
+			}
+			if(channelGroup.isEmpty()){
+				channelGroup = null;
+				clientHandle.closeHandler(itemName);
+			}
+		}
+		//todo 这里还应该判断该用户订阅的marketprice是否应该取消.
+	}
+
+
+	public ClientHandle getClientHandle() {
+		return clientHandle;
+	}
+
+
+	public void setClientHandle(ClientHandle clientHandle) {
+		this.clientHandle = clientHandle;
 	}
 	
 	/**

@@ -1,4 +1,4 @@
-package com.locate.rmds;
+package com.locate.rmds.processer;
 
 import java.util.List;
 
@@ -10,6 +10,7 @@ import com.locate.bridge.GateWayResponser;
 import com.locate.common.GateWayMessageTypes;
 import com.locate.gate.GateWayServer;
 import com.locate.gate.hanlder.GatewayServerHandler;
+import com.locate.rmds.QSConsumerProxy;
 import com.locate.rmds.util.GenericOMMParser;
 import com.reuters.rfa.common.Client;
 import com.reuters.rfa.common.Event;
@@ -121,6 +122,7 @@ public class ItemManager implements Client
     {
     	 _itemGroupManager._handles.remove(itemHandle);
          _mainApp.getOMMConsumer().unregisterClient(itemHandle);
+         GateWayServer.subscribeItemManagerMap.remove(clientRequestItemName);
     }
 
     // This is a Client method. When an event for this client is dispatched,
@@ -156,7 +158,7 @@ public class ItemManager implements Client
 		}
         
 		Document responseMsg = GenericOMMParser.parse(respMsg, clientRequestItemName);
-		GateWayResponser.sentResponseMsg(respMsg.getMsgType(), responseMsg, channelID);
+		GateWayResponser.sentMrketPriceToSubsribeChannel(respMsg.getMsgType(), responseMsg, clientRequestItemName);
         if(responseMsg != null){
 //        	List<String> clientNameList =  GateWayServer._requestItemNameList.get(clientRequestItemName);
 //        	if(clientNameList != null){

@@ -1,10 +1,11 @@
-package com.locate.rmds;
+package com.locate.rmds.processer;
 
 import java.net.InetAddress;
 
 import org.apache.log4j.Logger;
 
 
+import com.locate.rmds.QSConsumerProxy;
 import com.locate.rmds.util.GenericOMMParser;
 import com.reuters.rfa.common.Client;
 import com.reuters.rfa.common.Event;

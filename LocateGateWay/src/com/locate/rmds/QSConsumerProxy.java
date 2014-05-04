@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.util.Map;
 import java.util.prefs.InvalidPreferencesFormatException;
 import java.util.prefs.Preferences;
 
@@ -15,6 +16,10 @@ import org.springframework.web.util.HtmlUtils;
 import com.locate.gate.GateWayServer;
 import com.locate.gate.hanlder.GatewayServerHandler;
 import com.locate.rmds.client.RFAUserManagement;
+import com.locate.rmds.processer.ItemGroupManager;
+import com.locate.rmds.processer.ItemManager;
+import com.locate.rmds.processer.NewsItemManager;
+import com.locate.rmds.processer.RFALoginClient;
 import com.locate.rmds.util.GenericOMMParser;
 import com.locate.rmds.util.SystemProperties;
 import com.reuters.rfa.common.Context;
@@ -47,11 +52,13 @@ public class QSConsumerProxy extends Thread{
 
 	protected OMMEncoder _encoder;
 	protected OMMPool _pool;
-	protected String _serviceName = "DIRECT_FEED";
+	public String _serviceName = "DIRECT_FEED";
 	private boolean all = true;
 	protected static String _configFile = "config/rfaConfig.properties";
-	FieldDictionary dictionary;
+	public static FieldDictionary dictionary;
 	DecimalFormat dataFormat = new DecimalFormat("0.00");
+	
+	private boolean dispath = true;
 	// class constructor
 	public QSConsumerProxy() {
 		System.out
@@ -151,6 +158,7 @@ public class QSConsumerProxy extends Thread{
 //			}
 		}
 		login();
+		newsItemRequests();
 		this.start();
 	}
 
@@ -168,14 +176,13 @@ public class QSConsumerProxy extends Thread{
 	public void processLogin() {
 		logger.info("QSConsumerDemo Login successful");
 		RFAServerManager.setConnectedDataSource(true);
-//		newsItemRequests();
 	}
 
 	// This method is called when the login was not successful
 	// The application exits
 	public void loginFailure() {
 		logger.error("Login has been denied / rejected / closed");
-		logger.error("Preparing to clean up and exiting");
+//		logger.error("Preparing to clean up and exiting");
 		RFAServerManager.setConnectedDataSource(false);
 		_loginClient = null;
 //		cleanup();
@@ -195,11 +202,19 @@ public class QSConsumerProxy extends Thread{
 
 	// This method utilizes ItemManager class to request items
 	public ItemManager itemRequests(String itemName, byte responseMsgType, int channelID) {
+		Map<String,ItemManager> subscribeItemManagerMap = GateWayServer.subscribeItemManagerMap;
+		if(subscribeItemManagerMap.containsKey(itemName)){
+			//已经订阅该产品.无需继续订阅.
+			return null;
+		}else{
+			ItemManager _itemManager = new ItemManager(this, _itemGroupManager);
+			subscribeItemManagerMap.put(itemName, _itemManager);
+			// Send requests
+			_itemManager.sendRequest(itemName, responseMsgType, channelID);
+			return _itemManager;
+		}
 		// Initialize item manager for item domains
-		ItemManager _itemManager = new ItemManager(this, _itemGroupManager);
-		// Send requests
-		_itemManager.sendRequest(itemName, responseMsgType, channelID);
-		return _itemManager;
+		
 	}
 
 //	public void linkItemRequests(String itemName, String clientName,
@@ -226,18 +241,18 @@ public class QSConsumerProxy extends Thread{
 		}
 	}
 
-//	public void newsItemRequests() {
-//		// Initialize item manager for item domains
-//		NewsItemManager newsItemManager = new NewsItemManager(this,
-//				_itemGroupManager);
-//		newsItemManager.initializeFids(dictionary);
-//		// Send requests
-//		newsItemManager.sendRequest(SystemProperties
-//				.getProperties(SystemProperties.RFA_NEWS_CODE));
-//
-//		// StringBuffer newsContent = new StringBuffer();
-//		// newsItemManager.sendRequest("nASA0590H");
-//	}
+	public void newsItemRequests() {
+		// Initialize item manager for item domains
+		NewsItemManager newsItemManager = new NewsItemManager(this,
+				_itemGroupManager);
+		NewsItemManager.initializeFids();
+		// Send requests
+		newsItemManager.sendRequest(SystemProperties
+				.getProperties(SystemProperties.RFA_NEWS_CODE));
+
+		// StringBuffer newsContent = new StringBuffer();
+		// newsItemManager.sendRequest("nASA0590H");
+	}
 
 	public void run(){
 		startDispatch();
@@ -245,7 +260,7 @@ public class QSConsumerProxy extends Thread{
 	
 	// This method dispatches events
 	public void startDispatch(){
-		while(true){
+		while(dispath){
 			try {
 				_eventQueue.dispatch(0);
 			} catch (DeactivatedException e) {
@@ -268,7 +283,7 @@ public class QSConsumerProxy extends Thread{
 	// 7. Uninitialize context
 	public void cleanup() {
 		logger.info(Context.string());
-
+		dispath = false;
 		// 1. Deactivate event queue
 		if(_eventQueue!=null)
 			_eventQueue.deactivate();
@@ -375,5 +390,13 @@ public class QSConsumerProxy extends Thread{
 
 		// Shutdown and cleanup
 		demo.cleanup();
+	}
+
+	public boolean isDispath() {
+		return dispath;
+	}
+
+	public void setDispath(boolean dispath) {
+		this.dispath = dispath;
 	}
 }

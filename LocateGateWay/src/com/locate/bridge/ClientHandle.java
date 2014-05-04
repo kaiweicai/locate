@@ -2,10 +2,15 @@ package com.locate.bridge;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
+import javax.swing.plaf.basic.BasicComboBoxUI.ItemHandler;
 
 import org.apache.log4j.Logger;
 import org.dom4j.Document;
 import org.dom4j.Element;
+import org.jboss.netty.channel.group.ChannelGroup;
+import org.jboss.netty.channel.group.DefaultChannelGroup;
 
 import com.locate.common.GateWayExceptionTypes;
 import com.locate.common.GateWayMessageTypes;
@@ -15,11 +20,11 @@ import com.locate.gate.hanlder.GatewayServerHandler;
 import com.locate.gate.model.ClientInfo;
 import com.locate.gate.model.LocateMessage;
 import com.locate.gate.model.RFAUserResponse;
-import com.locate.rmds.ItemManager;
 import com.locate.rmds.QSConsumerProxy;
 import com.locate.rmds.RFAServerManager;
 import com.locate.rmds.client.ClientUserLogin;
 import com.locate.rmds.client.RFAUserManagement;
+import com.locate.rmds.processer.ItemManager;
 import com.locate.rmds.util.RFANodeconstant;
 
 /**
@@ -55,12 +60,11 @@ public class ClientHandle {
 	    		resultCode = GateWayExceptionTypes.USER_NOT_LOGIN;
 				Document wrongMsg = RFAUserResponse.createErrorDocument(resultCode,
 						GateWayExceptionTypes.RFAExceptionEnum.getExceptionDescription(resultCode));
-				GateWayResponser.sentResponseMsg(GateWayMessageTypes.RESPONSE_LOGIN, wrongMsg, channelID,resultCode);
+				GateWayResponser.sentNotiFyResponseMsg(GateWayMessageTypes.RESPONSE_LOGIN, wrongMsg, channelID,resultCode);
 				_logger.error("Client didn't login system. sent error message to client");
 				return -1;
 	    	}
 	    }
-		
 		
 		switch( _msgType){
 		    case GateWayMessageTypes.LOGIN : 
@@ -119,7 +123,7 @@ public class ClientHandle {
 		if(resultCode>0){
 			responseData = RFAUserResponse.createErrorDocument(resultCode,
 					RFAExceptionEnum.getExceptionDescription(resultCode));
-			GateWayResponser.sentResponseMsg(responseMsgType, responseData, channelID , resultCode);
+			GateWayResponser.sentNotiFyResponseMsg(responseMsgType, responseData, channelID , resultCode);
 		}
 		
 		return resultCode;
@@ -266,7 +270,7 @@ public class ClientHandle {
 //		RFASocketServer._clientRequestNewsItemManager.put(itemName,instance);
 //	}
 	
-	private List<String> pickupClientReqItem(Document req){
+	public List<String> pickupClientReqItem(Document req){
 		Element rmds = req.getRootElement();
 		Element requestElement = rmds.element(RFANodeconstant.SELECT_REQUEST_NODE);
 		List<Element> itemNodes = requestElement.elements(); 
@@ -285,6 +289,12 @@ public class ClientHandle {
 	        return false;
 		}
 		return true;
+	}
+
+	public void closeHandler(String itemName) {
+		ItemManager itemHandler = GateWayServer._clientRequestItemManager.get(itemName);
+		itemHandler.closeRequest();
+		GateWayServer._clientRequestItemManager.remove(itemName);
 	}
 	
 //	private boolean checkRequestNews(byte msgType,String userName,List<String> newsKey){

@@ -1,4 +1,4 @@
-package com.locate.rmds;
+package com.locate.rmds.processer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,6 +9,7 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
+import com.locate.rmds.QSConsumerProxy;
 import com.reuters.rfa.common.Client;
 import com.reuters.rfa.common.Event;
 import com.reuters.rfa.common.Handle;
@@ -42,6 +43,7 @@ import com.reuters.rfa.session.omm.OMMItemIntSpec;
  * HAS_ITEM_GROUP} flag set you call {@link #applyGroup(Handle, OMMItemGroup)
  * applyGroup()}.
  */
+@Deprecated
 public class ItemGroupManager implements Client
 {
 

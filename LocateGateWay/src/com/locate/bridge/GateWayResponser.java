@@ -22,7 +22,7 @@ public class GateWayResponser {
 	
 	public static void sentResponseMsg(byte msgType,Document response,Integer channelId){
 		LocateMessage message = new LocateMessage(msgType, response, 0);
-		Channel channel = GateWayServer.channelMap.get(channelId);
+		Channel channel = GateWayServer.allChannelGroup.find(channelId);
 		if(channel!=null&&channel.isConnected()){
 			channel.write(message);
 		}else{
@@ -30,10 +30,20 @@ public class GateWayResponser {
 		}
 	}
 	
+	public static void sentAllChannelNews(byte msgType,Document response){
+		LocateMessage message = new LocateMessage(msgType, response, 0);
+		GateWayServer.allChannelGroup.write(message);
+	}
 	
-	public static void sentResponseMsg(byte msgType,Document response,Integer channelId,int errorCode){
+	public static void sentMrketPriceToSubsribeChannel(byte msgType,Document response,String itemName){
+		LocateMessage message = new LocateMessage(msgType, response, 0);
+		GateWayServer.itemNameChannelMap.get(itemName).write(message);
+	}
+	
+	
+	public static void sentNotiFyResponseMsg(byte msgType,Document response,Integer channelId,int errorCode){
 		LocateMessage message = new LocateMessage(msgType, response, errorCode);
-		Channel channel = GateWayServer.channelMap.get(channelId);
+		Channel channel = GateWayServer.allChannelGroup.find(channelId);
 		if(channel!=null&&channel.isConnected()){
 			channel.write(message);
 		}else{
