@@ -20,7 +20,7 @@ public class LocateGateWayMain {
 	static {
 		PropertyConfigurator.configureAndWatch("config/log4j.properties");
 	}
-	static Logger logger = Logger.getLogger(RFAServerManager.class.getName());
+	static Logger logger = Logger.getLogger(LocateGateWayMain.class);
 	public static ApplicationContext springContext;
 
 	public static void main(String[] args) {

@@ -193,7 +193,7 @@ public class RFApplication extends JFrame {
 		frame.setVisible(true);
 		installLnF();
 		RFAServerManager proxy = new RFAServerManager();
-		frame.demo = proxy.demo;
+		frame.demo = proxy.getDemo();
 		// frame.demo._configFile = "rfaConfig.properties";
 		proxy.init();
 		proxy.start();

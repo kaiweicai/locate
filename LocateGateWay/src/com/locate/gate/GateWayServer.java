@@ -44,6 +44,7 @@ public class GateWayServer {
 
 	public static Map<String,Byte> _clientResponseType = new HashMap();
 	
+	//add by Cloud Wei
 	//管理channelId和channel的映射关系.
 	public static ChannelGroup allChannelGroup = new DefaultChannelGroup("allChannels"); 
 	//订阅的itemName与订阅该itemName的所有客户的对应关系.
@@ -51,8 +52,6 @@ public class GateWayServer {
 	//订阅的产品itemName与订阅该产品的消息处理器的映射关系.
 	public static Map<String,ItemManager> subscribeItemManagerMap = new HashMap<String,ItemManager>();
 	
-	
-	private QSConsumerProxy app;
 	
 	private GatewayServerHandler gateWayServerHandler;
 
@@ -64,7 +63,6 @@ public class GateWayServer {
 		logger.info("gate way Server starting...");
 		ChannelFactory factory = new NioServerSocketChannelFactory(Executors.newCachedThreadPool(),
 				Executors.newCachedThreadPool());
-//		gateWayServerHandler.set_mainApp(app);
 		ChannelPipelineFactory pipelineFactory = new ChannelPipelineFactory() {
 			@Override
 			public ChannelPipeline getPipeline() throws Exception {
@@ -105,14 +103,6 @@ public class GateWayServer {
 		bootstrap.bind(new InetSocketAddress(8888));
 	}
 	
-	public QSConsumerProxy getApp() {
-		return app;
-	}
-
-	public void setApp(QSConsumerProxy app) {
-		this.app = app;
-	}
-
 	public GatewayServerHandler getGateWayServerHandler() {
 		return gateWayServerHandler;
 	}

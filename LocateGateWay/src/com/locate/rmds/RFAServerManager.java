@@ -2,23 +2,29 @@ package com.locate.rmds;
 
 import org.apache.log4j.Logger;
 
+import com.locate.rmds.statistic.StatisticThread;
+
 public class RFAServerManager extends Thread {
 
-	static Logger _logger = Logger.getLogger(RFAServerManager.class.getName());
+	static Logger _logger = Logger.getLogger(RFAServerManager.class);
 
-	QSConsumerProxy demo = new QSConsumerProxy();
+	private QSConsumerProxy demo;
+
+	StatisticThread statisticDemo;
 	
 	private static boolean connectedDataSource;
 
 	public void init() {
 		// Startup and initialization
-		demo.init();
-
+//		demo.init();
 		// Login
 		// and Item request
 		// Item requests is done after application received login response.
 		// The method itemRequests is called from processLogin method.
-		demo.login();
+//		demo.login();
+		statisticDemo = new StatisticThread();
+		statisticDemo.start();
+		this.start();
 	}
 
 	private void startServer() {
@@ -46,5 +52,13 @@ public class RFAServerManager extends Thread {
 
 	public static void setConnectedDataSource(boolean connectedDataSource) {
 		RFAServerManager.connectedDataSource = connectedDataSource;
+	}
+	
+	public QSConsumerProxy getDemo() {
+		return demo;
+	}
+
+	public void setDemo(QSConsumerProxy demo) {
+		this.demo = demo;
 	}
 }

@@ -10,7 +10,11 @@
 	<bean id="consumerProxy" class="com.locate.rmds.QSConsumerProxy"
 		scope="singleton" init-method="init" destroy-method="cleanup">
 	</bean>
-
+	
+	<bean id="rfaServerManager" class="com.locate.rmds.RFAServerManager" scope="singleton" init-method="init" >
+		<property name="demo" ref="consumerProxy"></property>
+	</bean>
+	
 	<bean id="gateWayServer" class="com.locate.gate.GateWayServer"
 		scope="singleton" init-method="init">
 		<property name="gateWayServerHandler" ref="gatewayServerHandler"></property>

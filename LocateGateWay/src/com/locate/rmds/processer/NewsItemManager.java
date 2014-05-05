@@ -26,6 +26,7 @@ import com.reuters.rfa.dictionary.FidDef;
 import com.reuters.rfa.omm.OMMEncoder;
 import com.reuters.rfa.omm.OMMItemGroup;
 import com.reuters.rfa.omm.OMMMsg;
+import com.reuters.rfa.omm.OMMMsg.MsgType;
 import com.reuters.rfa.omm.OMMPool;
 import com.reuters.rfa.omm.OMMTypes;
 import com.reuters.rfa.rdm.RDMInstrument;
@@ -202,6 +203,11 @@ public class NewsItemManager implements Client {
 		OMMItemEvent ie = (OMMItemEvent) event;
 
 		OMMMsg respMsg = ie.getMsg();
+		
+		if (respMsg.getMsgType() == MsgType.STATUS_RESP) {
+			_logger.info("ERROR: Received an unsupported Event type.");
+			return;
+		}
 		
 		if ((respMsg.getMsgType() == OMMMsg.MsgType.REFRESH_RESP)
 				|| (respMsg.getMsgType() == OMMMsg.MsgType.STATUS_RESP && respMsg.has(OMMMsg.HAS_ITEM_GROUP))) {

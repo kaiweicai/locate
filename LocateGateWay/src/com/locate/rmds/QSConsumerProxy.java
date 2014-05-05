@@ -40,7 +40,7 @@ import com.reuters.rfa.session.omm.OMMConsumer;
 *  创建时间：2014.5.26   
 *  类说明  netty game  
 */  
-public class QSConsumerProxy extends Thread{
+public class QSConsumerProxy{
 	static Logger logger = Logger.getLogger(QSConsumerProxy.class.getName());
 
 	// RFA objects
@@ -159,7 +159,6 @@ public class QSConsumerProxy extends Thread{
 		}
 		login();
 		newsItemRequests();
-		this.start();
 	}
 
 	// This method utilizes the LoginClient class to send login request
