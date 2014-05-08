@@ -2,17 +2,57 @@ package com.locate.rmds;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.net.InetSocketAddress;
+import java.util.concurrent.Executors;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.UIManager;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 
+import org.apache.log4j.Logger;
+import org.apache.log4j.xml.DOMConfigurator;
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.DocumentFactory;
+import org.dom4j.Element;
+import org.dom4j.io.SAXReader;
+import org.dom4j.swing.XMLTableModel;
 import org.dyno.visual.swing.layouts.Constraints;
 import org.dyno.visual.swing.layouts.GroupLayout;
 import org.dyno.visual.swing.layouts.Leading;
+import org.jboss.netty.bootstrap.ClientBootstrap;
+import org.jboss.netty.channel.Channel;
+import org.jboss.netty.channel.ChannelFactory;
+import org.jboss.netty.channel.ChannelFuture;
+import org.jboss.netty.channel.ChannelHandler;
+import org.jboss.netty.channel.ChannelHandlerContext;
+import org.jboss.netty.channel.ChannelPipeline;
+import org.jboss.netty.channel.ChannelPipelineFactory;
+import org.jboss.netty.channel.Channels;
+import org.jboss.netty.channel.ExceptionEvent;
+import org.jboss.netty.channel.MessageEvent;
+import org.jboss.netty.channel.SimpleChannelHandler;
+import org.jboss.netty.channel.socket.nio.NioClientSocketChannelFactory;
+import org.jboss.netty.handler.timeout.IdleState;
+import org.jboss.netty.handler.timeout.IdleStateAwareChannelHandler;
+import org.jboss.netty.handler.timeout.IdleStateEvent;
+import org.jboss.netty.handler.timeout.IdleStateHandler;
+import org.jboss.netty.util.HashedWheelTimer;
+import org.springframework.web.util.HtmlUtils;
+
+import com.locate.common.GateWayMessageTypes;
+import com.locate.common.GateWayMessageTypes.RFAMessageName;
+import com.locate.gate.coder.GateWayDecoder;
+import com.locate.gate.coder.GateWayEncoder;
+import com.locate.gate.model.LocateMessage;
 
 /**
  * A swing window panel to monitor RFALocateGateWay Server
@@ -21,7 +61,9 @@ import org.dyno.visual.swing.layouts.Leading;
  * 
  */
 public class RFApplication extends JFrame {
-
+	private Logger logger = Logger.getLogger(RFApplication.class);
+	private Channel channel;
+	private boolean conLocate;
 	private static final long serialVersionUID = 1L;
 	private JLabel currentUserTitle;
 	public static JLabel currentUserNumber;
@@ -33,26 +75,59 @@ public class RFApplication extends JFrame {
 	private JScrollPane jScrollPane0;
 	private JLabel avgTitle;
 	public static JLabel avgTimes;
-	private QSConsumerProxy demo;
 	private JButton closeButton;
 	public static boolean stop = false;
 
-	/**
-	 * @todo add the 
-	 */
+	
+	//add by Cloud Wei
+	private JLabel userNameLabel;
+	private JTextField userNameTextField;
+	private JLabel passwordLabel;
+	private JTextField passwordTextField;
+	private JLabel serverAddressLabel;
+	private JTextField serverAddressTextField;
+	private JLabel portLabel;
+	private JTextField portTextField;
+	private JButton connetedButton;
+	private JLabel ricLabel;
+	private JTextField ricTextField;
+	private JButton openButton;
+	private JTable marketPriceTable;
+	private TableModel tableModel;
+	
+	StringBuilder sb = new StringBuilder();
 	public static long totalResponseNumber = 0;
 	public static long totalProcessTime = 0;
 
 	private static final String PREFERRED_LOOK_AND_FEEL = "javax.swing.plaf.metal.MetalLookAndFeel";
 
 	public RFApplication() {
+		DOMConfigurator.configureAndWatch("config/test/log4j.xml");
 		initComponents();
 	}
 
 	private void initComponents() {
-
-		setLayout(new GroupLayout());
-
+		
+		GroupLayout mainGroupLayout = new GroupLayout();
+		setLayout(mainGroupLayout);
+		
+		add(getUserNameLabel(), new Constraints(new Leading(1180, 100, 12, 12), new Leading(19, 12, 12)));
+		add(getUserNameTextField(), new Constraints(new Leading(1300, 100, 12, 12), new Leading(19, 12, 12)));
+		add(getPasswordLabel(), new Constraints(new Leading(1180, 100, 12, 12), new Leading(50, 12, 12)));
+		add(getPasswordTextField(), new Constraints(new Leading(1300, 12, 12), new Leading(50, 12, 12)));
+		add(getServerAddressLabel(), new Constraints(new Leading(1180, 100, 12, 12), new Leading(80, 12, 12)));
+		add(getServerAddressTextField(), new Constraints(new Leading(1300, 100, 12, 12), new Leading(80, 12, 12)));
+		add(getPortLabel(), new Constraints(new Leading(1180, 100, 12, 12), new Leading(120, 12, 12)));
+		add(getPortTextField(), new Constraints(new Leading(1300, 100, 12, 12), new Leading(120, 12, 12)));
+		
+		add(getConnetedButton(), new Constraints(new Leading(1180, 12, 12), new Leading(150, 12, 12)));
+		
+		add(getRicLabel(), new Constraints(new Leading(1180, 100, 12, 12), new Leading(190, 12, 12)));
+		add(getRicTextField(), new Constraints(new Leading(1300, 100, 12, 12), new Leading(190, 12, 12)));
+		add(getOpenButton(), new Constraints(new Leading(1180, 12, 12), new Leading(220, 12, 12)));
+		add(getMarketPriceTable(), new Constraints(new Leading(1180, 12, 12), new Leading(280, 12, 12)));
+		
+		
 		add(getCurrentUserTitle(), new Constraints(new Leading(40, 111, 12, 12), new Leading(19, 12, 12)));
 		add(getCurrentUserNumber(), new Constraints(new Leading(169, 91, 10, 10), new Leading(19, 12, 12)));
 		add(getCurrentRequestNumber(), new Constraints(new Leading(402, 85, 10, 10), new Leading(19, 12, 12)));
@@ -60,12 +135,113 @@ public class RFApplication extends JFrame {
 		add(getAvgTitle(), new Constraints(new Leading(801, 148, 10, 10), new Leading(19, 10, 10)));
 		add(getResponseNumber(), new Constraints(new Leading(682, 95, 10, 10), new Leading(19, 12, 12)));
 		add(getResponseTitle(), new Constraints(new Leading(555, 99, 10, 10), new Leading(19, 12, 12)));
-		add(getJScrollPane0(), new Constraints(new Leading(30, 1081, 10, 10), new Leading(51, 403, 10, 10)));
 		add(getAvgTimes(), new Constraints(new Leading(972, 73, 10, 10), new Leading(15, 10, 10)));
 		add(getCloseButton(), new Constraints(new Leading(1063, 12, 12), new Leading(10, 12, 12)));
-		setSize(1137, 473);
+		
+		add(getJScrollPane0(), new Constraints(new Leading(30, 1081, 10, 10), new Leading(51, 403, 10, 10)));
+		
+		setSize(1437, 473);
 		// this.pack();
-		(new RemoveMoreData()).start();
+//		(new RemoveMoreData()).start();
+	}
+	
+	public void initialPriceModel(){
+	}
+	
+	/**
+	 * add by cloud
+	 * 得到用户名称标签
+	 * @return
+	 */
+	private JLabel getUserNameLabel() {
+		if (userNameLabel == null) {
+			userNameLabel = new JLabel();
+			userNameLabel.setText("Username:");
+		}
+		return userNameLabel;
+	}
+	
+	private JTextField getUserNameTextField(){
+		if(userNameTextField == null){
+			userNameTextField = new JTextField("ztcj");
+		}
+		return userNameTextField;
+	}
+	
+	private JLabel getPasswordLabel() {
+		if (passwordLabel == null) {
+			passwordLabel = new JLabel();
+			passwordLabel.setText("password:");
+		}
+		return passwordLabel;
+	}
+	
+	private JTextField getPasswordTextField(){
+		if(passwordTextField == null){
+			passwordTextField = new JTextField("ztcj2013");
+		}
+		return passwordTextField;
+	}
+	
+	private JLabel getServerAddressLabel() {
+		if (serverAddressLabel == null) {
+			serverAddressLabel = new JLabel();
+			serverAddressLabel.setText("serverAddress:");
+		}
+		return serverAddressLabel;
+	}
+	
+	private JTextField getServerAddressTextField(){
+		if(serverAddressTextField == null){
+			serverAddressTextField = new JTextField("127.0.0.1");
+		}
+		return serverAddressTextField;
+	}
+	
+	
+	private JLabel getPortLabel() {
+		if (portLabel == null) {
+			portLabel = new JLabel();
+			portLabel.setText("Port:");
+		}
+		return portLabel;
+	}
+	
+	private JTextField getPortTextField(){
+		if(portTextField == null){
+			portTextField = new JTextField("8888");
+		}
+		return portTextField;
+	}
+	
+	private JLabel getRicLabel() {
+		if (ricLabel == null) {
+			ricLabel = new JLabel();
+			ricLabel.setText("RIC:");
+		}
+		return ricLabel;
+	}
+	
+	public JTextField getRicTextField(){
+		if(ricTextField == null){
+			ricTextField = new JTextField();
+			ricTextField.setText("XAU=");
+		}
+		return ricTextField;
+	}
+	
+	private JButton getOpenButton() {
+		if (openButton == null) {
+			openButton = new JButton();
+			openButton.setText("open");
+			openButton.addMouseListener(new MouseAdapter() {
+
+				public void mouseClicked(MouseEvent event) {
+					openRICMarket();
+				}
+			});
+		}
+		return openButton;
 	}
 
 	private JButton getCloseButton() {
@@ -80,6 +256,45 @@ public class RFApplication extends JFrame {
 			});
 		}
 		return closeButton;
+	}
+	
+	private JButton getConnetedButton() {
+		if (connetedButton == null) {
+			connetedButton = new JButton();
+			connetedButton.setText("connet");
+			connetedButton.addMouseListener(new MouseAdapter() {
+
+				public void mouseClicked(MouseEvent event) {
+					conneteLocateGateWay();
+				}
+			});
+		}
+		return connetedButton;
+	}
+	
+	private JTable getMarketPriceTable() {
+		if (marketPriceTable == null) {
+			tableModel = new DefaultTableModel(10,2);
+			initialDataModel(tableModel);
+			marketPriceTable = new JTable(tableModel);
+			marketPriceTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+			marketPriceTable.addMouseListener(new MouseAdapter() {
+
+				public void mouseClicked(MouseEvent event) {
+					conneteLocateGateWay();
+				}
+			});
+		}
+		return marketPriceTable;
+	}
+
+	
+	private void initialDataModel(TableModel tableModel) {
+		tableModel.setValueAt("productName", 0, 0);
+		tableModel.setValueAt("MarketPrice", 1, 0);
+		
+		tableModel.setValueAt("黄金期货", 0, 1);
+		tableModel.setValueAt(100, 1, 1);
 	}
 
 	private JLabel getAvgTimes() {
@@ -162,6 +377,10 @@ public class RFApplication extends JFrame {
 		}
 		return currentUserTitle;
 	}
+	
+	public void updateLog(String logContent){
+		showLog.setText(logContent);
+	}
 
 	private static void installLnF() {
 		try {
@@ -192,20 +411,158 @@ public class RFApplication extends JFrame {
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
 		installLnF();
-		RFAServerManager proxy = new RFAServerManager();
-		frame.demo = proxy.getDemo();
+//		RFAServerManager proxy = new RFAServerManager();
+//		frame.demo = proxy.getDemo();
 		// frame.demo._configFile = "rfaConfig.properties";
-		proxy.init();
-		proxy.start();
+//		proxy.init();
+//		proxy.start();
 	}
 
 	private void shutdownLocateGateWay() {
 		// load properties file
 		stop = true;
-		demo.cleanup();
+//		demo.cleanup();
 		System.exit(0);
 	}
+	
+	private void openRICMarket(){
+		DocumentFactory documentFactory = DocumentFactory.getInstance();
+	    Document requestDoc =  documentFactory.createDocument();
+	    String ric = ricTextField.getText();
+    	createFutureRequest(requestDoc,ric);
+    	sentMessageToServer(GateWayMessageTypes.FUTURE_REQUEST,requestDoc);
+	}
+	
+	
+	private void conneteLocateGateWay() {
+		String userName = userNameTextField.getText();
+		String serverAddress = serverAddressTextField.getText();
+		int port = Integer.parseInt(portTextField.getText());
+		// 创建客户端channel的辅助类,发起connection请求
+		ChannelFactory factory = new NioClientSocketChannelFactory(Executors.newCachedThreadPool(),
+				Executors.newCachedThreadPool());
+		ClientBootstrap bootstrap = new ClientBootstrap(factory);
+		bootstrap.setPipelineFactory(new ChannelPipelineFactory() {
+			@Override
+			public ChannelPipeline getPipeline() throws Exception {
+				ChannelPipeline pipeline = Channels.pipeline();
+				pipeline.addLast("encoder", new GateWayEncoder());
+				pipeline.addLast("decoder", new GateWayDecoder());
+				pipeline.addLast("hanlder", new ClientHandler());
+//				pipeline.addLast("timeout", new IdleStateHandler(new HashedWheelTimer(), 0, 0, 10));
+//				pipeline.addLast("heartBeat", new ClientIdleHandler());
+				return pipeline;
+			}
+		});
+		logger.info("start to conneted to server");
+		ChannelFuture future = bootstrap.connect(new InetSocketAddress(serverAddress,port));
+		try{
+			channel = future.getChannel();
+			future.awaitUninterruptibly();
+		}catch(Exception e){
+			logger.error("NIO error "+e.getCause());
+		}
+		this.conLocate = true;
+		logger.info("conneted to server");
+		
+		DocumentFactory documentFactory = DocumentFactory.getInstance();
+	    Document requestDoc =  documentFactory.createDocument();
+	    
+	    createLoginRequest(requestDoc);
+    	sentMessageToServer(GateWayMessageTypes.LOGIN, requestDoc);
+	}
+	
+	class ClientIdleHandler extends IdleStateAwareChannelHandler implements ChannelHandler {
+		@Override
+		public void channelIdle(ChannelHandlerContext ctx, IdleStateEvent e) throws Exception {
+			if(e.getState()==IdleState.ALL_IDLE){
+				logger.debug("链路空闲,发送心跳 S:{" + e.getChannel().getRemoteAddress() + "} - C:{"
+						+ e.getChannel().getLocalAddress() + "} idleState:{" + e.getState() + "}");
+//				createEcho();
+			}
+			super.channelIdle(ctx, e);
+		}
+	}
+	
+	private void createLoginRequest(Document doc){
+		Element rmds = doc.addElement("rmds");
+		Element login = rmds.addElement("login");
+		login.addElement("userName").addText(userNameTextField.getText());
+		login.addElement("password").addText(passwordTextField.getText());
+	}
+	
+	private void sentMessageToServer(byte msgType,Document doc){
+		LocateMessage message = new LocateMessage(msgType, doc, 0);
+		ChannelFuture future = channel.write(message);
+		future.awaitUninterruptibly();
+	}
 
+	private void createFutureRequest(Document doc,String ric){
+		Element rmds = doc.addElement("rmds");
+		Element request = rmds.addElement("request");
+		Element item = request.addElement("item");
+		item.addElement("name").addText(ric);
+	}
+	
+	private void createEcho(){
+		DocumentFactory documentFactory = DocumentFactory.getInstance();
+	    Document requestDoc =  documentFactory.createDocument();
+	    String ric = ricTextField.getText();
+    	createFutureRequest(requestDoc,ric);
+    	sentMessageToServer(GateWayMessageTypes.REQUEST_EOCH,requestDoc);
+	}
+	
+	class ClientHandler extends SimpleChannelHandler {
+
+		long t0, t1;
+
+		@Override
+		public void exceptionCaught(ChannelHandlerContext ctx, ExceptionEvent e) throws Exception {
+			sb.append("NIO error "+e.getCause());
+			updateLog(sb.toString());
+			System.out.println(e.getCause());
+		}
+
+		public Document parseFile() {
+			SAXReader reader = new SAXReader();
+			String userFile = "D:/rfa/testData.xml";
+			Document userData = null;
+			try {
+				userData = reader.read(userFile);
+			} catch (DocumentException e) {
+				System.out.println("Inital RFA user data error.");
+			}
+			return userData;
+		}
+
+		@Override
+		public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
+			super.messageReceived(ctx, e);
+			LocateMessage message = (LocateMessage) e.getMessage();
+			byte msgType = message.getMsgType();
+			int length = message.getMsgLength();
+			
+			sb.append("receive messages length:" + length+"\n");
+			sb.append("Received message type:" + RFAMessageName.getRFAMessageName(msgType)+"\n");
+
+			Document document = message.getDocument();
+			if (document == null) {
+				sb.append("Received server's  message is null \n");
+				return;
+			}
+			String content = HtmlUtils.htmlUnescape(document.asXML());
+			// String content = response.asXML();
+			sb.append("Received server's  message : " + content+"\n");
+			
+			updateLog(sb.toString());
+			
+			t1 = System.currentTimeMillis();
+
+			System.out.println("Sent messages delay : " + (t1 - t0));
+			System.out.println();
+		}
+	}
+	
 	public class RemoveMoreData extends Thread {
 
 		public void run() {
@@ -220,7 +577,6 @@ public class RFApplication extends JFrame {
 					}
 					Thread.sleep(500);
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}

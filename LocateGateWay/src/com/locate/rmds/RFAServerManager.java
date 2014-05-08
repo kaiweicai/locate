@@ -22,8 +22,8 @@ public class RFAServerManager extends Thread {
 		// Item requests is done after application received login response.
 		// The method itemRequests is called from processLogin method.
 //		demo.login();
-		statisticDemo = new StatisticThread();
-		statisticDemo.start();
+//		statisticDemo = new StatisticThread();
+//		statisticDemo.start();
 		this.start();
 	}
 

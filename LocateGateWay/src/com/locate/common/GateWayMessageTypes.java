@@ -39,6 +39,7 @@ public class GateWayMessageTypes {
 	public static final byte RESPONSE_OPTION_LINK = 64;
 	public static final byte RESPONSE_INDEX_LINK = 65;
 	
+	public static final byte REQUEST_EOCH = 81;
 	
 	public enum RFAMessageName{
 		LOGIN("LOGIN",40),STOCK("STOCK",41),CURRENT("CURRENCY",42),FUTURE("FUTURE",43),OPTION("OPTION",44),INDEX("INDEX",45),NEWS("NEWS",7),ECONCN("ECONCN",48);

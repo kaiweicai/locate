@@ -33,14 +33,20 @@ import com.locate.gate.model.LocateMessage;
 
 public class TestSocketClient{
 	private Channel channel;
-	class clientHandler extends SimpleChannelHandler{
+	
+	long t0,t1;
+	
+	class ClientHandler extends SimpleChannelHandler {
+
+		long t0, t1;
+
 		@Override
 		public void exceptionCaught(ChannelHandlerContext ctx, ExceptionEvent e) throws Exception {
 			System.out.println(e.getCause());
 		}
-		
-		public Document parseFile(){
-			SAXReader reader=new SAXReader();
+
+		public Document parseFile() {
+			SAXReader reader = new SAXReader();
 			String userFile = "D:/rfa/testData.xml";
 			Document userData = null;
 			try {
@@ -50,37 +56,31 @@ public class TestSocketClient{
 			}
 			return userData;
 		}
-		
+
 		@Override
 		public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
 			super.messageReceived(ctx, e);
-			LocateMessage message =  (LocateMessage) e.getMessage();
+			LocateMessage message = (LocateMessage) e.getMessage();
 			byte msgType = message.getMsgType();
-		    int length = message.getMsgLength(); 
-		    System.out.println("receive messages length:"+length);
-			System.out.println("Received message type:"+RFAMessageName.getRFAMessageName(msgType));
-		    
-		    Document document = message.getDocument();
-		    if(document == null){
-		    	System.out.println("Received server's  message is null ");
-		    	return ;
-		    }
-		    String content = HtmlUtils.htmlUnescape(document.asXML());
-//		    String content = response.asXML();
+			int length = message.getMsgLength();
+			System.out.println("receive messages length:" + length);
+			System.out.println("Received message type:" + RFAMessageName.getRFAMessageName(msgType));
+
+			Document document = message.getDocument();
+			if (document == null) {
+				System.out.println("Received server's  message is null ");
+				return;
+			}
+			String content = HtmlUtils.htmlUnescape(document.asXML());
+			// String content = response.asXML();
 			System.out.println("Received server's  message : " + content);
-			
+
 			t1 = System.currentTimeMillis();
-		    
-		    System.out.println("Sent messages delay : " + (t1 - t0));
-		    System.out.println();
-		    
+
+			System.out.println("Sent messages delay : " + (t1 - t0));
+			System.out.println();
 		}
-		
 	}
-	
-	private static int PORT = 9999;
-	
-	long t0,t1;
 
 	private void createOneTimesRequest(Document doc){
 		Element rmds = doc.addElement("rmds");
@@ -158,7 +158,7 @@ public class TestSocketClient{
 				ChannelPipeline pipeline = Channels.pipeline();
 				pipeline.addLast("encoder", new GateWayEncoder());
 				pipeline.addLast("decoder", new GateWayDecoder());
-				pipeline.addLast("hanlder", new clientHandler());
+				pipeline.addLast("hanlder", new ClientHandler());
 				return pipeline;
 			}
 		});
@@ -166,8 +166,7 @@ public class TestSocketClient{
 		ChannelFuture future = bootstrap.connect(new InetSocketAddress(8888));
 		channel = future.getChannel();
 		future.awaitUninterruptibly();
-//		bootstrap.releaseExternalResources();
-		
+		bootstrap.releaseExternalResources();
 	}
 	
 	public void testSendRequest(byte msgType){

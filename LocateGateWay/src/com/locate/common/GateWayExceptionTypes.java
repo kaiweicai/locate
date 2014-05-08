@@ -9,6 +9,7 @@ public class GateWayExceptionTypes {
 	public static int BUSINESS_REQUEST_FAILED = 105;
 	public static int USER_REQUEST_FAILTED = 106;
 	
+	public static int CHANNEL_IDLE_TIMEOUT = 200;
 	
 	public static int RFA_SERVER_NOT_READY= 2000;
 	
@@ -19,8 +20,9 @@ public class GateWayExceptionTypes {
 		NotSubscribeBusiness("User has not right for this option", USER_BUSINESS_NO_SUBSCRIBE),
 		BusinessReqFailed("Request business failed", BUSINESS_REQUEST_FAILED), 
 		UserRequestFailed("Request data is wrong, Please check!", USER_REQUEST_FAILTED),
-		RFANotConnneted("The server can not conneted to Data Source of RFA Server!", RFA_SERVER_NOT_READY);
-		
+		RFANotConnneted("The server can not conneted to Data Source of RFA Server!", RFA_SERVER_NOT_READY),
+		ChannelIdleTimeOut("No message write to client for a long time,May be the RFA server not work correctly.",
+				CHANNEL_IDLE_TIMEOUT);
 		
 		String exception;
 		int errorCode;

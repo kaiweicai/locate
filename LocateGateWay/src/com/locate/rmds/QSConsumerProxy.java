@@ -148,17 +148,9 @@ public class QSConsumerProxy{
 			RFAUserManagement.init();
 			this._serviceName = SystemProperties
 					.getProperties(SystemProperties.RFA_SERVICE_NAME);
-			// Start RFA socket server listener
-//			try {
-//				new GateWayServer();
-//			} catch (Exception e) {
-//				// TODO Auto-generated catch block
-//				cleanup();
-//				_logger.error("Initial RFA socket server failed.", e);
-//			}
 		}
 		login();
-		newsItemRequests();
+		//newsItemRequests();
 	}
 
 	// This method utilizes the LoginClient class to send login request

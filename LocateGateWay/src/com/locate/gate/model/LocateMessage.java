@@ -4,6 +4,8 @@ import java.io.UnsupportedEncodingException;
 
 import org.apache.log4j.Logger;
 import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.DocumentHelper;
 
 public class LocateMessage {
 	Logger logger = Logger.getLogger(LocateMessage.class);
@@ -12,7 +14,7 @@ public class LocateMessage {
 	int msgLength;
 	//如果发生错误errorCode>0;
 	int errorCode = 0;
-	Document document;
+	String document;
 	
 	public LocateMessage(){
 		
@@ -23,6 +25,19 @@ public class LocateMessage {
 		this.errorCode = errorCode;
 		try {
 			this.msgLength = document.asXML().getBytes("UTF-8").length;
+		} catch (UnsupportedEncodingException e) {
+			logger.error("Caculate the document length error!",e);
+		}catch(Exception e){
+			logger.error("unkonw exception ocurre, Please contact the develepor",e);
+		}
+		this.document = document.asXML();
+	}
+	
+	public LocateMessage(byte msgType, String document, int errorCode) {
+		this.msgType = msgType;
+		this.errorCode = errorCode;
+		try {
+			this.msgLength = document.getBytes("UTF-8").length;
 		} catch (UnsupportedEncodingException e) {
 			logger.error("Caculate the document length error!",e);
 		}catch(Exception e){
@@ -48,11 +63,16 @@ public class LocateMessage {
 	}
 
 	public Document getDocument() {
-		return document;
+		try {
+			return DocumentHelper.parseText(document);
+		} catch (DocumentException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	public void setDocument(Document document) {
-		this.document = document;
+		this.document = document.asXML();
 	}
 	
 	public int getErrorCode() {
