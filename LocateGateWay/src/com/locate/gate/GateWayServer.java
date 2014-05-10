@@ -51,7 +51,7 @@ public class GateWayServer {
 	// Client User Name -- Client User Name + ItemName
 	public static Map<String, List<String>> _clientRequestItemName = new HashMap();
 	// Item name-- Client User Name
-	public static Map<String, List<String>> _requestItemNameList = new HashMap();
+//	public static Map<String, List<String>> _requestItemNameList = new HashMap();
 	// public static Map<String,List<ItemManager>> _clientRequestItemManager =
 	// new HashMap();//
 	public static Map<String, ItemManager> _clientRequestItemManager = new HashMap();//
@@ -124,7 +124,7 @@ public class GateWayServer {
 			if (e.getState() == IdleState.WRITER_IDLE) {
 				i++;
 			}
-			if (i > 3) {
+			if (i > 10000) {
 				logger.warn("channel idle timeout, User remote ip is "+e.getChannel().getRemoteAddress());
 				DocumentFactory documentFactory = DocumentFactory.getInstance();
 			    Document reponseDoc =  documentFactory.createDocument();

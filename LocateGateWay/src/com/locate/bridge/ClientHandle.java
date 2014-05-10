@@ -211,33 +211,40 @@ public class ClientHandle {
 		for(String itemName : itemNames){
 			GateWayServer._clientResponseType.put(itemName, responseMsgType);
 			_logger.info("Register client request item "+itemName);
-			GateWayServer._clientRequestSession.put(clientName+itemName, channelId);
-			if(regiestItemNameForClient(itemName,clientName)){
-				ItemManager clientInstance = mainApp.itemRequests(itemName,responseMsgType, channelId);
-				regiestItemRequestManager(itemName,clientInstance);
-			}
+//			GateWayServer._clientRequestSession.put(clientName+itemName, channelId);
+//			if(regiestItemNameForClient(itemName,clientName)){
+			ItemManager clientInstance = mainApp.itemRequests(itemName, responseMsgType, channelId);
+			regiestItemRequestManager(itemName, clientInstance);
+//			}
 			regiestClientRequestItem(clientName,itemName);
 		}
 		_logger.info("End register client request "+clientName);
 		return errorCode;
 	}
 	
-	private boolean regiestItemNameForClient(String itemName,String clientName){
-		List<String> clientNameList = GateWayServer._requestItemNameList.get(itemName);
-		if(clientNameList != null){
-			if(! clientNameList.contains(clientName)){
-				clientNameList.add(clientName);
-			}else{
-				return false;
-			}
-		}else{
-			clientNameList = new ArrayList();
-			clientNameList.add(clientName);
-		}
-		GateWayServer._requestItemNameList.put(itemName,clientNameList);
-		return true;
-	}
+//	private boolean regiestItemNameForClient(String itemName,String clientName){
+//		List<String> clientNameList = GateWayServer._requestItemNameList.get(itemName);
+//		if(clientNameList != null){
+//			if(! clientNameList.contains(clientName)){
+//				clientNameList.add(clientName);
+//			}else{
+//				return false;
+//			}
+//		}else{
+//			clientNameList = new ArrayList();
+//			clientNameList.add(clientName);
+//		}
+//		GateWayServer._requestItemNameList.put(itemName,clientNameList);
+//		return true;
+//	}
 	
+	/**
+	 * 所有用户使用的同一个用户名.
+	 * 这个方法没有用.很可能被取消掉.
+	 * @param clientName
+	 * @param itemName
+	 */
+	@Deprecated
 	private void regiestClientRequestItem(String clientName,String itemName){
 		List<String> clientRequestItem;
 		clientRequestItem = GateWayServer._clientRequestItemName.get(clientName);

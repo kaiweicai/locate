@@ -52,11 +52,11 @@ public class GatewayServerHandler extends SimpleChannelHandler {
 				System.out.println("Register client request item "+itemName);
 				System.out.println("_clientResponseType size "+GateWayServer._clientResponseType.size());
 				byte responseMsgType  =  GateWayServer._clientResponseType.get(itemName);
-				if( GateWayServer._requestItemNameList.get(itemName) != null){
+//				if( GateWayServer._requestItemNameList.get(itemName) != null){
 //					ClientHandle clientHandle = (ClientHandle)LocateGateWayMain.springContext.getBean("clientHandler"); 
 //					ItemManager clientInstance = mainAppProxy.itemRequests(itemName,responseMsgType, 0);
 //					GateWayServer._clientRequestItemManager.put(itemName,clientInstance);
-				}
+//				}
 			}
 		}
 		_logger.info("End re-register all of client request ");
@@ -100,7 +100,10 @@ public class GatewayServerHandler extends SimpleChannelHandler {
 			Channel channel = e.getChannel();
 			
 			//将channelId和对应的channel放到map中,会写客户端的时候可以根据该id找到对应的channel.
-			GateWayServer.allChannelGroup.add(channel);
+			if(!GateWayServer.allChannelGroup.contains(channel)){
+				GateWayServer.allChannelGroup.add(channel);
+			}
+			userName = GateWayServer._userConnection.get(clientIP);
 			ClientInfo clientInfo = new ClientInfo(userRequest, userName, channel.getId(), msgType, clientIP);
 //		    ClientHandle clientHandle = (ClientHandle)LocateGateWayMain.springContext.getBean("clientHandler"); 
 		    if(msgType != GateWayMessageTypes.LOGIN){
@@ -109,14 +112,13 @@ public class GatewayServerHandler extends SimpleChannelHandler {
 					ChannelGroup subChannelGroup = subscribeChannelMap.get(subcribeItemName);
 					if (subChannelGroup == null) {
 						subChannelGroup = new DefaultChannelGroup();
+						subscribeChannelMap.put(subcribeItemName,subChannelGroup);
 					}
 					if (!subChannelGroup.contains(channel)) {
 						subChannelGroup.add(channel);
 					}
 				}
 		    }
-		    
-		    
 		    //RFAClientHandler process message and send the request to RFA.
 	    	clientHandle.process(clientInfo);
 		} catch (Throwable throwable) {

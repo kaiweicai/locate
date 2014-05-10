@@ -3,6 +3,11 @@ package com.locate.rmds;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.net.InetSocketAddress;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
 import java.util.concurrent.Executors;
 
 import javax.swing.JButton;
@@ -15,6 +20,7 @@ import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
 import javax.swing.table.TableModel;
 
 import org.apache.log4j.Logger;
@@ -52,7 +58,10 @@ import com.locate.common.GateWayMessageTypes;
 import com.locate.common.GateWayMessageTypes.RFAMessageName;
 import com.locate.gate.coder.GateWayDecoder;
 import com.locate.gate.coder.GateWayEncoder;
+import com.locate.gate.model.CustomerFiled;
 import com.locate.gate.model.LocateMessage;
+import com.locate.rmds.util.RFANodeconstant;
+import com.reuters.rfa.omm.OMMMsg.MsgType;
 
 /**
  * A swing window panel to monitor RFALocateGateWay Server
@@ -73,6 +82,7 @@ public class RFApplication extends JFrame {
 	public static JLabel responseNumber;
 	public static JTextArea showLog;
 	private JScrollPane jScrollPane0;
+	private JScrollPane tableScrollPane;
 	private JLabel avgTitle;
 	public static JLabel avgTimes;
 	private JButton closeButton;
@@ -125,7 +135,7 @@ public class RFApplication extends JFrame {
 		add(getRicLabel(), new Constraints(new Leading(1180, 100, 12, 12), new Leading(190, 12, 12)));
 		add(getRicTextField(), new Constraints(new Leading(1300, 100, 12, 12), new Leading(190, 12, 12)));
 		add(getOpenButton(), new Constraints(new Leading(1180, 12, 12), new Leading(220, 12, 12)));
-		add(getMarketPriceTable(), new Constraints(new Leading(1180, 12, 12), new Leading(280, 12, 12)));
+		add(getTableScrollPane(), new Constraints(new Leading(1180, 12, 12), new Leading(280, 12, 12)));
 		
 		
 		add(getCurrentUserTitle(), new Constraints(new Leading(40, 111, 12, 12), new Leading(19, 12, 12)));
@@ -140,7 +150,7 @@ public class RFApplication extends JFrame {
 		
 		add(getJScrollPane0(), new Constraints(new Leading(30, 1081, 10, 10), new Leading(51, 403, 10, 10)));
 		
-		setSize(1437, 473);
+		setSize(1700, 800);
 		// this.pack();
 //		(new RemoveMoreData()).start();
 	}
@@ -272,16 +282,88 @@ public class RFApplication extends JFrame {
 		return connetedButton;
 	}
 	
+	class TableModel extends AbstractTableModel{
+		private static final long serialVersionUID = 1L;
+		Map<String,CustomerFiled> data = new HashMap<String,CustomerFiled>();
+		String[] columns = { "id", "name", "value" };
+
+		public TableModel(Document document) {
+			Element rmds = document.getRootElement();
+			Element fields = rmds.element(RFANodeconstant.RESPONSE_RESPONSE_NODE)
+					.element(RFANodeconstant.RESPONSE_FIELDS_NODE);
+			List<Element> filedList = fields.elements();
+			for (Element filed : filedList) {
+					String id = filed.element(RFANodeconstant.RESPONSE_FIELDS_FIELD_ID_NODE).getText();
+					String name = filed.element(RFANodeconstant.RESPONSE_FIELDS_FIELD_NAME_NODE).getText();
+					Element valueField = filed.element(RFANodeconstant.RESPONSE_FIELDS_FIELD_VALUE_NODE);
+					String value ="";
+					if(valueField!=null)
+						value = filed.element(RFANodeconstant.RESPONSE_FIELDS_FIELD_VALUE_NODE).getText();
+					CustomerFiled customerFiled = new CustomerFiled(id, name, value);
+					data.put(id,customerFiled);
+			}
+		}
+		
+		public void update(CustomerFiled field){
+			String id = field.getId();
+			String name =field.getName();
+			String value = field.getValue();
+			CustomerFiled customerField=data.get(id);
+			customerField.setId(id);
+			customerField.setName(name);
+			customerField.setValue(value);
+		}
+
+		@Override
+		public int getRowCount() {
+			if (this.data == null)
+				return 0;
+			return this.data.size();
+		}
+
+		@Override
+		public int getColumnCount() {
+			return columns.length;
+		}
+
+		@Override
+		public Object getValueAt(int rowIndex, int columnIndex) {
+			CustomerFiled customerFiled = data.get(rowIndex);
+
+			String r = "";
+			switch (columnIndex) {
+			case 0:
+				r = customerFiled.getId();
+				break;
+			case 1:
+				r = customerFiled.getName();
+				break;
+			case 2:
+				if(customerFiled.getValue()!=null){
+					r = customerFiled.getValue();
+				}
+				break;
+			}
+			return r;
+		}
+
+		@Override
+		public String getColumnName(int column) {
+			return columns[column];
+		}
+
+		public boolean isCellEditable(int rowIndex, int columnIndex) {
+			return false;
+		}
+	}
+	
 	private JTable getMarketPriceTable() {
 		if (marketPriceTable == null) {
-			tableModel = new DefaultTableModel(10,2);
-			initialDataModel(tableModel);
-			marketPriceTable = new JTable(tableModel);
-			marketPriceTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+			marketPriceTable = new JTable();
+//			marketPriceTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 			marketPriceTable.addMouseListener(new MouseAdapter() {
-
 				public void mouseClicked(MouseEvent event) {
-					conneteLocateGateWay();
+//					conneteLocateGateWay();
 				}
 			});
 		}
@@ -313,6 +395,14 @@ public class RFApplication extends JFrame {
 		return avgTitle;
 	}
 
+	private JScrollPane getTableScrollPane() {
+		if (tableScrollPane == null) {
+			tableScrollPane = new JScrollPane();
+			tableScrollPane.setViewportView(getMarketPriceTable());
+		}
+		return tableScrollPane;
+	}
+	
 	private JScrollPane getJScrollPane0() {
 		if (jScrollPane0 == null) {
 			jScrollPane0 = new JScrollPane();
@@ -435,7 +525,6 @@ public class RFApplication extends JFrame {
 	
 	
 	private void conneteLocateGateWay() {
-		String userName = userNameTextField.getText();
 		String serverAddress = serverAddressTextField.getText();
 		int port = Integer.parseInt(portTextField.getText());
 		// 创建客户端channel的辅助类,发起connection请求
@@ -463,7 +552,7 @@ public class RFApplication extends JFrame {
 			logger.error("NIO error "+e.getCause());
 		}
 		this.conLocate = true;
-		logger.info("conneted to server");
+		logger.info("conneted to server "+serverAddress+" port:" + port);
 		
 		DocumentFactory documentFactory = DocumentFactory.getInstance();
 	    Document requestDoc =  documentFactory.createDocument();
@@ -544,12 +633,21 @@ public class RFApplication extends JFrame {
 			
 			sb.append("receive messages length:" + length+"\n");
 			sb.append("Received message type:" + RFAMessageName.getRFAMessageName(msgType)+"\n");
-
+			
 			Document document = message.getDocument();
 			if (document == null) {
 				sb.append("Received server's  message is null \n");
 				return;
 			}
+			if(msgType==MsgType.REFRESH_RESP){
+				tableModel = new TableModel(document);
+				marketPriceTable.setModel(tableModel);
+			}else if(msgType==MsgType.UPDATE_RESP){
+				updateMarketPriceTable(tableModel,document);
+			}
+			
+			
+			
 			String content = HtmlUtils.htmlUnescape(document.asXML());
 			// String content = response.asXML();
 			sb.append("Received server's  message : " + content+"\n");
@@ -560,6 +658,23 @@ public class RFApplication extends JFrame {
 
 			System.out.println("Sent messages delay : " + (t1 - t0));
 			System.out.println();
+		}
+
+		private void updateMarketPriceTable(TableModel tableModel,Document document) {
+			Element rmds = document.getRootElement();
+			Element fields = rmds.element(RFANodeconstant.RESPONSE_RESPONSE_NODE)
+					.element(RFANodeconstant.RESPONSE_FIELDS_NODE);
+			List<Element> filedList = fields.elements();
+			for (Element filed : filedList) {
+					String id = filed.element(RFANodeconstant.RESPONSE_FIELDS_FIELD_ID_NODE).getText();
+					String name = filed.element(RFANodeconstant.RESPONSE_FIELDS_FIELD_NAME_NODE).getText();
+					Element valueField = filed.element(RFANodeconstant.RESPONSE_FIELDS_FIELD_VALUE_NODE);
+					String value ="";
+					if(valueField!=null)
+						value = filed.element(RFANodeconstant.RESPONSE_FIELDS_FIELD_VALUE_NODE).getText();
+					CustomerFiled customerFiled = new CustomerFiled(id, name, value);
+					tableModel.update(customerFiled);
+			}
 		}
 	}
 	

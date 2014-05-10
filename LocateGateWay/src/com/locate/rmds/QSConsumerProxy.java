@@ -195,10 +195,11 @@ public class QSConsumerProxy{
 	public ItemManager itemRequests(String itemName, byte responseMsgType, int channelID) {
 		Map<String,ItemManager> subscribeItemManagerMap = GateWayServer.subscribeItemManagerMap;
 		if(subscribeItemManagerMap.containsKey(itemName)){
-			//已经订阅该产品.无需继续订阅.
+			//已经订阅该产品.无需再到RFA订阅该产品.
 			return null;
 		}else{
 			ItemManager _itemManager = new ItemManager(this, _itemGroupManager);
+			//一个产品对应一个itemManager对象
 			subscribeItemManagerMap.put(itemName, _itemManager);
 			// Send requests
 			_itemManager.sendRequest(itemName, responseMsgType, channelID);
