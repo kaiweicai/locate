@@ -8,6 +8,7 @@ import org.jboss.netty.channel.Channel;
 
 import com.locate.gate.GateWayServer;
 import com.locate.gate.model.LocateMessage;
+import com.locate.rmds.RFAServerManager;
 import com.reuters.rfa.omm.OMMMsg;
 
 /**
@@ -22,6 +23,7 @@ public class GateWayResponser {
 	
 	public static void sentResponseMsg(byte msgType,Document response,Integer channelId){
 		LocateMessage message = new LocateMessage(msgType, response, 0);
+		message.setSequenceNo(RFAServerManager.sequenceNo.getAndIncrement());
 		Channel channel = GateWayServer.allChannelGroup.find(channelId);
 		if(channel!=null&&channel.isConnected()){
 			channel.write(message);
@@ -32,17 +34,26 @@ public class GateWayResponser {
 	
 	public static void sentAllChannelNews(byte msgType,Document response){
 		LocateMessage message = new LocateMessage(msgType, response, 0);
+		message.setSequenceNo(RFAServerManager.sequenceNo.getAndIncrement());
 		GateWayServer.allChannelGroup.write(message);
 	}
 	
 	public static void sentMrketPriceToSubsribeChannel(byte msgType,Document response,String itemName){
 		LocateMessage message = new LocateMessage(msgType, response, 0);
+		message.setSequenceNo(RFAServerManager.sequenceNo.getAndIncrement());
 		GateWayServer.itemNameChannelMap.get(itemName).write(message);
+	}
+	
+	public static void sentInitialToChannel(byte msgType,Document response,String itemName,int channelId){
+		LocateMessage message = new LocateMessage(msgType, response, 0);
+		message.setSequenceNo(RFAServerManager.sequenceNo.getAndIncrement());
+		GateWayServer.allChannelGroup.find(channelId).write(message);
 	}
 	
 	
 	public static void sentNotiFyResponseMsg(byte msgType,Document response,Integer channelId,int errorCode){
 		LocateMessage message = new LocateMessage(msgType, response, errorCode);
+		message.setSequenceNo(RFAServerManager.sequenceNo.getAndIncrement());
 		Channel channel = GateWayServer.allChannelGroup.find(channelId);
 		if(channel!=null&&channel.isConnected()){
 			channel.write(message);
@@ -50,4 +61,6 @@ public class GateWayResponser {
 			logger.error("The channel had been closed when write login response to client. Channel ID is "+ channelId);
 		}
 	}
+	
+
 }

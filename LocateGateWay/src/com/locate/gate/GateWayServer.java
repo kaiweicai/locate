@@ -29,6 +29,7 @@ import org.jboss.netty.util.HashedWheelTimer;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.locate.LocateGateWayMain;
 import com.locate.common.GateWayExceptionTypes;
 import com.locate.common.GateWayExceptionTypes.RFAExceptionEnum;
 import com.locate.common.GateWayMessageTypes;
@@ -37,6 +38,7 @@ import com.locate.gate.coder.GateWayEncoder;
 import com.locate.gate.hanlder.GatewayServerHandler;
 import com.locate.gate.model.LocateMessage;
 import com.locate.rmds.QSConsumerProxy;
+import com.locate.rmds.RFAServerManager;
 import com.locate.rmds.processer.ItemManager;
 import com.locate.rmds.util.RFANodeconstant;
 
@@ -124,7 +126,7 @@ public class GateWayServer {
 			if (e.getState() == IdleState.WRITER_IDLE) {
 				i++;
 			}
-			if (i > 10000) {
+			if (i > 3) {
 				logger.warn("channel idle timeout, User remote ip is "+e.getChannel().getRemoteAddress());
 				DocumentFactory documentFactory = DocumentFactory.getInstance();
 			    Document reponseDoc =  documentFactory.createDocument();
@@ -138,9 +140,15 @@ public class GateWayServer {
 				error.addElement(RFANodeconstant.RESPONSE_ERROR_DESC_NODE).addText(String.valueOf(descriptioin));
 			    
 			    LocateMessage message = new LocateMessage(GateWayMessageTypes.REQUEST_EOCH, reponseDoc, 0);
+			    message.setSequenceNo(RFAServerManager.sequenceNo.getAndIncrement());
 				e.getChannel().write(message);
 				i=0;
 			}
+//			if(i>60){
+//				logger.info("channel closeing channel ID ="+e.getChannel().getId());
+//				e.getChannel().close();
+//				i=0;
+//			}
 		}
 	}
 }

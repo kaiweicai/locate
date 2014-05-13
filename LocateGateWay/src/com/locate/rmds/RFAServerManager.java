@@ -1,5 +1,7 @@
 package com.locate.rmds;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import org.apache.log4j.Logger;
 
 import com.locate.rmds.statistic.StatisticThread;
@@ -12,8 +14,9 @@ public class RFAServerManager extends Thread {
 
 	StatisticThread statisticDemo;
 	
+	public static AtomicInteger sequenceNo = new AtomicInteger(0);
+	
 	private static boolean connectedDataSource;
-
 	public void init() {
 		// Startup and initialization
 //		demo.init();

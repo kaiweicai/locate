@@ -10,6 +10,7 @@ import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.handler.codec.frame.FrameDecoder;
 
 import com.locate.gate.model.LocateMessage;
+import com.locate.rmds.RFAServerManager;
 
 public class GateWayDecoder extends FrameDecoder {
 	
@@ -29,18 +30,20 @@ public class GateWayDecoder extends FrameDecoder {
 		}
 		
 		channelBuffer.markReaderIndex();
-		
+		int sequenceNo = channelBuffer.readInt();
 		byte msgType = channelBuffer.readByte();
 		int errorCode = channelBuffer.readInt();
 		int msgLength = channelBuffer.readInt();
-		
+		if(msgLength>20000){
+			logger.error("mesge lenght too big, mesg length is "+msgLength);
+		}
 		if (channelBuffer.readableBytes() < msgLength) {
 			channelBuffer.resetReaderIndex();
 			return null;
 		}
 		
 		if (channelBuffer.readable()) {
-			buffer.writeBytes(channelBuffer);
+			buffer.writeBytes(channelBuffer,msgLength);
 //			channelBuffer.readBytes(buffer, channelBuffer.readableBytes());
 		}
 		
@@ -52,6 +55,7 @@ public class GateWayDecoder extends FrameDecoder {
 		}
 		Document doc = DocumentHelper.parseText(content);
 		LocateMessage message = new LocateMessage(msgType,doc, errorCode);
+		message.setSequenceNo(sequenceNo);
 		buffer.clear();
 		return message;
 	}

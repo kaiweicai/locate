@@ -1,28 +1,12 @@
 package com.locate.rmds.processer;
 
-import java.util.List;
-
 import org.apache.log4j.Logger;
 import org.dom4j.Document;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 import com.locate.bridge.GateWayResponser;
-import com.locate.common.GateWayMessageTypes;
 import com.locate.gate.GateWayServer;
-import com.locate.gate.hanlder.GatewayServerHandler;
 import com.locate.rmds.QSConsumerProxy;
+import com.locate.rmds.RFAServerManager;
 import com.locate.rmds.statistic.CycleStatistics;
 import com.locate.rmds.statistic.LogTool;
 import com.locate.rmds.statistic.OutputFormatter;
@@ -74,6 +58,8 @@ public class ItemManager implements Client
     private	String	_className = "ItemManager";
 
 	private Integer channelID = 0;
+
+	private Document initialDocument;
 	
 	// requests
 	static private int _request_count;
@@ -149,9 +135,8 @@ public class ItemManager implements Client
         this._itemGroupManager = itemGroupManager;
     }
     // creates streaming request messages for items and register them to RFA
-    public void sendRequest(String pItemName,byte responseMsgType, int channelID)
+    public void sendRequest(String pItemName,byte responseMsgType)
     {
-    	this.channelID = channelID;
     	this.responseMessageType = responseMsgType;
     	_logger.info(_className+".sendRequest: Sending item("+pItemName+") requests to server ");
         String serviceName = _mainApp._serviceName;
@@ -179,7 +164,7 @@ public class ItemManager implements Client
         // register for each item
 		for (int i = 0; i < itemNames.length; i++) {
 			String itemName = itemNames[i];
-			this.clientRequestItemName = itemName;
+//			this.clientRequestItemName = itemName;
 			_logger.info(_className + ": Subscribing to " + itemName);
 
 			ommmsg.setAttribInfo(serviceName, itemName, RDMInstrument.NameType.RIC);
@@ -188,10 +173,9 @@ public class ItemManager implements Client
 			ommItemIntSpec.setMsg(ommmsg);
 			/**
 			 * 重要逻辑:
-			 * 向datasource注册感兴趣的Item,EventQueue使用QSConsumerProxy的Queue,监听器就是itemManager自己.
+			 * 向data source注册感兴趣的Item,EventQueue使用QSConsumerProxy的Queue,监听器就是itemManager自己.
 			 * dataSource产生感兴趣的时间后通过eventQueue向外发布.ItemManager能够收到这个事件.
-			 * ItemManager由于持有channelId,可以向gaichannel写返回的数据,
-			 * 该channel对应订阅了该item的client.
+			 * itemmanager 想所有订阅了该产品的channelGroup回写收到的消息.
 			 */
 			itemHandle = _mainApp.getOMMConsumer().registerClient(_mainApp.getEventQueue(), ommItemIntSpec, this, null);
 			_itemGroupManager.addItem(serviceName, itemName, itemHandle);
@@ -238,6 +222,12 @@ public class ItemManager implements Client
 
         OMMItemEvent ommItemEvent = (OMMItemEvent) event;
         OMMMsg respMsg = ommItemEvent.getMsg();
+        Document responseMsg = GenericOMMParser.parse(respMsg, clientRequestItemName);
+        
+        if (respMsg.getMsgType() == OMMMsg.MsgType.REFRESH_RESP){
+        	initialDocument = responseMsg;
+        }
+        
         // Status response can contain group id
 		if ((respMsg.getMsgType() == OMMMsg.MsgType.REFRESH_RESP)
 				|| (respMsg.getMsgType() == OMMMsg.MsgType.STATUS_RESP && respMsg.has(OMMMsg.HAS_ITEM_GROUP))) {
@@ -246,7 +236,7 @@ public class ItemManager implements Client
 			_itemGroupManager.applyGroup(itemHandle, group);
 		}
         
-		Document responseMsg = GenericOMMParser.parse(respMsg, clientRequestItemName);
+		
 		GateWayResponser.sentMrketPriceToSubsribeChannel(respMsg.getMsgType(), responseMsg, clientRequestItemName);
         if(responseMsg != null){
 //        	List<String> clientNameList =  GateWayServer._requestItemNameList.get(clientRequestItemName);
@@ -257,10 +247,17 @@ public class ItemManager implements Client
 //	        	}
 //        	}
         	long endTime = System.currentTimeMillis();
+        	_logger.info("publish Item "+clientRequestItemName+" use time"+(endTime-startTime)+"microseconds");
 //            _mainApp.updateResponseStat((endTime-startTime),responseMsg);
         }
         
     }
+    
+    public void sendInitialDocument(int channelId) {
+    	if(initialDocument!=null){
+    		GateWayResponser.sentInitialToChannel(OMMMsg.MsgType.REFRESH_RESP, initialDocument, clientRequestItemName,channelId);
+    	}
+	}
     
     /**
      * Handle solicited item events.
@@ -400,4 +397,5 @@ public class ItemManager implements Client
         // increment the time line
 //        _timeline += _appInput.statsMonitorIntervalInSecs;
     }
+	
 }

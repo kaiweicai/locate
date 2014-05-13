@@ -10,6 +10,7 @@ import org.dom4j.DocumentHelper;
 public class LocateMessage {
 	Logger logger = Logger.getLogger(LocateMessage.class);
 	
+	private int sequenceNo;
 	byte msgType;
 	int msgLength;
 	//如果发生错误errorCode>0;
@@ -20,7 +21,7 @@ public class LocateMessage {
 		
 	}
 	
-	public LocateMessage(byte msgType, Document document, int errorCode) {
+	public LocateMessage( byte msgType, Document document, int errorCode) {
 		this.msgType = msgType;
 		this.errorCode = errorCode;
 		try {
@@ -83,10 +84,21 @@ public class LocateMessage {
 		this.errorCode = errorCode;
 	}
 
+	public int getSequenceNo() {
+		return sequenceNo;
+	}
+
+	public void setSequenceNo(int sequenceNo) {
+		this.sequenceNo = sequenceNo;
+	}
+	
 	@Override
 	public String toString() {
-		return "LocateMessage [msgType=" + msgType + ", msgLength=" + msgLength + ", errorCode="
+		return "LocateMessage [sequenceNo = "+sequenceNo+", msgType=" + msgType + ", msgLength=" + msgLength + ", errorCode="
 				+ errorCode + ", document=" + document + "]";
 	}
+
+
+
 	
 }

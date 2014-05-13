@@ -20,6 +20,7 @@ public class GateWayEncoder extends SimpleChannelHandler {
 	public void writeRequested(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
 		buffer.clear();
 		LocateMessage message = (LocateMessage) e.getMessage();
+		buffer.writeInt(message.getSequenceNo());
 		buffer.writeByte(message.getMsgType());
 		buffer.writeInt(message.getErrorCode());
 		String xml = message.getDocument().asXML();

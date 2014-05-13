@@ -65,7 +65,7 @@ public class GatewayServerHandler extends SimpleChannelHandler {
 	
 	@Override
 	public void exceptionCaught(ChannelHandlerContext ctx, ExceptionEvent e) throws Exception {
-		_logger.error("Unexpect Exception from downstream! please contact the developer!"+e.getCause());
+		_logger.error("Unexpect Exception from downstream! please contact the developer!",e.getCause());
 //		e.getChannel().close();
 	}
 
@@ -142,7 +142,6 @@ public class GatewayServerHandler extends SimpleChannelHandler {
 				clientHandle.closeHandler(itemName);
 			}
 		}
-		//todo 这里还应该判断该用户订阅的marketprice是否应该取消.
 	}
 
 

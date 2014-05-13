@@ -29,6 +29,7 @@ import com.locate.common.GateWayMessageTypes.RFAMessageName;
 import com.locate.gate.coder.GateWayDecoder;
 import com.locate.gate.coder.GateWayEncoder;
 import com.locate.gate.model.LocateMessage;
+import com.locate.rmds.RFAServerManager;
 
 
 public class TestSocketClient{
@@ -116,6 +117,7 @@ public class TestSocketClient{
 	
 	private void sentMessageToServer(byte msgType,Document doc){
 		LocateMessage message = new LocateMessage(msgType, doc, 0);
+		message.setSequenceNo(RFAServerManager.sequenceNo.getAndIncrement());
 		ChannelFuture future = channel.write(message);
 		future.awaitUninterruptibly();
 	}

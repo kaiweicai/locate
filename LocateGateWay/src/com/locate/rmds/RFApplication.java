@@ -1,5 +1,7 @@
 package com.locate.rmds;
 
+import java.awt.Color;
+import java.awt.Component;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.net.InetSocketAddress;
@@ -10,6 +12,7 @@ import java.util.Map;
 import java.util.Vector;
 import java.util.concurrent.Executors;
 
+import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -19,8 +22,11 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
+import javax.swing.table.TableCellEditor;
+import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
 
 import org.apache.log4j.Logger;
@@ -86,6 +92,9 @@ public class RFApplication extends JFrame {
 	private JLabel avgTitle;
 	public static JLabel avgTimes;
 	private JButton closeButton;
+	private DefaultTableCellRenderer cellRanderer; 
+	private List<Integer> chanedRowList;
+	
 	public static boolean stop = false;
 
 	
@@ -104,16 +113,43 @@ public class RFApplication extends JFrame {
 	private JButton openButton;
 	private JTable marketPriceTable;
 	private TableModel tableModel;
-	
+	private RedRenderer redRenderer =new RedRenderer();
+	private BlueRenderer blueRenderer =new BlueRenderer();
+	private Map<String,Integer> IdAtRowidMap = new HashMap<String,Integer>();
 	StringBuilder sb = new StringBuilder();
 	public static long totalResponseNumber = 0;
 	public static long totalProcessTime = 0;
+	
 
 	private static final String PREFERRED_LOOK_AND_FEEL = "javax.swing.plaf.metal.MetalLookAndFeel";
 
+	private static ClientBootstrap bootstrap;
+	
 	public RFApplication() {
 		DOMConfigurator.configureAndWatch("config/test/log4j.xml");
 		initComponents();
+		initNettyClient();
+	}
+
+	private void initNettyClient() {
+		// 创建客户端channel的辅助类,发起connection请求
+		ChannelFactory factory = new NioClientSocketChannelFactory(Executors.newCachedThreadPool(),
+				Executors.newCachedThreadPool());
+		bootstrap = new ClientBootstrap(factory);
+		bootstrap.setPipelineFactory(new ChannelPipelineFactory() {
+			@Override
+			public ChannelPipeline getPipeline() throws Exception {
+				ChannelPipeline pipeline = Channels.pipeline();
+				pipeline.addLast("encoder", new GateWayEncoder());
+				pipeline.addLast("decoder", new GateWayDecoder());
+				pipeline.addLast("hanlder", new ClientHandler());
+				// pipeline.addLast("timeout", new IdleStateHandler(new
+				// HashedWheelTimer(), 0, 0, 10));
+				// pipeline.addLast("heartBeat", new ClientIdleHandler());
+				return pipeline;
+			}
+		});
+
 	}
 
 	private void initComponents() {
@@ -284,7 +320,7 @@ public class RFApplication extends JFrame {
 	
 	class TableModel extends AbstractTableModel{
 		private static final long serialVersionUID = 1L;
-		Map<String,CustomerFiled> data = new HashMap<String,CustomerFiled>();
+		Map<Integer,CustomerFiled> data = new HashMap<Integer,CustomerFiled>();
 		String[] columns = { "id", "name", "value" };
 
 		public TableModel(Document document) {
@@ -292,28 +328,54 @@ public class RFApplication extends JFrame {
 			Element fields = rmds.element(RFANodeconstant.RESPONSE_RESPONSE_NODE)
 					.element(RFANodeconstant.RESPONSE_FIELDS_NODE);
 			List<Element> filedList = fields.elements();
+			Integer rowid=0;
 			for (Element filed : filedList) {
-					String id = filed.element(RFANodeconstant.RESPONSE_FIELDS_FIELD_ID_NODE).getText();
-					String name = filed.element(RFANodeconstant.RESPONSE_FIELDS_FIELD_NAME_NODE).getText();
+					String id = "";
+					if(filed.element(RFANodeconstant.RESPONSE_FIELDS_FIELD_ID_NODE)!=null){
+						id = filed.element(RFANodeconstant.RESPONSE_FIELDS_FIELD_ID_NODE).getText();
+					}
+					String name = "";
+					
+					if(filed.element(RFANodeconstant.RESPONSE_FIELDS_FIELD_NAME_NODE)!=null){
+						name = filed.element(RFANodeconstant.RESPONSE_FIELDS_FIELD_NAME_NODE).getText();
+					}
+					
 					Element valueField = filed.element(RFANodeconstant.RESPONSE_FIELDS_FIELD_VALUE_NODE);
 					String value ="";
-					if(valueField!=null)
+					if(valueField!=null){
 						value = filed.element(RFANodeconstant.RESPONSE_FIELDS_FIELD_VALUE_NODE).getText();
+					}
 					CustomerFiled customerFiled = new CustomerFiled(id, name, value);
-					data.put(id,customerFiled);
+					IdAtRowidMap.put(id, rowid);
+					data.put(rowid++,customerFiled);
+					
 			}
 		}
 		
-		public void update(CustomerFiled field){
+		public void update(CustomerFiled field,int rowIndex){
 			String id = field.getId();
 			String name =field.getName();
 			String value = field.getValue();
-			CustomerFiled customerField=data.get(id);
-			customerField.setId(id);
-			customerField.setName(name);
+			CustomerFiled customerField=data.get(rowIndex);
+//			customerField.setId(id);
+//			customerField.setName(name);
 			customerField.setValue(value);
 		}
 
+		@Override
+		public Class<?> getColumnClass(int columnIndex) {
+			switch (columnIndex) {
+			case 0:
+				return Object.class;
+			case 1:
+				return Object.class;
+			case 2: 
+				return String.class;
+			default:
+				return Object.class;
+			}
+		}
+		
 		@Override
 		public int getRowCount() {
 			if (this.data == null)
@@ -330,6 +392,10 @@ public class RFApplication extends JFrame {
 		public Object getValueAt(int rowIndex, int columnIndex) {
 			CustomerFiled customerFiled = data.get(rowIndex);
 
+			if(customerFiled==null){
+				logger.info("error rowindex is "+rowIndex);
+				return "";
+			}
 			String r = "";
 			switch (columnIndex) {
 			case 0:
@@ -527,22 +593,6 @@ public class RFApplication extends JFrame {
 	private void conneteLocateGateWay() {
 		String serverAddress = serverAddressTextField.getText();
 		int port = Integer.parseInt(portTextField.getText());
-		// 创建客户端channel的辅助类,发起connection请求
-		ChannelFactory factory = new NioClientSocketChannelFactory(Executors.newCachedThreadPool(),
-				Executors.newCachedThreadPool());
-		ClientBootstrap bootstrap = new ClientBootstrap(factory);
-		bootstrap.setPipelineFactory(new ChannelPipelineFactory() {
-			@Override
-			public ChannelPipeline getPipeline() throws Exception {
-				ChannelPipeline pipeline = Channels.pipeline();
-				pipeline.addLast("encoder", new GateWayEncoder());
-				pipeline.addLast("decoder", new GateWayDecoder());
-				pipeline.addLast("hanlder", new ClientHandler());
-//				pipeline.addLast("timeout", new IdleStateHandler(new HashedWheelTimer(), 0, 0, 10));
-//				pipeline.addLast("heartBeat", new ClientIdleHandler());
-				return pipeline;
-			}
-		});
 		logger.info("start to conneted to server");
 		ChannelFuture future = bootstrap.connect(new InetSocketAddress(serverAddress,port));
 		try{
@@ -582,6 +632,7 @@ public class RFApplication extends JFrame {
 	
 	private void sentMessageToServer(byte msgType,Document doc){
 		LocateMessage message = new LocateMessage(msgType, doc, 0);
+		message.setSequenceNo(RFAServerManager.sequenceNo.getAndIncrement());
 		ChannelFuture future = channel.write(message);
 		future.awaitUninterruptibly();
 	}
@@ -628,6 +679,7 @@ public class RFApplication extends JFrame {
 		public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
 			super.messageReceived(ctx, e);
 			LocateMessage message = (LocateMessage) e.getMessage();
+			logger.info("original message -------"+message);
 			byte msgType = message.getMsgType();
 			int length = message.getMsgLength();
 			
@@ -644,6 +696,11 @@ public class RFApplication extends JFrame {
 				marketPriceTable.setModel(tableModel);
 			}else if(msgType==MsgType.UPDATE_RESP){
 				updateMarketPriceTable(tableModel,document);
+				marketPriceTable.updateUI();
+				marketPriceTable.setDefaultRenderer(String.class,redRenderer);
+				Thread.sleep(500);
+				marketPriceTable.setDefaultRenderer(String.class,blueRenderer);
+				marketPriceTable.updateUI();
 			}
 			
 			
@@ -656,8 +713,8 @@ public class RFApplication extends JFrame {
 			
 			t1 = System.currentTimeMillis();
 
-			System.out.println("Sent messages delay : " + (t1 - t0));
-			System.out.println();
+//			System.out.println("Sent messages delay : " + (t1 - t0));
+//			System.out.println();
 		}
 
 		private void updateMarketPriceTable(TableModel tableModel,Document document) {
@@ -665,16 +722,57 @@ public class RFApplication extends JFrame {
 			Element fields = rmds.element(RFANodeconstant.RESPONSE_RESPONSE_NODE)
 					.element(RFANodeconstant.RESPONSE_FIELDS_NODE);
 			List<Element> filedList = fields.elements();
+			chanedRowList = new ArrayList<Integer>();
 			for (Element filed : filedList) {
-					String id = filed.element(RFANodeconstant.RESPONSE_FIELDS_FIELD_ID_NODE).getText();
-					String name = filed.element(RFANodeconstant.RESPONSE_FIELDS_FIELD_NAME_NODE).getText();
-					Element valueField = filed.element(RFANodeconstant.RESPONSE_FIELDS_FIELD_VALUE_NODE);
-					String value ="";
-					if(valueField!=null)
+				String id = "";
+				if(filed.element(RFANodeconstant.RESPONSE_FIELDS_FIELD_ID_NODE).getText()!=null){
+					id=filed.element(RFANodeconstant.RESPONSE_FIELDS_FIELD_ID_NODE).getText();
+				}
+				int rowIndex = IdAtRowidMap.get(id);
+				
+				chanedRowList.add(rowIndex);
+				String name = "";
+				if (filed.element(RFANodeconstant.RESPONSE_FIELDS_FIELD_NAME_NODE).getText() != null) {
+					name = filed.element(RFANodeconstant.RESPONSE_FIELDS_FIELD_NAME_NODE).getText();
+				}
+				Element valueField = filed.element(RFANodeconstant.RESPONSE_FIELDS_FIELD_VALUE_NODE);
+				String value = "";
+				if (valueField != null){
+					if(valueField.getText()!=null){
 						value = filed.element(RFANodeconstant.RESPONSE_FIELDS_FIELD_VALUE_NODE).getText();
-					CustomerFiled customerFiled = new CustomerFiled(id, name, value);
-					tableModel.update(customerFiled);
+					}
+				}
+				CustomerFiled customerFiled = new CustomerFiled(id, name, value);
+				tableModel.update(customerFiled, rowIndex);
 			}
+		}
+	}
+	
+	class RedRenderer implements TableCellRenderer {
+		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
+				boolean hasFocus, int row, int column) {
+			JLabel jl = new JLabel();
+			if(chanedRowList.contains(row)){
+				jl.setForeground(Color.RED);
+			}
+			jl.setBackground(Color.WHITE);
+			jl.setOpaque(true);
+			jl.setText(value.toString());
+			return jl;
+		}
+	}
+	
+	class BlueRenderer implements TableCellRenderer {
+		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
+				boolean hasFocus, int row, int column) {
+			JLabel jl = new JLabel();
+			if(chanedRowList.contains(row)){
+				jl.setForeground(Color.blue);
+			}
+			jl.setBackground(Color.WHITE);
+			jl.setOpaque(true);
+			jl.setText(value.toString());
+			return jl;
 		}
 	}
 	

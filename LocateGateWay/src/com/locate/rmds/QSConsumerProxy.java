@@ -192,9 +192,11 @@ public class QSConsumerProxy{
 	// }
 
 	// This method utilizes ItemManager class to request items
-	public ItemManager itemRequests(String itemName, byte responseMsgType, int channelID) {
+	public ItemManager itemRequests(String itemName, byte responseMsgType,int channelId) {
 		Map<String,ItemManager> subscribeItemManagerMap = GateWayServer.subscribeItemManagerMap;
 		if(subscribeItemManagerMap.containsKey(itemName)){
+			ItemManager subscibeItemManager =  subscribeItemManagerMap.get(itemName);
+			subscibeItemManager.sendInitialDocument(channelId);
 			//已经订阅该产品.无需再到RFA订阅该产品.
 			return null;
 		}else{
@@ -202,7 +204,7 @@ public class QSConsumerProxy{
 			//一个产品对应一个itemManager对象
 			subscribeItemManagerMap.put(itemName, _itemManager);
 			// Send requests
-			_itemManager.sendRequest(itemName, responseMsgType, channelID);
+			_itemManager.sendRequest(itemName, responseMsgType);
 			return _itemManager;
 		}
 		// Initialize item manager for item domains
@@ -372,7 +374,7 @@ public class QSConsumerProxy{
 
 		byte type = 4;
 		// demo.itemRequests("AFX=", "test", type);
-		demo.itemRequests("APRE", type, 0);
+//		demo.itemRequests("APRE", type);
 		// Dispatch events
 		try {
 			demo.startDispatch();
