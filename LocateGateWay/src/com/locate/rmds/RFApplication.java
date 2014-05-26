@@ -4,7 +4,9 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.UnsupportedEncodingException;
 import java.net.InetSocketAddress;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -41,6 +43,8 @@ import org.dyno.visual.swing.layouts.Constraints;
 import org.dyno.visual.swing.layouts.GroupLayout;
 import org.dyno.visual.swing.layouts.Leading;
 import org.jboss.netty.bootstrap.ClientBootstrap;
+import org.jboss.netty.buffer.ChannelBuffer;
+import org.jboss.netty.buffer.ChannelBuffers;
 import org.jboss.netty.channel.Channel;
 import org.jboss.netty.channel.ChannelFactory;
 import org.jboss.netty.channel.ChannelFuture;
@@ -53,6 +57,8 @@ import org.jboss.netty.channel.ExceptionEvent;
 import org.jboss.netty.channel.MessageEvent;
 import org.jboss.netty.channel.SimpleChannelHandler;
 import org.jboss.netty.channel.socket.nio.NioClientSocketChannelFactory;
+import org.jboss.netty.handler.codec.frame.LengthFieldBasedFrameDecoder;
+import org.jboss.netty.handler.codec.frame.LengthFieldPrepender;
 import org.jboss.netty.handler.timeout.IdleState;
 import org.jboss.netty.handler.timeout.IdleStateAwareChannelHandler;
 import org.jboss.netty.handler.timeout.IdleStateEvent;
@@ -60,6 +66,7 @@ import org.jboss.netty.handler.timeout.IdleStateHandler;
 import org.jboss.netty.util.HashedWheelTimer;
 import org.springframework.web.util.HtmlUtils;
 
+import com.locate.common.Dom4jUtil;
 import com.locate.common.GateWayMessageTypes;
 import com.locate.common.GateWayMessageTypes.RFAMessageName;
 import com.locate.gate.coder.GateWayDecoder;
@@ -119,7 +126,7 @@ public class RFApplication extends JFrame {
 	StringBuilder sb = new StringBuilder();
 	public static long totalResponseNumber = 0;
 	public static long totalProcessTime = 0;
-	
+	UpdateTableColore updateTablePriceThread = new UpdateTableColore();
 
 	private static final String PREFERRED_LOOK_AND_FEEL = "javax.swing.plaf.metal.MetalLookAndFeel";
 
@@ -140,8 +147,10 @@ public class RFApplication extends JFrame {
 			@Override
 			public ChannelPipeline getPipeline() throws Exception {
 				ChannelPipeline pipeline = Channels.pipeline();
-				pipeline.addLast("encoder", new GateWayEncoder());
-				pipeline.addLast("decoder", new GateWayDecoder());
+				pipeline.addLast("encoder", new LengthFieldPrepender(2));
+				pipeline.addLast("decoder", new LengthFieldBasedFrameDecoder(64*1024,0,2,0,2));
+//				pipeline.addLast("encoder", new GateWayEncoder());
+//				pipeline.addLast("decoder", new GateWayDecoder());
 				pipeline.addLast("hanlder", new ClientHandler());
 				// pipeline.addLast("timeout", new IdleStateHandler(new
 				// HashedWheelTimer(), 0, 0, 10));
@@ -157,36 +166,36 @@ public class RFApplication extends JFrame {
 		GroupLayout mainGroupLayout = new GroupLayout();
 		setLayout(mainGroupLayout);
 		
-		add(getUserNameLabel(), new Constraints(new Leading(1180, 100, 12, 12), new Leading(19, 12, 12)));
-		add(getUserNameTextField(), new Constraints(new Leading(1300, 100, 12, 12), new Leading(19, 12, 12)));
-		add(getPasswordLabel(), new Constraints(new Leading(1180, 100, 12, 12), new Leading(50, 12, 12)));
-		add(getPasswordTextField(), new Constraints(new Leading(1300, 12, 12), new Leading(50, 12, 12)));
-		add(getServerAddressLabel(), new Constraints(new Leading(1180, 100, 12, 12), new Leading(80, 12, 12)));
-		add(getServerAddressTextField(), new Constraints(new Leading(1300, 100, 12, 12), new Leading(80, 12, 12)));
-		add(getPortLabel(), new Constraints(new Leading(1180, 100, 12, 12), new Leading(120, 12, 12)));
-		add(getPortTextField(), new Constraints(new Leading(1300, 100, 12, 12), new Leading(120, 12, 12)));
+		add(getUserNameLabel(), new Constraints(new Leading(550, 100, 12, 12), new Leading(19, 12, 12)));
+		add(getUserNameTextField(), new Constraints(new Leading(670, 100, 12, 12), new Leading(19, 12, 12)));
+		add(getPasswordLabel(), new Constraints(new Leading(550, 100, 12, 12), new Leading(50, 12, 12)));
+		add(getPasswordTextField(), new Constraints(new Leading(670, 12, 12), new Leading(50, 12, 12)));
+		add(getServerAddressLabel(), new Constraints(new Leading(550, 100, 12, 12), new Leading(80, 12, 12)));
+		add(getServerAddressTextField(), new Constraints(new Leading(670, 100, 12, 12), new Leading(80, 12, 12)));
+		add(getPortLabel(), new Constraints(new Leading(550, 100, 12, 12), new Leading(120, 12, 12)));
+		add(getPortTextField(), new Constraints(new Leading(670, 100, 12, 12), new Leading(120, 12, 12)));
 		
-		add(getConnetedButton(), new Constraints(new Leading(1180, 12, 12), new Leading(150, 12, 12)));
+		add(getConnetedButton(), new Constraints(new Leading(550, 12, 12), new Leading(150, 12, 12)));
 		
-		add(getRicLabel(), new Constraints(new Leading(1180, 100, 12, 12), new Leading(190, 12, 12)));
-		add(getRicTextField(), new Constraints(new Leading(1300, 100, 12, 12), new Leading(190, 12, 12)));
-		add(getOpenButton(), new Constraints(new Leading(1180, 12, 12), new Leading(220, 12, 12)));
-		add(getTableScrollPane(), new Constraints(new Leading(1180, 12, 12), new Leading(280, 12, 12)));
+		add(getRicLabel(), new Constraints(new Leading(550, 100, 12, 12), new Leading(190, 12, 12)));
+		add(getRicTextField(), new Constraints(new Leading(670, 100, 12, 12), new Leading(190, 12, 12)));
+		add(getOpenButton(), new Constraints(new Leading(550, 12, 12), new Leading(220, 12, 12)));
+		add(getTableScrollPane(), new Constraints(new Leading(550, 12, 12), new Leading(280, 12, 12)));
 		
 		
-		add(getCurrentUserTitle(), new Constraints(new Leading(40, 111, 12, 12), new Leading(19, 12, 12)));
-		add(getCurrentUserNumber(), new Constraints(new Leading(169, 91, 10, 10), new Leading(19, 12, 12)));
-		add(getCurrentRequestNumber(), new Constraints(new Leading(402, 85, 10, 10), new Leading(19, 12, 12)));
-		add(getCurrentRequestTitle(), new Constraints(new Leading(272, 112, 12, 12), new Leading(19, 12, 12)));
-		add(getAvgTitle(), new Constraints(new Leading(801, 148, 10, 10), new Leading(19, 10, 10)));
-		add(getResponseNumber(), new Constraints(new Leading(682, 95, 10, 10), new Leading(19, 12, 12)));
-		add(getResponseTitle(), new Constraints(new Leading(555, 99, 10, 10), new Leading(19, 12, 12)));
-		add(getAvgTimes(), new Constraints(new Leading(972, 73, 10, 10), new Leading(15, 10, 10)));
+//		add(getCurrentUserTitle(), new Constraints(new Leading(40, 111, 12, 12), new Leading(19, 12, 12)));
+//		add(getCurrentUserNumber(), new Constraints(new Leading(169, 91, 10, 10), new Leading(19, 12, 12)));
+//		add(getCurrentRequestNumber(), new Constraints(new Leading(402, 85, 10, 10), new Leading(19, 12, 12)));
+//		add(getCurrentRequestTitle(), new Constraints(new Leading(272, 112, 12, 12), new Leading(19, 12, 12)));
+//		add(getAvgTitle(), new Constraints(new Leading(801, 148, 10, 10), new Leading(19, 10, 10)));
+//		add(getResponseNumber(), new Constraints(new Leading(682, 95, 10, 10), new Leading(19, 12, 12)));
+//		add(getResponseTitle(), new Constraints(new Leading(555, 99, 10, 10), new Leading(19, 12, 12)));
+//		add(getAvgTimes(), new Constraints(new Leading(972, 73, 10, 10), new Leading(15, 10, 10)));
 		add(getCloseButton(), new Constraints(new Leading(1063, 12, 12), new Leading(10, 12, 12)));
 		
-		add(getJScrollPane0(), new Constraints(new Leading(30, 1081, 10, 10), new Leading(51, 403, 10, 10)));
+		add(getJScrollPane0(), new Constraints(new Leading(30, 500, 10, 10), new Leading(51, 800, 10, 10)));
 		
-		setSize(1700, 800);
+		setSize(1024, 900);
 		// this.pack();
 //		(new RemoveMoreData()).start();
 	}
@@ -295,7 +304,6 @@ public class RFApplication extends JFrame {
 			closeButton = new JButton();
 			closeButton.setText("¹Ø±Õ³ÌÐò");
 			closeButton.addMouseListener(new MouseAdapter() {
-
 				public void mouseClicked(MouseEvent event) {
 					shutdownLocateGateWay();
 				}
@@ -593,6 +601,8 @@ public class RFApplication extends JFrame {
 	private void conneteLocateGateWay() {
 		String serverAddress = serverAddressTextField.getText();
 		int port = Integer.parseInt(portTextField.getText());
+		bootstrap.setOption("tcpNodelay", true);
+		bootstrap.setOption("child.keepalive", true);
 		logger.info("start to conneted to server");
 		ChannelFuture future = bootstrap.connect(new InetSocketAddress(serverAddress,port));
 		try{
@@ -631,10 +641,19 @@ public class RFApplication extends JFrame {
 	}
 	
 	private void sentMessageToServer(byte msgType,Document doc){
-		LocateMessage message = new LocateMessage(msgType, doc, 0);
-		message.setSequenceNo(RFAServerManager.sequenceNo.getAndIncrement());
-		ChannelFuture future = channel.write(message);
-		future.awaitUninterruptibly();
+//		LocateMessage message = new LocateMessage(msgType, doc, 0);
+//		message.setSequenceNo(RFAServerManager.sequenceNo.getAndIncrement());
+		Dom4jUtil.addLocateInfo(doc, msgType, RFAServerManager.sequenceNo.getAndIncrement(), 0);
+		byte[] content = null;
+		try {
+			content = doc.asXML().getBytes("UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			logger.error("Not surport encoding",e);
+		}
+		ChannelBuffer buffer = ChannelBuffers.buffer(content.length);
+		buffer.writeBytes(content);
+		ChannelFuture future = channel.write(buffer);
+//		future.awaitUninterruptibly();
 	}
 
 	private void createFutureRequest(Document doc,String ric){
@@ -655,7 +674,6 @@ public class RFApplication extends JFrame {
 	class ClientHandler extends SimpleChannelHandler {
 
 		long t0, t1;
-
 		@Override
 		public void exceptionCaught(ChannelHandlerContext ctx, ExceptionEvent e) throws Exception {
 			sb.append("NIO error "+e.getCause());
@@ -675,18 +693,54 @@ public class RFApplication extends JFrame {
 			return userData;
 		}
 
+//		@Override
+//		public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
+//			super.messageReceived(ctx, e);
+//			LocateMessage message = (LocateMessage) e.getMessage();
+//			logger.info("original message -------"+message);
+//			byte msgType = message.getMsgType();
+//			int length = message.getMsgLength();
+//			
+//			sb.append("receive messages length:" + length+"\n");
+//			sb.append("Received message type:" + RFAMessageName.getRFAMessageName(msgType)+"\n");
+//			
+//			Document document = message.getDocument();
+//			if (document == null) {
+//				sb.append("Received server's  message is null \n");
+//				return;
+//			}
+//			if(msgType==MsgType.REFRESH_RESP){
+//				tableModel = new TableModel(document);
+//				marketPriceTable.setModel(tableModel);
+//			}else if(msgType==MsgType.UPDATE_RESP){
+//				updateMarketPriceTable(tableModel,document);
+//				marketPriceTable.updateUI();
+//				marketPriceTable.setDefaultRenderer(String.class,redRenderer);
+////				Thread.sleep(500);
+////				marketPriceTable.setDefaultRenderer(String.class,blueRenderer);
+//				marketPriceTable.updateUI();
+//			}
+//			
+//			
+//			
+//			String content = HtmlUtils.htmlUnescape(document.asXML());
+//			// String content = response.asXML();
+//			sb.append("Received server's  message : " + content+"\n");
+//			
+//			updateLog(sb.toString());
+//			
+//			t1 = System.currentTimeMillis();
+//		}
+		
 		@Override
 		public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
 			super.messageReceived(ctx, e);
-			LocateMessage message = (LocateMessage) e.getMessage();
-			logger.info("original message -------"+message);
-			byte msgType = message.getMsgType();
-			int length = message.getMsgLength();
-			
-			sb.append("receive messages length:" + length+"\n");
+			ChannelBuffer channelBuffer = (ChannelBuffer) e.getMessage();
+			String msg = channelBuffer.toString(Charset.forName("UTF-8"));
+			Document document = Dom4jUtil.convertDocument(msg);
+			logger.info("original message -------"+msg);
+			byte msgType = Dom4jUtil.getMsgType(document);
 			sb.append("Received message type:" + RFAMessageName.getRFAMessageName(msgType)+"\n");
-			
-			Document document = message.getDocument();
 			if (document == null) {
 				sb.append("Received server's  message is null \n");
 				return;
@@ -694,29 +748,17 @@ public class RFApplication extends JFrame {
 			if(msgType==MsgType.REFRESH_RESP){
 				tableModel = new TableModel(document);
 				marketPriceTable.setModel(tableModel);
+				updateTablePriceThread.setMarketPriceTable(marketPriceTable);
 			}else if(msgType==MsgType.UPDATE_RESP){
 				updateMarketPriceTable(tableModel,document);
-				marketPriceTable.updateUI();
-				marketPriceTable.setDefaultRenderer(String.class,redRenderer);
-				Thread.sleep(500);
-				marketPriceTable.setDefaultRenderer(String.class,blueRenderer);
-				marketPriceTable.updateUI();
+				updateTablePriceThread.setUpdate(true);
 			}
-			
-			
-			
-			String content = HtmlUtils.htmlUnescape(document.asXML());
 			// String content = response.asXML();
-			sb.append("Received server's  message : " + content+"\n");
-			
+			sb.append("Received server's  message : " + msg+"\n");
 			updateLog(sb.toString());
-			
 			t1 = System.currentTimeMillis();
-
-//			System.out.println("Sent messages delay : " + (t1 - t0));
-//			System.out.println();
 		}
-
+		
 		private void updateMarketPriceTable(TableModel tableModel,Document document) {
 			Element rmds = document.getRootElement();
 			Element fields = rmds.element(RFANodeconstant.RESPONSE_RESPONSE_NODE)
@@ -739,14 +781,18 @@ public class RFApplication extends JFrame {
 				String value = "";
 				if (valueField != null){
 					if(valueField.getText()!=null){
-						value = filed.element(RFANodeconstant.RESPONSE_FIELDS_FIELD_VALUE_NODE).getText();
+						value = valueField.getText();
 					}
 				}
 				CustomerFiled customerFiled = new CustomerFiled(id, name, value);
 				tableModel.update(customerFiled, rowIndex);
 			}
 		}
+		
+		
 	}
+	
+	
 	
 	class RedRenderer implements TableCellRenderer {
 		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
@@ -759,6 +805,56 @@ public class RFApplication extends JFrame {
 			jl.setOpaque(true);
 			jl.setText(value.toString());
 			return jl;
+		}
+	}
+	
+	class UpdateTableColore extends Thread {
+		private boolean update = false;
+
+		public boolean isUpdate() {
+			return update;
+		}
+
+		public void setUpdate(boolean update) {
+			this.update = update;
+		}
+
+		private JTable marketPriceTable;
+
+		public JTable getMarketPriceTable() {
+			return marketPriceTable;
+		}
+
+		public void setMarketPriceTable(JTable marketPriceTable) {
+			this.marketPriceTable = marketPriceTable;
+		}
+
+		public UpdateTableColore() {
+			update = false;
+			this.start();
+		}
+
+		public void run() {
+			while (true) {
+				try {
+					if (update) {
+						repaintMarketPrice(marketPriceTable);
+						update = false;
+					} else {
+						Thread.sleep(10);
+					}
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		
+		public void repaintMarketPrice(JTable marketPriceTable) throws InterruptedException{
+			marketPriceTable.repaint();
+			marketPriceTable.setDefaultRenderer(String.class,redRenderer);
+			Thread.sleep(500);
+			marketPriceTable.setDefaultRenderer(String.class,blueRenderer);
+			marketPriceTable.repaint();
 		}
 	}
 	

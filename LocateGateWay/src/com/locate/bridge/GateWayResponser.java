@@ -1,11 +1,15 @@
 package com.locate.bridge;
 
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 
 import org.apache.log4j.Logger;
 import org.dom4j.Document;
+import org.jboss.netty.buffer.ChannelBuffer;
+import org.jboss.netty.buffer.ChannelBuffers;
 import org.jboss.netty.channel.Channel;
 
+import com.locate.common.Dom4jUtil;
 import com.locate.gate.GateWayServer;
 import com.locate.gate.model.LocateMessage;
 import com.locate.rmds.RFAServerManager;
@@ -13,54 +17,105 @@ import com.reuters.rfa.omm.OMMMsg;
 
 /**
  * RFA 通过该程序将消息发送到gateway.
+ * 
  * @author cloud wei
- *
+ * 
  */
 public class GateWayResponser {
-	
+
 	public static final Charset CHARSET = Charset.forName("UTF-8");
 	static Logger logger = Logger.getLogger(GateWayResponser.class.getName());
-	
-	public static void sentResponseMsg(byte msgType,Document response,Integer channelId){
-		LocateMessage message = new LocateMessage(msgType, response, 0);
-		message.setSequenceNo(RFAServerManager.sequenceNo.getAndIncrement());
-		Channel channel = GateWayServer.allChannelGroup.find(channelId);
-		if(channel!=null&&channel.isConnected()){
-			channel.write(message);
-		}else{
-			logger.error("The channel had been closed when write login response to client. Channel ID is "+ channelId);
+
+	public static void sentResponseMsg(byte msgType, Document response, Integer channelId) {
+		// LocateMessage message = new LocateMessage(msgType, response, 0);
+		Dom4jUtil.addLocateInfo(response, msgType, RFAServerManager.sequenceNo.getAndIncrement(), 0);
+		// message.setSequenceNo(RFAServerManager.sequenceNo.getAndIncrement());
+		byte[] content = null;
+		try {
+			content = response.asXML().getBytes("UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			logger.error("Not surport encoding",e);
 		}
-	}
-	
-	public static void sentAllChannelNews(byte msgType,Document response){
-		LocateMessage message = new LocateMessage(msgType, response, 0);
-		message.setSequenceNo(RFAServerManager.sequenceNo.getAndIncrement());
-		GateWayServer.allChannelGroup.write(message);
-	}
-	
-	public static void sentMrketPriceToSubsribeChannel(byte msgType,Document response,String itemName){
-		LocateMessage message = new LocateMessage(msgType, response, 0);
-		message.setSequenceNo(RFAServerManager.sequenceNo.getAndIncrement());
-		GateWayServer.itemNameChannelMap.get(itemName).write(message);
-	}
-	
-	public static void sentInitialToChannel(byte msgType,Document response,String itemName,int channelId){
-		LocateMessage message = new LocateMessage(msgType, response, 0);
-		message.setSequenceNo(RFAServerManager.sequenceNo.getAndIncrement());
-		GateWayServer.allChannelGroup.find(channelId).write(message);
-	}
-	
-	
-	public static void sentNotiFyResponseMsg(byte msgType,Document response,Integer channelId,int errorCode){
-		LocateMessage message = new LocateMessage(msgType, response, errorCode);
-		message.setSequenceNo(RFAServerManager.sequenceNo.getAndIncrement());
+		ChannelBuffer buffer = ChannelBuffers.buffer(content.length);
+		buffer.writeBytes(content);
+		logger.info("downStream message is :"+content);
 		Channel channel = GateWayServer.allChannelGroup.find(channelId);
-		if(channel!=null&&channel.isConnected()){
-			channel.write(message);
-		}else{
-			logger.error("The channel had been closed when write login response to client. Channel ID is "+ channelId);
+		if (channel != null && channel.isConnected()) {
+			channel.write(buffer);
+		} else {
+			logger.error("The channel had been closed when write login response to client. Channel ID is " + channelId);
 		}
+		logger.info("downStream message is :"+content);
 	}
-	
+
+	public static void sentAllChannelNews(byte msgType, Document response) {
+		// LocateMessage message = new LocateMessage(msgType, response, 0);
+		// message.setSequenceNo(RFAServerManager.sequenceNo.getAndIncrement());
+		Dom4jUtil.addLocateInfo(response, msgType, RFAServerManager.sequenceNo.getAndIncrement(), 0);
+		byte[] content = null;
+		try {
+			content = response.asXML().getBytes("UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			logger.error("Not surport encoding",e);
+		}
+		ChannelBuffer buffer = ChannelBuffers.buffer(content.length);
+		buffer.writeBytes(content);
+		GateWayServer.allChannelGroup.write(buffer);
+		logger.info("downStream message is :"+content);
+	}
+
+	public static void sentMrketPriceToSubsribeChannel(byte msgType, Document response, String itemName) {
+		// LocateMessage message = new LocateMessage(msgType, response, 0);
+		// message.setSequenceNo(RFAServerManager.sequenceNo.getAndIncrement());
+		Dom4jUtil.addLocateInfo(response, msgType, RFAServerManager.sequenceNo.getAndIncrement(), 0);
+		byte[] content = null;
+		try {
+			content = response.asXML().getBytes("UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			logger.error("Not surport encoding",e);
+		}
+		ChannelBuffer buffer = ChannelBuffers.buffer(content.length);
+		buffer.writeBytes(content);
+		GateWayServer.itemNameChannelMap.get(itemName).write(buffer);
+		logger.info("downStream message is :"+content);
+	}
+
+	public static void sentInitialToChannel(byte msgType, Document response, String itemName, int channelId) {
+		// LocateMessage message = new LocateMessage(msgType, response, 0);
+		// message.setSequenceNo(RFAServerManager.sequenceNo.getAndIncrement());
+		Dom4jUtil.addLocateInfo(response, msgType, RFAServerManager.sequenceNo.getAndIncrement(), 0);
+		byte[] content = null;
+		try {
+			content = response.asXML().getBytes("UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			logger.error("Not surport encoding",e);
+		}
+		ChannelBuffer buffer = ChannelBuffers.buffer(content.length);
+		buffer.writeBytes(content);
+		GateWayServer.allChannelGroup.find(channelId).write(buffer);
+		logger.info("downStream message is :"+content);
+	}
+
+	public static void sentNotiFyResponseMsg(byte msgType, Document response, Integer channelId, int errorCode) {
+		// LocateMessage message = new LocateMessage(msgType, response,
+		// errorCode);
+		// message.setSequenceNo(RFAServerManager.sequenceNo.getAndIncrement());
+		Dom4jUtil.addLocateInfo(response, msgType, RFAServerManager.sequenceNo.getAndIncrement(), errorCode);
+		byte[] content = null;
+		try {
+			content = response.asXML().getBytes("UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			logger.error("Not surport encoding",e);
+		}
+		ChannelBuffer buffer = ChannelBuffers.buffer(content.length);
+		buffer.writeBytes(content);
+		Channel channel = GateWayServer.allChannelGroup.find(channelId);
+		if (channel != null && channel.isConnected()) {
+			channel.write(buffer);
+		} else {
+			logger.error("The channel had been closed when write login response to client. Channel ID is " + channelId);
+		}
+		logger.info("downStream message is :"+content);
+	}
 
 }

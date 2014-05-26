@@ -17,25 +17,35 @@ public class GateWayDecoder extends FrameDecoder {
 	Logger logger = Logger.getLogger(GateWayDecoder.class);
 	
 	private final ChannelBuffer buffer = ChannelBuffers.dynamicBuffer();
-	static int MSG_HEADER_LEN = 9;// length of meessage type and data's length
+	static int MSG_HEADER_LEN = 13;// length of meessage type and data's length
 	@Override
 	protected Object decode(ChannelHandlerContext ctx, Channel channel, ChannelBuffer channelBuffer) throws Exception {
 //		ChannelBuffer buffer = ChannelBuffers.dynamicBuffer();
-		if (channelBuffer.readableBytes() < 4) {
+		if (channelBuffer.readableBytes() < 13) {
 	        // The length field was not received yet - return null.
 	        // This method will be invoked again when more packets are
 	        // received and appended to the buffer.
-			logger.error("read bytes less than 4");
+			logger.error("read bytes less than 13");
 			return null;
 		}
 		
+		
 		channelBuffer.markReaderIndex();
 		int sequenceNo = channelBuffer.readInt();
+		logger.info("-----------readerIndex is --------"+channelBuffer.readerIndex());
 		byte msgType = channelBuffer.readByte();
+		logger.info("-----------readerIndex is --------"+channelBuffer.readerIndex());
 		int errorCode = channelBuffer.readInt();
+		logger.info("-----------readerIndex is --------"+channelBuffer.readerIndex());
 		int msgLength = channelBuffer.readInt();
+		logger.info("-----------readerIndex is --------"+channelBuffer.readerIndex());
+		logger.info("-----------sequenceNo is --------"+sequenceNo);
+		logger.info("-----------msgType is --------"+msgType);
+		logger.info("-----------errorCode is --------"+errorCode);
+		logger.info("-----------msgLength is --------"+msgLength);
 		if(msgLength>20000){
 			logger.error("mesge lenght too big, mesg length is "+msgLength);
+			logger.debug(msgLength);
 		}
 		if (channelBuffer.readableBytes() < msgLength) {
 			channelBuffer.resetReaderIndex();
@@ -53,7 +63,12 @@ public class GateWayDecoder extends FrameDecoder {
 		}catch(Exception e){
 			logger.error("",e.getCause());
 		}
-		Document doc = DocumentHelper.parseText(content);
+		Document doc=null;
+		try{
+			doc = DocumentHelper.parseText(content);
+		}catch(Exception e){
+			e.printStackTrace();
+		}
 		LocateMessage message = new LocateMessage(msgType,doc, errorCode);
 		message.setSequenceNo(sequenceNo);
 		buffer.clear();

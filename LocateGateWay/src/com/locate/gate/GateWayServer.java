@@ -12,6 +12,8 @@ import org.dom4j.Document;
 import org.dom4j.DocumentFactory;
 import org.dom4j.Element;
 import org.jboss.netty.bootstrap.ServerBootstrap;
+import org.jboss.netty.buffer.ChannelBuffer;
+import org.jboss.netty.buffer.ChannelBuffers;
 import org.jboss.netty.channel.Channel;
 import org.jboss.netty.channel.ChannelFactory;
 import org.jboss.netty.channel.ChannelHandlerContext;
@@ -21,6 +23,8 @@ import org.jboss.netty.channel.Channels;
 import org.jboss.netty.channel.group.ChannelGroup;
 import org.jboss.netty.channel.group.DefaultChannelGroup;
 import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
+import org.jboss.netty.handler.codec.frame.LengthFieldBasedFrameDecoder;
+import org.jboss.netty.handler.codec.frame.LengthFieldPrepender;
 import org.jboss.netty.handler.timeout.IdleState;
 import org.jboss.netty.handler.timeout.IdleStateAwareChannelHandler;
 import org.jboss.netty.handler.timeout.IdleStateEvent;
@@ -30,6 +34,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.locate.LocateGateWayMain;
+import com.locate.common.Dom4jUtil;
 import com.locate.common.GateWayExceptionTypes;
 import com.locate.common.GateWayExceptionTypes.RFAExceptionEnum;
 import com.locate.common.GateWayMessageTypes;
@@ -82,7 +87,10 @@ public class GateWayServer {
 		ChannelPipelineFactory pipelineFactory = new ChannelPipelineFactory() {
 			@Override
 			public ChannelPipeline getPipeline() throws Exception {
-				ChannelPipeline pipeline =Channels.pipeline(new GateWayDecoder(),new GateWayEncoder(),gateWayServerHandler);
+//				ChannelPipeline pipeline =Channels.pipeline(new GateWayDecoder(),new GateWayEncoder(),gateWayServerHandler);
+				ChannelPipeline pipeline = Channels.pipeline(new LengthFieldPrepender(2),
+						new LengthFieldBasedFrameDecoder(64 * 1024, 0, 2, 0, 2), 
+						gateWayServerHandler);
 				//如果服务器端一直都没有向该channel发送信息,需要提醒客户端.
 				pipeline.addLast("timeout", new IdleStateHandler(new HashedWheelTimer(), 10, 10, 0));
 				pipeline.addLast("hearbeat", new Heartbeat());
@@ -134,14 +142,17 @@ public class GateWayServer {
 			    Element rmds = reponseDoc.addElement(RFANodeconstant.RESPONSE_ROOT_NODE);
 				Element response = rmds.addElement(RFANodeconstant.RESPONSE_RESPONSE_NODE);
 				Element error = response.addElement(RFANodeconstant.RESPONSE_ERROR_NODE);
-				int errorCode =GateWayExceptionTypes.CHANNEL_IDLE_TIMEOUT;
+				int errorCode = GateWayExceptionTypes.CHANNEL_IDLE_TIMEOUT;
 				String descriptioin = RFAExceptionEnum.getExceptionDescription(errorCode);
 				error.addElement(RFANodeconstant.RESPONSE_ERROR_CODE_NODE).addText(String.valueOf(errorCode));
 				error.addElement(RFANodeconstant.RESPONSE_ERROR_DESC_NODE).addText(String.valueOf(descriptioin));
-			    
-			    LocateMessage message = new LocateMessage(GateWayMessageTypes.REQUEST_EOCH, reponseDoc, 0);
-			    message.setSequenceNo(RFAServerManager.sequenceNo.getAndIncrement());
-				e.getChannel().write(message);
+				Dom4jUtil.addLocateInfo(reponseDoc, GateWayMessageTypes.REQUEST_EOCH, RFAServerManager.sequenceNo.getAndIncrement(), 0);
+//			    LocateMessage message = new LocateMessage(GateWayMessageTypes.REQUEST_EOCH, reponseDoc, 0);
+//			    message.setSequenceNo(RFAServerManager.sequenceNo.getAndIncrement());
+				byte[] content = reponseDoc.asXML().getBytes("UTF-8");
+				ChannelBuffer buffer = ChannelBuffers.buffer(content.length);
+				buffer.writeBytes(content);
+				e.getChannel().write(buffer);
 				i=0;
 			}
 //			if(i>60){

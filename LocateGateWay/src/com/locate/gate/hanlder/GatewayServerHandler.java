@@ -1,6 +1,7 @@
 package com.locate.gate.hanlder;
 
 import java.net.InetSocketAddress;
+import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -8,6 +9,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.log4j.Logger;
 import org.dom4j.Document;
+import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.channel.Channel;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.ChannelStateEvent;
@@ -19,6 +21,7 @@ import org.jboss.netty.channel.group.DefaultChannelGroup;
 
 import com.locate.LocateGateWayMain;
 import com.locate.bridge.ClientHandle;
+import com.locate.common.Dom4jUtil;
 import com.locate.common.GateWayMessageTypes;
 import com.locate.gate.GateWayServer;
 import com.locate.gate.model.ClientInfo;
@@ -80,16 +83,64 @@ public class GatewayServerHandler extends SimpleChannelHandler {
 		RFApplication.currentRequestNumber.setText(String.valueOf(currentRequestItemNum));
 	}
 
+//	@Override
+//	public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
+//		// super.messageReceived(ctx, e);
+//		t0 = System.currentTimeMillis();
+//		int numberOfMessage = numberOfReceived.incrementAndGet();
+//		try {
+//			LocateMessage data = (LocateMessage) e.getMessage();
+//			byte msgType = data.getMsgType();
+//			// Pick up message type from client's data
+//			Document userRequest = data.getDocument();
+//			// Judge client whether logon
+//			String userName = null;
+//			
+//			String clientIP = ((InetSocketAddress) e.getRemoteAddress()).getAddress().getHostAddress();
+//			_logger.info("Server received " + clientIP + " messages, Request message type:" + msgType);
+//			_logger.info("Client request :" + userRequest.asXML());
+//			
+//			Channel channel = e.getChannel();
+//			
+//			//将channelId和对应的channel放到map中,会写客户端的时候可以根据该id找到对应的channel.
+//			if(!GateWayServer.allChannelGroup.contains(channel)){
+//				GateWayServer.allChannelGroup.add(channel);
+//			}
+//			userName = GateWayServer._userConnection.get(clientIP);
+//			ClientInfo clientInfo = new ClientInfo(userRequest, userName, channel.getId(), msgType, clientIP);
+////		    ClientHandle clientHandle = (ClientHandle)LocateGateWayMain.springContext.getBean("clientHandler"); 
+//			if(msgType != GateWayMessageTypes.LOGIN){
+//				for (String subcribeItemName : clientHandle.pickupClientReqItem(userRequest)) {
+//					Map<String, ChannelGroup> subscribeChannelMap = GateWayServer.itemNameChannelMap;
+//					ChannelGroup subChannelGroup = subscribeChannelMap.get(subcribeItemName);
+//					if (subChannelGroup == null) {
+//						subChannelGroup = new DefaultChannelGroup();
+//						subscribeChannelMap.put(subcribeItemName,subChannelGroup);
+//					}
+//					if (!subChannelGroup.contains(channel)) {
+//						subChannelGroup.add(channel);
+//					}
+//				}
+//			}
+//			//RFAClientHandler process message and send the request to RFA.
+//			clientHandle.process(clientInfo);
+//		} catch (Throwable throwable) {
+//			_logger.error("Unexpected error ocurres", throwable);
+//		}
+//	}
+	
 	@Override
 	public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
 		// super.messageReceived(ctx, e);
 		t0 = System.currentTimeMillis();
 		int numberOfMessage = numberOfReceived.incrementAndGet();
 		try {
-			LocateMessage data = (LocateMessage) e.getMessage();
-			byte msgType = data.getMsgType();
-			// Pick up message type from client's data
-			Document userRequest = data.getDocument();
+			ChannelBuffer channelBuffer = (ChannelBuffer) e.getMessage();
+			String msg = channelBuffer.toString(Charset.forName("UTF-8"));
+			Document userRequest = Dom4jUtil.convertDocument(msg);
+			_logger.info("original message -------"+msg);
+			
+			byte msgType = Dom4jUtil.getMsgType(userRequest);
 			// Judge client whether logon
 			String userName = null;
 

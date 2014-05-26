@@ -11,6 +11,10 @@ public class RFANodeconstant {
 	public final static String RESPONSE_LOGIN_RESULT_NODE = "result";
 	public final static String RESPONSE_LOGIN_DESC_NODE = "description";
 	
+	public final static String SEQUENCE_NO_NODE = "sequence";
+	public final static String ERROR_CODE_NODE = "errorCode";
+	public final static String MSG_TYPE_NODE = "msgType";
+	
 	public final static String RESPONSE_ERROR_NODE = "error";
 	public final static String RESPONSE_ERROR_CODE_NODE = "code";
 	public final static String RESPONSE_ERROR_DESC_NODE = "description";

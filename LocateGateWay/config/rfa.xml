@@ -33,10 +33,12 @@
               <node name="localConsumerConnection">
                 <map>
                   <entry key="connectionType" value="RSSL"/>
-                  <!-- <entry key="serverList" value="10.34.9.91"/> -->
                   <entry key="serverList" value="192.168.6.1"/>
                   <entry key="portNumber" value="14002"/>
                   <entry key="userName" value="deve01"/>
+                  <!--<entry key="serverList" value="120.197.99.119"/>
+                  <entry key="portNumber" value="14002"/>
+                  <entry key="userName" value="deve01"/>-->
                 </map>
               </node>
             </node>
