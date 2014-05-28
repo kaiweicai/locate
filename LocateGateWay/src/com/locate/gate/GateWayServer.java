@@ -38,6 +38,8 @@ import com.locate.common.Dom4jUtil;
 import com.locate.common.GateWayExceptionTypes;
 import com.locate.common.GateWayExceptionTypes.RFAExceptionEnum;
 import com.locate.common.GateWayMessageTypes;
+import com.locate.gate.coder.EncrytDecoder;
+import com.locate.gate.coder.EncrytEncoder;
 import com.locate.gate.coder.GateWayDecoder;
 import com.locate.gate.coder.GateWayEncoder;
 import com.locate.gate.hanlder.GatewayServerHandler;
@@ -88,10 +90,13 @@ public class GateWayServer {
 			@Override
 			public ChannelPipeline getPipeline() throws Exception {
 //				ChannelPipeline pipeline =Channels.pipeline(new GateWayDecoder(),new GateWayEncoder(),gateWayServerHandler);
-				ChannelPipeline pipeline = Channels.pipeline(new LengthFieldPrepender(2),
-						new LengthFieldBasedFrameDecoder(64 * 1024, 0, 2, 0, 2), 
-						gateWayServerHandler);
+				ChannelPipeline pipeline = Channels.pipeline();
 				//如果服务器端一直都没有向该channel发送信息,需要提醒客户端.
+				pipeline.addLast("fixLengthEncoder", new LengthFieldPrepender(2));
+				pipeline.addLast("encrytEncoder", new EncrytEncoder());
+				pipeline.addLast("fixLengthDecoder", new LengthFieldBasedFrameDecoder(64 * 1024, 0, 2, 0, 2));
+				pipeline.addLast("encrytDecoder", new EncrytDecoder());
+				pipeline.addLast("hander", gateWayServerHandler);
 				pipeline.addLast("timeout", new IdleStateHandler(new HashedWheelTimer(), 10, 10, 0));
 				pipeline.addLast("hearbeat", new Heartbeat());
 				return pipeline;

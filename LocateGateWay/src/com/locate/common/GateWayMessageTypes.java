@@ -42,7 +42,7 @@ public class GateWayMessageTypes {
 	public static final byte REQUEST_EOCH = 81;
 	
 	public enum RFAMessageName{
-		LOGIN("LOGIN",40),STOCK("STOCK",41),CURRENT("CURRENCY",42),FUTURE("FUTURE",43),OPTION("OPTION",44),INDEX("INDEX",45),NEWS("NEWS",7),ECONCN("ECONCN",48);
+		LOGIN("LOGIN",40),STOCK("STOCK",41),CURRENT("CURRENCY",42),FUTURE("FUTURE",43),OPTION("OPTION",44),INDEX("INDEX",45),STATUS_RESP("STATUS_RESP",7),ECONCN("ECONCN",48);
 		
 		String businessName;
 		int businessCode;

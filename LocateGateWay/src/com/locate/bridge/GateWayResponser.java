@@ -38,14 +38,13 @@ public class GateWayResponser {
 		}
 		ChannelBuffer buffer = ChannelBuffers.buffer(content.length);
 		buffer.writeBytes(content);
-		logger.info("downStream message is :"+content);
 		Channel channel = GateWayServer.allChannelGroup.find(channelId);
 		if (channel != null && channel.isConnected()) {
 			channel.write(buffer);
 		} else {
 			logger.error("The channel had been closed when write login response to client. Channel ID is " + channelId);
 		}
-		logger.info("downStream message is :"+content);
+		logger.info("downStream message is :"+response.asXML());
 	}
 
 	public static void sentAllChannelNews(byte msgType, Document response) {
@@ -77,7 +76,7 @@ public class GateWayResponser {
 		ChannelBuffer buffer = ChannelBuffers.buffer(content.length);
 		buffer.writeBytes(content);
 		GateWayServer.itemNameChannelMap.get(itemName).write(buffer);
-		logger.info("downStream message is :"+content);
+		logger.info("downStream message is :"+response.asXML());
 	}
 
 	public static void sentInitialToChannel(byte msgType, Document response, String itemName, int channelId) {

@@ -66,9 +66,12 @@ import org.jboss.netty.handler.timeout.IdleStateHandler;
 import org.jboss.netty.util.HashedWheelTimer;
 import org.springframework.web.util.HtmlUtils;
 
+import com.locate.client.gui.StatusBar;
 import com.locate.common.Dom4jUtil;
 import com.locate.common.GateWayMessageTypes;
 import com.locate.common.GateWayMessageTypes.RFAMessageName;
+import com.locate.gate.coder.EncrytDecoder;
+import com.locate.gate.coder.EncrytEncoder;
 import com.locate.gate.coder.GateWayDecoder;
 import com.locate.gate.coder.GateWayEncoder;
 import com.locate.gate.model.CustomerFiled;
@@ -120,6 +123,7 @@ public class RFApplication extends JFrame {
 	private JButton openButton;
 	private JTable marketPriceTable;
 	private TableModel tableModel;
+	private StatusBar statusBar;
 	private RedRenderer redRenderer =new RedRenderer();
 	private BlueRenderer blueRenderer =new BlueRenderer();
 	private Map<String,Integer> IdAtRowidMap = new HashMap<String,Integer>();
@@ -148,7 +152,9 @@ public class RFApplication extends JFrame {
 			public ChannelPipeline getPipeline() throws Exception {
 				ChannelPipeline pipeline = Channels.pipeline();
 				pipeline.addLast("encoder", new LengthFieldPrepender(2));
+				pipeline.addLast("encrytEncoder", new EncrytEncoder());
 				pipeline.addLast("decoder", new LengthFieldBasedFrameDecoder(64*1024,0,2,0,2));
+				pipeline.addLast("encrytDecoder", new EncrytDecoder());
 //				pipeline.addLast("encoder", new GateWayEncoder());
 //				pipeline.addLast("decoder", new GateWayDecoder());
 				pipeline.addLast("hanlder", new ClientHandler());
@@ -193,7 +199,8 @@ public class RFApplication extends JFrame {
 //		add(getAvgTimes(), new Constraints(new Leading(972, 73, 10, 10), new Leading(15, 10, 10)));
 		add(getCloseButton(), new Constraints(new Leading(1063, 12, 12), new Leading(10, 12, 12)));
 		
-		add(getJScrollPane0(), new Constraints(new Leading(30, 500, 10, 10), new Leading(51, 800, 10, 10)));
+		add(getJScrollPane0(), new Constraints(new Leading(30, 500, 10, 10), new Leading(51, 700, 10, 10)));
+		add(getStatusBar(), new Constraints(new Leading(30, 500, 10, 10), new Leading(770, 50, 10, 10)));
 		
 		setSize(1024, 900);
 		// this.pack();
@@ -484,6 +491,15 @@ public class RFApplication extends JFrame {
 		}
 		return jScrollPane0;
 	}
+	
+	private StatusBar getStatusBar() {
+		if (statusBar == null) {
+			statusBar = new StatusBar("Msg Model Type: MARKET_PRICE", true);
+			statusBar.setFont(UIManager.getFont("Label.font"));
+			statusBar.setBackground(UIManager.getColor("Panel.background"));
+		}
+		return statusBar;
+	}
 
 	private JTextArea getShowLog() {
 		if (showLog == null) {
@@ -653,6 +669,7 @@ public class RFApplication extends JFrame {
 		ChannelBuffer buffer = ChannelBuffers.buffer(content.length);
 		buffer.writeBytes(content);
 		ChannelFuture future = channel.write(buffer);
+		logger.info("client downStream message is :"+doc.asXML());
 //		future.awaitUninterruptibly();
 	}
 

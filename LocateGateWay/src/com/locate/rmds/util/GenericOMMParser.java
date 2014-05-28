@@ -139,7 +139,7 @@ public final class GenericOMMParser
     	parseMsg(msg, logMsg,fields);
 
         _logger.info(logMsg.toString());
-//        _logger.info(responseMsg.asXML());
+        _logger.info(responseMsg.asXML());
 //        if(fields.elements().size() > 0){
         	return responseMsg;
 //        }else{
