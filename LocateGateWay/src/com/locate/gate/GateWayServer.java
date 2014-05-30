@@ -34,7 +34,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.locate.LocateGateWayMain;
-import com.locate.common.Dom4jUtil;
+import com.locate.common.XmlMessageUtil;
 import com.locate.common.GateWayExceptionTypes;
 import com.locate.common.GateWayExceptionTypes.RFAExceptionEnum;
 import com.locate.common.GateWayMessageTypes;
@@ -97,8 +97,8 @@ public class GateWayServer {
 				pipeline.addLast("fixLengthDecoder", new LengthFieldBasedFrameDecoder(64 * 1024, 0, 2, 0, 2));
 				pipeline.addLast("encrytDecoder", new EncrytDecoder());
 				pipeline.addLast("hander", gateWayServerHandler);
-				pipeline.addLast("timeout", new IdleStateHandler(new HashedWheelTimer(), 10, 10, 0));
-				pipeline.addLast("hearbeat", new Heartbeat());
+//				pipeline.addLast("timeout", new IdleStateHandler(new HashedWheelTimer(), 10, 10, 0));
+//				pipeline.addLast("hearbeat", new Heartbeat());
 				return pipeline;
 			}
 		};
@@ -141,17 +141,8 @@ public class GateWayServer {
 			}
 			if (i > 3) {
 				logger.warn("channel idle timeout, User remote ip is "+e.getChannel().getRemoteAddress());
-				DocumentFactory documentFactory = DocumentFactory.getInstance();
-			    Document reponseDoc =  documentFactory.createDocument();
-			    
-			    Element rmds = reponseDoc.addElement(RFANodeconstant.RESPONSE_ROOT_NODE);
-				Element response = rmds.addElement(RFANodeconstant.RESPONSE_RESPONSE_NODE);
-				Element error = response.addElement(RFANodeconstant.RESPONSE_ERROR_NODE);
-				int errorCode = GateWayExceptionTypes.CHANNEL_IDLE_TIMEOUT;
-				String descriptioin = RFAExceptionEnum.getExceptionDescription(errorCode);
-				error.addElement(RFANodeconstant.RESPONSE_ERROR_CODE_NODE).addText(String.valueOf(errorCode));
-				error.addElement(RFANodeconstant.RESPONSE_ERROR_DESC_NODE).addText(String.valueOf(descriptioin));
-				Dom4jUtil.addLocateInfo(reponseDoc, GateWayMessageTypes.REQUEST_EOCH, RFAServerManager.sequenceNo.getAndIncrement(), 0);
+				Document reponseDoc = XmlMessageUtil.createHearBeat();
+				XmlMessageUtil.addLocateInfo(reponseDoc, GateWayMessageTypes.REQUEST_EOCH, RFAServerManager.sequenceNo.getAndIncrement(), 0);
 //			    LocateMessage message = new LocateMessage(GateWayMessageTypes.REQUEST_EOCH, reponseDoc, 0);
 //			    message.setSequenceNo(RFAServerManager.sequenceNo.getAndIncrement());
 				byte[] content = reponseDoc.asXML().getBytes("UTF-8");

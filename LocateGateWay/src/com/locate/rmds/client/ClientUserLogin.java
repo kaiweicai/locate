@@ -8,6 +8,7 @@ import org.dom4j.Node;
 import org.jboss.netty.channel.Channel;
 
 import com.locate.common.GateWayExceptionTypes;
+import com.locate.common.XmlMessageUtil;
 import com.locate.gate.GateWayServer;
 import com.locate.gate.hanlder.GatewayServerHandler;
 import com.locate.gate.model.RFAUserResponse;
@@ -49,7 +50,7 @@ public class ClientUserLogin {
 		/**
 		 * I think this authenticate is NOT work. 
 		 */
-		Document userResponse = RFAUserResponse.createAuthenResponse(authentication);
+		Document userResponse = XmlMessageUtil.createAuthenResponse(authentication);
 		logger.info("User authenticate result for " + userName + userResponse.asXML());
 		return userResponse;
 	}

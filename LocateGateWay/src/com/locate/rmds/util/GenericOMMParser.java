@@ -131,15 +131,15 @@ public final class GenericOMMParser
     	DocumentFactory factory = DocumentFactory.getInstance();
     	Document responseMsg =  factory.createDocument();
     	Element rmdsElement = responseMsg.addElement(RFANodeconstant.RESPONSE_ROOT_NODE);
+    	rmdsElement.addElement(RFANodeconstant.LOCATE_NODE);
     	Element response = rmdsElement.addElement(RFANodeconstant.RESPONSE_RESPONSE_NODE);
     	Element reqItem = response.addElement(RFANodeconstant.RESPONSE_ITEM_NODE);
     	reqItem.addElement(RFANodeconstant.RESPONSE_ITEM_NAME_NODE).addText(itemName);
     	Element fields = response.addElement(RFANodeconstant.RESPONSE_FIELDS_NODE);
     	
     	parseMsg(msg, logMsg,fields);
-
         _logger.info(logMsg.toString());
-        _logger.info(responseMsg.asXML());
+//        _logger.info(responseMsg.asXML());
 //        if(fields.elements().size() > 0){
         	return responseMsg;
 //        }else{
@@ -458,14 +458,17 @@ public final class GenericOMMParser
     {
     	Element field ;
         parseAggregateHeader(data, logMsg, tabLevel,fields);
+        int fieldNum = 0;
         for (Iterator iter = ((OMMIterable)data).iterator(); iter.hasNext();)
         {
+        	fieldNum++;
         	field = fields.addElement("Field");
 //        	logMsg.append("\n");
             OMMEntry entry = (OMMEntry)iter.next();
             parseEntry(entry, logMsg, tabLevel + 1,field);
             
         }
+        _logger.info("test for cloud wei```````````````````````fieldNub is "+fieldNum);
     }
 
     /**
@@ -475,7 +478,6 @@ public final class GenericOMMParser
      */
     public static final void parseData(OMMData data, StringBuffer logMsg, int tabLevel,Element fieldsElement)
     {
-    	
         if (data.isBlank())
         	logMsg.append("\n");
         else if (OMMTypes.isAggregate(data.getType()))

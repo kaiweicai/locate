@@ -21,7 +21,7 @@ import org.jboss.netty.channel.group.DefaultChannelGroup;
 
 import com.locate.LocateGateWayMain;
 import com.locate.bridge.ClientHandle;
-import com.locate.common.Dom4jUtil;
+import com.locate.common.XmlMessageUtil;
 import com.locate.common.GateWayMessageTypes;
 import com.locate.gate.GateWayServer;
 import com.locate.gate.model.ClientInfo;
@@ -137,10 +137,10 @@ public class GatewayServerHandler extends SimpleChannelHandler {
 		try {
 			ChannelBuffer channelBuffer = (ChannelBuffer) e.getMessage();
 			String msg = channelBuffer.toString(Charset.forName("UTF-8"));
-			Document userRequest = Dom4jUtil.convertDocument(msg);
+			Document userRequest = XmlMessageUtil.convertDocument(msg);
 			_logger.info("original message -------"+msg);
 			
-			byte msgType = Dom4jUtil.getMsgType(userRequest);
+			byte msgType = XmlMessageUtil.getMsgType(userRequest);
 			// Judge client whether logon
 			String userName = null;
 

@@ -5,6 +5,12 @@ import java.net.InetAddress;
 import org.apache.log4j.Logger;
 
 
+
+
+import org.dom4j.Document;
+
+import com.locate.bridge.GateWayResponser;
+import com.locate.common.XmlMessageUtil;
 import com.locate.rmds.QSConsumerProxy;
 import com.locate.rmds.util.GenericOMMParser;
 import com.reuters.rfa.common.Client;
@@ -41,7 +47,10 @@ public class RFALoginClient implements Client
 {
     Handle _loginHandle;
     QSConsumerProxy _mainApp;
+    public static byte STREAM_STATE = 0;
+    public static byte DATA_STATE = 0;
     static Logger _logger = Logger.getLogger(RFALoginClient.class.getName());
+	public static String STATE = "";
 //    static Logger _logger;
 	private String _className = "LoginClient";
 
@@ -135,7 +144,16 @@ public class RFALoginClient implements Client
         	_mainApp.loginFailure();
         	return;
         }
-
+        
+        //RFA Server status response, forward status to customer.
+		if (respMsg.has(OMMMsg.HAS_STATE)) {
+			RFALoginClient.STREAM_STATE = respMsg.getState().getStreamState();
+			RFALoginClient.DATA_STATE = respMsg.getState().getDataState();
+			RFALoginClient.STATE = respMsg.getState().toString();
+			byte msgType =respMsg.getMsgType();
+			Document responseMsg = XmlMessageUtil.generateStatusResp(RFALoginClient.STATE,RFALoginClient.STREAM_STATE,RFALoginClient.DATA_STATE,msgType);
+			GateWayResponser.brodcastStateResp(responseMsg);
+		}
 		// The login is successful, RFA forwards the message from the network
 		if ((respMsg.getMsgType() == OMMMsg.MsgType.STATUS_RESP) && (respMsg.has(OMMMsg.HAS_STATE))
 				&& (respMsg.getState().getStreamState() == OMMState.Stream.OPEN)

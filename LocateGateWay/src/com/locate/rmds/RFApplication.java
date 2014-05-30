@@ -67,7 +67,7 @@ import org.jboss.netty.util.HashedWheelTimer;
 import org.springframework.web.util.HtmlUtils;
 
 import com.locate.client.gui.StatusBar;
-import com.locate.common.Dom4jUtil;
+import com.locate.common.XmlMessageUtil;
 import com.locate.common.GateWayMessageTypes;
 import com.locate.common.GateWayMessageTypes.RFAMessageName;
 import com.locate.gate.coder.EncrytDecoder;
@@ -494,7 +494,7 @@ public class RFApplication extends JFrame {
 	
 	private StatusBar getStatusBar() {
 		if (statusBar == null) {
-			statusBar = new StatusBar("Msg Model Type: MARKET_PRICE", true);
+			statusBar = new StatusBar("", true);
 			statusBar.setFont(UIManager.getFont("Label.font"));
 			statusBar.setBackground(UIManager.getColor("Panel.background"));
 		}
@@ -651,15 +651,32 @@ public class RFApplication extends JFrame {
 	
 	private void createLoginRequest(Document doc){
 		Element rmds = doc.addElement("rmds");
+		rmds.addElement(RFANodeconstant.LOCATE_NODE);
 		Element login = rmds.addElement("login");
 		login.addElement("userName").addText(userNameTextField.getText());
 		login.addElement("password").addText(passwordTextField.getText());
 	}
 	
+	private void createFutureRequest(Document doc,String ric){
+		Element rmds = doc.addElement("rmds");
+		rmds.addElement(RFANodeconstant.LOCATE_NODE);
+		Element request = rmds.addElement("request");
+		Element item = request.addElement("item");
+		item.addElement("name").addText(ric);
+	}
+	
+	private void createEcho(){
+		DocumentFactory documentFactory = DocumentFactory.getInstance();
+	    Document requestDoc =  documentFactory.createDocument();
+	    String ric = ricTextField.getText();
+    	createFutureRequest(requestDoc,ric);
+    	sentMessageToServer(GateWayMessageTypes.REQUEST_EOCH,requestDoc);
+	}
+	
 	private void sentMessageToServer(byte msgType,Document doc){
 //		LocateMessage message = new LocateMessage(msgType, doc, 0);
 //		message.setSequenceNo(RFAServerManager.sequenceNo.getAndIncrement());
-		Dom4jUtil.addLocateInfo(doc, msgType, RFAServerManager.sequenceNo.getAndIncrement(), 0);
+		XmlMessageUtil.addLocateInfo(doc, msgType, RFAServerManager.sequenceNo.getAndIncrement(), 0);
 		byte[] content = null;
 		try {
 			content = doc.asXML().getBytes("UTF-8");
@@ -673,20 +690,7 @@ public class RFApplication extends JFrame {
 //		future.awaitUninterruptibly();
 	}
 
-	private void createFutureRequest(Document doc,String ric){
-		Element rmds = doc.addElement("rmds");
-		Element request = rmds.addElement("request");
-		Element item = request.addElement("item");
-		item.addElement("name").addText(ric);
-	}
 	
-	private void createEcho(){
-		DocumentFactory documentFactory = DocumentFactory.getInstance();
-	    Document requestDoc =  documentFactory.createDocument();
-	    String ric = ricTextField.getText();
-    	createFutureRequest(requestDoc,ric);
-    	sentMessageToServer(GateWayMessageTypes.REQUEST_EOCH,requestDoc);
-	}
 	
 	class ClientHandler extends SimpleChannelHandler {
 
@@ -754,22 +758,33 @@ public class RFApplication extends JFrame {
 			super.messageReceived(ctx, e);
 			ChannelBuffer channelBuffer = (ChannelBuffer) e.getMessage();
 			String msg = channelBuffer.toString(Charset.forName("UTF-8"));
-			Document document = Dom4jUtil.convertDocument(msg);
+			Document document = XmlMessageUtil.convertDocument(msg);
 			logger.info("original message -------"+msg);
-			byte msgType = Dom4jUtil.getMsgType(document);
+			byte msgType = XmlMessageUtil.getMsgType(document);
 			sb.append("Received message type:" + RFAMessageName.getRFAMessageName(msgType)+"\n");
 			if (document == null) {
 				sb.append("Received server's  message is null \n");
 				return;
 			}
-			if(msgType==MsgType.REFRESH_RESP){
-				tableModel = new TableModel(document);
-				marketPriceTable.setModel(tableModel);
-				updateTablePriceThread.setMarketPriceTable(marketPriceTable);
-			}else if(msgType==MsgType.UPDATE_RESP){
-				updateMarketPriceTable(tableModel,document);
-				updateTablePriceThread.setUpdate(true);
+			switch(msgType){
+				case MsgType.REFRESH_RESP:
+					tableModel = new TableModel(document);
+					marketPriceTable.setModel(tableModel);
+					updateTablePriceThread.setMarketPriceTable(marketPriceTable);
+					break;
+				case MsgType.UPDATE_RESP:
+					updateMarketPriceTable(tableModel,document);
+					updateTablePriceThread.setUpdate(true);
+					break;
+				case GateWayMessageTypes.RESPONSE_LOGIN:
+				case MsgType.STATUS_RESP:
+					String newStatus = XmlMessageUtil.getAllState(document);
+					statusBar.setStatusFixed(newStatus);
+					break;
+				default:
+					logger.error("Not should to here! message type is "+MsgType.REFRESH_RESP);
 			}
+			
 			// String content = response.asXML();
 			sb.append("Received server's  message : " + msg+"\n");
 			updateLog(sb.toString());

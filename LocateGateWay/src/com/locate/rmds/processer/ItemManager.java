@@ -4,6 +4,7 @@ import org.apache.log4j.Logger;
 import org.dom4j.Document;
 
 import com.locate.bridge.GateWayResponser;
+import com.locate.common.XmlMessageUtil;
 import com.locate.gate.GateWayServer;
 import com.locate.rmds.QSConsumerProxy;
 import com.locate.rmds.RFAServerManager;
@@ -203,7 +204,7 @@ public class ItemManager implements Client
         }
         
     	long startTime = System.currentTimeMillis();
-    	// Completion event indicates that the stream was closed by RFA    	
+    	// Completion event indicates that the stream was closed by RFA
     	if (event.getType() == Event.COMPLETION_EVENT) 
     	{
     		_logger.info(_className+": Receive a COMPLETION_EVENT, "+ event.getHandle());
@@ -223,7 +224,16 @@ public class ItemManager implements Client
         OMMItemEvent ommItemEvent = (OMMItemEvent) event;
         OMMMsg respMsg = ommItemEvent.getMsg();
         Document responseMsg = GenericOMMParser.parse(respMsg, clientRequestItemName);
-        
+        if(respMsg.getMsgType()==OMMMsg.MsgType.STATUS_RESP && (respMsg.has(OMMMsg.HAS_STATE))){
+        	byte streamState= respMsg.getState().getStreamState();
+        	byte dataState = respMsg.getState().getDataState();
+			byte msgType = respMsg.getMsgType();
+			String state = respMsg.getState().toString();
+			responseMsg = XmlMessageUtil.generateStatusResp(state,streamState,dataState,msgType);
+			GateWayResponser.sentMrketPriceToSubsribeChannel(msgType, responseMsg, clientRequestItemName);;
+			_logger.warn("RFA server has new state. streamState:"+streamState+" datasstate "+dataState);
+			return;
+        }
         if (respMsg.getMsgType() == OMMMsg.MsgType.REFRESH_RESP){
         	initialDocument = responseMsg;
         }

@@ -15,6 +15,7 @@ import org.jboss.netty.channel.group.DefaultChannelGroup;
 import com.locate.common.GateWayExceptionTypes;
 import com.locate.common.GateWayMessageTypes;
 import com.locate.common.GateWayExceptionTypes.RFAExceptionEnum;
+import com.locate.common.XmlMessageUtil;
 import com.locate.gate.GateWayServer;
 import com.locate.gate.hanlder.GatewayServerHandler;
 import com.locate.gate.model.ClientInfo;
@@ -25,7 +26,9 @@ import com.locate.rmds.RFAServerManager;
 import com.locate.rmds.client.ClientUserLogin;
 import com.locate.rmds.client.RFAUserManagement;
 import com.locate.rmds.processer.ItemManager;
+import com.locate.rmds.processer.RFALoginClient;
 import com.locate.rmds.util.RFANodeconstant;
+import com.reuters.rfa.omm.OMMMsg.MsgType;
 
 /**
  * 所有gateway系统向RFA系统发送的的请求必须通过该类代为发送.
@@ -58,7 +61,7 @@ public class ClientHandle {
 	    	String userName = GateWayServer._userConnection.get(clientIP);
 	    	if(userName == null){
 	    		resultCode = GateWayExceptionTypes.USER_NOT_LOGIN;
-				Document wrongMsg = RFAUserResponse.createErrorDocument(resultCode,
+				Document wrongMsg = XmlMessageUtil.createErrorDocument(resultCode,
 						GateWayExceptionTypes.RFAExceptionEnum.getExceptionDescription(resultCode));
 				GateWayResponser.sentNotiFyResponseMsg(GateWayMessageTypes.RESPONSE_LOGIN, wrongMsg, channelID,resultCode);
 				_logger.error("Client didn't login system. sent error message to client");
@@ -121,7 +124,7 @@ public class ClientHandle {
 	    }
 		//resultCode大于零,表示处理存在错误需要向客户端发送错误信息.
 		if(resultCode>0){
-			responseData = RFAUserResponse.createErrorDocument(resultCode,
+			responseData = XmlMessageUtil.createErrorDocument(resultCode,
 					RFAExceptionEnum.getExceptionDescription(resultCode));
 			GateWayResponser.sentNotiFyResponseMsg(responseMsgType, responseData, channelID , resultCode);
 		}
