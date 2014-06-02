@@ -1,6 +1,11 @@
 package com.locate.rmds.processer;
 
 import java.net.InetAddress;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 
@@ -12,17 +17,27 @@ import org.dom4j.Document;
 import com.locate.bridge.GateWayResponser;
 import com.locate.common.XmlMessageUtil;
 import com.locate.rmds.QSConsumerProxy;
+import com.locate.rmds.sub.RDMServiceInfo;
+import com.locate.rmds.sub.ServiceInfo;
 import com.locate.rmds.util.GenericOMMParser;
 import com.reuters.rfa.common.Client;
 import com.reuters.rfa.common.Event;
 import com.reuters.rfa.common.Handle;
+import com.reuters.rfa.dictionary.FieldDictionary;
+import com.reuters.rfa.omm.OMMElementEntry;
 import com.reuters.rfa.omm.OMMElementList;
 import com.reuters.rfa.omm.OMMEncoder;
+import com.reuters.rfa.omm.OMMFilterList;
+import com.reuters.rfa.omm.OMMMap;
+import com.reuters.rfa.omm.OMMMapEntry;
 import com.reuters.rfa.omm.OMMMsg;
+import com.reuters.rfa.omm.OMMNumeric;
 import com.reuters.rfa.omm.OMMPool;
+import com.reuters.rfa.omm.OMMSeries;
 import com.reuters.rfa.omm.OMMState;
 import com.reuters.rfa.omm.OMMTypes;
 import com.reuters.rfa.rdm.RDMMsgTypes;
+import com.reuters.rfa.rdm.RDMService;
 import com.reuters.rfa.rdm.RDMUser;
 import com.reuters.rfa.session.omm.OMMItemEvent;
 import com.reuters.rfa.session.omm.OMMItemIntSpec;
@@ -53,11 +68,15 @@ public class RFALoginClient implements Client
 	public static String STATE = "";
 //    static Logger _logger;
 	private String _className = "LoginClient";
-
+	Map<String, ServiceInfo> _services = new HashMap<String, ServiceInfo>();
+	private HashMap<Handle, Integer> _dictHandles;
+	FieldDictionary _dictionary;
 	// constructor
 	public RFALoginClient(QSConsumerProxy mainApp)
     {
         _mainApp = mainApp;
+        this._dictHandles = new HashMap();
+        this._dictionary = QSConsumerProxy.dictionary;
 //        _logger = _mainApp._logger;
     }
     
@@ -136,6 +155,21 @@ public class RFALoginClient implements Client
         OMMItemEvent ie = (OMMItemEvent) event;
         OMMMsg respMsg = ie.getMsg();
 
+        switch (respMsg.getMsgModelType())
+        {
+            case RDMMsgTypes.LOGIN:
+//                processLoginMsg(respMsg);
+                break;
+            case RDMMsgTypes.DIRECTORY:
+                processDirectoryMsg(respMsg);
+                return;
+            case RDMMsgTypes.DICTIONARY:
+                processDictionaryMsg(respMsg, event.getHandle());
+                return;
+            default:
+        }
+        
+        
         // The login is unsuccessful, RFA forwards the message from the network
         if (respMsg.isFinal()) 
         {
@@ -161,6 +195,7 @@ public class RFALoginClient implements Client
 			_logger.info(_className + ": Received Login STATUS OK Response");
 			GenericOMMParser.parse(respMsg, "RFALogin");
 			_mainApp.processLogin();
+			_mainApp.registerDirectory(this);
 		} else // This message is sent by RFA indicating that RFA is processing the login
 		{
 			_logger.error("Login not success.Please check!\n Received Login Response - "
@@ -169,6 +204,154 @@ public class RFALoginClient implements Client
 			GenericOMMParser.parse(respMsg, "RFALogin");
 		}
     }
+    
+    protected void processDirectoryMsg(OMMMsg msg)
+    {
+        GenericOMMParser.parse(msg,"DIRECTORY");
+
+        if (msg.getDataType() == OMMTypes.NO_DATA)
+        {
+            // probably status
+            return;
+        }
+        if (msg.getDataType() != OMMTypes.MAP)
+        {
+
+            _logger.info("Directory payload must be a Map");
+            return;
+        }
+
+        Set<String> dictionariesUsed = new HashSet<String>();
+        OMMMap map = (OMMMap)msg.getPayload();
+        for (Iterator<?> miter = map.iterator(); miter.hasNext();)
+        {
+            boolean isNew = false;
+            OMMMapEntry mentry = (OMMMapEntry)miter.next();
+            String serviceName = mentry.getKey().toString();
+            if (mentry.getAction() == OMMMapEntry.Action.ADD)
+            {
+                RDMServiceInfo service = (RDMServiceInfo)_services.get(serviceName);
+                if (service == null)
+                {
+                    service = new RDMServiceInfo(serviceName);
+                    _services.put(serviceName, service);
+                    isNew = true;
+                }
+
+                OMMFilterList flist = (OMMFilterList)mentry.getData();
+                service.process(flist);
+
+//                if (_directoryClient != null)
+//                {
+//                    if (isNew)
+//                        _directoryClient.processNewService(service);
+//                    else
+//                        _directoryClient.processServiceUpdated(service);
+//                }
+
+                String[] dictArray = (String[])service.get(RDMService.Info.DictionariesUsed);
+                if (dictArray != null)
+                    for (int i = 0; i < dictArray.length; i++)
+                        dictionariesUsed.add(dictArray[i]);
+            }
+            else if (mentry.getAction() == OMMMapEntry.Action.UPDATE)
+            {
+                RDMServiceInfo service = (RDMServiceInfo)_services.get(serviceName);
+                if (service == null)
+                    continue;
+                OMMFilterList flist = (OMMFilterList)mentry.getData();
+                service.process(flist);
+
+//                if (_directoryClient != null)
+//                {
+//                    _directoryClient.processServiceUpdated(service);
+//                }
+
+                String[] dictArray = (String[])service.get(RDMService.Info.DictionariesUsed);
+                for (int i = 0; i < dictArray.length; i++)
+                    dictionariesUsed.add(dictArray[i]);
+            }
+            else
+            // (mentry.getAction() == OMMMapEntry.DELETE_ACTION)
+            {
+                ServiceInfo si = _services.remove(serviceName);
+//                if (_directoryClient != null)
+//                    _directoryClient.processServiceRemoved(si);
+            }
+        }
+
+        // download the dictionary used
+        if (true)
+        {
+        	_mainApp.getDictionaries(dictionariesUsed,this);
+        }
+
+//        if (_pendingDictionaries.isEmpty() && !_isComplete
+//                && (_serviceName.length() == 0 || _services.containsKey(_serviceName)))
+//        {
+//            _isComplete = true;
+//            if (_client != null)
+//                _client.processComplete();
+//        }
+
+    }
+    
+	protected void processDictionaryMsg(OMMMsg msg, Handle handle) {
+		_logger.info("Received dictionary: " + msg.getAttribInfo().getName());
+
+		int msgType = msg.getMsgType();
+
+		if ((msgType == 7) || (msgType == 8)) {
+			GenericOMMParser.parse(msg,"Dictionary");
+			return;
+		}
+
+		OMMSeries series = (OMMSeries) msg.getPayload();
+
+		Integer dictType = (Integer) this._dictHandles.get(handle);
+		int dictionaryType;
+		if (dictType == null) {
+			dictionaryType = getDictionaryType(series);
+			this._dictHandles.put(handle, new Integer(dictionaryType));
+		} else {
+			dictionaryType = dictType.intValue();
+		}
+
+		if (dictionaryType == 1) {
+			FieldDictionary.decodeRDMFldDictionary(this._dictionary, series);
+			if (msg.isSet(4)) {
+				System.out.println("Field Dictionary Refresh is complete");
+				this._dictHandles.remove(handle);
+			}
+		} else if (dictionaryType == 2) {
+			FieldDictionary.decodeRDMEnumDictionary(this._dictionary, series);
+			if (msg.isSet(4)) {
+				System.out.println("Enum Dictionary Refresh is complete");
+				this._dictHandles.remove(handle);
+			}
+		}
+
+		if (!(msg.isSet(4)))
+			return;
+//		String dictionaryName = (String) this._pendingDictionaries.remove(handle);
+//		this._loadedDictionaries.add(dictionaryName);
+//		if ((this._pendingDictionaries.isEmpty()) && (!(this._isComplete))) {
+//			this._isComplete = true;
+//			if (this._client != null) {
+//				this._client.processComplete();
+//			}
+//		}
+//		GenericOMMParser.initializeDictionary(this._dictionary);
+	}
+	
+	private int getDictionaryType(OMMSeries series) {
+		OMMElementList elist = (OMMElementList) series.getSummaryData();
+		OMMElementEntry eentry = elist.find("Type");
+		if (eentry != null) {
+			return (int) ((OMMNumeric) eentry.getData()).toLong();
+		}
+		return 0;
+	}
     
     public Handle getHandle()
     {

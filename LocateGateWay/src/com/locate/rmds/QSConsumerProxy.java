@@ -5,7 +5,12 @@ import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.prefs.InvalidPreferencesFormatException;
 import java.util.prefs.Preferences;
 
@@ -20,8 +25,12 @@ import com.locate.rmds.processer.ItemGroupManager;
 import com.locate.rmds.processer.ItemManager;
 import com.locate.rmds.processer.NewsItemManager;
 import com.locate.rmds.processer.RFALoginClient;
+import com.locate.rmds.sub.DirectoryClient;
+import com.locate.rmds.sub.RDMServiceInfo;
+import com.locate.rmds.sub.ServiceInfo;
 import com.locate.rmds.util.GenericOMMParser;
 import com.locate.rmds.util.SystemProperties;
+import com.reuters.rfa.common.Client;
 import com.reuters.rfa.common.Context;
 import com.reuters.rfa.common.DeactivatedException;
 import com.reuters.rfa.common.DispatchQueueInGroupException;
@@ -30,10 +39,19 @@ import com.reuters.rfa.common.EventSource;
 import com.reuters.rfa.common.Handle;
 import com.reuters.rfa.dictionary.DictionaryException;
 import com.reuters.rfa.dictionary.FieldDictionary;
+import com.reuters.rfa.omm.OMMAttribInfo;
 import com.reuters.rfa.omm.OMMEncoder;
+import com.reuters.rfa.omm.OMMFieldList;
+import com.reuters.rfa.omm.OMMFilterEntry;
+import com.reuters.rfa.omm.OMMFilterList;
+import com.reuters.rfa.omm.OMMMsg;
 import com.reuters.rfa.omm.OMMPool;
+import com.reuters.rfa.rdm.RDMDictionary;
+import com.reuters.rfa.rdm.RDMMsgTypes;
+import com.reuters.rfa.rdm.RDMService;
 import com.reuters.rfa.session.Session;
 import com.reuters.rfa.session.omm.OMMConsumer;
+import com.reuters.rfa.session.omm.OMMItemIntSpec;
 /**  
 *  зїеп:Cloud wei   
 *  E-mail:kaiweicai@163.com   
@@ -57,8 +75,11 @@ public class QSConsumerProxy{
 	protected static String _configFile = "config/rfaConfig.properties";
 	public static FieldDictionary dictionary;
 	DecimalFormat dataFormat = new DecimalFormat("0.00");
-	
+	List<String> _loadedDictionaries;
+	Map<Handle, String> _pendingDictionaries;
+	Map<String, ServiceInfo> _services;
 	private boolean dispath = true;
+	DirectoryClient _directoryClient;
 	// class constructor
 	public QSConsumerProxy() {
 		System.out
@@ -89,8 +110,9 @@ public class QSConsumerProxy{
 //		configDb.addVariable("myNamespace.Connections.consConnection.portNumber", "14002");
 //		configDb.addVariable("myNamespace.Sessions.consSession.connectionList", "consConnection");
 		Context.initialize();
-		
-		
+		_loadedDictionaries = new LinkedList<String>();
+		_pendingDictionaries = new HashMap<Handle, String>();
+		_services = new HashMap<String, ServiceInfo>();
 		//
 		SystemProperties.init(_configFile);
 		
@@ -128,6 +150,8 @@ public class QSConsumerProxy{
 		String enumDictionaryFilename = SystemProperties.getProperties(SystemProperties.RFA_ENUM_FILE);
 		try {
 			dictionary = GenericOMMParser.initializeDictionary(	fieldDictionaryFilename, enumDictionaryFilename);
+			_loadedDictionaries.add("RWFFld");
+			_loadedDictionaries.add("RWFEnum");
 		} catch (DictionaryException ex) {
 			logger.error("ERROR: Unable to initialize dictionaries");
 			logger.error(ex.getMessage());
@@ -162,12 +186,117 @@ public class QSConsumerProxy{
 		_loginClient.sendRequest();
 	}
 
+	public Handle registerDirectory(Client client)
+    {
+        OMMItemIntSpec spec = new OMMItemIntSpec();
+        OMMMsg msg = _pool.acquireMsg();
+        msg.setMsgType(OMMMsg.MsgType.REQUEST);
+        msg.setMsgModelType(RDMMsgTypes.DIRECTORY);
+        msg.setIndicationFlags(OMMMsg.Indication.REFRESH);
+        OMMAttribInfo ai = _pool.acquireAttribInfo();
+        if (_serviceName.length() > 0)
+            ai.setServiceName(_serviceName);
+        ai.setFilter(RDMService.Filter.INFO | RDMService.Filter.STATE);
+        msg.setAttribInfo(ai);
+        spec.setMsg(msg);
+        Handle handle = _consumer.registerClient(_eventQueue, spec, client, null);
+        return handle;
+    }
+	
+	 /*
+     * get all the dictionaries included in the argument Set
+     */
+    public void getDictionaries(Set<String> dictionariesUsed,Client client)
+    {
+        for (Iterator<String> iter = dictionariesUsed.iterator(); iter.hasNext();)
+        {
+            String dictionaryName = iter.next();
+            if (!_loadedDictionaries.contains(dictionaryName)
+                    && !_pendingDictionaries.containsValue(dictionaryName))
+            {
+                // find which service provides the dictionary
+                String serviceName = findServiceForDictionary(dictionaryName);
+                if (serviceName == null)
+                {
+                    logger.info("No service provides dictionary: " + dictionaryName);
+                    continue;
+                }
+                openFullDictionary(serviceName, dictionaryName,client);
+            }
+        }
+    }
+    
+    /*
+     * Create a dictionary request message and register the request
+     */
+	private void openFullDictionary(String serviceName, String dictionaryName , Client client) {
+		OMMItemIntSpec spec = new OMMItemIntSpec();
+		OMMMsg msg = _pool.acquireMsg();
+		msg.setMsgType(OMMMsg.MsgType.REQUEST);
+		msg.setMsgModelType(RDMMsgTypes.DICTIONARY);
+		msg.setIndicationFlags(OMMMsg.Indication.REFRESH | OMMMsg.Indication.NONSTREAMING);
+		OMMAttribInfo ai = _pool.acquireAttribInfo();
+		ai.setServiceName(serviceName);
+		ai.setName(dictionaryName);
+		ai.setFilter(RDMDictionary.Filter.NORMAL);
+		msg.setAttribInfo(ai);
+		spec.setMsg(msg);
+		Handle handle = _consumer.registerClient(_eventQueue, spec, client, null);
+		_pool.releaseMsg(msg);
+		_pendingDictionaries.put(handle, dictionaryName);
+	}
+	
+	public void addNewService(String serviceName) {
+		ServiceInfo service = new RDMServiceInfo(serviceName);
+		_services.put(serviceName, service);
+		if (_directoryClient != null) {
+			_directoryClient.processNewService(service);
+		}
+	}
+	
+	 private String findServiceForDictionary(String dictionaryName)
+	    {
+	        for (Iterator<ServiceInfo> iter = _services.values().iterator(); iter.hasNext();)
+	        {
+	            ServiceInfo service = iter.next();
+
+	            // stop, if serviceState is DOWN (0) or not available
+	            Object oServiceState = service.get(RDMService.SvcState.ServiceState);
+	            if(oServiceState == null)
+	            	continue;
+	            int serviceState = Integer.parseInt((String) oServiceState);
+	            if( serviceState == 0 )
+	            	continue;
+	            
+	            // stop, if acceptRequests is false (0) or not available
+	            Object oAcceptingRequests = service.get(RDMService.SvcState.ServiceState);
+	            if(oAcceptingRequests == null)
+	            	continue;
+	            int acceptingRequests = Integer.parseInt((String) oAcceptingRequests);
+	            if( acceptingRequests == 0 )
+	            	continue;
+
+	            String[] dictionariesProvided = (String[])service
+	                    .get(RDMService.Info.DictionariesProvided);
+	            if (dictionariesProvided == null)
+	                continue;
+	            
+	            for (int i = 0; i < dictionariesProvided.length; i++)
+	            {
+	                if (dictionariesProvided[i].equals(dictionaryName))
+	                    return service.getServiceName();
+	            }
+	        }
+	        return null;
+	    }
+	
 	// This method is called by _loginClient upon receiving successful login
 	// response.
 	public void processLogin() {
 		logger.info("QSConsumerDemo Login successful");
 		RFAServerManager.setConnectedDataSource(true);
 	}
+	
 
 	// This method is called when the login was not successful
 	// The application exits

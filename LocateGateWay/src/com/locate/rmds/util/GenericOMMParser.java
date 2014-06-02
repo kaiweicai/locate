@@ -669,9 +669,10 @@ public final class GenericOMMParser
                     if (CURRENT_DICTIONARY != null)
                     {
                         FidDef fiddef = CURRENT_DICTIONARY.getFidDef(fe.getFieldId());
-//                        String fieldProp = CURRENT_DICTIONARY.getFieldProperty(fiddef.getName());
+                        //add the ripple data
                         
-//                        CURRENT_DICTIONARY.get][
+                        
+                        
                         if (fiddef != null)
                         {
                             dumpFieldEntryHeader(fe, fiddef, logMsg, tabLevel+1,field);
