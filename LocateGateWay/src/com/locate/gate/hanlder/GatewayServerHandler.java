@@ -21,6 +21,7 @@ import org.jboss.netty.channel.group.DefaultChannelGroup;
 
 import com.locate.LocateGateWayMain;
 import com.locate.bridge.ClientHandle;
+import com.locate.common.DataBaseMap;
 import com.locate.common.XmlMessageUtil;
 import com.locate.common.GateWayMessageTypes;
 import com.locate.gate.GateWayServer;
@@ -46,15 +47,15 @@ public class GatewayServerHandler extends SimpleChannelHandler {
 	
 	private  void requestAgain(){
 		//Re-request item
-		for(String clientName : GateWayServer._clientRequestItemName.keySet()){
-			List<String> itemNames = GateWayServer._clientRequestItemName.get(clientName);
+		for(String clientName : DataBaseMap._clientRequestItemName.keySet()){
+			List<String> itemNames = DataBaseMap._clientRequestItemName.get(clientName);
 			for(String itemName : itemNames){
 				System.out.println("clientName "+clientName);
 				itemName = itemName.replaceAll(clientName, "");
 				_logger.info("Register client request item "+itemName);
 				System.out.println("Register client request item "+itemName);
-				System.out.println("_clientResponseType size "+GateWayServer._clientResponseType.size());
-				byte responseMsgType  =  GateWayServer._clientResponseType.get(itemName);
+				System.out.println("_clientResponseType size "+DataBaseMap._clientResponseType.size());
+				byte responseMsgType  =  DataBaseMap._clientResponseType.get(itemName);
 //				if( GateWayServer._requestItemNameList.get(itemName) != null){
 //					ClientHandle clientHandle = (ClientHandle)LocateGateWayMain.springContext.getBean("clientHandler"); 
 //					ItemManager clientInstance = mainAppProxy.itemRequests(itemName,responseMsgType, 0);
@@ -75,9 +76,9 @@ public class GatewayServerHandler extends SimpleChannelHandler {
 	@Deprecated
 	private void updateServerStatInfo() {
 		// need to modify the monitor socke connected.
-		RFApplication.currentUserNumber.setText(String.valueOf(GateWayServer._userConnection.size()));
+		RFApplication.currentUserNumber.setText(String.valueOf(DataBaseMap._userConnection.size()));
 		int currentRequestItemNum = 0;
-		for (List<String> list : GateWayServer._clientRequestItemName.values()) {
+		for (List<String> list : DataBaseMap._clientRequestItemName.values()) {
 			currentRequestItemNum += list.size();
 		}
 		RFApplication.currentRequestNumber.setText(String.valueOf(currentRequestItemNum));
@@ -151,15 +152,15 @@ public class GatewayServerHandler extends SimpleChannelHandler {
 			Channel channel = e.getChannel();
 			
 			//将channelId和对应的channel放到map中,会写客户端的时候可以根据该id找到对应的channel.
-			if(!GateWayServer.allChannelGroup.contains(channel)){
-				GateWayServer.allChannelGroup.add(channel);
+			if(!DataBaseMap.allChannelGroup.contains(channel)){
+				DataBaseMap.allChannelGroup.add(channel);
 			}
-			userName = GateWayServer._userConnection.get(clientIP);
+			userName = DataBaseMap._userConnection.get(clientIP);
 			ClientInfo clientInfo = new ClientInfo(userRequest, userName, channel.getId(), msgType, clientIP);
 //		    ClientHandle clientHandle = (ClientHandle)LocateGateWayMain.springContext.getBean("clientHandler"); 
 		    if(msgType != GateWayMessageTypes.LOGIN){
 				for (String subcribeItemName : clientHandle.pickupClientReqItem(userRequest)) {
-					Map<String, ChannelGroup> subscribeChannelMap = GateWayServer.itemNameChannelMap;
+					Map<String, ChannelGroup> subscribeChannelMap = DataBaseMap.itemNameChannelMap;
 					ChannelGroup subChannelGroup = subscribeChannelMap.get(subcribeItemName);
 					if (subChannelGroup == null) {
 						subChannelGroup = new DefaultChannelGroup();
@@ -180,9 +181,9 @@ public class GatewayServerHandler extends SimpleChannelHandler {
 	@Override
 	public void channelClosed(ChannelHandlerContext ctx, ChannelStateEvent e) throws Exception {
 		Channel channel = e.getChannel();
-		GateWayServer.allChannelGroup.remove(channel);
+		DataBaseMap.allChannelGroup.remove(channel);
 		//遍历所有的channelgoup,发现有该channel的就remove掉.如果该channelGroup为空,
-		for(Entry<String,ChannelGroup> entry:GateWayServer.itemNameChannelMap.entrySet()){
+		for(Entry<String,ChannelGroup> entry:DataBaseMap.itemNameChannelMap.entrySet()){
 			String itemName = entry.getKey();
 			ChannelGroup channelGroup = entry.getValue();
 			if(channelGroup.contains(channel)){

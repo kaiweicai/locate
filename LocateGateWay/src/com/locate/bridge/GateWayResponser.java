@@ -9,6 +9,7 @@ import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.buffer.ChannelBuffers;
 import org.jboss.netty.channel.Channel;
 
+import com.locate.common.DataBaseMap;
 import com.locate.common.XmlMessageUtil;
 import com.locate.gate.GateWayServer;
 import com.locate.gate.model.LocateMessage;
@@ -37,7 +38,7 @@ public class GateWayResponser {
 		}
 		ChannelBuffer buffer = ChannelBuffers.buffer(content.length);
 		buffer.writeBytes(content);
-		Channel channel = GateWayServer.allChannelGroup.find(channelId);
+		Channel channel = DataBaseMap.allChannelGroup.find(channelId);
 		if (channel != null && channel.isConnected()) {
 			channel.write(buffer);
 		} else {
@@ -58,7 +59,7 @@ public class GateWayResponser {
 		}
 		ChannelBuffer buffer = ChannelBuffers.buffer(content.length);
 		buffer.writeBytes(content);
-		GateWayServer.allChannelGroup.write(buffer);
+		DataBaseMap.allChannelGroup.write(buffer);
 		logger.info("downStream message is :"+content);
 	}
 
@@ -74,7 +75,7 @@ public class GateWayResponser {
 		}
 		ChannelBuffer buffer = ChannelBuffers.buffer(content.length);
 		buffer.writeBytes(content);
-		GateWayServer.itemNameChannelMap.get(itemName).write(buffer);
+		DataBaseMap.itemNameChannelMap.get(itemName).write(buffer);
 		logger.info("downStream message is :"+response.asXML());
 	}
 
@@ -90,7 +91,7 @@ public class GateWayResponser {
 		}
 		ChannelBuffer buffer = ChannelBuffers.buffer(content.length);
 		buffer.writeBytes(content);
-		GateWayServer.allChannelGroup.find(channelId).write(buffer);
+		DataBaseMap.allChannelGroup.find(channelId).write(buffer);
 		logger.info("downStream message is :"+content);
 	}
 
@@ -107,7 +108,7 @@ public class GateWayResponser {
 		}
 		ChannelBuffer buffer = ChannelBuffers.buffer(content.length);
 		buffer.writeBytes(content);
-		Channel channel = GateWayServer.allChannelGroup.find(channelId);
+		Channel channel = DataBaseMap.allChannelGroup.find(channelId);
 		if (channel != null && channel.isConnected()) {
 			channel.write(buffer);
 		} else {
@@ -117,7 +118,7 @@ public class GateWayResponser {
 	}
 
 	public static void brodcastStateResp(Document responseMsg) {
-		if(!GateWayServer.allChannelGroup.isEmpty()){
+		if(!DataBaseMap.allChannelGroup.isEmpty()){
 			byte[] content = null;
 			try {
 				content = responseMsg.asXML().getBytes("UTF-8");
@@ -126,7 +127,7 @@ public class GateWayResponser {
 			}
 			ChannelBuffer buffer = ChannelBuffers.buffer(content.length);
 			buffer.writeBytes(content);
-			GateWayServer.allChannelGroup.write(buffer);
+			DataBaseMap.allChannelGroup.write(buffer);
 		}else{
 			logger.info("None user loginin!");
 		}

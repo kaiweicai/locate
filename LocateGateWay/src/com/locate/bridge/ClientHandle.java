@@ -12,6 +12,7 @@ import org.dom4j.Element;
 import org.jboss.netty.channel.group.ChannelGroup;
 import org.jboss.netty.channel.group.DefaultChannelGroup;
 
+import com.locate.common.DataBaseMap;
 import com.locate.common.GateWayExceptionTypes;
 import com.locate.common.GateWayMessageTypes;
 import com.locate.common.GateWayExceptionTypes.RFAExceptionEnum;
@@ -58,7 +59,7 @@ public class ClientHandle {
 		Document responseData = null;
 		
 		if(_msgType != GateWayMessageTypes.LOGIN){
-	    	String userName = GateWayServer._userConnection.get(clientIP);
+	    	String userName = DataBaseMap._userConnection.get(clientIP);
 	    	if(userName == null){
 	    		resultCode = GateWayExceptionTypes.USER_NOT_LOGIN;
 				Document wrongMsg = XmlMessageUtil.createErrorDocument(resultCode,
@@ -178,9 +179,9 @@ public class ClientHandle {
 			return;
 		_logger.info("Begin register client request "+clientName);
 		for(String itemName : itemNames){
-			GateWayServer._clientResponseType.put(itemName, responseMsgType);
+			DataBaseMap._clientResponseType.put(itemName, responseMsgType);
 			_logger.info("Register client request item "+itemName);
-			GateWayServer._clientRequestSession.put(clientName+itemName, channel);
+			DataBaseMap._clientRequestSession.put(clientName+itemName, channel);
 //			if(regiestItemNameForClient(itemName,clientName)){
 				ItemManager clientInstance = mainApp.itemRequests(itemName,responseMsgType,channel);
 				regiestItemRequestManager(itemName,clientInstance);
@@ -212,7 +213,7 @@ public class ClientHandle {
 			return errorCode=GateWayExceptionTypes.USER_BUSINESS_NUMBER_OUT;
 		_logger.info("Begin register client request "+clientName);
 		for(String itemName : itemNames){
-			GateWayServer._clientResponseType.put(itemName, responseMsgType);
+			DataBaseMap._clientResponseType.put(itemName, responseMsgType);
 			_logger.info("Register client request item "+itemName);
 //			GateWayServer._clientRequestSession.put(clientName+itemName, channelId);
 //			if(regiestItemNameForClient(itemName,clientName)){
@@ -251,12 +252,12 @@ public class ClientHandle {
 	@Deprecated
 	private void regiestClientRequestItem(String clientName,String itemName){
 		List<String> clientRequestItem;
-		clientRequestItem = GateWayServer._clientRequestItemName.get(clientName);
+		clientRequestItem = DataBaseMap._clientRequestItemName.get(clientName);
 		if(clientRequestItem == null){
 			clientRequestItem =  new ArrayList();
 		}
 		clientRequestItem.add(clientName+itemName);
-		GateWayServer._clientRequestItemName.put(clientName, clientRequestItem);
+		DataBaseMap._clientRequestItemName.put(clientName, clientRequestItem);
 	}
 	
 //	private void regiestItemRequestManager(String itemName,ItemManager instance){
@@ -276,7 +277,7 @@ public class ClientHandle {
 	 */
 	@Deprecated
 	private void regiestItemRequestManager(String itemName,ItemManager instance){
-		GateWayServer._clientRequestItemManager.put(itemName,instance);
+		DataBaseMap._clientRequestItemManager.put(itemName,instance);
 //		ItemManager itemRequestManager = RFASocketServer._clientRequestItemManager.get(itemName);
 //		if(itemRequestManagerList == null){
 //			itemRequestManagerList = new ArrayList();
@@ -310,12 +311,12 @@ public class ClientHandle {
 	}
 
 	public void closeHandler(String itemName) {
-		ItemManager itemHandler = GateWayServer.subscribeItemManagerMap.get(itemName);
+		ItemManager itemHandler = DataBaseMap.subscribeItemManagerMap.get(itemName);
 		//取消订阅该产品
 		if(itemHandler!=null){
 			itemHandler.closeRequest();
 		}
-		GateWayServer._clientRequestItemManager.remove(itemName);
+		DataBaseMap._clientRequestItemManager.remove(itemName);
 	}
 	
 //	private boolean checkRequestNews(byte msgType,String userName,List<String> newsKey){

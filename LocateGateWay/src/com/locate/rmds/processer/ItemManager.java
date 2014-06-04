@@ -4,6 +4,7 @@ import org.apache.log4j.Logger;
 import org.dom4j.Document;
 
 import com.locate.bridge.GateWayResponser;
+import com.locate.common.DataBaseMap;
 import com.locate.common.XmlMessageUtil;
 import com.locate.gate.GateWayServer;
 import com.locate.rmds.QSConsumerProxy;
@@ -189,7 +190,7 @@ public class ItemManager implements Client
     {
     	 _itemGroupManager._handles.remove(itemHandle);
          _mainApp.getOMMConsumer().unregisterClient(itemHandle);
-         GateWayServer.subscribeItemManagerMap.remove(clientRequestItemName);
+         DataBaseMap.subscribeItemManagerMap.remove(clientRequestItemName);
     }
 
     // This is a Client method. When an event for this client is dispatched,

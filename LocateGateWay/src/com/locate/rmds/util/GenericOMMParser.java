@@ -1,9 +1,10 @@
 package com.locate.rmds.util;
 
 import java.io.ByteArrayInputStream;
-import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Vector;
 
 import org.apache.log4j.Logger;
@@ -11,14 +12,14 @@ import org.dom4j.Document;
 import org.dom4j.DocumentFactory;
 import org.dom4j.Element;
 
-
+import com.locate.common.DataBaseMap;
+import com.locate.rmds.gui.viewer.FieldValue;
 import com.reuters.rfa.ansipage.Page;
 import com.reuters.rfa.ansipage.PageUpdate;
 import com.reuters.rfa.common.PublisherPrincipalIdentity;
 import com.reuters.rfa.dictionary.DataDef;
 import com.reuters.rfa.dictionary.DataDefDictionary;
 import com.reuters.rfa.dictionary.DictionaryException;
-import com.reuters.rfa.dictionary.DictionaryConverter;
 import com.reuters.rfa.dictionary.ElementEntryDef;
 import com.reuters.rfa.dictionary.FidDef;
 import com.reuters.rfa.dictionary.FieldDictionary;
@@ -44,6 +45,7 @@ import com.reuters.rfa.omm.OMMSeries;
 import com.reuters.rfa.omm.OMMTypes;
 import com.reuters.rfa.omm.OMMVector;
 import com.reuters.rfa.omm.OMMVectorEntry;
+import com.reuters.rfa.omm.OMMMsg.MsgType;
 import com.reuters.rfa.rdm.RDMDictionary;
 import com.reuters.rfa.rdm.RDMInstrument;
 import com.reuters.rfa.rdm.RDMMsgTypes;
@@ -63,12 +65,11 @@ import com.reuters.rfa.utility.HexDump;
 public final class GenericOMMParser
 {
     private static HashMap<Integer, FieldDictionary> DICTIONARIES = new HashMap<Integer, FieldDictionary>();
-    private static FieldDictionary CURRENT_DICTIONARY;
+    private static FieldDictionary CURRENT_DICTIONARY= FieldDictionary.create();
     private static Page CURRENT_PAGE;
     static Logger _logger = Logger.getLogger(GenericOMMParser.class.getName());
 //    static Logger _logger;
     private static boolean INTERNAL_DEBUG = false;
-    
 
 //    public static void setLogger(Logger logger)
 //    {
@@ -100,6 +101,7 @@ public final class GenericOMMParser
             throw new DictionaryException("ERROR: Check if files " + fieldDictionaryFilename
                     + " and " + enumDictionaryFilename + " exist and are readable.", e);
         }
+        CURRENT_DICTIONARY=dictionary;
         return dictionary;
     }
 
@@ -137,7 +139,7 @@ public final class GenericOMMParser
     	reqItem.addElement(RFANodeconstant.RESPONSE_ITEM_NAME_NODE).addText(itemName);
     	Element fields = response.addElement(RFANodeconstant.RESPONSE_FIELDS_NODE);
     	
-    	parseMsg(msg, logMsg,fields);
+    	parseMsg(msg, logMsg,fields,itemName);
         _logger.info(logMsg.toString());
 //        _logger.info(responseMsg.asXML());
 //        if(fields.elements().size() > 0){
@@ -231,13 +233,41 @@ public final class GenericOMMParser
      * parse msg and print it in a table-nested format to the provided
      * PrintStream
      */
-    public static final void parseMsg(OMMMsg msg, StringBuffer logMsg,Element fieldsElement)
+    public static final void parseMsg(OMMMsg msg, StringBuffer logMsg,Element fieldsElement,String itemName)
     {
-        parseMsg(msg, logMsg, 0,fieldsElement);
+        parseMsg(msg, logMsg, 0,fieldsElement,itemName);
     }
 
-	static final void parseMsg(OMMMsg msg, StringBuffer logMsg, int tabLevel, Element fieldsElement) {
-		msg.getMsgType();
+	static final void parseMsg(OMMMsg msg, StringBuffer logMsg, int tabLevel, Element fieldsElement,String itemName) {
+		boolean ripple = (msg.getMsgType() == OMMMsg.MsgType.UPDATE_RESP)
+				&& !msg.isSet(OMMMsg.Indication.DO_NOT_RIPPLE);
+		byte msgType = msg.getMsgType();
+		
+		
+		if (msgType == OMMMsg.MsgType.REFRESH_RESP) {
+			if (msg.getDataType() == OMMTypes.FIELD_LIST) {
+				OMMFieldList fieldList = (OMMFieldList) msg.getPayload();
+				Map fieldListMap = new LinkedHashMap();
+				DataBaseMap.filedValueMap.put(itemName, fieldListMap);
+				for (Iterator<?> fiter = fieldList.iterator(); fiter.hasNext();) {
+					OMMFieldEntry fentry = (OMMFieldEntry) fiter.next();
+					FidDef fiddef = CURRENT_DICTIONARY.getFidDef(fentry.getFieldId());
+					if (fiddef != null) {
+						FieldValue field = getValue(itemName, fiddef.getFieldId());
+						if (field == null) {
+							short type = fentry.getDataType();
+							if (type == OMMTypes.UNKNOWN)
+								type = fiddef.getOMMType();
+							field = new FieldValue(null, fiddef);
+							field.update(fentry);
+							fieldListMap.put(fiddef.getFieldId(), field);
+						}
+					}
+				}
+			}
+		}
+		
+		
 		logMsg.append('\n');
 		dumpIndent(logMsg, tabLevel);
 		logMsg.append("MESSAGE");
@@ -369,16 +399,15 @@ public final class GenericOMMParser
 			if (ai.has(OMMAttribInfo.HAS_ATTRIB)) {
 				dumpIndent(logMsg, tabLevel + 2);
 				logMsg.append("Attrib");
-				parseData(ai.getAttrib(), logMsg, tabLevel + 2, fieldsElement);
+				parseData(ai.getAttrib(), logMsg, tabLevel + 2, fieldsElement,false);
 				logMsg.append("\n");
 			}
 		}
 		dumpIndent(logMsg, tabLevel + 1);
 		logMsg.append(" Payload: ");
 		if (msg.getDataType() != OMMTypes.NO_DATA) {
-			
 			logMsg.append(" " + msg.getPayload().getEncodedLength() + " bytes");
-			parseData(msg.getPayload(), logMsg, tabLevel + 1, fieldsElement);
+			parseData(msg.getPayload(), logMsg, tabLevel + 1, fieldsElement,ripple,itemName,msgType);
 			logMsg.append("\n ");
 		} else {
 			dumpIndent(logMsg, tabLevel + 2);
@@ -449,24 +478,23 @@ public final class GenericOMMParser
      * parse data and print it in a table-nested format to the System.out
      */
 
-    public static final void parse(OMMData data,Element field)
-    {
-        parseData(data, null, 0,field);
-    }
+//    public static final void parse(OMMData data,Element field)
+//    {
+//        parseData(data, null, 0,field,false);
+//    }
 
-    private static final void parseAggregate(OMMData data, StringBuffer logMsg, int tabLevel,Element fields)
+    private static final void parseAggregate(OMMData data, StringBuffer logMsg, int tabLevel,Element fields,boolean ripple,String itemName,byte msgType)
     {
-    	Element field ;
+    	Map<Short,Element> rippleMap = new HashMap<Short,Element>();
         parseAggregateHeader(data, logMsg, tabLevel,fields);
         int fieldNum = 0;
         for (Iterator iter = ((OMMIterable)data).iterator(); iter.hasNext();)
         {
         	fieldNum++;
-        	field = fields.addElement("Field");
+//        	field = fields.addElement("Field");
 //        	logMsg.append("\n");
             OMMEntry entry = (OMMEntry)iter.next();
-            parseEntry(entry, logMsg, tabLevel + 1,field);
-            
+            parseEntry(entry, logMsg, tabLevel + 1,fields,ripple,itemName,msgType,rippleMap);
         }
         _logger.info("test for cloud wei```````````````````````fieldNub is "+fieldNum);
     }
@@ -476,12 +504,12 @@ public final class GenericOMMParser
      * PrintStream
      * data is OMMMessage Attribute
      */
-    public static final void parseData(OMMData data, StringBuffer logMsg, int tabLevel,Element fieldsElement)
+    public static final void parseData(OMMData data, StringBuffer logMsg, int tabLevel,Element fieldsElement,boolean ripple,String itemName,byte msgType)
     {
         if (data.isBlank())
         	logMsg.append("\n");
         else if (OMMTypes.isAggregate(data.getType()))
-            parseAggregate(data, logMsg, tabLevel + 1,fieldsElement);
+            parseAggregate(data, logMsg, tabLevel + 1,fieldsElement,ripple,itemName,msgType);
         else if ((data.getType() == OMMTypes.RMTES_STRING)
                 && ((OMMDataBuffer)data).hasPartialUpdates())
         {
@@ -547,7 +575,100 @@ public final class GenericOMMParser
         }
         else if (data.getType() == OMMTypes.MSG)
         {
-            parseMsg((OMMMsg)data, logMsg, tabLevel + 1,fieldsElement);
+            parseMsg((OMMMsg)data, logMsg, tabLevel + 1,fieldsElement,itemName);
+        }
+        else
+        {
+            try
+            {
+            	fieldsElement.addElement(RFANodeconstant.RESPONSE_FIELDS_FIELD_VALUE_NODE).addText(data.toString());
+            	logMsg.append(data.toString());
+            }
+            catch (Exception e)
+            {
+                byte[] rawdata = data.getBytes();
+                logMsg.append(HexDump.hexDump(rawdata));
+            }
+        }
+    }
+    
+    /**
+     * parse data and print it in a table-nested format to the provided
+     * PrintStream
+     * data is OMMMessage Attribute
+     */
+    public static final void parseData(OMMData data, StringBuffer logMsg, int tabLevel,Element fieldsElement,boolean ripple)
+    {
+        if (data.isBlank())
+        	logMsg.append("\n");
+        else if (OMMTypes.isAggregate(data.getType()))
+            parseAggregate(data, logMsg, tabLevel + 1,fieldsElement,ripple,"",(byte)0);
+        else if ((data.getType() == OMMTypes.RMTES_STRING)
+                && ((OMMDataBuffer)data).hasPartialUpdates())
+        {
+            Iterator iter = ((OMMDataBuffer)data).partialUpdateIterator();
+            while (true)
+            {
+                OMMDataBuffer partial = (OMMDataBuffer)iter.next();
+                logMsg.append("hpos: "+partial.horizontalPosition()+", "+partial.toString());
+                if (iter.hasNext())
+                	logMsg.append("  |  ");
+                else
+                    break;
+            }
+            logMsg.append("\n");
+        }
+        else if (data.getType() == OMMTypes.ANSI_PAGE)
+        {
+            // process ANSI with com.reuters.rfa.ansipage
+            parseAnsiPageData(data, logMsg, tabLevel);
+        }
+        else if (data.getType() == OMMTypes.BUFFER || data.getType() == OMMTypes.OPAQUE_BUFFER)
+        {
+            if (data.getEncodedLength() <= 20)
+            {
+            	dumpIndent(logMsg, tabLevel + 1);
+                // for small strings, print hex and try to print ASCII
+            	logMsg.append(HexDump.toHexString(((OMMDataBuffer)data).getBytes(), false)+" | "+data);
+            }
+            else
+            {
+                if (INTERNAL_DEBUG)
+                {
+                	logMsg.append("Hex Format and Data Bytes: ");
+                	logMsg.append(HexDump.hexDump(((OMMDataBuffer)data).getBytes(), 50));
+
+                	logMsg.append("Hex Format: ");
+                }
+
+                int lineSize = 32;
+                String s = HexDump.toHexString(((OMMDataBuffer)data).getBytes(), false);
+
+                int j = 0;
+                while (j < s.length())
+                {
+                    if (j != 0){
+                    	logMsg.append("\n");
+                    }
+
+                    int end = j + lineSize;
+                    if (end >= s.length())
+                        end = s.length();
+
+                    for (int i = j; i < end; i++)
+                    {
+                    	logMsg.append(s.charAt(i));
+                    }
+                    j = j + lineSize;
+                }
+
+                logMsg.append("Data Bytes: ");
+                logMsg.append(data.toString());
+            }
+        }
+        else if (data.getType() == OMMTypes.MSG)
+        {
+            parseMsg((OMMMsg)data, logMsg, tabLevel + 1,fieldsElement,"");
         }
         else
         {
@@ -586,7 +707,7 @@ public final class GenericOMMParser
                 {
                 	dumpIndent(logMsg, tabLevel+1);
                 	logMsg.append("SUMMARY");
-                    parseData(s.getSummaryData(), logMsg, tabLevel + 1,fields);
+                    parseData(s.getSummaryData(), logMsg, tabLevel + 1,fields,false);
                 }
                 if (s.has(OMMSeries.HAS_DATA_DEFINITIONS))
                 {
@@ -609,7 +730,7 @@ public final class GenericOMMParser
                 {
                 	dumpIndent(logMsg, tabLevel);
                 	logMsg.append("SUMMARY");
-                    parseData(s.getSummaryData(), logMsg, tabLevel + 1,fields);
+                    parseData(s.getSummaryData(), logMsg, tabLevel + 1,fields,false);
                 }
             }
                 break;
@@ -625,7 +746,7 @@ public final class GenericOMMParser
                 {
                 	dumpIndent(logMsg, tabLevel+1);
                 	logMsg.append("SUMMARY");
-                    parseData(s.getSummaryData(), logMsg, tabLevel + 1,fields);
+                    parseData(s.getSummaryData(), logMsg, tabLevel + 1,fields,false);
                 }
             }
                 break;
@@ -655,109 +776,142 @@ public final class GenericOMMParser
     
     
 
-    private static final void parseEntry(OMMEntry entry, StringBuffer logMsg, int tabLevel,Element field)
-    {
-    	
-        try
-        {
-            switch (entry.getType())
+    private static final void parseEntry(OMMEntry entry, StringBuffer logMsg, int tabLevel,Element fields,boolean ripple,String itemName,byte msgType,Map<Short,Element> rippleMap)
+ {
+		OMMFieldEntry fe = (OMMFieldEntry) entry;
+		FidDef fiddef = CURRENT_DICTIONARY.getFidDef(fe.getFieldId());
+		// add the ripple data
+		FieldValue fieldValue = getValue(itemName, fiddef.getFieldId());
+		short fId = fieldValue.getFieldId();
+		Element ele =rippleMap.get(fId);
+		if(ele !=null){
+			fields.remove(ele);
+		}
+		Short rippleId = fiddef.getRippleFieldId();
 
-            {
-                case OMMTypes.FIELD_ENTRY:
-                {
-                    OMMFieldEntry fe = (OMMFieldEntry)entry;
-                    if (CURRENT_DICTIONARY != null)
-                    {
-                        FidDef fiddef = CURRENT_DICTIONARY.getFidDef(fe.getFieldId());
-                        //add the ripple data
-                        
-                        
-                        
-                        if (fiddef != null)
-                        {
-                            dumpFieldEntryHeader(fe, fiddef, logMsg, tabLevel+1,field);
-                            OMMData data = null;
-                            if (fe.getDataType() == OMMTypes.UNKNOWN)
-                                data = fe.getData(fiddef.getOMMType());
-                            else
-                                // defined data already has type
-                                data = fe.getData();
-//                            DictionaryConverter.
-//                            logMsg.append(" data type="+OMMTypes.toString(data.getType())+" ");
-                            field.addElement(RFANodeconstant.RESPONSE_FIELDS_FIELD_TYPE_NODE).addText(RFATypeConvert.convertField(OMMTypes.toString(data.getType())));
-                        	if (data.getType() == OMMTypes.ENUM)
-                            {
-                            	String aa = CURRENT_DICTIONARY.expandedValueFor(fiddef.getFieldId(),
-                                		((OMMEnum)data).getValue());
-                            	dumpIndent(logMsg,tabLevel);
-                            	logMsg.append(aa);
-                            	field.addElement(RFANodeconstant.RESPONSE_FIELDS_FIELD_VALUE_NODE).addText(aa);
-//                            	logMsg.append(CURRENT_DICTIONARY.expandedValueFor(fiddef.getFieldId(),
-//                                		((OMMEnum)data).getValue()));
-                            }
-                            else
-                                parseData(data, logMsg, tabLevel,field);
-                        }
-                        else
-                        {
-                        	dumpIndent(logMsg,tabLevel);
-                        	logMsg.append("Received field id: " + fe.getFieldId()
-                                    + " - Not defined in dictionary");
-                        }
-                    }
-                    else
-                    {
-                        dumpFieldEntryHeader(fe, null, logMsg, tabLevel,field);
-                        if (fe.getDataType() == OMMTypes.UNKNOWN)
-                        {
-                            OMMDataBuffer data = (OMMDataBuffer)fe.getData();
-                            dumpIndent(logMsg,tabLevel);
-                            logMsg.append(HexDump.toHexString(data.getBytes(), false));
-                        }
-                        else
-                        // defined data already has type
-                        {
-                            OMMData data = fe.getData();
-                            parseData(data, logMsg, tabLevel,field);
-                        }
-                    }
-                }
-                    break;
-                case OMMTypes.ELEMENT_ENTRY:
-                    dumpElementEntryHeader((OMMElementEntry)entry, logMsg, tabLevel+1,field);
-                    parseData(entry.getData(), logMsg, tabLevel,field);
-                    break;
-                case OMMTypes.MAP_ENTRY:
-                    dumpMapEntryHeader((OMMMapEntry)entry, logMsg, tabLevel,field);
-                    if ((((OMMMapEntry)entry).getAction() != OMMMapEntry.Action.DELETE)
-                            && entry.getDataType() != OMMTypes.NO_DATA)
-                        parseData(entry.getData(), logMsg, tabLevel,field);
-                    break;
-                case OMMTypes.VECTOR_ENTRY:
-                    dumpVectorEntryHeader((OMMVectorEntry)entry, logMsg, tabLevel);
-                    if ((((OMMVectorEntry)entry).getAction() != OMMVectorEntry.Action.DELETE)
-                            && (((OMMVectorEntry)entry).getAction() != OMMVectorEntry.Action.CLEAR))
-                        parseData(entry.getData(), logMsg, tabLevel,field);
-                    break;
-                case OMMTypes.FILTER_ENTRY:
-                    dumpFilterEntryHeader((OMMFilterEntry)entry, logMsg, tabLevel);
-                    if (((OMMFilterEntry)entry).getAction() != OMMFilterEntry.Action.CLEAR)
-                        parseData(entry.getData(), logMsg, tabLevel,field);
-                    break;
-                default:
-                    dumpEntryHeader(entry, logMsg, tabLevel);
-                    parseData(entry.getData(), logMsg, tabLevel,field);
-                    break;
-            }
-        }
-        catch (OMMException e)
-        {
-        	logMsg.append("ERROR Invalid data: " + e.getMessage());
-        }
-        
-    }
+		if (msgType == MsgType.UPDATE_RESP) {
+			if (ripple && rippleId != 0) {
+				FidDef rippleFieldDef = fiddef;
+				Object tmp = fieldValue.getStringValue();
+				// setFirstField(fentry, fiddef, field);
+				while ((rippleFieldDef.getRippleFieldId() != 0)
+						&& ((fieldValue = getValue(itemName, rippleFieldDef.getRippleFieldId())) != null)) {
+					
+					
+					short fieldId = fieldValue.getFieldId();
+					Element e = rippleMap.get(fieldId);
+					if(e !=null){
+						rippleMap.remove(fieldId);
+						boolean removeResult = fields.remove(e);
+						_logger.info("remove result "+removeResult);
+					}
+					Element rippleField = fields.addElement("Field");
+					FidDef rippleDef = CURRENT_DICTIONARY.getFidDef(rippleFieldDef.getRippleFieldId());
+					dumpFieldEntryHeader(fieldValue, rippleDef, logMsg, tabLevel + 1, rippleField);
+					rippleField.addElement(RFANodeconstant.RESPONSE_FIELDS_FIELD_TYPE_NODE).addText(
+							RFATypeConvert.convertField(OMMTypes.toString(fieldValue.getOMMType())));
+					logMsg.append(tmp.toString());
+					//使用XAU=时,Bid1和Ask1既是Ripple的field,RFA又同时传送过来了相应的值.避免重复.
+					
+					Element tmpElement=rippleField.addElement(RFANodeconstant.RESPONSE_FIELDS_FIELD_VALUE_NODE).addText(tmp.toString());
+					rippleMap.put(fieldId, rippleField);
+					
+					tmp = fieldValue.setValue(tmp);
+					rippleFieldDef = CURRENT_DICTIONARY.getFidDef(fieldId);
+				}
+			}
+		}
+	
+		
+		Element elementField = fields.addElement("Field");
+		try {
+			switch (entry.getType()) {
+			case OMMTypes.FIELD_ENTRY: {
+				if (CURRENT_DICTIONARY != null) {
+					if (fiddef != null) {
+						dumpFieldEntryHeader(fe, fiddef, logMsg, tabLevel + 1, elementField);
+						OMMData data = null;
+						if (fe.getDataType() == OMMTypes.UNKNOWN)
+							data = fe.getData(fiddef.getOMMType());
+						else
+							// defined data already has type
+							data = fe.getData();
+						if (rippleId > 0) {
+							// 这里需要记录该field最新的值到map中,方便下次直接读取
+							FieldValue firstFieldValue = DataBaseMap.filedValueMap.get(itemName).get(
+									fe.getFieldId());
+							firstFieldValue.setValue(data.toString());
+						}
+						// DictionaryConverter.
+						// logMsg.append(" data type="+OMMTypes.toString(data.getType())+" ");
+						elementField.addElement(RFANodeconstant.RESPONSE_FIELDS_FIELD_TYPE_NODE).addText(
+								RFATypeConvert.convertField(OMMTypes.toString(data.getType())));
+						if (data.getType() == OMMTypes.ENUM) {
+							String aa = CURRENT_DICTIONARY.expandedValueFor(fiddef.getFieldId(),
+									((OMMEnum) data).getValue());
+							dumpIndent(logMsg, tabLevel);
+							logMsg.append(aa);
+							elementField.addElement(RFANodeconstant.RESPONSE_FIELDS_FIELD_VALUE_NODE).addText(aa);
+							// logMsg.append(CURRENT_DICTIONARY.expandedValueFor(fiddef.getFieldId(),
+							// ((OMMEnum)data).getValue()));
+						} else
+							parseData(data, logMsg, tabLevel, elementField, ripple);
+					} else {
+						dumpIndent(logMsg, tabLevel);
+						logMsg.append("Received field id: " + fe.getFieldId() + " - Not defined in dictionary");
+					}
+				} else {
+					dumpFieldEntryHeader(fe, null, logMsg, tabLevel, elementField);
+					if (fe.getDataType() == OMMTypes.UNKNOWN) {
+						OMMDataBuffer data = (OMMDataBuffer) fe.getData();
+						dumpIndent(logMsg, tabLevel);
+						logMsg.append(HexDump.toHexString(data.getBytes(), false));
+					} else
+					// defined data already has type
+					{
+						OMMData data = fe.getData();
+						parseData(data, logMsg, tabLevel, elementField, ripple);
+					}
+				}
+			}
+				break;
+			case OMMTypes.ELEMENT_ENTRY:
+				dumpElementEntryHeader((OMMElementEntry) entry, logMsg, tabLevel + 1, elementField);
+				parseData(entry.getData(), logMsg, tabLevel, elementField, false);
+				break;
+			case OMMTypes.MAP_ENTRY:
+				dumpMapEntryHeader((OMMMapEntry) entry, logMsg, tabLevel, elementField);
+				if ((((OMMMapEntry) entry).getAction() != OMMMapEntry.Action.DELETE)
+						&& entry.getDataType() != OMMTypes.NO_DATA)
+					parseData(entry.getData(), logMsg, tabLevel, elementField, false);
+				break;
+			case OMMTypes.VECTOR_ENTRY:
+				dumpVectorEntryHeader((OMMVectorEntry) entry, logMsg, tabLevel);
+				if ((((OMMVectorEntry) entry).getAction() != OMMVectorEntry.Action.DELETE)
+						&& (((OMMVectorEntry) entry).getAction() != OMMVectorEntry.Action.CLEAR))
+					parseData(entry.getData(), logMsg, tabLevel, elementField, false);
+				break;
+			case OMMTypes.FILTER_ENTRY:
+				dumpFilterEntryHeader((OMMFilterEntry) entry, logMsg, tabLevel);
+				if (((OMMFilterEntry) entry).getAction() != OMMFilterEntry.Action.CLEAR)
+					parseData(entry.getData(), logMsg, tabLevel, elementField, false);
+				break;
+			default:
+				dumpEntryHeader(entry, logMsg, tabLevel);
+				parseData(entry.getData(), logMsg, tabLevel, elementField, false);
+				break;
+			}
+		} catch (OMMException e) {
+			logMsg.append("ERROR Invalid data: " + e.getMessage());
+		}
+ }
 
-    private static final void dumpEntryHeader(OMMEntry entry, StringBuffer logMsg, int tabLevel)
+    private static FieldValue getValue(String itemName,short filedId) {
+    	Map<Short, FieldValue> _entries=DataBaseMap.filedValueMap.get(itemName);
+    	return _entries.get(filedId);
+	}
+
+	private static final void dumpEntryHeader(OMMEntry entry, StringBuffer logMsg, int tabLevel)
     {
         
     	logMsg.append(" \n"+OMMTypes.toString(entry.getType())+": ");
@@ -788,6 +942,30 @@ public final class GenericOMMParser
             	dumpIndent(logMsg,tabLevel);
         }
     }
+    
+    private static final void dumpFieldEntryHeader(FieldValue fieldValue, FidDef def, StringBuffer logMsg,
+            int tabLevel,Element field)
+    {
+    	
+    	field.addElement(RFANodeconstant.RESPONSE_FIELDS_FIELD_ID_NODE).addText(String.valueOf(fieldValue.getFieldId()));
+    	dumpIndent(logMsg,tabLevel);
+        logMsg.append(OMMTypes.toString(fieldValue.getOMMType())+" "+fieldValue.getFieldId());
+        if (def == null)
+        {
+        	logMsg.append(": ");
+        }
+        else
+        {
+        	field.addElement(RFANodeconstant.RESPONSE_FIELDS_FIELD_NAME_NODE).addText(def.getName());
+        	dumpIndent(logMsg,tabLevel);
+        	logMsg.append("/");
+        	logMsg.append(def.getName()); 
+        	logMsg.append(": ");
+            if ((def.getOMMType() >= OMMTypes.BASE_FORMAT) || (def.getOMMType() == OMMTypes.ARRAY))
+            	dumpIndent(logMsg,tabLevel);
+        }
+    }
+    
 
 	private static final void dumpElementEntryHeader(OMMElementEntry entry, StringBuffer logMsg, int tabLevel,
 			Element field) {
@@ -835,7 +1013,7 @@ public final class GenericOMMParser
 
         
         logMsg.append("\nKey: ");
-        parseData(entry.getKey(), logMsg, 0,field);
+        parseData(entry.getKey(), logMsg, 0,field,false);
         
         logMsg.append("\n Value: ");
     }

@@ -19,6 +19,7 @@ import com.locate.common.XmlMessageUtil;
 import com.locate.rmds.QSConsumerProxy;
 import com.locate.rmds.sub.RDMServiceInfo;
 import com.locate.rmds.sub.ServiceInfo;
+import com.locate.rmds.util.GenericNormalOmmParser;
 import com.locate.rmds.util.GenericOMMParser;
 import com.reuters.rfa.common.Client;
 import com.reuters.rfa.common.Event;
@@ -174,7 +175,7 @@ public class RFALoginClient implements Client
         if (respMsg.isFinal()) 
         {
         	_logger.info(_className+": Login Response message is final.");
-        	GenericOMMParser.parse(respMsg,null);
+        	GenericNormalOmmParser.parse(respMsg,null);
         	_mainApp.loginFailure();
         	return;
         }
@@ -193,7 +194,7 @@ public class RFALoginClient implements Client
 				&& (respMsg.getState().getStreamState() == OMMState.Stream.OPEN)
 				&& (respMsg.getState().getDataState() == OMMState.Data.OK)) {
 			_logger.info(_className + ": Received Login STATUS OK Response");
-			GenericOMMParser.parse(respMsg, "RFALogin");
+			GenericNormalOmmParser.parse(respMsg, "RFALogin");
 			_mainApp.processLogin();
 			_mainApp.registerDirectory(this);
 		} else // This message is sent by RFA indicating that RFA is processing the login
@@ -201,13 +202,13 @@ public class RFALoginClient implements Client
 			_logger.error("Login not success.Please check!\n Received Login Response - "
 					+ OMMMsg.MsgType.toString(respMsg.getMsgType()));
 			_mainApp.loginFailure();
-			GenericOMMParser.parse(respMsg, "RFALogin");
+			GenericNormalOmmParser.parse(respMsg, "RFALogin");
 		}
     }
     
     protected void processDirectoryMsg(OMMMsg msg)
     {
-        GenericOMMParser.parse(msg,"DIRECTORY");
+    	GenericNormalOmmParser.parse(msg,"DIRECTORY");
 
         if (msg.getDataType() == OMMTypes.NO_DATA)
         {
@@ -302,7 +303,7 @@ public class RFALoginClient implements Client
 		int msgType = msg.getMsgType();
 
 		if ((msgType == 7) || (msgType == 8)) {
-			GenericOMMParser.parse(msg,"Dictionary");
+			GenericNormalOmmParser.parse(msg,"Dictionary");
 			return;
 		}
 

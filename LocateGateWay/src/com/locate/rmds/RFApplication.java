@@ -287,7 +287,7 @@ public class RFApplication extends JFrame {
 	public JTextField getRicTextField(){
 		if(ricTextField == null){
 			ricTextField = new JTextField();
-			ricTextField.setText("XAU=");
+			ricTextField.setText("MCU3=LX");
 		}
 		return ricTextField;
 	}

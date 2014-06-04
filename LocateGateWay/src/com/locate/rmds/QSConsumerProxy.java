@@ -18,6 +18,7 @@ import org.apache.log4j.Logger;
 import org.dom4j.Document;
 import org.springframework.web.util.HtmlUtils;
 
+import com.locate.common.DataBaseMap;
 import com.locate.gate.GateWayServer;
 import com.locate.gate.hanlder.GatewayServerHandler;
 import com.locate.rmds.client.RFAUserManagement;
@@ -322,7 +323,7 @@ public class QSConsumerProxy{
 
 	// This method utilizes ItemManager class to request items
 	public ItemManager itemRequests(String itemName, byte responseMsgType,int channelId) {
-		Map<String,ItemManager> subscribeItemManagerMap = GateWayServer.subscribeItemManagerMap;
+		Map<String,ItemManager> subscribeItemManagerMap = DataBaseMap.subscribeItemManagerMap;
 		if(subscribeItemManagerMap.containsKey(itemName)){
 			ItemManager subscibeItemManager =  subscribeItemManagerMap.get(itemName);
 			subscibeItemManager.sendInitialDocument(channelId);
