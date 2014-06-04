@@ -7,39 +7,12 @@ import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 
 import com.locate.common.GateWayExceptionTypes.RFAExceptionEnum;
-import com.locate.common.GateWayExceptionTypes.RFAUserAuthentication;
 import com.locate.rmds.RFAServerManager;
-import com.locate.rmds.processer.RFALoginClient;
-import com.reuters.rfa.omm.OMMMsg;
 import com.reuters.rfa.omm.OMMState;
 
 public class XmlMessageUtil {
 	static final String LOGIN_SUCCESSFUL = "0";
 	static final String LOGIN_FAILED = "1";
-
-	public static Document createAuthenResponse(RFAUserAuthentication userAuthentication) {
-		DocumentFactory factory = DocumentFactory.getInstance();
-		Document doc = factory.createDocument();
-		Element rmds = doc.addElement(RFANodeconstant.RESPONSE_ROOT_NODE);
-
-		String streamingState = OMMState.Stream.toString(RFALoginClient.STREAM_STATE);
-		String dataingState = OMMState.Data.toString(RFALoginClient.DATA_STATE);
-		Element locateElement = rmds.addElement(RFANodeconstant.LOCATE_NODE);
-		locateElement.addElement(RFANodeconstant.STREAM_STATE_NODE).addText(streamingState);
-		locateElement.addElement(RFANodeconstant.DATA_STATE_NODE).addText(dataingState);
-		locateElement.addElement(RFANodeconstant.ALL_STATE_NODE).addText(RFALoginClient.STATE);
-
-		Element response = rmds.addElement(RFANodeconstant.RESPONSE_RESPONSE_NODE);
-		Element login = response.addElement(RFANodeconstant.RESPONSE_LOGIN_NODE);
-		if (userAuthentication == null) {
-			login.addElement(RFANodeconstant.RESPONSE_LOGIN_RESULT_NODE).addText(LOGIN_SUCCESSFUL);
-			login.addElement(RFANodeconstant.RESPONSE_LOGIN_DESC_NODE).addText("You passed authentication");
-		} else {
-			login.addElement(RFANodeconstant.RESPONSE_LOGIN_RESULT_NODE).addText(LOGIN_FAILED);
-			login.addElement(RFANodeconstant.RESPONSE_LOGIN_DESC_NODE).addText(userAuthentication.getException());
-		}
-		return doc;
-	}
 
 	public static Document createErrorDocument(int errorCode, String descriptioin) {
 		DocumentFactory factory = DocumentFactory.getInstance();

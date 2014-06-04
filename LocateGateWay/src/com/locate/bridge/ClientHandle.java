@@ -15,6 +15,7 @@ import org.jboss.netty.channel.group.DefaultChannelGroup;
 import com.locate.common.DataBaseMap;
 import com.locate.common.GateWayExceptionTypes;
 import com.locate.common.GateWayMessageTypes;
+import com.locate.common.RFANodeconstant;
 import com.locate.common.GateWayExceptionTypes.RFAExceptionEnum;
 import com.locate.common.XmlMessageUtil;
 import com.locate.gate.GateWayServer;
@@ -28,7 +29,6 @@ import com.locate.rmds.client.ClientUserLogin;
 import com.locate.rmds.client.RFAUserManagement;
 import com.locate.rmds.processer.ItemManager;
 import com.locate.rmds.processer.RFALoginClient;
-import com.locate.rmds.util.RFANodeconstant;
 import com.reuters.rfa.omm.OMMMsg.MsgType;
 
 /**

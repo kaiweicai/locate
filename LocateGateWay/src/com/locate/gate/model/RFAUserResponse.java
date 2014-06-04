@@ -6,8 +6,8 @@ import org.dom4j.Element;
 
 import com.locate.common.GateWayExceptionTypes;
 import com.locate.common.GateWayMessageTypes;
+import com.locate.common.RFANodeconstant;
 import com.locate.common.GateWayExceptionTypes.RFAUserAuthentication;
-import com.locate.rmds.util.RFANodeconstant;
 
 public class RFAUserResponse extends LocateMessage {
 	

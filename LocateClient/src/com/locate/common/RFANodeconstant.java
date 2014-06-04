@@ -1,4 +1,4 @@
-package com.locate.rmds.util;
+package com.locate.common;
 
 public class RFANodeconstant {
 	

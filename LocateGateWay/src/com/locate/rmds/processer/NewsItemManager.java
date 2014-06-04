@@ -13,12 +13,12 @@ import org.dom4j.Element;
 import com.locate.LocateGateWayMain;
 import com.locate.bridge.GateWayResponser;
 import com.locate.common.GateWayMessageTypes;
+import com.locate.common.RFANodeconstant;
 import com.locate.gate.GateWayServer;
 import com.locate.rmds.QSConsumerProxy;
 import com.locate.rmds.util.EventFieldUtils;
 import com.locate.rmds.util.GenericOMMParser;
 import com.locate.rmds.util.RFACommon;
-import com.locate.rmds.util.RFANodeconstant;
 import com.reuters.rfa.common.Client;
 import com.reuters.rfa.common.Event;
 import com.reuters.rfa.common.Handle;
@@ -326,7 +326,7 @@ public class NewsItemManager implements Client {
 		GateWayResponser.sentAllChannelNews(GateWayMessageTypes.RESPONSE_NEWS, news);
 		newsXmlMap.remove(pnac);
 		long endTime = System.currentTimeMillis();
-		_mainApp.updateResponseStat((endTime - startTime), news);
+//		_mainApp.updateResponseStat((endTime - startTime), news);
 		_logger.info("#############updateResponseStat##############");
 	}
 

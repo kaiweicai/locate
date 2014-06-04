@@ -4,15 +4,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.log4j.Logger;
 
-import com.locate.rmds.statistic.StatisticThread;
-
 public class RFAServerManager extends Thread {
 
 	static Logger _logger = Logger.getLogger(RFAServerManager.class);
 
-	private QSConsumerProxy demo;
-	public static boolean stop = false;
-	StatisticThread statisticDemo;
 	
 	public static AtomicInteger sequenceNo = new AtomicInteger(0);
 	
@@ -31,16 +26,16 @@ public class RFAServerManager extends Thread {
 	}
 
 	private void startServer() {
-		try {
-			
-			while(!stop){
-				//start Dispatch events
-				demo.startDispatch();
-			}
-		} catch (Exception e) {
-			_logger.error(e.getMessage(), e);
-			demo.cleanup();
-		}
+//		try {
+//			
+//			while(!RFApplication.stop){
+//				//start Dispatch events
+//				demo.startDispatch();
+//			}
+//		} catch (Exception e) {
+//			_logger.error(e.getMessage(), e);
+//			demo.cleanup();
+//		}
 	}
 
 	public void run() {
@@ -57,11 +52,4 @@ public class RFAServerManager extends Thread {
 		RFAServerManager.connectedDataSource = connectedDataSource;
 	}
 	
-	public QSConsumerProxy getDemo() {
-		return demo;
-	}
-
-	public void setDemo(QSConsumerProxy demo) {
-		this.demo = demo;
-	}
 }

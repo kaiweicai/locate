@@ -1,9 +1,5 @@
 package com.locate.rmds;
 
-import java.io.DataInputStream;
-import java.io.FileInputStream;
-import java.io.FileReader;
-import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -11,16 +7,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.prefs.InvalidPreferencesFormatException;
-import java.util.prefs.Preferences;
 
 import org.apache.log4j.Logger;
 import org.dom4j.Document;
 import org.springframework.web.util.HtmlUtils;
 
 import com.locate.common.DataBaseMap;
-import com.locate.gate.GateWayServer;
-import com.locate.gate.hanlder.GatewayServerHandler;
 import com.locate.rmds.client.RFAUserManagement;
 import com.locate.rmds.processer.ItemGroupManager;
 import com.locate.rmds.processer.ItemManager;
@@ -38,13 +30,11 @@ import com.reuters.rfa.common.DispatchQueueInGroupException;
 import com.reuters.rfa.common.EventQueue;
 import com.reuters.rfa.common.EventSource;
 import com.reuters.rfa.common.Handle;
+import com.reuters.rfa.config.ConfigDb;
 import com.reuters.rfa.dictionary.DictionaryException;
 import com.reuters.rfa.dictionary.FieldDictionary;
 import com.reuters.rfa.omm.OMMAttribInfo;
 import com.reuters.rfa.omm.OMMEncoder;
-import com.reuters.rfa.omm.OMMFieldList;
-import com.reuters.rfa.omm.OMMFilterEntry;
-import com.reuters.rfa.omm.OMMFilterList;
 import com.reuters.rfa.omm.OMMMsg;
 import com.reuters.rfa.omm.OMMPool;
 import com.reuters.rfa.rdm.RDMDictionary;
@@ -105,27 +95,36 @@ public class QSConsumerProxy{
 		// Context.initialize();
 		// 1. Initialize system config
 //		ConfigDb configDb = new ConfigDb();
-//		configDb.addVariable("myNamespace.Connections.consConnection.connectionType", "RSSL");
-//		configDb.addVariable("myNamespace.Connections.consConnection.serverList", "10.34.9.91");
-//		configDb.addVariable("myNamespace.Connections.consConnection.serverList", "192.168.6.1");
-//		configDb.addVariable("myNamespace.Connections.consConnection.portNumber", "14002");
-//		configDb.addVariable("myNamespace.Sessions.consSession.connectionList", "consConnection");
-		Context.initialize();
+//		Context.initialize();
 		_loadedDictionaries = new LinkedList<String>();
 		_pendingDictionaries = new HashMap<Handle, String>();
 		_services = new HashMap<String, ServiceInfo>();
 		//
 		SystemProperties.init(_configFile);
 		
-		try {
-            Preferences.importPreferences(new FileInputStream(SystemProperties.getProperties(SystemProperties.RFA_CONFIG_FILE)));
-        } catch (IOException e) {
-            logger.error("RFA file import error!",e);
-            System.exit(-1);
-        } catch (InvalidPreferencesFormatException e) {
-        	logger.error("preference format error!",e);
-            System.exit(-1);
-        }
+		
+		// Context.initialize();
+		// 1. Initialize system config
+		ConfigDb configDb = new ConfigDb();
+		configDb.addVariable("myNamespace.Connections.mySession.connectionType",
+				SystemProperties.getProperties(SystemProperties.RFA_CONNETION_TYPE));
+		configDb.addVariable("myNamespace.Connections.mySession.serverList", SystemProperties.getProperties(SystemProperties.RFA_CONNETION_SERVER_LIST));
+		configDb.addVariable("myNamespace.Connections.mySession.portNumber", SystemProperties.getProperties(SystemProperties.RFA_CONNETION_PORTNUMBER));
+		// configDb.addVariable("myNamespace.Connections.consConnection.userName",
+		// "");
+		configDb.addVariable("myNamespace.Sessions.mySession.connectionList", "mySession");
+		Context.initialize(configDb);
+		
+		
+//		try {
+//            Preferences.importPreferences(new FileInputStream(SystemProperties.getProperties(SystemProperties.RFA_CONFIG_FILE)));
+//        } catch (IOException e) {
+//            logger.error("RFA file import error!",e);
+//            System.exit(-1);
+//        } catch (InvalidPreferencesFormatException e) {
+//        	logger.error("preference format error!",e);
+//            System.exit(-1);
+//        }
 		// 2. Create an Event Queue
 		_eventQueue = EventQueue.create("myEventQueue");
 
@@ -350,20 +349,20 @@ public class QSConsumerProxy{
 //		linkItemManager.sendRequest(itemName, responseMsgType);
 //	}
 
-	@Deprecated
-	public void updateResponseStat(long processTimes, Document responseData) {
-		RFApplication.totalResponseNumber++;
-		RFApplication.totalProcessTime += processTimes;
-		RFApplication.responseNumber.setText(String
-				.valueOf(RFApplication.totalResponseNumber));
-		double totalTimes = RFApplication.totalProcessTime;
-		String avgTimes = dataFormat.format(totalTimes
-				/ RFApplication.totalResponseNumber);
-		RFApplication.avgTimes.setText(avgTimes);
-		if (responseData != null) {
-			RFApplication.showLog.insert( HtmlUtils.htmlUnescape(responseData.asXML()), 0);
-		}
-	}
+//	@Deprecated
+//	public void updateResponseStat(long processTimes, Document responseData) {
+//		RFApplication.totalResponseNumber++;
+//		RFApplication.totalProcessTime += processTimes;
+//		RFApplication.responseNumber.setText(String
+//				.valueOf(RFApplication.totalResponseNumber));
+//		double totalTimes = RFApplication.totalProcessTime;
+//		String avgTimes = dataFormat.format(totalTimes
+//				/ RFApplication.totalResponseNumber);
+//		RFApplication.avgTimes.setText(avgTimes);
+//		if (responseData != null) {
+//			RFApplication.showLog.insert( HtmlUtils.htmlUnescape(responseData.asXML()), 0);
+//		}
+//	}
 
 	public void newsItemRequests() {
 		// Initialize item manager for item domains

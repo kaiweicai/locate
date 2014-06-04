@@ -13,6 +13,7 @@ import org.dom4j.DocumentFactory;
 import org.dom4j.Element;
 
 import com.locate.common.DataBaseMap;
+import com.locate.common.RFANodeconstant;
 import com.locate.rmds.gui.viewer.FieldValue;
 import com.reuters.rfa.ansipage.Page;
 import com.reuters.rfa.ansipage.PageUpdate;

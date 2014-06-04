@@ -34,6 +34,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.locate.LocateGateWayMain;
+import com.locate.common.RFANodeconstant;
 import com.locate.common.XmlMessageUtil;
 import com.locate.common.GateWayExceptionTypes;
 import com.locate.common.GateWayExceptionTypes.RFAExceptionEnum;
@@ -47,7 +48,6 @@ import com.locate.gate.model.LocateMessage;
 import com.locate.rmds.QSConsumerProxy;
 import com.locate.rmds.RFAServerManager;
 import com.locate.rmds.processer.ItemManager;
-import com.locate.rmds.util.RFANodeconstant;
 
 public class GateWayServer {
 	static Logger logger = Logger.getLogger(GateWayServer.class.getName());

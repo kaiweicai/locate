@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.log4j.Logger;
@@ -15,9 +16,9 @@ import org.dom4j.io.SAXReader;
 import org.junit.Test;
 
 import com.locate.common.GateWayMessageTypes;
+import com.locate.common.RFANodeconstant;
 import com.locate.rmds.user.RFAUser;
 import com.locate.rmds.user.RFAUserPermission;
-import com.locate.rmds.util.RFANodeconstant;
 import com.locate.rmds.util.RFAUtils;
 import com.locate.rmds.util.SystemProperties;
 

@@ -12,6 +12,8 @@ import org.dom4j.DocumentFactory;
 import org.dom4j.Element;
 
 
+
+import com.locate.common.RFANodeconstant;
 import com.reuters.rfa.ansipage.Page;
 import com.reuters.rfa.ansipage.PageUpdate;
 import com.reuters.rfa.common.PublisherPrincipalIdentity;

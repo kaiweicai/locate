@@ -19,15 +19,11 @@ import org.jboss.netty.channel.SimpleChannelHandler;
 import org.jboss.netty.channel.group.ChannelGroup;
 import org.jboss.netty.channel.group.DefaultChannelGroup;
 
-import com.locate.LocateGateWayMain;
 import com.locate.bridge.ClientHandle;
 import com.locate.common.DataBaseMap;
-import com.locate.common.XmlMessageUtil;
 import com.locate.common.GateWayMessageTypes;
-import com.locate.gate.GateWayServer;
+import com.locate.common.XmlMessageUtil;
 import com.locate.gate.model.ClientInfo;
-import com.locate.gate.model.LocateMessage;
-import com.locate.rmds.RFApplication;
 
 public class GatewayServerHandler extends SimpleChannelHandler {
 	static Logger _logger = Logger.getLogger(GatewayServerHandler.class.getName());
@@ -73,16 +69,16 @@ public class GatewayServerHandler extends SimpleChannelHandler {
 //		e.getChannel().close();
 	}
 
-	@Deprecated
-	private void updateServerStatInfo() {
-		// need to modify the monitor socke connected.
-		RFApplication.currentUserNumber.setText(String.valueOf(DataBaseMap._userConnection.size()));
-		int currentRequestItemNum = 0;
-		for (List<String> list : DataBaseMap._clientRequestItemName.values()) {
-			currentRequestItemNum += list.size();
-		}
-		RFApplication.currentRequestNumber.setText(String.valueOf(currentRequestItemNum));
-	}
+//	@Deprecated
+//	private void updateServerStatInfo() {
+//		// need to modify the monitor socke connected.
+//		RFApplication.currentUserNumber.setText(String.valueOf(DataBaseMap._userConnection.size()));
+//		int currentRequestItemNum = 0;
+//		for (List<String> list : DataBaseMap._clientRequestItemName.values()) {
+//			currentRequestItemNum += list.size();
+//		}
+//		RFApplication.currentRequestNumber.setText(String.valueOf(currentRequestItemNum));
+//	}
 
 //	@Override
 //	public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {

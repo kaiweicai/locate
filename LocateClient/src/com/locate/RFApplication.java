@@ -1,20 +1,14 @@
-package com.locate.rmds;
+package com.locate;
 
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.UnsupportedEncodingException;
-import java.net.InetSocketAddress;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
-import java.util.concurrent.Executors;
 
-import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -25,58 +19,27 @@ import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.JTableHeader;
-import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableModel;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.xml.DOMConfigurator;
 import org.dom4j.Document;
-import org.dom4j.DocumentException;
-import org.dom4j.DocumentFactory;
 import org.dom4j.Element;
-import org.dom4j.io.SAXReader;
-import org.dom4j.swing.XMLTableModel;
 import org.dyno.visual.swing.layouts.Constraints;
 import org.dyno.visual.swing.layouts.GroupLayout;
 import org.dyno.visual.swing.layouts.Leading;
-import org.jboss.netty.bootstrap.ClientBootstrap;
-import org.jboss.netty.buffer.ChannelBuffer;
-import org.jboss.netty.buffer.ChannelBuffers;
-import org.jboss.netty.channel.Channel;
-import org.jboss.netty.channel.ChannelFactory;
-import org.jboss.netty.channel.ChannelFuture;
-import org.jboss.netty.channel.ChannelHandler;
-import org.jboss.netty.channel.ChannelHandlerContext;
-import org.jboss.netty.channel.ChannelPipeline;
-import org.jboss.netty.channel.ChannelPipelineFactory;
-import org.jboss.netty.channel.Channels;
-import org.jboss.netty.channel.ExceptionEvent;
-import org.jboss.netty.channel.MessageEvent;
 import org.jboss.netty.channel.SimpleChannelHandler;
-import org.jboss.netty.channel.socket.nio.NioClientSocketChannelFactory;
-import org.jboss.netty.handler.codec.frame.LengthFieldBasedFrameDecoder;
-import org.jboss.netty.handler.codec.frame.LengthFieldPrepender;
-import org.jboss.netty.handler.timeout.IdleState;
-import org.jboss.netty.handler.timeout.IdleStateAwareChannelHandler;
-import org.jboss.netty.handler.timeout.IdleStateEvent;
-import org.jboss.netty.handler.timeout.IdleStateHandler;
-import org.jboss.netty.util.HashedWheelTimer;
-import org.springframework.web.util.HtmlUtils;
 
 import com.locate.client.gui.StatusBar;
-import com.locate.common.XmlMessageUtil;
 import com.locate.common.GateWayMessageTypes;
 import com.locate.common.GateWayMessageTypes.RFAMessageName;
-import com.locate.gate.coder.EncrytDecoder;
-import com.locate.gate.coder.EncrytEncoder;
-import com.locate.gate.coder.GateWayDecoder;
-import com.locate.gate.coder.GateWayEncoder;
+import com.locate.common.RFANodeconstant;
+import com.locate.common.XmlMessageUtil;
+import com.locate.face.BussinessInterface;
+import com.locate.face.ClientConnectedInterface;
+import com.locate.gate.handler.ClientConnector;
+import com.locate.gate.handler.ClientHandler;
 import com.locate.gate.model.CustomerFiled;
-import com.locate.gate.model.LocateMessage;
-import com.locate.rmds.util.RFANodeconstant;
 import com.reuters.rfa.omm.OMMMsg.MsgType;
 
 /**
@@ -87,7 +50,6 @@ import com.reuters.rfa.omm.OMMMsg.MsgType;
  */
 public class RFApplication extends JFrame {
 	private Logger logger = Logger.getLogger(RFApplication.class);
-	private Channel channel;
 	private boolean conLocate;
 	private static final long serialVersionUID = 1L;
 	private JLabel currentUserTitle;
@@ -131,41 +93,19 @@ public class RFApplication extends JFrame {
 	public static long totalResponseNumber = 0;
 	public static long totalProcessTime = 0;
 	UpdateTableColore updateTablePriceThread = new UpdateTableColore();
+	private ClientConnectedInterface clientConnetor;
 
 	private static final String PREFERRED_LOOK_AND_FEEL = "javax.swing.plaf.metal.MetalLookAndFeel";
 
-	private static ClientBootstrap bootstrap;
-	
 	public RFApplication() {
 		DOMConfigurator.configureAndWatch("config/test/log4j.xml");
 		initComponents();
-		initNettyClient();
+		BussinessInterface bussinessHandler = new UIHandler();
+		SimpleChannelHandler clientHandler = new ClientHandler(bussinessHandler);
+		clientConnetor = new ClientConnector(clientHandler);
+//		initNettyClient();
 	}
 
-	private void initNettyClient() {
-		// 创建客户端channel的辅助类,发起connection请求
-		ChannelFactory factory = new NioClientSocketChannelFactory(Executors.newCachedThreadPool(),
-				Executors.newCachedThreadPool());
-		bootstrap = new ClientBootstrap(factory);
-		bootstrap.setPipelineFactory(new ChannelPipelineFactory() {
-			@Override
-			public ChannelPipeline getPipeline() throws Exception {
-				ChannelPipeline pipeline = Channels.pipeline();
-				pipeline.addLast("encoder", new LengthFieldPrepender(2));
-				pipeline.addLast("encrytEncoder", new EncrytEncoder());
-				pipeline.addLast("decoder", new LengthFieldBasedFrameDecoder(64*1024,0,2,0,2));
-				pipeline.addLast("encrytDecoder", new EncrytDecoder());
-//				pipeline.addLast("encoder", new GateWayEncoder());
-//				pipeline.addLast("decoder", new GateWayDecoder());
-				pipeline.addLast("hanlder", new ClientHandler());
-				// pipeline.addLast("timeout", new IdleStateHandler(new
-				// HashedWheelTimer(), 0, 0, 10));
-				// pipeline.addLast("heartBeat", new ClientIdleHandler());
-				return pipeline;
-			}
-		});
-
-	}
 
 	private void initComponents() {
 		
@@ -299,7 +239,8 @@ public class RFApplication extends JFrame {
 			openButton.addMouseListener(new MouseAdapter() {
 
 				public void mouseClicked(MouseEvent event) {
-					openRICMarket();
+					String ric = ricTextField.getText();
+					clientConnetor.openRICMarket(ric);
 				}
 			});
 		}
@@ -326,7 +267,11 @@ public class RFApplication extends JFrame {
 			connetedButton.addMouseListener(new MouseAdapter() {
 
 				public void mouseClicked(MouseEvent event) {
-					conneteLocateGateWay();
+					String serverAddress = serverAddressTextField.getText();
+					int port = Integer.parseInt(portTextField.getText());
+					String userName = userNameTextField.getText();
+					String password = passwordTextField.getText();
+					clientConnetor.conneteLocateGateWay(serverAddress,port,userName,password);
 				}
 			});
 		}
@@ -452,29 +397,29 @@ public class RFApplication extends JFrame {
 	}
 
 	
-	private void initialDataModel(TableModel tableModel) {
-		tableModel.setValueAt("productName", 0, 0);
-		tableModel.setValueAt("MarketPrice", 1, 0);
-		
-		tableModel.setValueAt("黄金期货", 0, 1);
-		tableModel.setValueAt(100, 1, 1);
-	}
-
-	private JLabel getAvgTimes() {
-		if (avgTimes == null) {
-			avgTimes = new JLabel();
-			avgTimes.setText("0");
-		}
-		return avgTimes;
-	}
-
-	private JLabel getAvgTitle() {
-		if (avgTitle == null) {
-			avgTitle = new JLabel();
-			avgTitle.setText("平均数据处理时间(MS):");
-		}
-		return avgTitle;
-	}
+//	private void initialDataModel(TableModel tableModel) {
+//		tableModel.setValueAt("productName", 0, 0);
+//		tableModel.setValueAt("MarketPrice", 1, 0);
+//		
+//		tableModel.setValueAt("黄金期货", 0, 1);
+//		tableModel.setValueAt(100, 1, 1);
+//	}
+//
+//	private JLabel getAvgTimes() {
+//		if (avgTimes == null) {
+//			avgTimes = new JLabel();
+//			avgTimes.setText("0");
+//		}
+//		return avgTimes;
+//	}
+//
+//	private JLabel getAvgTitle() {
+//		if (avgTitle == null) {
+//			avgTitle = new JLabel();
+//			avgTitle.setText("平均数据处理时间(MS):");
+//		}
+//		return avgTitle;
+//	}
 
 	private JScrollPane getTableScrollPane() {
 		if (tableScrollPane == null) {
@@ -510,58 +455,53 @@ public class RFApplication extends JFrame {
 		return showLog;
 	}
 
-	private JLabel getResponseNumber() {
-		if (responseNumber == null) {
-			responseNumber = new JLabel();
-			responseNumber.setText("0");
-		}
-		return responseNumber;
-	}
-
-	private JLabel getResponseTitle() {
-		if (responseTitle == null) {
-			responseTitle = new JLabel();
-			responseTitle.setText("返回数据个数:");
-		}
-		return responseTitle;
-	}
-
-	private JLabel getCurrentRequestNumber() {
-		if (currentRequestNumber == null) {
-			currentRequestNumber = new JLabel();
-			currentRequestNumber.setText("0");
-		}
-		return currentRequestNumber;
-	}
-
-	private JLabel getCurrentRequestTitle() {
-		if (currentRequestTitle == null) {
-			currentRequestTitle = new JLabel();
-			currentRequestTitle.setText("当前请求代码数:");
-		}
-		return currentRequestTitle;
-	}
-
-	private JLabel getCurrentUserNumber() {
-		if (currentUserNumber == null) {
-			currentUserNumber = new JLabel();
-			currentUserNumber.setText("0");
-		}
-		return currentUserNumber;
-	}
-
-	private JLabel getCurrentUserTitle() {
-		if (currentUserTitle == null) {
-			currentUserTitle = new JLabel();
-			currentUserTitle.setText("当前连接用户数:");
-		}
-		return currentUserTitle;
-	}
-	
-	public void updateLog(String logContent){
-		showLog.setText(logContent);
-	}
-
+//	private JLabel getResponseNumber() {
+//		if (responseNumber == null) {
+//			responseNumber = new JLabel();
+//			responseNumber.setText("0");
+//		}
+//		return responseNumber;
+//	}
+//
+//	private JLabel getResponseTitle() {
+//		if (responseTitle == null) {
+//			responseTitle = new JLabel();
+//			responseTitle.setText("返回数据个数:");
+//		}
+//		return responseTitle;
+//	}
+//
+//	private JLabel getCurrentRequestNumber() {
+//		if (currentRequestNumber == null) {
+//			currentRequestNumber = new JLabel();
+//			currentRequestNumber.setText("0");
+//		}
+//		return currentRequestNumber;
+//	}
+//
+//	private JLabel getCurrentRequestTitle() {
+//		if (currentRequestTitle == null) {
+//			currentRequestTitle = new JLabel();
+//			currentRequestTitle.setText("当前请求代码数:");
+//		}
+//		return currentRequestTitle;
+//	}
+//
+//	private JLabel getCurrentUserNumber() {
+//		if (currentUserNumber == null) {
+//			currentUserNumber = new JLabel();
+//			currentUserNumber.setText("0");
+//		}
+//		return currentUserNumber;
+//	}
+//
+//	private JLabel getCurrentUserTitle() {
+//		if (currentUserTitle == null) {
+//			currentUserTitle = new JLabel();
+//			currentUserTitle.setText("当前连接用户数:");
+//		}
+//		return currentUserTitle;
+//	}
 	private static void installLnF() {
 		try {
 			String lnfClassname = PREFERRED_LOOK_AND_FEEL;
@@ -605,165 +545,28 @@ public class RFApplication extends JFrame {
 		System.exit(0);
 	}
 	
-	private void openRICMarket(){
-		DocumentFactory documentFactory = DocumentFactory.getInstance();
-	    Document requestDoc =  documentFactory.createDocument();
-	    String ric = ricTextField.getText();
-    	createFutureRequest(requestDoc,ric);
-    	sentMessageToServer(GateWayMessageTypes.FUTURE_REQUEST,requestDoc);
-	}
-	
-	
-	private void conneteLocateGateWay() {
-		String serverAddress = serverAddressTextField.getText();
-		int port = Integer.parseInt(portTextField.getText());
-		bootstrap.setOption("tcpNodelay", true);
-		bootstrap.setOption("child.keepalive", true);
-		logger.info("start to conneted to server");
-		ChannelFuture future = bootstrap.connect(new InetSocketAddress(serverAddress,port));
-		try{
-			channel = future.getChannel();
-			future.awaitUninterruptibly();
-		}catch(Exception e){
-			logger.error("NIO error "+e.getCause());
-		}
-		this.conLocate = true;
-		logger.info("conneted to server "+serverAddress+" port:" + port);
-		
-		DocumentFactory documentFactory = DocumentFactory.getInstance();
-	    Document requestDoc =  documentFactory.createDocument();
-	    
-	    createLoginRequest(requestDoc);
-    	sentMessageToServer(GateWayMessageTypes.LOGIN, requestDoc);
-	}
-	
-	class ClientIdleHandler extends IdleStateAwareChannelHandler implements ChannelHandler {
+	class UIHandler implements BussinessInterface{
+		/* (non-Javadoc)
+		 * @see com.locate.client.gui.BussinessInterface#handleException(java.lang.Throwable)
+		 */
 		@Override
-		public void channelIdle(ChannelHandlerContext ctx, IdleStateEvent e) throws Exception {
-			if(e.getState()==IdleState.ALL_IDLE){
-				logger.debug("链路空闲,发送心跳 S:{" + e.getChannel().getRemoteAddress() + "} - C:{"
-						+ e.getChannel().getLocalAddress() + "} idleState:{" + e.getState() + "}");
-//				createEcho();
-			}
-			super.channelIdle(ctx, e);
-		}
-	}
-	
-	private void createLoginRequest(Document doc){
-		Element rmds = doc.addElement("rmds");
-		rmds.addElement(RFANodeconstant.LOCATE_NODE);
-		Element login = rmds.addElement("login");
-		login.addElement("userName").addText(userNameTextField.getText());
-		login.addElement("password").addText(passwordTextField.getText());
-	}
-	
-	private void createFutureRequest(Document doc,String ric){
-		Element rmds = doc.addElement("rmds");
-		rmds.addElement(RFANodeconstant.LOCATE_NODE);
-		Element request = rmds.addElement("request");
-		Element item = request.addElement("item");
-		item.addElement("name").addText(ric);
-	}
-	
-	private void createEcho(){
-		DocumentFactory documentFactory = DocumentFactory.getInstance();
-	    Document requestDoc =  documentFactory.createDocument();
-	    String ric = ricTextField.getText();
-    	createFutureRequest(requestDoc,ric);
-    	sentMessageToServer(GateWayMessageTypes.REQUEST_EOCH,requestDoc);
-	}
-	
-	private void sentMessageToServer(byte msgType,Document doc){
-//		LocateMessage message = new LocateMessage(msgType, doc, 0);
-//		message.setSequenceNo(RFAServerManager.sequenceNo.getAndIncrement());
-		XmlMessageUtil.addLocateInfo(doc, msgType, RFAServerManager.sequenceNo.getAndIncrement(), 0);
-		byte[] content = null;
-		try {
-			content = doc.asXML().getBytes("UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			logger.error("Not surport encoding",e);
-		}
-		ChannelBuffer buffer = ChannelBuffers.buffer(content.length);
-		buffer.writeBytes(content);
-		ChannelFuture future = channel.write(buffer);
-		logger.info("client downStream message is :"+doc.asXML());
-//		future.awaitUninterruptibly();
-	}
-
-	
-	
-	class ClientHandler extends SimpleChannelHandler {
-
-		long t0, t1;
-		@Override
-		public void exceptionCaught(ChannelHandlerContext ctx, ExceptionEvent e) throws Exception {
-			sb.append("NIO error "+e.getCause());
+		public void handleException(Throwable e){
+			sb.append("NIO error "+e);
 			updateLog(sb.toString());
-			System.out.println(e.getCause());
+			System.out.println(e);
 		}
-
-		public Document parseFile() {
-			SAXReader reader = new SAXReader();
-			String userFile = "D:/rfa/testData.xml";
-			Document userData = null;
-			try {
-				userData = reader.read(userFile);
-			} catch (DocumentException e) {
-				System.out.println("Inital RFA user data error.");
-			}
-			return userData;
-		}
-
-//		@Override
-//		public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-//			super.messageReceived(ctx, e);
-//			LocateMessage message = (LocateMessage) e.getMessage();
-//			logger.info("original message -------"+message);
-//			byte msgType = message.getMsgType();
-//			int length = message.getMsgLength();
-//			
-//			sb.append("receive messages length:" + length+"\n");
-//			sb.append("Received message type:" + RFAMessageName.getRFAMessageName(msgType)+"\n");
-//			
-//			Document document = message.getDocument();
-//			if (document == null) {
-//				sb.append("Received server's  message is null \n");
-//				return;
-//			}
-//			if(msgType==MsgType.REFRESH_RESP){
-//				tableModel = new TableModel(document);
-//				marketPriceTable.setModel(tableModel);
-//			}else if(msgType==MsgType.UPDATE_RESP){
-//				updateMarketPriceTable(tableModel,document);
-//				marketPriceTable.updateUI();
-//				marketPriceTable.setDefaultRenderer(String.class,redRenderer);
-////				Thread.sleep(500);
-////				marketPriceTable.setDefaultRenderer(String.class,blueRenderer);
-//				marketPriceTable.updateUI();
-//			}
-//			
-//			
-//			
-//			String content = HtmlUtils.htmlUnescape(document.asXML());
-//			// String content = response.asXML();
-//			sb.append("Received server's  message : " + content+"\n");
-//			
-//			updateLog(sb.toString());
-//			
-//			t1 = System.currentTimeMillis();
-//		}
 		
+		/* (non-Javadoc)
+		 * @see com.locate.client.gui.BussinessInterface#handleMessage(java.lang.String)
+		 */
 		@Override
-		public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-			super.messageReceived(ctx, e);
-			ChannelBuffer channelBuffer = (ChannelBuffer) e.getMessage();
-			String msg = channelBuffer.toString(Charset.forName("UTF-8"));
-			Document document = XmlMessageUtil.convertDocument(msg);
-			logger.info("original message -------"+msg);
+		public void handleMessage(String message){
+			Document document = XmlMessageUtil.convertDocument(message);
+			logger.info("original message -------"+message);
 			byte msgType = XmlMessageUtil.getMsgType(document);
 			sb.append("Received message type:" + RFAMessageName.getRFAMessageName(msgType)+"\n");
 			if (document == null) {
-				sb.append("Received server's  message is null \n");
+				logger.warn("Received server's  message is null \n");
 				return;
 			}
 			switch(msgType){
@@ -786,9 +589,8 @@ public class RFApplication extends JFrame {
 			}
 			
 			// String content = response.asXML();
-			sb.append("Received server's  message : " + msg+"\n");
+			sb.append("Received server's  message : " + message+"\n");
 			updateLog(sb.toString());
-			t1 = System.currentTimeMillis();
 		}
 		
 		private void updateMarketPriceTable(TableModel tableModel,Document document) {
@@ -820,11 +622,18 @@ public class RFApplication extends JFrame {
 				tableModel.update(customerFiled, rowIndex);
 			}
 		}
-		
-		
+
+		@Override
+		public void handleDisconnected() {
+			sb.append("Locate Server disconnted!!! ");
+			updateLog(sb.toString());
+			System.out.println("Locate Server disconnted!!! ");			
+		}
 	}
 	
-	
+	public void updateLog(String logContent){
+		showLog.setText(logContent);
+	}
 	
 	class RedRenderer implements TableCellRenderer {
 		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,

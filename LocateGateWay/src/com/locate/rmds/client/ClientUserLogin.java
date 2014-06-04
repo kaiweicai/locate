@@ -9,11 +9,11 @@ import org.jboss.netty.channel.Channel;
 
 import com.locate.common.DataBaseMap;
 import com.locate.common.GateWayExceptionTypes;
+import com.locate.common.RFANodeconstant;
 import com.locate.common.XmlMessageUtil;
 import com.locate.gate.GateWayServer;
 import com.locate.gate.hanlder.GatewayServerHandler;
 import com.locate.gate.model.RFAUserResponse;
-import com.locate.rmds.util.RFANodeconstant;
 
 public class ClientUserLogin {
 

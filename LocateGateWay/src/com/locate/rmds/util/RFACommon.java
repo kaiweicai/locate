@@ -6,6 +6,8 @@ import org.dom4j.Document;
 import org.dom4j.Element;
 //import org.apache.mina.core.session.IoSession;
 
+import com.locate.common.RFANodeconstant;
+
 public class RFACommon {
 
 //	public static String getIP(MessageEvent e) {
