@@ -570,20 +570,24 @@ public class RFApplication extends JFrame {
 				return;
 			}
 			switch(msgType){
+				//first the Locate send the snapshot of market price
 				case MsgType.REFRESH_RESP:
 					tableModel = new TableModel(document);
 					marketPriceTable.setModel(tableModel);
 					updateTablePriceThread.setMarketPriceTable(marketPriceTable);
 					break;
+				//Locate send the update market price.
 				case MsgType.UPDATE_RESP:
 					updateMarketPriceTable(tableModel,document);
 					updateTablePriceThread.setUpdate(true);
 					break;
+				//Locate send the state info to client
 				case GateWayMessageTypes.RESPONSE_LOGIN:
 				case MsgType.STATUS_RESP:
 					String newStatus = XmlMessageUtil.getAllState(document);
 					statusBar.setStatusFixed(newStatus);
 					break;
+				//Locate send the undefined message.
 				default:
 					logger.error("Not should to here! message type is "+MsgType.REFRESH_RESP);
 			}
