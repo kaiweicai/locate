@@ -124,6 +124,7 @@ public final class GenericOMMParser
 
     /**
      * parse msg and print it in a table-nested format to System.out
+     * 这个方法有太多的业务逻辑.应该把这些业务逻辑提出来.让这个方法成为一个通用的方法.
      */
     public static final Document parse(OMMMsg msg,String itemName)
     {

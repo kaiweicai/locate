@@ -385,7 +385,7 @@ public class QSConsumerProxy{
 	public void startDispatch(){
 		while(dispath){
 			try {
-				_eventQueue.dispatch(0);
+				_eventQueue.dispatch(5000);
 			} catch (DeactivatedException e) {
 				e.printStackTrace();
 			} catch (DispatchQueueInGroupException e) {

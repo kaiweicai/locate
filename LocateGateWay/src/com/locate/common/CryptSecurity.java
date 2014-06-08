@@ -8,11 +8,13 @@ import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 
+import org.apache.log4j.Logger;
 import org.junit.Test;
 
 import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 
 public class CryptSecurity {
+	private static Logger logger = Logger.getLogger(CryptSecurity.class);
 	public static SecretKey key = null;
 	static{
 		try {
@@ -47,7 +49,7 @@ public class CryptSecurity {
 			// 对要加密的内容进行编码处理,
 			cipherByte = c1.doFinal(info.getBytes("UTF-8"));
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("Decrypt String error! String is "+info +e);
 		}
 		// 返回密文的十六进制形式
 		return Base64.encode(cipherByte);
@@ -68,6 +70,7 @@ public class CryptSecurity {
 		// 加密随机数生成器 (RNG)
 //		SecureRandom sr = new SecureRandom();
 		byte[] cipherByte = null;
+		String result = null;
 		try {
 			// 得到加密/解密器
 			Cipher c1 = Cipher.getInstance(Algorithm);
@@ -76,16 +79,11 @@ public class CryptSecurity {
 			c1.init(Cipher.DECRYPT_MODE, key);
 			// 对要解密的内容进行编码处理
 			cipherByte = c1.doFinal(Base64.decode(sInfo));
+			result = new String(cipherByte, "UTF-8");
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("Decrypt error! String is "+sInfo+e);
 		}
 		// return byte2hex(cipherByte);
-		String result = null;
-		try {
-			result = new String(cipherByte, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		}
 		return result;
 	}
 

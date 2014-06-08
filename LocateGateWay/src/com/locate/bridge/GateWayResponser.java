@@ -2,12 +2,14 @@ package com.locate.bridge;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
+import java.util.Iterator;
 
 import org.apache.log4j.Logger;
 import org.dom4j.Document;
 import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.buffer.ChannelBuffers;
 import org.jboss.netty.channel.Channel;
+import org.jboss.netty.channel.group.ChannelGroup;
 
 import com.locate.common.DataBaseMap;
 import com.locate.common.XmlMessageUtil;
@@ -75,7 +77,12 @@ public class GateWayResponser {
 		}
 		ChannelBuffer buffer = ChannelBuffers.buffer(content.length);
 		buffer.writeBytes(content);
-		DataBaseMap.itemNameChannelMap.get(itemName).write(buffer);
+		ChannelGroup channelGroup=DataBaseMap.itemNameChannelMap.get(itemName);
+		channelGroup.write(buffer);
+		for(Iterator<Channel> channelIterator= channelGroup.iterator();channelIterator.hasNext() ;){
+			Channel channel= channelIterator.next();
+			logger.info("send follow message to " + channel.getRemoteAddress());
+		}
 		logger.info("downStream message is :"+response.asXML());
 	}
 

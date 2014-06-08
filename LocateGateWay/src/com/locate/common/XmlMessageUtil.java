@@ -9,25 +9,21 @@ import org.dom4j.Element;
 import com.locate.common.GateWayExceptionTypes.RFAExceptionEnum;
 import com.locate.common.GateWayExceptionTypes.RFAUserAuthentication;
 import com.locate.rmds.RFAServerManager;
-import com.locate.rmds.processer.RFALoginClient;
-import com.reuters.rfa.omm.OMMMsg;
 import com.reuters.rfa.omm.OMMState;
 
 public class XmlMessageUtil {
 	static final String LOGIN_SUCCESSFUL = "0";
 	static final String LOGIN_FAILED = "1";
 
-	public static Document createAuthenResponse(RFAUserAuthentication userAuthentication) {
+	public static Document createAuthenResponse(RFAUserAuthentication userAuthentication,String streamingState,String dataingState,String state) {
 		DocumentFactory factory = DocumentFactory.getInstance();
 		Document doc = factory.createDocument();
 		Element rmds = doc.addElement(RFANodeconstant.RESPONSE_ROOT_NODE);
 
-		String streamingState = OMMState.Stream.toString(RFALoginClient.STREAM_STATE);
-		String dataingState = OMMState.Data.toString(RFALoginClient.DATA_STATE);
 		Element locateElement = rmds.addElement(RFANodeconstant.LOCATE_NODE);
 		locateElement.addElement(RFANodeconstant.STREAM_STATE_NODE).addText(streamingState);
 		locateElement.addElement(RFANodeconstant.DATA_STATE_NODE).addText(dataingState);
-		locateElement.addElement(RFANodeconstant.ALL_STATE_NODE).addText(RFALoginClient.STATE);
+		locateElement.addElement(RFANodeconstant.ALL_STATE_NODE).addText(state);
 
 		Element response = rmds.addElement(RFANodeconstant.RESPONSE_RESPONSE_NODE);
 		Element login = response.addElement(RFANodeconstant.RESPONSE_LOGIN_NODE);
@@ -157,5 +153,23 @@ public class XmlMessageUtil {
 		error.addElement(RFANodeconstant.RESPONSE_ERROR_CODE_NODE).addText(String.valueOf(errorCode));
 		error.addElement(RFANodeconstant.RESPONSE_ERROR_DESC_NODE).addText(String.valueOf(descriptioin));
 		return reponseDoc;
+	}
+
+	public static void addStartHandleTime(Document doc, long startTime) {
+		Element rootElement = doc.getRootElement();
+		Element locateElement = rootElement.element(RFANodeconstant.LOCATE_NODE);
+		Element startTimeElement = locateElement.element(RFANodeconstant.START_HANDLE_TIME_NODE);
+		if (startTimeElement == null) {
+			locateElement.addElement(RFANodeconstant.START_HANDLE_TIME_NODE).addText(String.valueOf(startTime));
+		} else {
+			startTimeElement.setText(String.valueOf(startTime));
+		}
+	}
+
+	public static long getStartHandleTime(Document doc) {
+		Element rootElement = doc.getRootElement();
+		Element locateElement = rootElement.element(RFANodeconstant.LOCATE_NODE);
+		String startHandleTime = locateElement.element(RFANodeconstant.START_HANDLE_TIME_NODE).getText();
+		return Long.parseLong(startHandleTime);
 	}
 }

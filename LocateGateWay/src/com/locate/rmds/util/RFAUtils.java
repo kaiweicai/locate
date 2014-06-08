@@ -1,8 +1,11 @@
 package com.locate.rmds.util;
 
 import java.security.*;
+
 import javax.crypto.*;
 import javax.crypto.spec.SecretKeySpec;
+
+import org.junit.Test;
 
 import com.sun.crypto.provider.SunJCE;
 
@@ -104,5 +107,11 @@ public class RFAUtils {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	@Test
+	public void testOutputFunction() throws Exception{
+		String s =output("4c6d2db7b781a2e0");
+		System.out.println(s);
 	}
 }

@@ -47,6 +47,7 @@ public class ClientHandle {
 	}
 	
 	public int process(ClientInfo clientInfo){
+		long startTime = System.currentTimeMillis();
 		int channelID = clientInfo.getChannelID();
 		Document request =clientInfo.getUserRquest();
 		String clientName=clientInfo.getUserName();
@@ -74,6 +75,7 @@ public class ClientHandle {
 		    case GateWayMessageTypes.LOGIN : 
 		    	responseMsgType = GateWayMessageTypes.RESPONSE_LOGIN;
 		    	responseData = clientUserLogin.authUserLogin(request,clientIP);
+		    	XmlMessageUtil.addStartHandleTime(responseData, startTime);
 		    	GateWayResponser.sentResponseMsg(GateWayMessageTypes.RESPONSE_LOGIN, responseData, channelID);
 		    	return 0;
 		    case GateWayMessageTypes.STOCK_REQUEST:
@@ -209,8 +211,8 @@ public class ClientHandle {
 			_logger.warn("The RFA Datasource not connected.Can not register the intresting Product!");
 			return GateWayExceptionTypes.RFA_SERVER_NOT_READY;
 		}
-		if(!checkRequestItem(responseMsgType,clientName,itemNames))
-			return errorCode=GateWayExceptionTypes.USER_BUSINESS_NUMBER_OUT;
+//		if(!checkRequestItem(responseMsgType,clientName,itemNames))
+//			return errorCode=GateWayExceptionTypes.USER_BUSINESS_NUMBER_OUT;
 		_logger.info("Begin register client request "+clientName);
 		for(String itemName : itemNames){
 			DataBaseMap._clientResponseType.put(itemName, responseMsgType);

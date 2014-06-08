@@ -144,6 +144,7 @@ public class RFALoginClient implements Client
     // this method gets called.
     public void processEvent(Event event)
     {
+    	long startTime = System.currentTimeMillis();
     	// Completion event indicates that the stream was closed by RFA
     	if (event.getType() == Event.COMPLETION_EVENT) 
     	{
@@ -187,6 +188,8 @@ public class RFALoginClient implements Client
 			RFALoginClient.STATE = respMsg.getState().toString();
 			byte msgType =respMsg.getMsgType();
 			Document responseMsg = XmlMessageUtil.generateStatusResp(RFALoginClient.STATE,RFALoginClient.STREAM_STATE,RFALoginClient.DATA_STATE,msgType);
+			//将信息开始处理时间加入到消息中
+			XmlMessageUtil.addStartHandleTime(responseMsg, startTime);
 			GateWayResponser.brodcastStateResp(responseMsg);
 		}
 		// The login is successful, RFA forwards the message from the network

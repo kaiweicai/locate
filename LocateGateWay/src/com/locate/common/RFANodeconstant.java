@@ -19,6 +19,7 @@ public class RFANodeconstant {
 	public final static String DATA_STATE_NODE = "dataState";
 	public final static String ALL_STATE_NODE = "allState";
 	public final static String STATE_NODE = "State";
+	public final static String START_HANDLE_TIME_NODE = "startHandleTime";
 	
 	
 	public final static String RESPONSE_ERROR_NODE = "error";

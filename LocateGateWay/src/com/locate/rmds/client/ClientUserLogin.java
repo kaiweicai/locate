@@ -14,6 +14,8 @@ import com.locate.common.XmlMessageUtil;
 import com.locate.gate.GateWayServer;
 import com.locate.gate.hanlder.GatewayServerHandler;
 import com.locate.gate.model.RFAUserResponse;
+import com.locate.rmds.processer.RFALoginClient;
+import com.reuters.rfa.omm.OMMState;
 
 public class ClientUserLogin {
 
@@ -51,7 +53,10 @@ public class ClientUserLogin {
 		/**
 		 * I think this authenticate is NOT work. 
 		 */
-		Document userResponse = XmlMessageUtil.createAuthenResponse(authentication);
+		String streamingState = OMMState.Stream.toString(RFALoginClient.STREAM_STATE);
+		String dataingState = OMMState.Data.toString(RFALoginClient.DATA_STATE);
+		String state = RFALoginClient.STATE;
+		Document userResponse = XmlMessageUtil.createAuthenResponse(authentication,streamingState,dataingState,state);
 		logger.info("User authenticate result for " + userName + userResponse.asXML());
 		return userResponse;
 	}

@@ -197,14 +197,14 @@ public class ItemManager implements Client
     // this method gets called.
     public void processEvent(Event event)
     {
+    	long startTime = System.currentTimeMillis();
     	switch (event.getType())
         {
             case Event.OMM_SOLICITED_ITEM_EVENT:
                 processOMMSolicitedItemEvent((OMMSolicitedItemEvent)event);
                 break;
         }
-        
-    	long startTime = System.currentTimeMillis();
+    	
     	// Completion event indicates that the stream was closed by RFA
     	if (event.getType() == Event.COMPLETION_EVENT) 
     	{
@@ -225,6 +225,9 @@ public class ItemManager implements Client
         OMMItemEvent ommItemEvent = (OMMItemEvent) event;
         OMMMsg respMsg = ommItemEvent.getMsg();
         Document responseMsg = GenericOMMParser.parse(respMsg, clientRequestItemName);
+        //将信息开始处理时间加入到消息中
+		XmlMessageUtil.addStartHandleTime(responseMsg, startTime);
+        //如果是状态消息.处理后直接发送给客户端.
         if(respMsg.getMsgType()==OMMMsg.MsgType.STATUS_RESP && (respMsg.has(OMMMsg.HAS_STATE))){
         	byte streamState= respMsg.getState().getStreamState();
         	byte dataState = respMsg.getState().getDataState();
@@ -258,7 +261,7 @@ public class ItemManager implements Client
 //	        	}
 //        	}
         	long endTime = System.currentTimeMillis();
-        	_logger.info("publish Item "+clientRequestItemName+" use time"+(endTime-startTime)+"microseconds");
+        	_logger.info("publish Item "+clientRequestItemName+" use time "+(endTime-startTime)+" microseconds");
 //            _mainApp.updateResponseStat((endTime-startTime),responseMsg);
         }
         
@@ -266,6 +269,8 @@ public class ItemManager implements Client
     
     public void sendInitialDocument(int channelId) {
     	if(initialDocument!=null){
+    		long startTime = System.currentTimeMillis();
+    		XmlMessageUtil.addStartHandleTime(initialDocument, startTime);
     		GateWayResponser.sentInitialToChannel(OMMMsg.MsgType.REFRESH_RESP, initialDocument, clientRequestItemName,channelId);
     	}
 	}
