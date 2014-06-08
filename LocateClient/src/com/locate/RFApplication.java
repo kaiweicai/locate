@@ -5,6 +5,7 @@ import java.awt.Component;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -86,6 +87,7 @@ public class RFApplication extends JFrame {
 	private JTable marketPriceTable;
 	private TableModel tableModel;
 	private StatusBar statusBar;
+	private JLabel useTimeTextLabel;
 	private RedRenderer redRenderer =new RedRenderer();
 	private BlueRenderer blueRenderer =new BlueRenderer();
 	private Map<String,Integer> IdAtRowidMap = new HashMap<String,Integer>();
@@ -102,7 +104,7 @@ public class RFApplication extends JFrame {
 		initComponents();
 		BussinessInterface bussinessHandler = new UIHandler();
 		SimpleChannelHandler clientHandler = new ClientHandler(bussinessHandler);
-		clientConnetor = new ClientConnector(clientHandler);
+		clientConnetor = new ClientConnector(bussinessHandler);
 //		initNettyClient();
 	}
 
@@ -127,7 +129,7 @@ public class RFApplication extends JFrame {
 		add(getRicTextField(), new Constraints(new Leading(670, 100, 12, 12), new Leading(190, 12, 12)));
 		add(getOpenButton(), new Constraints(new Leading(550, 12, 12), new Leading(220, 12, 12)));
 		add(getTableScrollPane(), new Constraints(new Leading(550, 12, 12), new Leading(280, 12, 12)));
-		
+		add(getUseTimeTextLabel(), new Constraints(new Leading(550, 12, 12), new Leading(720, 12, 12)));
 		
 //		add(getCurrentUserTitle(), new Constraints(new Leading(40, 111, 12, 12), new Leading(19, 12, 12)));
 //		add(getCurrentUserNumber(), new Constraints(new Leading(169, 91, 10, 10), new Leading(19, 12, 12)));
@@ -195,7 +197,7 @@ public class RFApplication extends JFrame {
 	
 	private JTextField getServerAddressTextField(){
 		if(serverAddressTextField == null){
-			serverAddressTextField = new JTextField("127.0.0.1");
+			serverAddressTextField = new JTextField("61.144.244.173");
 		}
 		return serverAddressTextField;
 	}
@@ -445,7 +447,17 @@ public class RFApplication extends JFrame {
 		}
 		return statusBar;
 	}
-
+	
+	private JLabel getUseTimeTextLabel() {
+		if (useTimeTextLabel == null) {
+			useTimeTextLabel = new JLabel();
+			useTimeTextLabel.setFont(UIManager.getFont("Label.font"));
+			useTimeTextLabel.setBackground(UIManager.getColor("Panel.background"));
+			useTimeTextLabel.setText("");
+		}
+		return useTimeTextLabel;
+	}
+	
 	private JTextArea getShowLog() {
 		if (showLog == null) {
 			showLog = new JTextArea();
@@ -553,7 +565,7 @@ public class RFApplication extends JFrame {
 		public void handleException(Throwable e){
 			sb.append("NIO error "+e);
 			updateLog(sb.toString());
-			System.out.println(e);
+			statusBar.setStatusFixed(sb.toString());
 		}
 		
 		/* (non-Javadoc)
@@ -562,6 +574,8 @@ public class RFApplication extends JFrame {
 		@Override
 		public void handleMessage(String message){
 			Document document = XmlMessageUtil.convertDocument(message);
+			long startTime = XmlMessageUtil.getStartHandleTime(document);
+			long endTime = System.currentTimeMillis();
 			logger.info("original message -------"+message);
 			byte msgType = XmlMessageUtil.getMsgType(document);
 			sb.append("Received message type:" + RFAMessageName.getRFAMessageName(msgType)+"\n");
@@ -569,6 +583,9 @@ public class RFApplication extends JFrame {
 				logger.warn("Received server's  message is null \n");
 				return;
 			}
+			
+			getUseTimeTextLabel().setText("From Locate Server to client use time:"+String.valueOf(endTime-startTime)+" millseconds");
+			logger.info("The message From RFA to user use time"+(startTime-endTime)+"milliseconds");
 			switch(msgType){
 				//first the Locate send the snapshot of market price
 				case MsgType.REFRESH_RESP:
@@ -630,6 +647,7 @@ public class RFApplication extends JFrame {
 		@Override
 		public void handleDisconnected() {
 			sb.append("Locate Server disconnted!!! ");
+			
 			updateLog(sb.toString());
 			System.out.println("Locate Server disconnted!!! ");			
 		}

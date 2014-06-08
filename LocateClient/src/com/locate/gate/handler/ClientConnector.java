@@ -30,6 +30,7 @@ import org.jboss.netty.handler.timeout.IdleStateEvent;
 import com.locate.common.GateWayMessageTypes;
 import com.locate.common.RFANodeconstant;
 import com.locate.common.XmlMessageUtil;
+import com.locate.face.BussinessInterface;
 import com.locate.face.ClientConnectedInterface;
 import com.locate.gate.coder.EncrytDecoder;
 import com.locate.gate.coder.EncrytEncoder;
@@ -41,9 +42,11 @@ public class ClientConnector implements ClientConnectedInterface {
 	private ClientBootstrap bootstrap;
 	private boolean conLocate;
 	private SimpleChannelHandler clientHandler;
+	private BussinessInterface bussinessHandler;
 
-	public ClientConnector(SimpleChannelHandler clientHandler) {
-		this.clientHandler = clientHandler;
+	public ClientConnector(BussinessInterface bussinessHandler) {
+		this.bussinessHandler = bussinessHandler;
+		this.clientHandler = new ClientHandler(bussinessHandler);
 		initNettyClient();
 	}
 	
