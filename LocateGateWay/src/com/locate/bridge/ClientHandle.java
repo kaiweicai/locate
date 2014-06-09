@@ -12,7 +12,7 @@ import org.dom4j.Element;
 import org.jboss.netty.channel.group.ChannelGroup;
 import org.jboss.netty.channel.group.DefaultChannelGroup;
 
-import com.locate.common.DataBaseMap;
+import com.locate.common.DataBaseCache;
 import com.locate.common.GateWayExceptionTypes;
 import com.locate.common.GateWayMessageTypes;
 import com.locate.common.RFANodeconstant;
@@ -60,7 +60,7 @@ public class ClientHandle {
 		Document responseData = null;
 		
 		if(_msgType != GateWayMessageTypes.LOGIN){
-	    	String userName = DataBaseMap._userConnection.get(clientIP);
+	    	String userName = DataBaseCache._userConnection.get(clientIP);
 	    	if(userName == null){
 	    		resultCode = GateWayExceptionTypes.USER_NOT_LOGIN;
 				Document wrongMsg = XmlMessageUtil.createErrorDocument(resultCode,
@@ -177,13 +177,13 @@ public class ClientHandle {
 	
 	private void processOneTimesRequest(Document req,String clientName,byte responseMsgType,int channel){
 		List<String> itemNames = pickupClientReqItem(req);
-		if(!checkRequestItem(responseMsgType,clientName,itemNames))
-			return;
-		_logger.info("Begin register client request "+clientName);
+//		if(!checkRequestItem(responseMsgType,clientName,itemNames))
+//			return;
+		_logger.info("Begin register one time client request "+clientName);
 		for(String itemName : itemNames){
-			DataBaseMap._clientResponseType.put(itemName, responseMsgType);
+			DataBaseCache._clientResponseType.put(itemName, responseMsgType);
 			_logger.info("Register client request item "+itemName);
-			DataBaseMap._clientRequestSession.put(clientName+itemName, channel);
+			DataBaseCache._clientRequestSession.put(clientName+itemName, channel);
 //			if(regiestItemNameForClient(itemName,clientName)){
 				ItemManager clientInstance = mainApp.itemRequests(itemName,responseMsgType,channel);
 				regiestItemRequestManager(itemName,clientInstance);
@@ -215,7 +215,7 @@ public class ClientHandle {
 //			return errorCode=GateWayExceptionTypes.USER_BUSINESS_NUMBER_OUT;
 		_logger.info("Begin register client request "+clientName);
 		for(String itemName : itemNames){
-			DataBaseMap._clientResponseType.put(itemName, responseMsgType);
+			DataBaseCache._clientResponseType.put(itemName, responseMsgType);
 			_logger.info("Register client request item "+itemName);
 //			GateWayServer._clientRequestSession.put(clientName+itemName, channelId);
 //			if(regiestItemNameForClient(itemName,clientName)){
@@ -254,12 +254,12 @@ public class ClientHandle {
 	@Deprecated
 	private void regiestClientRequestItem(String clientName,String itemName){
 		List<String> clientRequestItem;
-		clientRequestItem = DataBaseMap._clientRequestItemName.get(clientName);
+		clientRequestItem = DataBaseCache._clientRequestItemName.get(clientName);
 		if(clientRequestItem == null){
 			clientRequestItem =  new ArrayList();
 		}
 		clientRequestItem.add(clientName+itemName);
-		DataBaseMap._clientRequestItemName.put(clientName, clientRequestItem);
+		DataBaseCache._clientRequestItemName.put(clientName, clientRequestItem);
 	}
 	
 //	private void regiestItemRequestManager(String itemName,ItemManager instance){
@@ -279,7 +279,7 @@ public class ClientHandle {
 	 */
 	@Deprecated
 	private void regiestItemRequestManager(String itemName,ItemManager instance){
-		DataBaseMap._clientRequestItemManager.put(itemName,instance);
+		DataBaseCache._clientRequestItemManager.put(itemName,instance);
 //		ItemManager itemRequestManager = RFASocketServer._clientRequestItemManager.get(itemName);
 //		if(itemRequestManagerList == null){
 //			itemRequestManagerList = new ArrayList();
@@ -313,12 +313,12 @@ public class ClientHandle {
 	}
 
 	public void closeHandler(String itemName) {
-		ItemManager itemHandler = DataBaseMap.subscribeItemManagerMap.get(itemName);
+		ItemManager itemHandler = DataBaseCache.subscribeItemManagerMap.get(itemName);
 		//取消订阅该产品
 		if(itemHandler!=null){
 			itemHandler.closeRequest();
 		}
-		DataBaseMap._clientRequestItemManager.remove(itemName);
+		DataBaseCache._clientRequestItemManager.remove(itemName);
 	}
 	
 //	private boolean checkRequestNews(byte msgType,String userName,List<String> newsKey){

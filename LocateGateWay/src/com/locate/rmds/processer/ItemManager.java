@@ -4,7 +4,7 @@ import org.apache.log4j.Logger;
 import org.dom4j.Document;
 
 import com.locate.bridge.GateWayResponser;
-import com.locate.common.DataBaseMap;
+import com.locate.common.DataBaseCache;
 import com.locate.common.XmlMessageUtil;
 import com.locate.gate.GateWayServer;
 import com.locate.rmds.QSConsumerProxy;
@@ -184,13 +184,14 @@ public class ItemManager implements Client
 		}
         pool.releaseMsg(ommmsg);
     }
+    
 
     // Unregisters/unsubscribes login handle
     public void closeRequest()
     {
     	 _itemGroupManager._handles.remove(itemHandle);
          _mainApp.getOMMConsumer().unregisterClient(itemHandle);
-         DataBaseMap.subscribeItemManagerMap.remove(clientRequestItemName);
+         DataBaseCache.subscribeItemManagerMap.remove(clientRequestItemName);
     }
 
     // This is a Client method. When an event for this client is dispatched,
@@ -234,7 +235,8 @@ public class ItemManager implements Client
 			byte msgType = respMsg.getMsgType();
 			String state = respMsg.getState().toString();
 			responseMsg = XmlMessageUtil.generateStatusResp(state,streamState,dataState,msgType);
-			GateWayResponser.sentMrketPriceToSubsribeChannel(msgType, responseMsg, clientRequestItemName);;
+			XmlMessageUtil.addLocateInfo(responseMsg, msgType, RFAServerManager.sequenceNo.getAndIncrement(), 0);
+			GateWayResponser.sentMrketPriceToSubsribeChannel(responseMsg, clientRequestItemName);
 			_logger.warn("RFA server has new state. streamState:"+streamState+" datasstate "+dataState);
 			return;
         }
@@ -250,8 +252,8 @@ public class ItemManager implements Client
 			_itemGroupManager.applyGroup(itemHandle, group);
 		}
         
-		
-		GateWayResponser.sentMrketPriceToSubsribeChannel(respMsg.getMsgType(), responseMsg, clientRequestItemName);
+		XmlMessageUtil.addLocateInfo(responseMsg, respMsg.getMsgType(), RFAServerManager.sequenceNo.getAndIncrement(), 0);
+		GateWayResponser.sentMrketPriceToSubsribeChannel(responseMsg, clientRequestItemName);
         if(responseMsg != null){
 //        	List<String> clientNameList =  GateWayServer._requestItemNameList.get(clientRequestItemName);
 //        	if(clientNameList != null){

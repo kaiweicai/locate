@@ -9,8 +9,10 @@ import org.jboss.netty.channel.group.DefaultChannelGroup;
 
 import com.locate.rmds.gui.viewer.FieldValue;
 import com.locate.rmds.processer.ItemManager;
-
-public class DataBaseMap {
+/*
+ * 该类主要存放系统中缓存数据.
+ */
+public class DataBaseCache {
 	public static Map<String, String> _userConnection = new HashMap();
 	// Client User Name+itemName -- IoSession
 	public static Map<String, Integer> _clientRequestSession = new HashMap();

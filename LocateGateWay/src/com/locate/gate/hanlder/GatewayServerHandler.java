@@ -20,7 +20,7 @@ import org.jboss.netty.channel.group.ChannelGroup;
 import org.jboss.netty.channel.group.DefaultChannelGroup;
 
 import com.locate.bridge.ClientHandle;
-import com.locate.common.DataBaseMap;
+import com.locate.common.DataBaseCache;
 import com.locate.common.GateWayMessageTypes;
 import com.locate.common.XmlMessageUtil;
 import com.locate.gate.model.ClientInfo;
@@ -43,15 +43,15 @@ public class GatewayServerHandler extends SimpleChannelHandler {
 	
 	private  void requestAgain(){
 		//Re-request item
-		for(String clientName : DataBaseMap._clientRequestItemName.keySet()){
-			List<String> itemNames = DataBaseMap._clientRequestItemName.get(clientName);
+		for(String clientName : DataBaseCache._clientRequestItemName.keySet()){
+			List<String> itemNames = DataBaseCache._clientRequestItemName.get(clientName);
 			for(String itemName : itemNames){
 				System.out.println("clientName "+clientName);
 				itemName = itemName.replaceAll(clientName, "");
 				_logger.info("Register client request item "+itemName);
 				System.out.println("Register client request item "+itemName);
-				System.out.println("_clientResponseType size "+DataBaseMap._clientResponseType.size());
-				byte responseMsgType  =  DataBaseMap._clientResponseType.get(itemName);
+				System.out.println("_clientResponseType size "+DataBaseCache._clientResponseType.size());
+				byte responseMsgType  =  DataBaseCache._clientResponseType.get(itemName);
 //				if( GateWayServer._requestItemNameList.get(itemName) != null){
 //					ClientHandle clientHandle = (ClientHandle)LocateGateWayMain.springContext.getBean("clientHandler"); 
 //					ItemManager clientInstance = mainAppProxy.itemRequests(itemName,responseMsgType, 0);
@@ -148,15 +148,15 @@ public class GatewayServerHandler extends SimpleChannelHandler {
 			Channel channel = e.getChannel();
 			
 			//将channelId和对应的channel放到map中,会写客户端的时候可以根据该id找到对应的channel.
-			if(!DataBaseMap.allChannelGroup.contains(channel)){
-				DataBaseMap.allChannelGroup.add(channel);
+			if(!DataBaseCache.allChannelGroup.contains(channel)){
+				DataBaseCache.allChannelGroup.add(channel);
 			}
-			userName = DataBaseMap._userConnection.get(clientIP);
+			userName = DataBaseCache._userConnection.get(clientIP);
 			ClientInfo clientInfo = new ClientInfo(userRequest, userName, channel.getId(), msgType, clientIP);
 //		    ClientHandle clientHandle = (ClientHandle)LocateGateWayMain.springContext.getBean("clientHandler"); 
 		    if(msgType != GateWayMessageTypes.LOGIN){
 				for (String subcribeItemName : clientHandle.pickupClientReqItem(userRequest)) {
-					Map<String, ChannelGroup> subscribeChannelMap = DataBaseMap.itemNameChannelMap;
+					Map<String, ChannelGroup> subscribeChannelMap = DataBaseCache.itemNameChannelMap;
 					ChannelGroup subChannelGroup = subscribeChannelMap.get(subcribeItemName);
 					if (subChannelGroup == null) {
 						subChannelGroup = new DefaultChannelGroup();
@@ -177,9 +177,9 @@ public class GatewayServerHandler extends SimpleChannelHandler {
 	@Override
 	public void channelClosed(ChannelHandlerContext ctx, ChannelStateEvent e) throws Exception {
 		Channel channel = e.getChannel();
-		DataBaseMap.allChannelGroup.remove(channel);
+		DataBaseCache.allChannelGroup.remove(channel);
 		//遍历所有的channelgoup,发现有该channel的就remove掉.如果该channelGroup为空,
-		for(Entry<String,ChannelGroup> entry:DataBaseMap.itemNameChannelMap.entrySet()){
+		for(Entry<String,ChannelGroup> entry:DataBaseCache.itemNameChannelMap.entrySet()){
 			String itemName = entry.getKey();
 			ChannelGroup channelGroup = entry.getValue();
 			if(channelGroup.contains(channel)){

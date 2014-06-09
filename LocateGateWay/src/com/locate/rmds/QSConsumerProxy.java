@@ -12,11 +12,12 @@ import org.apache.log4j.Logger;
 import org.dom4j.Document;
 import org.springframework.web.util.HtmlUtils;
 
-import com.locate.common.DataBaseMap;
+import com.locate.common.DataBaseCache;
 import com.locate.rmds.client.RFAUserManagement;
 import com.locate.rmds.processer.ItemGroupManager;
 import com.locate.rmds.processer.ItemManager;
 import com.locate.rmds.processer.NewsItemManager;
+import com.locate.rmds.processer.OneTimeItemManager;
 import com.locate.rmds.processer.RFALoginClient;
 import com.locate.rmds.sub.DirectoryClient;
 import com.locate.rmds.sub.RDMServiceInfo;
@@ -322,11 +323,13 @@ public class QSConsumerProxy{
 
 	// This method utilizes ItemManager class to request items
 	public ItemManager itemRequests(String itemName, byte responseMsgType,int channelId) {
-		Map<String,ItemManager> subscribeItemManagerMap = DataBaseMap.subscribeItemManagerMap;
+		Map<String,ItemManager> subscribeItemManagerMap = DataBaseCache.subscribeItemManagerMap;
 		if(subscribeItemManagerMap.containsKey(itemName)){
-			ItemManager subscibeItemManager =  subscribeItemManagerMap.get(itemName);
-			subscibeItemManager.sendInitialDocument(channelId);
-			//已经订阅该产品.无需再到RFA订阅该产品.
+			//已经订阅过该产品,只需要发送一个一次订阅请求,返回一个snapshot即可.
+			OneTimeItemManager oneTimeItemManager =  new OneTimeItemManager(this, _itemGroupManager,channelId);
+			oneTimeItemManager.sendOneTimeRequest(itemName, responseMsgType);
+//			ItemManager subscibeItemManager =  subscribeItemManagerMap.get(itemName);
+//			subscibeItemManager.sendInitialDocument(channelId);
 			return null;
 		}else{
 			ItemManager _itemManager = new ItemManager(this, _itemGroupManager);
@@ -336,7 +339,6 @@ public class QSConsumerProxy{
 			_itemManager.sendRequest(itemName, responseMsgType);
 			return _itemManager;
 		}
-		// Initialize item manager for item domains
 		
 	}
 

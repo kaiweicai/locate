@@ -12,7 +12,7 @@ import org.dom4j.Document;
 import org.dom4j.DocumentFactory;
 import org.dom4j.Element;
 
-import com.locate.common.DataBaseMap;
+import com.locate.common.DataBaseCache;
 import com.locate.common.RFANodeconstant;
 import com.locate.rmds.gui.viewer.FieldValue;
 import com.reuters.rfa.ansipage.Page;
@@ -250,7 +250,7 @@ public final class GenericOMMParser
 			if (msg.getDataType() == OMMTypes.FIELD_LIST) {
 				OMMFieldList fieldList = (OMMFieldList) msg.getPayload();
 				Map fieldListMap = new LinkedHashMap();
-				DataBaseMap.filedValueMap.put(itemName, fieldListMap);
+				DataBaseCache.filedValueMap.put(itemName, fieldListMap);
 				for (Iterator<?> fiter = fieldList.iterator(); fiter.hasNext();) {
 					OMMFieldEntry fentry = (OMMFieldEntry) fiter.next();
 					FidDef fiddef = CURRENT_DICTIONARY.getFidDef(fentry.getFieldId());
@@ -840,7 +840,7 @@ public final class GenericOMMParser
 							data = fe.getData();
 						if (rippleId > 0) {
 							// 这里需要记录该field最新的值到map中,方便下次直接读取
-							FieldValue firstFieldValue = DataBaseMap.filedValueMap.get(itemName).get(
+							FieldValue firstFieldValue = DataBaseCache.filedValueMap.get(itemName).get(
 									fe.getFieldId());
 							firstFieldValue.setValue(data.toString());
 						}
@@ -909,7 +909,7 @@ public final class GenericOMMParser
  }
 
     private static FieldValue getValue(String itemName,short filedId) {
-    	Map<Short, FieldValue> _entries=DataBaseMap.filedValueMap.get(itemName);
+    	Map<Short, FieldValue> _entries=DataBaseCache.filedValueMap.get(itemName);
     	return _entries.get(filedId);
 	}
 
