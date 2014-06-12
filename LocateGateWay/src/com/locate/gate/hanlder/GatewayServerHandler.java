@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import javax.annotation.Resource;
+
 import org.apache.log4j.Logger;
 import org.dom4j.Document;
 import org.jboss.netty.buffer.ChannelBuffer;
@@ -18,16 +20,19 @@ import org.jboss.netty.channel.MessageEvent;
 import org.jboss.netty.channel.SimpleChannelHandler;
 import org.jboss.netty.channel.group.ChannelGroup;
 import org.jboss.netty.channel.group.DefaultChannelGroup;
+import org.springframework.stereotype.Service;
 
-import com.locate.bridge.ClientHandle;
+import com.locate.bridge.GateForwardRFA;
 import com.locate.common.DataBaseCache;
 import com.locate.common.GateWayMessageTypes;
 import com.locate.common.XmlMessageUtil;
 import com.locate.gate.model.ClientInfo;
+import com.locate.rmds.handler.inter.IRequestHandler;
 
+@Service
 public class GatewayServerHandler extends SimpleChannelHandler {
 	static Logger _logger = Logger.getLogger(GatewayServerHandler.class.getName());
-
+	
 	/** The number of message to receive */
 	public static final int MAX_RECEIVED = 100000;
 
@@ -39,7 +44,8 @@ public class GatewayServerHandler extends SimpleChannelHandler {
 	// Client IP -- Client User Name
 	
 //	private ClientHandle clientHandle = (ClientHandle)LocateGateWayMain.springContext.getBean("clientHandler"); 
-	private ClientHandle clientHandle;
+	@Resource
+	private GateForwardRFA gateForwardRFA;
 	
 	private  void requestAgain(){
 		//Re-request item
@@ -155,7 +161,7 @@ public class GatewayServerHandler extends SimpleChannelHandler {
 			ClientInfo clientInfo = new ClientInfo(userRequest, userName, channel.getId(), msgType, clientIP);
 //		    ClientHandle clientHandle = (ClientHandle)LocateGateWayMain.springContext.getBean("clientHandler"); 
 		    if(msgType != GateWayMessageTypes.LOGIN){
-				for (String subcribeItemName : clientHandle.pickupClientReqItem(userRequest)) {
+				for (String subcribeItemName : XmlMessageUtil.pickupClientReqItem(userRequest)) {
 					Map<String, ChannelGroup> subscribeChannelMap = DataBaseCache.itemNameChannelMap;
 					ChannelGroup subChannelGroup = subscribeChannelMap.get(subcribeItemName);
 					if (subChannelGroup == null) {
@@ -168,7 +174,7 @@ public class GatewayServerHandler extends SimpleChannelHandler {
 				}
 		    }
 		    //RFAClientHandler process message and send the request to RFA.
-	    	clientHandle.process(clientInfo);
+	    	gateForwardRFA.process(clientInfo);
 		} catch (Throwable throwable) {
 			_logger.error("Unexpected error ocurres", throwable);
 		}
@@ -187,21 +193,10 @@ public class GatewayServerHandler extends SimpleChannelHandler {
 			}
 			if(channelGroup.isEmpty()){
 				channelGroup = null;
-				clientHandle.closeHandler(itemName);
+				gateForwardRFA.closeHandler(itemName);
 			}
 		}
 	}
-
-
-	public ClientHandle getClientHandle() {
-		return clientHandle;
-	}
-
-
-	public void setClientHandle(ClientHandle clientHandle) {
-		this.clientHandle = clientHandle;
-	}
-	
 	/**
 	 * {@inheritDoc}
 	 */

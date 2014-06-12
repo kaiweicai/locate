@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Resource;
 import javax.swing.plaf.basic.BasicComboBoxUI.ItemHandler;
 
 import org.apache.log4j.Logger;
@@ -11,6 +12,8 @@ import org.dom4j.Document;
 import org.dom4j.Element;
 import org.jboss.netty.channel.group.ChannelGroup;
 import org.jboss.netty.channel.group.DefaultChannelGroup;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import com.locate.common.DataBaseCache;
 import com.locate.common.GateWayExceptionTypes;
@@ -18,15 +21,16 @@ import com.locate.common.GateWayMessageTypes;
 import com.locate.common.RFANodeconstant;
 import com.locate.common.GateWayExceptionTypes.RFAExceptionEnum;
 import com.locate.common.XmlMessageUtil;
-import com.locate.gate.GateWayServer;
 import com.locate.gate.hanlder.GatewayServerHandler;
 import com.locate.gate.model.ClientInfo;
 import com.locate.gate.model.LocateMessage;
 import com.locate.gate.model.RFAUserResponse;
+import com.locate.gate.server.GateWayServer;
 import com.locate.rmds.QSConsumerProxy;
 import com.locate.rmds.RFAServerManager;
 import com.locate.rmds.client.ClientUserLogin;
 import com.locate.rmds.client.RFAUserManagement;
+import com.locate.rmds.handler.inter.IRequestHandler;
 import com.locate.rmds.processer.ItemManager;
 import com.locate.rmds.processer.RFALoginClient;
 import com.reuters.rfa.omm.OMMMsg.MsgType;
@@ -37,14 +41,14 @@ import com.reuters.rfa.omm.OMMMsg.MsgType;
  * @author cloud wei
  *
  */
-public class ClientHandle {
+@Service
+public class GateForwardRFA {
 	
-	static Logger _logger = Logger.getLogger(ClientHandle.class.getName());
+	static Logger _logger = Logger.getLogger(GateForwardRFA.class.getName());
+	@Resource
 	QSConsumerProxy mainApp;
-	
-	public ClientHandle(QSConsumerProxy mainApp){
-		this.mainApp = mainApp;
-	}
+	@Resource(name="futhureRequestHandler")
+	private IRequestHandler requestHandler;
 	
 	public int process(ClientInfo clientInfo){
 		long startTime = System.currentTimeMillis();
@@ -78,37 +82,41 @@ public class ClientHandle {
 		    	XmlMessageUtil.addStartHandleTime(responseData, startTime);
 		    	GateWayResponser.sentResponseMsg(GateWayMessageTypes.RESPONSE_LOGIN, responseData, channelID);
 		    	return 0;
+		    case GateWayMessageTypes.UNREGISTER_REQUEST:
+		    	responseMsgType = GateWayMessageTypes.RESPONSE_UNREGISTER;
+		    	resultCode = requestHandler.processRequest(request,clientName,responseMsgType,channelID);
+		    	break;
 		    case GateWayMessageTypes.STOCK_REQUEST:
 		    	responseMsgType = GateWayMessageTypes.RESPONSE_STOCK;
-		    	resultCode = processRequest(request,clientName,responseMsgType,channelID);
+		    	resultCode = requestHandler.processRequest(request,clientName,responseMsgType,channelID);
 		    	break;
 		    case GateWayMessageTypes.STOCK_LINK_REQUEST:
-		    	processOneTimesRequest(request,clientName,GateWayMessageTypes.RESPONSE_STOCK_LINK,channelID);
+		    	resultCode = requestHandler.processOneTimesRequest(request,clientName,GateWayMessageTypes.RESPONSE_STOCK_LINK,channelID);
 		    	break;
 //
 		    case GateWayMessageTypes.CURRENCY_REQUEST:
 		    	responseMsgType = GateWayMessageTypes.RESPONSE_CURRENCY;
-		    	resultCode=processRequest(request,clientName,responseMsgType,channelID);
+		    	resultCode=requestHandler.processRequest(request,clientName,responseMsgType,channelID);
 		    	break;
 //		    case RFAMessageTypes.CURRENCY_LINK_REQUEST:
 //		    	processOneTimesRequest(request,clientName,RFAMessageTypes.RESPONSE_CURRENCY_LINK);
 //		    	break;
 //		    	
 		    case GateWayMessageTypes.OPTION_REQUEST:
-		    	processRequest(request,clientName,GateWayMessageTypes.RESPONSE_OPTION,channelID);
+		    	requestHandler.processRequest(request,clientName,GateWayMessageTypes.RESPONSE_OPTION,channelID);
 		    	break;
 //		    case RFAMessageTypes.OPTION_LINK_REQUEST:
 //		    	processOneTimesRequest(request,clientName,RFAMessageTypes.RESPONSE_OPTION_LINK);
 //		    	break;
 		    case GateWayMessageTypes.FUTURE_REQUEST:
 		    	responseMsgType = GateWayMessageTypes.RESPONSE_FUTURE;
-		    	resultCode = processRequest(request,clientName,responseMsgType,channelID);
+		    	resultCode = requestHandler.processRequest(request,clientName,responseMsgType,channelID);
 		    	break;
 //		    case RFAMessageTypes.FUTURE_LINK_REQUEST:
 //		    	processOneTimesRequest(request,clientName,RFAMessageTypes.RESPONSE_FUTURE_LINK);
 //		    	break;
 		    case GateWayMessageTypes.INDEX_REQUEST:
-		    	resultCode = processRequest(request,clientName,GateWayMessageTypes.RESPONSE_INDEX,channelID);
+		    	resultCode = requestHandler.processRequest(request,clientName,GateWayMessageTypes.RESPONSE_INDEX,channelID);
 		    	break;
 //		    case RFAMessageTypes.INDEX_LINK_REQUEST:
 //		    	processOneTimesRequest(request,clientName,RFAMessageTypes.RESPONSE_INDEX_LINK);
@@ -175,58 +183,7 @@ public class ClientHandle {
 //		
 //	}
 	
-	private void processOneTimesRequest(Document req,String clientName,byte responseMsgType,int channel){
-		List<String> itemNames = pickupClientReqItem(req);
-//		if(!checkRequestItem(responseMsgType,clientName,itemNames))
-//			return;
-		_logger.info("Begin register one time client request "+clientName);
-		for(String itemName : itemNames){
-			DataBaseCache._clientResponseType.put(itemName, responseMsgType);
-			_logger.info("Register client request item "+itemName);
-			DataBaseCache._clientRequestSession.put(clientName+itemName, channel);
-//			if(regiestItemNameForClient(itemName,clientName)){
-				ItemManager clientInstance = mainApp.itemRequests(itemName,responseMsgType,channel);
-				regiestItemRequestManager(itemName,clientInstance);
-//			}
-			regiestClientRequestItem(clientName,itemName);
-		}
-		_logger.info("End register client request "+clientName);
-		
-		
-//		List<String> itemNames = pickupClientReqItem(req);
-//		_logger.info("Begin register client request "+clientName);
-//		for(String itemName : itemNames){
-//			_logger.info("Register client request item "+itemName);
-//			RFASocketServer._clientRequestSession.put(clientName+itemName, _session);
-//			_mainApp.oneTimesItemRequests(itemName,clientName,responseMsgType);
-//			regiestClientRequestItem(clientName,itemName);
-//		}
-//		_logger.info("End register client request "+clientName);
-	}
 	
-	private int processRequest(Document req,String clientName,byte responseMsgType, int channelId ){
-		int errorCode = -1;
-		List<String> itemNames = pickupClientReqItem(req);
-		if(!RFAServerManager.isConnectedDataSource()){
-			_logger.warn("The RFA Datasource not connected.Can not register the intresting Product!");
-			return GateWayExceptionTypes.RFA_SERVER_NOT_READY;
-		}
-//		if(!checkRequestItem(responseMsgType,clientName,itemNames))
-//			return errorCode=GateWayExceptionTypes.USER_BUSINESS_NUMBER_OUT;
-		_logger.info("Begin register client request "+clientName);
-		for(String itemName : itemNames){
-			DataBaseCache._clientResponseType.put(itemName, responseMsgType);
-			_logger.info("Register client request item "+itemName);
-//			GateWayServer._clientRequestSession.put(clientName+itemName, channelId);
-//			if(regiestItemNameForClient(itemName,clientName)){
-			ItemManager clientInstance = mainApp.itemRequests(itemName, responseMsgType,channelId);
-			regiestItemRequestManager(itemName, clientInstance);
-//			}
-			regiestClientRequestItem(clientName,itemName);
-		}
-		_logger.info("End register client request "+clientName);
-		return errorCode;
-	}
 	
 	
 //	private boolean regiestItemNameForClient(String itemName,String clientName){
@@ -245,22 +202,6 @@ public class ClientHandle {
 //		return true;
 //	}
 	
-	/**
-	 * 所有用户使用的同一个用户名.
-	 * 这个方法没有用.很可能被取消掉.
-	 * @param clientName
-	 * @param itemName
-	 */
-	@Deprecated
-	private void regiestClientRequestItem(String clientName,String itemName){
-		List<String> clientRequestItem;
-		clientRequestItem = DataBaseCache._clientRequestItemName.get(clientName);
-		if(clientRequestItem == null){
-			clientRequestItem =  new ArrayList();
-		}
-		clientRequestItem.add(clientName+itemName);
-		DataBaseCache._clientRequestItemName.put(clientName, clientRequestItem);
-	}
 	
 //	private void regiestItemRequestManager(String itemName,ItemManager instance){
 //		List<ItemManager> itemRequestManagerList;
@@ -270,37 +211,10 @@ public class ClientHandle {
 //		}
 //		itemRequestManagerList.add(instance);
 //	}
-	/**
-	 * 这个方法很可能被取消掉.
-	 * 因为该产品已经被订阅过了,无需订阅.
-	 * 后面有代码专门处理订阅产品和处理器的对应关系.
-	 * @param itemName
-	 * @param instance
-	 */
-	@Deprecated
-	private void regiestItemRequestManager(String itemName,ItemManager instance){
-		DataBaseCache._clientRequestItemManager.put(itemName,instance);
-//		ItemManager itemRequestManager = RFASocketServer._clientRequestItemManager.get(itemName);
-//		if(itemRequestManagerList == null){
-//			itemRequestManagerList = new ArrayList();
-//		}
-//		itemRequestManagerList.add(instance);
-	}
 	
 //	private void regiestNewsRequestManager(String itemName,NewsComposeItemManager instance){
 //		RFASocketServer._clientRequestNewsItemManager.put(itemName,instance);
 //	}
-	
-	public List<String> pickupClientReqItem(Document req){
-		Element rmds = req.getRootElement();
-		Element requestElement = rmds.element(RFANodeconstant.SELECT_REQUEST_NODE);
-		List<Element> itemNodes = requestElement.elements(); 
-		List<String> itemNameList = new ArrayList<String>();
-		for(Element item: itemNodes){
-			itemNameList.add(item.element(RFANodeconstant.SELECT_SINGLE_NAME).getText());
-		}
-		return itemNameList;
-	}
 	
 	private boolean checkRequestItem(byte msgType,String userName,List<String> itemNames){
 		String businessName = GateWayMessageTypes.RFAMessageName.getRFAMessageName(msgType).toUpperCase();

@@ -17,6 +17,7 @@ public class SystemProperties {
 	static Map<String, String> systemProperties = new HashMap<String, String>();
 	public static final String RFA_USER_FILE = "client.user.file";
 	public static final String SOCKET_PORT = "socket.port";
+	public static final String WEB_PORT = "web.port";
 	public static final String RFA_FIELD_FILE = "rfa.field.file";
 	public static final String RFA_ENUM_FILE = "rfa.enum.file";
 	public static final String RFA_NEWS_CODE = "news.code";

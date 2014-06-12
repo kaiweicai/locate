@@ -100,7 +100,7 @@ public class RFApplication extends JFrame {
 	private static final String PREFERRED_LOOK_AND_FEEL = "javax.swing.plaf.metal.MetalLookAndFeel";
 
 	public RFApplication() {
-		DOMConfigurator.configureAndWatch("config/test/log4j.xml");
+		DOMConfigurator.configureAndWatch("config/log4j.xml");
 		initComponents();
 		BussinessInterface bussinessHandler = new UIHandler();
 		SimpleChannelHandler clientHandler = new ClientHandler(bussinessHandler);

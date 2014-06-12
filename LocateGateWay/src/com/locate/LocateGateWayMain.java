@@ -18,7 +18,7 @@ import com.locate.rmds.RFAServerManager;
  */
 public class LocateGateWayMain {
 	static {
-		PropertyConfigurator.configureAndWatch("config/log4j.properties");
+		DOMConfigurator.configureAndWatch("config/log4j.xml");
 	}
 	static Logger logger = Logger.getLogger(LocateGateWayMain.class);
 	public static ApplicationContext springContext;

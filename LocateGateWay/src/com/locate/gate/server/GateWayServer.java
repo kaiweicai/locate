@@ -1,62 +1,49 @@
-package com.locate.gate;
+package com.locate.gate.server;
 
 import java.net.InetSocketAddress;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.concurrent.Executors;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
+
 import org.apache.log4j.Logger;
-import org.apache.log4j.PropertyConfigurator;
 import org.dom4j.Document;
-import org.dom4j.DocumentFactory;
-import org.dom4j.Element;
 import org.jboss.netty.bootstrap.ServerBootstrap;
 import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.buffer.ChannelBuffers;
-import org.jboss.netty.channel.Channel;
 import org.jboss.netty.channel.ChannelFactory;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.ChannelPipeline;
 import org.jboss.netty.channel.ChannelPipelineFactory;
 import org.jboss.netty.channel.Channels;
-import org.jboss.netty.channel.group.ChannelGroup;
-import org.jboss.netty.channel.group.DefaultChannelGroup;
 import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
 import org.jboss.netty.handler.codec.frame.LengthFieldBasedFrameDecoder;
 import org.jboss.netty.handler.codec.frame.LengthFieldPrepender;
 import org.jboss.netty.handler.timeout.IdleState;
 import org.jboss.netty.handler.timeout.IdleStateAwareChannelHandler;
 import org.jboss.netty.handler.timeout.IdleStateEvent;
-import org.jboss.netty.handler.timeout.IdleStateHandler;
-import org.jboss.netty.util.HashedWheelTimer;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-import com.locate.LocateGateWayMain;
-import com.locate.common.RFANodeconstant;
-import com.locate.common.XmlMessageUtil;
-import com.locate.common.GateWayExceptionTypes;
-import com.locate.common.GateWayExceptionTypes.RFAExceptionEnum;
 import com.locate.common.GateWayMessageTypes;
+import com.locate.common.XmlMessageUtil;
 import com.locate.gate.coder.EncrytDecoder;
 import com.locate.gate.coder.EncrytEncoder;
-import com.locate.gate.coder.GateWayDecoder;
-import com.locate.gate.coder.GateWayEncoder;
 import com.locate.gate.hanlder.GatewayServerHandler;
-import com.locate.gate.model.LocateMessage;
-import com.locate.rmds.QSConsumerProxy;
 import com.locate.rmds.RFAServerManager;
-import com.locate.rmds.processer.ItemManager;
+import com.locate.rmds.util.SystemProperties;
 
+@Service
 public class GateWayServer {
 	static Logger logger = Logger.getLogger(GateWayServer.class.getName());
 	
+	@Resource
 	private GatewayServerHandler gateWayServerHandler;
 
 	/**
 	 * Create the TCP server
 	 */
+	@PostConstruct
 	public void init() {
 		// _logger.info("Server started...");
 		logger.info("gate way Server starting...");
@@ -83,7 +70,8 @@ public class GateWayServer {
 		bootstrap.setOption("tcpNodelay", true);
 		bootstrap.setOption("child.keepalive", true);
 		bootstrap.setOption("allIdleTime", "5");
-		bootstrap.bind(new InetSocketAddress(8888));
+		int serverPort = Integer.parseInt(SystemProperties.getProperties(SystemProperties.SOCKET_PORT));
+		bootstrap.bind(new InetSocketAddress(serverPort));
 		logger.info("gate way Server started success!");
 	}
 

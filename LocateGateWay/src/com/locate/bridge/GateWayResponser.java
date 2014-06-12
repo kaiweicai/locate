@@ -13,8 +13,8 @@ import org.jboss.netty.channel.group.ChannelGroup;
 
 import com.locate.common.DataBaseCache;
 import com.locate.common.XmlMessageUtil;
-import com.locate.gate.GateWayServer;
 import com.locate.gate.model.LocateMessage;
+import com.locate.gate.server.GateWayServer;
 import com.locate.rmds.RFAServerManager;
 import com.reuters.rfa.omm.OMMMsg;
 

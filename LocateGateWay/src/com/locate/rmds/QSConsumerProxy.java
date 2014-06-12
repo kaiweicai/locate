@@ -8,9 +8,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+
 import org.apache.log4j.Logger;
-import org.dom4j.Document;
-import org.springframework.web.util.HtmlUtils;
+import org.springframework.stereotype.Service;
 
 import com.locate.common.DataBaseCache;
 import com.locate.rmds.client.RFAUserManagement;
@@ -50,6 +52,7 @@ import com.reuters.rfa.session.omm.OMMItemIntSpec;
 *  创建时间：2014.5.26   
 *  类说明  netty game  
 */  
+@Service
 public class QSConsumerProxy{
 	static Logger logger = Logger.getLogger(QSConsumerProxy.class.getName());
 
@@ -92,6 +95,7 @@ public class QSConsumerProxy{
 	// 5. Create event source
 	// 6. Load dictionaries
 	// It also instantiates application specific objects: memory pool, encoder.
+	@PostConstruct
 	public void init() {
 		// Context.initialize();
 		// 1. Initialize system config
@@ -389,9 +393,9 @@ public class QSConsumerProxy{
 			try {
 				_eventQueue.dispatch(5000);
 			} catch (DeactivatedException e) {
-				e.printStackTrace();
+				logger.error("event queue not activate"+e);
 			} catch (DispatchQueueInGroupException e) {
-				e.printStackTrace();
+				logger.error("event queue is dispatched."+e);
 			}
 		}
 	}
@@ -406,6 +410,7 @@ public class QSConsumerProxy{
 	// 5. Destroy event source
 	// 6. Release session
 	// 7. Uninitialize context
+	@PreDestroy
 	public void cleanup() {
 		logger.info(Context.string());
 		dispath = false;

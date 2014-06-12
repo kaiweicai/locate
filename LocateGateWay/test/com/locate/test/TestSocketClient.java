@@ -22,7 +22,6 @@ import org.jboss.netty.channel.MessageEvent;
 import org.jboss.netty.channel.SimpleChannelHandler;
 import org.jboss.netty.channel.socket.nio.NioClientSocketChannelFactory;
 import org.junit.Test;
-import org.springframework.web.util.HtmlUtils;
 
 import com.locate.common.GateWayMessageTypes;
 import com.locate.common.GateWayMessageTypes.RFAMessageName;
@@ -72,7 +71,7 @@ public class TestSocketClient{
 				System.out.println("Received server's  message is null ");
 				return;
 			}
-			String content = HtmlUtils.htmlUnescape(document.asXML());
+			String content = document.asXML();
 			// String content = response.asXML();
 			System.out.println("Received server's  message : " + content);
 

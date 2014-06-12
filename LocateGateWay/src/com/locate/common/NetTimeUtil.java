@@ -27,6 +27,7 @@ public class NetTimeUtil {
 	}
 	
 	public static void main(String[] args) throws Exception {
+		long startTime = System.currentTimeMillis();
 		// 取得资源对象
 		URL url = new URL("http://www.bjtime.cn");
 		// 生成连接对象
@@ -38,5 +39,7 @@ public class NetTimeUtil {
 		Date date = new Date(time);
 		System.out.println("date:" + date.toString());
 		System.out.println(new SimpleDateFormat("yyyy-MM-dd hh-mm-ss").format(date));
+		long endTime = System.currentTimeMillis();
+		System.out.println("user time ="+(endTime-startTime));
 	}
 }

@@ -498,7 +498,7 @@ public final class GenericOMMParser
             OMMEntry entry = (OMMEntry)iter.next();
             parseEntry(entry, logMsg, tabLevel + 1,fields,ripple,itemName,msgType,rippleMap);
         }
-        _logger.info("test for cloud wei```````````````````````fieldNub is "+fieldNum);
+        _logger.debug("test for cloud wei```````````````````````fieldNub is "+fieldNum);
     }
 
     /**

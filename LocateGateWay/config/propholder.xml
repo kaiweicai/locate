@@ -1,35 +1,22 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
-	xmlns:tx="http://www.springframework.org/schema/tx"
-	xsi:schemaLocation="   
-            http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd   
-            http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd   
-            http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:tool="http://www.springframework.org/schema/tool" xmlns:task="http://www.springframework.org/schema/task"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="
+	http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd 
+	http://www.springframework.org/schema/task
+	http://www.springframework.org/schema/task/spring-task-3.0.xsd
+	http://www.springframework.org/schema/util 
+	http://www.springframework.org/schema/util/spring-util-3.0.xsd 
+	http://www.springframework.org/schema/tool 
+	http://www.springframework.org/schema/tool/spring-tool-3.0.xsd 
+	http://www.springframework.org/schema/context 
+	http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
-	<bean id="consumerProxy" class="com.locate.rmds.QSConsumerProxy"
-		scope="singleton" init-method="init" destroy-method="cleanup">
-	</bean>
-	
-	<bean id="rfaServerManager" class="com.locate.rmds.RFAServerManager" scope="singleton" init-method="init" >
-		<property name="demo" ref="consumerProxy"></property>
-	</bean>
-	
-	<bean id="gateWayServer" class="com.locate.gate.GateWayServer"
-		scope="singleton" init-method="init">
-		<property name="gateWayServerHandler" ref="gatewayServerHandler"></property>
-	</bean>
-
-	<bean id="clientHandler" class="com.locate.bridge.ClientHandle"
-		scope="singleton">
-		<constructor-arg ref="consumerProxy" />
-	</bean>
-	
-	<bean id="gatewayServerHandler" class="com.locate.gate.hanlder.GatewayServerHandler" scope="singleton">
-		<property name="clientHandle" ref="clientHandler"></property>
-	</bean>
-	
-	<bean id="newsContentManager" class="com.locate.rmds.processer.NewsContentManager" scope="singleton">
-		<constructor-arg ref="consumerProxy"/>
-	</bean>
+	<!-- <bean id="newsContentManager" class="com.locate.rmds.processer.NewsContentManager" 
+		scope="singleton"> <constructor-arg ref="consumerProxy"/> </bean> -->
+	<!-- 使用annotation 自动注册bean,并检查@Required,@Autowired的属性已被注入,多个路径用逗号分割 -->
+	<context:component-scan base-package="com.locate" />
 </beans> 

@@ -14,7 +14,7 @@ import com.locate.LocateGateWayMain;
 import com.locate.bridge.GateWayResponser;
 import com.locate.common.GateWayMessageTypes;
 import com.locate.common.RFANodeconstant;
-import com.locate.gate.GateWayServer;
+import com.locate.gate.server.GateWayServer;
 import com.locate.rmds.QSConsumerProxy;
 import com.locate.rmds.util.EventFieldUtils;
 import com.locate.rmds.util.GenericOMMParser;

@@ -14,7 +14,7 @@ public class GateWayMessageTypes {
 	public static final byte ONE_TIMES_REQUEST = 9;       //
 	public static final byte LOGINWRONGUSER = 10;	 
 	public static final byte LOGINWRONGPASSWORD = 11;	 //
-	
+	public static final byte UNREGISTER_REQUEST = 12;
 	
 	public static final byte STOCK_LINK_REQUEST = 22;  //
 	public static final byte CURRENCY_LINK_REQUEST = 23;//
@@ -31,6 +31,7 @@ public class GateWayMessageTypes {
 	public static final byte RESPONSE_NEWS = 46;
 	public static final byte RESPONSE_NEWS_COMPOSE = 47;
 	public static final byte RESPONSE_ONE_TIMES = 48;
+	public static final byte RESPONSE_UNREGISTER = 49;
 	
 
 	public static final byte RESPONSE_STOCK_LINK = 61;

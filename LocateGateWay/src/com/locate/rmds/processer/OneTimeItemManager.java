@@ -6,7 +6,7 @@ import org.dom4j.Document;
 import com.locate.bridge.GateWayResponser;
 import com.locate.common.DataBaseCache;
 import com.locate.common.XmlMessageUtil;
-import com.locate.gate.GateWayServer;
+import com.locate.gate.server.GateWayServer;
 import com.locate.rmds.QSConsumerProxy;
 import com.locate.rmds.RFAServerManager;
 import com.locate.rmds.statistic.CycleStatistics;
