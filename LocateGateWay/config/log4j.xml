@@ -35,7 +35,7 @@
 		<level value="ERROR" />
 	</logger>
 	<root>
-    	<!-- <appender-ref ref="CONSOLE" /> -->
+    	<appender-ref ref="CONSOLE" />
 		<appender-ref ref="FILE" />
 	</root>
 </log4j:configuration>

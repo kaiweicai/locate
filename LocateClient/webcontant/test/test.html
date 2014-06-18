@@ -1,0 +1,16 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Insert title here</title>
+<script type="text/javascript">
+var data='{"locate":{"startHandleTime":"1402938759266","msgType":"8","sequence":"460","errorCode":"0"},"response":{"item":{"name":"XAU="},"fields":[{"id":"3","name":"DSPLY_NAME","type":"String","value":"UBS-IB       ZUR"},{"id":"5","name":"TIMACT","type":"Unknown","value":"17:12"},{"id":"17","name":"ACTIV_DATE","type":"Unknown","value":"16 JUN 2014"},{"id":"22","name":"BID","type":"Double","value":"1274.25"},{"id":"24","name":"BID_2","type":"Double","value":"1274.25"},{"id":"23","name":"BID_1","type":"Double","value":"1274.40"},{"id":"25","name":"ASK","type":"Double","value":"1275.05"},{"id":"27","name":"ASK_2","type":"Double","value":"1275.05"},{"id":"26","name":"ASK_1","type":"Double","value":"1275.20"},{"id":"78","name":"OFFCL_CODE","type":"String","value":"UBZK        "},{"id":"105","name":"BCKGRNDPAG","type":"String","value":"UBSZ"},{"id":"114","name":"BID_NET_CH","type":"Double","value":"-2.25"},{"id":"115","name":"BID_TICK_1","type":"String","value":"þ"},{"id":"1352","name":"DSPLY_NMLL","type":"String"}]}}' ;
+var price = JSON.parse(data);
+var fileds=price.response.fields;
+console.log(fileds);
+</script>
+</head>
+<body>
+
+</body>
+</html>

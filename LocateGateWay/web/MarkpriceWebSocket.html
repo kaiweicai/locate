@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> </head>
+<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+<script src="http://code.jquery.com/ui/1.10.4/jquery-ui.min.js" type="text/javascript" ></script>
+<script type="text/javascript" charset="utf-8">
+	window.WebSocket = window.WebSocket || window.MozWebSocket;
+	var initial = true;
+	var rfasocket;
+	if (!window.WebSocket) {
+		alert("WebSocket not supported by this browser");
+	}
+
+	function initialTable(fileds){
+		initial=false;
+		var tbody = $('<tbody></tbody>');
+		for(var i = 0; i < fileds.length; i ++ ){
+			tbody.append(getRow(fileds[i]));
+		}
+		$('#MarketPriceTable tbody').replaceWith(tbody);
+	}
+	
+	
+	function updateTable(fileds) {
+		for (var i = 0; i < fileds.length; i++) {
+			var marketTableTrs=$("#MarketPriceTable tr");
+			for (var j = 1; j < marketTableTrs.length; j++)
+				if (fileds[i].id == marketTableTrs[j].children[0].innerHTML) {
+					//$("#MarketPriceTable tr")[j].children[1].innerHTML=fileds[i].name;
+					//$("#MarketPriceTable tr")[j].children[2].innerHTML=fileds[i].type;
+					marketTableTrs[j].children[3].style.color='red';
+					if (!fileds[i].value) {
+						$("#MarketPriceTable tr")[j].children[3].innerHTML = "&nbsp";
+					} else {
+						$("#MarketPriceTable tr")[j].children[3].innerHTML = fileds[i].value;
+					}
+					$(marketTableTrs[j].children[3]).animate({
+						color: "blue"
+					  }, 1000 );
+					//marketTableTrs[j].children[3].style.color='blue';
+				}
+		}
+	}
+
+	function getRow(row) {
+		var tr = $('<tr></tr>');
+		for ( var i in row) {
+			tr.append('<td>' + row[i] + '</td>');
+		}
+		if (!row['value']) {
+			tr.append('<td></td>');
+		}
+		return tr;
+	}
+
+	function openWebSocket() {
+		var socket= $("#port").val();
+		var address = $("#ipaddress").val();
+		var webSoketUrl = "ws://"+address+":"+socket+"/websocket";
+		alert(webSoketUrl);
+		var websocket = new WebSocket(webSoketUrl);
+		var name = $("#ric").val();
+		alert("websocket send message:" + name);
+		websocket.onmessage = function(evt) {
+			var data = evt.data;
+			//var marketPrice = JSON.stringify(data);
+
+			var temp = eval('(' + data + ')');
+			console.log(data);
+			//var marketPrice=JSON.parse(temp);
+			var fileds = temp.response.fields;
+			if (fileds.length > 0 && !initial) {
+				updateTable(fileds);
+			}
+			if (fileds.length > 0 && initial) {
+				initialTable(fileds);
+			}
+		}
+
+		websocket.onopen = function(evt) {
+			this.send(name);
+			alert("websocket opened!");
+		};
+
+		websocket.onclose = function(evt) {
+			alert("websocket closed!");
+		};
+
+		websocket.onerror = function(evt) {
+			alert("websocket error:" + evt);
+		};
+		return websocket;
+	}
+
+	function sendMessage() {
+		rfasocket = openWebSocket();
+	}
+
+	window.onbeforeunload = function() {
+		rfasocket.close();
+		console.log("===onbeforeunload===");
+		if (event.clientX > document.body.clientWidth && event.clientY < 0
+				|| event.altKey) {
+			console.log("You closed the web brower!");
+		} else {
+			console.log("You are refressiong the page!");
+		}
+	}
+</script>
+<!-- CSS goes in the document HEAD or added to your external stylesheet -->
+<style type="text/css">
+table.gridtable {
+	font-family: verdana,arial,sans-serif;
+	font-size:11px;
+	color:#333333;
+	border-width: 1px;
+	border-color: #666666;
+	border-collapse: collapse;
+}
+table.gridtable th {
+	border-width: 1px;
+	padding: 8px;
+	border-style: solid;
+	border-color: #666666;
+	background-color: #dedede;
+}
+table.gridtable td {
+	border-width: 1px;
+	padding: 8px;
+	border-style: solid;
+	border-color: #666666;
+	//background-color: #ffffff;
+}
+</style>
+
+<!-- Table goes in the document BODY -->
+</head>
+<body>
+	<label for="ipaddress">Server IP address:</label>
+	<input type="text" id="ipaddress" value="61.144.244.173"/>
+	<br/>
+	<label for="port">Server port:</label>
+	<input type="text" id="port" value="8980"/>
+	<br/>
+	<label for="name">Order the RIC:</label>
+	<input type="text" id="ric" value="XAU="/>
+	<button onclick="sendMessage()">Send</button>
+	<table style="table-layout:fixed" id="MarketPriceTable" class="gridtable" width=600px>
+		<thead>
+			<tr>
+				<th width="10%">ID</th>
+				<th width="30%">FILED</th>
+				<th width="30%">TYPE</th>
+				<th width="30%">VALUE</th>
+			</tr>
+		</thead>
+		<tbody></tbody>
+	</table>
+</body>
+</html>

@@ -32,8 +32,10 @@ import org.dyno.visual.swing.layouts.Leading;
 import org.jboss.netty.channel.SimpleChannelHandler;
 
 import com.locate.client.gui.StatusBar;
+import com.locate.common.DataBaseCache;
 import com.locate.common.GateWayMessageTypes;
 import com.locate.common.GateWayMessageTypes.RFAMessageName;
+import com.locate.common.NetTimeUtil;
 import com.locate.common.RFANodeconstant;
 import com.locate.common.XmlMessageUtil;
 import com.locate.face.BussinessInterface;
@@ -584,7 +586,7 @@ public class RFApplication extends JFrame {
 				return;
 			}
 			
-			getUseTimeTextLabel().setText("From Locate Server to client use time:"+String.valueOf(endTime-startTime)+" millseconds");
+			getUseTimeTextLabel().setText("From Locate Server to client use time:"+String.valueOf(NetTimeUtil.getCheckTime()-startTime)+" millseconds");
 			logger.info("The message From RFA to user use time"+(startTime-endTime)+"milliseconds");
 			switch(msgType){
 				//first the Locate send the snapshot of market price

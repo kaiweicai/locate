@@ -36,10 +36,8 @@ import com.locate.rmds.util.SystemProperties;
 @Service
 public class GateWayWebServer {
 	static Logger logger = Logger.getLogger(GateWayWebServer.class.getName());
-	
 	@Resource
-	private GatewayServerHandler gateWayServerHandler;
-
+	private HttpServerPipelineFactory httpServerPipelineFactory;
 	/**
 	 * Create the gate way web server
 	 */
@@ -48,27 +46,8 @@ public class GateWayWebServer {
 		logger.info("gate way web Server starting...");
 		ChannelFactory factory = new NioServerSocketChannelFactory(Executors.newCachedThreadPool(),
 				Executors.newCachedThreadPool());
-		ChannelPipelineFactory pipelineFactory = new ChannelPipelineFactory() {
-			@Override
-			public ChannelPipeline getPipeline() throws Exception {
-//				ChannelPipeline pipeline =Channels.pipeline(new GateWayDecoder(),new GateWayEncoder(),gateWayServerHandler);
-				ChannelPipeline pipeline = Channels.pipeline();
-				//如果服务器端一直都没有向该channel发送信息,需要提醒客户端.
-				pipeline.addLast("fixLengthEncoder", new LengthFieldPrepender(2));
-				pipeline.addLast("encrytEncoder", new EncrytEncoder());
-				pipeline.addLast("fixLengthDecoder", new LengthFieldBasedFrameDecoder(64 * 1024, 0, 2, 0, 2));
-				pipeline.addLast("encrytDecoder", new EncrytDecoder());
-				pipeline.addLast("hander", gateWayServerHandler);
-//				pipeline.addLast("timeout", new IdleStateHandler(new HashedWheelTimer(), 10, 10, 0));
-//				pipeline.addLast("hearbeat", new Heartbeat());
-				return pipeline;
-			}
-		};
 		ServerBootstrap bootstrap = new ServerBootstrap(factory);
-		bootstrap.setPipelineFactory(pipelineFactory);
-		bootstrap.setOption("tcpNodelay", true);
-		bootstrap.setOption("child.keepalive", true);
-		bootstrap.setOption("allIdleTime", "5");
+		bootstrap.setPipelineFactory(httpServerPipelineFactory);
 		int serverPort = Integer.parseInt(SystemProperties.getProperties(SystemProperties.WEB_PORT));
 		bootstrap.bind(new InetSocketAddress(serverPort));
 		logger.info("gate way web Server started success!");
@@ -85,42 +64,6 @@ public class GateWayWebServer {
 		server.init();
 	}
 	
-	public GatewayServerHandler getGateWayServerHandler() {
-		return gateWayServerHandler;
-	}
-
-	public void setGateWayServerHandler(GatewayServerHandler gateWayServerHandler) {
-		this.gateWayServerHandler = gateWayServerHandler;
-	}
-	
-	class Heartbeat extends IdleStateAwareChannelHandler {
-		int i = 0;
-
-		@Override
-		public void channelIdle(ChannelHandlerContext ctx, IdleStateEvent e) throws Exception {
-			super.channelIdle(ctx, e);
-			if (e.getState() == IdleState.WRITER_IDLE) {
-				i++;
-			}
-			if (i > 3) {
-				logger.warn("channel idle timeout, User remote ip is "+e.getChannel().getRemoteAddress());
-				Document reponseDoc = XmlMessageUtil.createHearBeat();
-				XmlMessageUtil.addLocateInfo(reponseDoc, GateWayMessageTypes.REQUEST_EOCH, RFAServerManager.sequenceNo.getAndIncrement(), 0);
-//			    LocateMessage message = new LocateMessage(GateWayMessageTypes.REQUEST_EOCH, reponseDoc, 0);
-//			    message.setSequenceNo(RFAServerManager.sequenceNo.getAndIncrement());
-				byte[] content = reponseDoc.asXML().getBytes("UTF-8");
-				ChannelBuffer buffer = ChannelBuffers.buffer(content.length);
-				buffer.writeBytes(content);
-				e.getChannel().write(buffer);
-				i=0;
-			}
-//			if(i>60){
-//				logger.info("channel closeing channel ID ="+e.getChannel().getId());
-//				e.getChannel().close();
-//				i=0;
-//			}
-		}
-	}
 }
 
 
