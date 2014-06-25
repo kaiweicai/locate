@@ -2,13 +2,9 @@ package com.locate.gate.server;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
 
 import org.apache.log4j.Logger;
 import org.jboss.netty.buffer.ChannelBuffer;
@@ -19,11 +15,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class WebSocketServerIndexPage {
 	private Logger logger = Logger.getLogger(getClass());
-
+	private static final String MARKET_WEB_SOCKET_PAGE = "web/MarkpriceWebSocket.html";
 	private static final String NEWLINE = "\r\n";
 
 	public ChannelBuffer getContent(String webSocketLocation) {
-		File file = new File("web/MarkpriceWebSocket.html");
+		File file = new File(MARKET_WEB_SOCKET_PAGE);
 		return ChannelBuffers.copiedBuffer(readHtmlFile2String(file), CharsetUtil.UTF_8);
 	}
 
@@ -39,10 +35,10 @@ public class WebSocketServerIndexPage {
 			}
 		} catch (FileNotFoundException fnfe) {
 			logger.error("the html file not exist!" + file.getName() + fnfe);
-			return null;
+			sBuilder.append("the marketprice page not found!");
 		} catch (IOException ioe) {
 			logger.error("can not read the file" + file.getName() + ioe);
-			return null;
+			sBuilder.append("the marketprice page not found!");
 		} finally {
 			try {
 				br.close();

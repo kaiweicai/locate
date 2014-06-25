@@ -784,6 +784,13 @@ public final class GenericOMMParser
 		FidDef fiddef = CURRENT_DICTIONARY.getFidDef(fe.getFieldId());
 		// add the ripple data
 		FieldValue fieldValue = getValue(itemName, fiddef.getFieldId());
+		if(fieldValue==null){
+			//Strange:在第一订阅该产品的map中无法找到该fieldId对应的fieldValue,不应该存在的逻辑
+			fieldValue=new FieldValue(null, fiddef);
+			fieldValue.update(fe);
+			_logger.debug("The fieldValue which can not be found is:"+fieldValue);
+			DataBaseCache.filedValueMap.get(itemName).put(fiddef.getFieldId(), fieldValue);
+		}
 		short fId = fieldValue.getFieldId();
 		Element ele =rippleMap.get(fId);
 		if(ele !=null){
@@ -794,13 +801,14 @@ public final class GenericOMMParser
 		if (msgType == MsgType.UPDATE_RESP) {
 			if (ripple && rippleId != 0) {
 				FidDef rippleFieldDef = fiddef;
+				//得到当前列的值
 				Object tmp = fieldValue.getStringValue();
-				// setFirstField(fentry, fiddef, field);
+				//如果当前列有引用(ripple	)的列,那从缓存中取出保存的引用列的上次的值对象.
 				while ((rippleFieldDef.getRippleFieldId() != 0)
 						&& ((fieldValue = getValue(itemName, rippleFieldDef.getRippleFieldId())) != null)) {
 					
-					
 					short fieldId = fieldValue.getFieldId();
+					//避免重复,删除掉原有的可能存在缓存中的Element的值.即使没有删除.该值也不影响客户端数据的有效性.
 					Element e = rippleMap.get(fieldId);
 					if(e !=null){
 						rippleMap.remove(fieldId);
@@ -814,10 +822,8 @@ public final class GenericOMMParser
 							RFATypeConvert.convertField(OMMTypes.toString(fieldValue.getOMMType())));
 					logMsg.append(tmp.toString());
 					//使用XAU=时,Bid1和Ask1既是Ripple的field,RFA又同时传送过来了相应的值.避免重复.
-					
 					Element tmpElement=rippleField.addElement(RFANodeconstant.RESPONSE_FIELDS_FIELD_VALUE_NODE).addText(tmp.toString());
 					rippleMap.put(fieldId, rippleField);
-					
 					tmp = fieldValue.setValue(tmp);
 					rippleFieldDef = CURRENT_DICTIONARY.getFidDef(fieldId);
 				}
@@ -909,8 +915,13 @@ public final class GenericOMMParser
  }
 
     private static FieldValue getValue(String itemName,short filedId) {
-    	Map<Short, FieldValue> _entries=DataBaseCache.filedValueMap.get(itemName);
-    	return _entries.get(filedId);
+    	Map<Short, FieldValue> filedId2FieldValueMap=DataBaseCache.filedValueMap.get(itemName);
+    	FieldValue fieldValue = filedId2FieldValueMap.get(filedId);
+    	if(fieldValue == null){
+			_logger.error("FiledValue not found in map by filedId!!!!"+filedId);
+			_logger.debug("failed info: itemName,"+itemName+" the ric filedValue map value is "+filedId2FieldValueMap);
+		}
+    	return fieldValue;
 	}
 
 	private static final void dumpEntryHeader(OMMEntry entry, StringBuffer logMsg, int tabLevel)

@@ -1,7 +1,11 @@
 package com.locate.rmds.processer;
 
+import javax.annotation.Resource;
+
 import org.apache.log4j.Logger;
 import org.dom4j.Document;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 
 import com.locate.bridge.GateWayResponser;
 import com.locate.common.DataBaseCache;
@@ -9,6 +13,7 @@ import com.locate.common.XmlMessageUtil;
 import com.locate.gate.server.GateWayServer;
 import com.locate.rmds.QSConsumerProxy;
 import com.locate.rmds.RFAServerManager;
+import com.locate.rmds.processer.face.IProcesser;
 import com.locate.rmds.statistic.CycleStatistics;
 import com.locate.rmds.statistic.LogTool;
 import com.locate.rmds.statistic.OutputFormatter;
@@ -47,11 +52,15 @@ import com.reuters.rfa.session.omm.OMMSolicitedItemEvent;
  * @author Cloud.Wei
  *
  */
-public class ItemManager implements Client
+@Service
+@Scope("prototype")
+public class ItemManager implements Client,IProcesser
 {
 	Handle  itemHandle;
+	@Resource
 	QSConsumerProxy _mainApp;
     static Logger _logger = Logger.getLogger(ItemManager.class.getName());
+    @Resource
     ItemGroupManager _itemGroupManager;
     public String clientRequestItemName;
 //    public String clientName;
@@ -130,14 +139,8 @@ public class ItemManager implements Client
 //        this._itemGroupManager = itemGroupManager;
 //        this.clientName = clientName;
 //    }
-    // constructor
-    public ItemManager(QSConsumerProxy mainApp, ItemGroupManager itemGroupManager)
-    {
-    	this._mainApp = mainApp;
-        this._itemGroupManager = itemGroupManager;
-    }
     // creates streaming request messages for items and register them to RFA
-    public void sendRequest(String pItemName,byte responseMsgType)
+    public void sendRicRequest(String pItemName,byte responseMsgType)
     {
     	this.responseMessageType = responseMsgType;
     	_logger.info(_className+".sendRequest: Sending item("+pItemName+") requests to server ");
@@ -186,13 +189,15 @@ public class ItemManager implements Client
     }
     
 
-    // Unregisters/unsubscribes login handle
-    public void closeRequest()
-    {
-    	 _itemGroupManager._handles.remove(itemHandle);
-         _mainApp.getOMMConsumer().unregisterClient(itemHandle);
-         DataBaseCache.subscribeItemManagerMap.remove(clientRequestItemName);
-    }
+    /**
+     * 
+     */
+	public void closeRequest() {
+		_itemGroupManager._handles.remove(itemHandle);
+		_mainApp.getOMMConsumer().unregisterClient(itemHandle);
+		DataBaseCache.RIC_ITEMMANAGER_Map.remove(clientRequestItemName);
+		DataBaseCache.CLIENT_ITEMMANAGER_MAP.remove(clientRequestItemName);
+	}
 
     // This is a Client method. When an event for this client is dispatched,
     // this method gets called.
@@ -273,7 +278,7 @@ public class ItemManager implements Client
     	if(initialDocument!=null){
     		long startTime = System.currentTimeMillis();
     		XmlMessageUtil.addStartHandleTime(initialDocument, startTime);
-    		GateWayResponser.sentInitialToChannel(OMMMsg.MsgType.REFRESH_RESP, initialDocument, clientRequestItemName,channelId);
+    		GateWayResponser.sendSnapShotToChannel(OMMMsg.MsgType.REFRESH_RESP, initialDocument, clientRequestItemName,channelId);
     	}
 	}
     

@@ -10,6 +10,7 @@ import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.annotation.Resource;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,7 @@ import com.locate.rmds.processer.ItemManager;
 import com.locate.rmds.processer.NewsItemManager;
 import com.locate.rmds.processer.OneTimeItemManager;
 import com.locate.rmds.processer.RFALoginClient;
+import com.locate.rmds.processer.face.IProcesser;
 import com.locate.rmds.sub.DirectoryClient;
 import com.locate.rmds.sub.RDMServiceInfo;
 import com.locate.rmds.sub.ServiceInfo;
@@ -61,8 +63,10 @@ public class QSConsumerProxy{
 	protected EventQueue _eventQueue;
 	protected OMMConsumer _consumer;
 	protected RFALoginClient _loginClient;
+	@Resource
 	protected ItemGroupManager _itemGroupManager;
-
+	@Resource
+	ItemManager itemManager;
 	protected OMMEncoder _encoder;
 	protected OMMPool _pool;
 	public String _serviceName = "DIRECT_FEED";
@@ -146,7 +150,6 @@ public class QSConsumerProxy{
 		// 4. Create an OMMConsumer event source
 		_consumer = (OMMConsumer) _session.createEventSource(EventSource.OMM_CONSUMER, "myOMMConsumer", true);
 		// Initialize item group manager
-		_itemGroupManager = new ItemGroupManager(this);
 		// 5. Load dictionaries
 		// Application may choose to down-load the enumtype.def and
 		// RWFFldDictionary
@@ -327,7 +330,7 @@ public class QSConsumerProxy{
 
 	// This method utilizes ItemManager class to request items
 	public ItemManager itemRequests(String itemName, byte responseMsgType,int channelId) {
-		Map<String,ItemManager> subscribeItemManagerMap = DataBaseCache.subscribeItemManagerMap;
+		Map<String,IProcesser> subscribeItemManagerMap = DataBaseCache.RIC_ITEMMANAGER_Map;
 		if(subscribeItemManagerMap.containsKey(itemName)){
 			//已经订阅过该产品,只需要发送一个一次订阅请求,返回一个snapshot即可.
 			OneTimeItemManager oneTimeItemManager =  new OneTimeItemManager(this, _itemGroupManager,channelId);
@@ -336,12 +339,11 @@ public class QSConsumerProxy{
 //			subscibeItemManager.sendInitialDocument(channelId);
 			return null;
 		}else{
-			ItemManager _itemManager = new ItemManager(this, _itemGroupManager);
 			//一个产品对应一个itemManager对象
-			subscribeItemManagerMap.put(itemName, _itemManager);
+			subscribeItemManagerMap.put(itemName, itemManager);
 			// Send requests
-			_itemManager.sendRequest(itemName, responseMsgType);
-			return _itemManager;
+			itemManager.sendRicRequest(itemName, responseMsgType);
+			return itemManager;
 		}
 		
 	}

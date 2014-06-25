@@ -50,6 +50,7 @@ import com.reuters.rfa.omm.OMMMsg;
  * @author cloud wei
  * 
  */
+@Deprecated
 public class HttpWayResponser {
 
 	public static final Charset CHARSET = Charset.forName("UTF-8");
@@ -137,7 +138,7 @@ public class HttpWayResponser {
 		}
 		
 		
-		ChannelGroup channelGroup = DataBaseCache.recipientsMap.get(itemName);
+		ChannelGroup channelGroup = DataBaseCache.webItemChannelMap.get(itemName);
 		XmlMessageUtil.addLocateInfo(doc, msgType, RFAServerManager.sequenceNo.getAndIncrement(), 0);
 		String content = null;
 		byte[] result = null;
@@ -178,7 +179,7 @@ public class HttpWayResponser {
 	
 	public static void writeWebSocket(byte msgType, Document doc, String itemName, HttpRequest request) {
 
-		ChannelGroup channelGroup = DataBaseCache.recipientsMap.get(itemName);
+		ChannelGroup channelGroup = DataBaseCache.webItemChannelMap.get(itemName);
 		XmlMessageUtil.addLocateInfo(doc, msgType, RFAServerManager.sequenceNo.getAndIncrement(), 0);
 		String content = null;
 		String result = null;

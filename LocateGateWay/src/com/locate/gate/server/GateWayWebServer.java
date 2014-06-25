@@ -35,7 +35,7 @@ import com.locate.rmds.util.SystemProperties;
 
 @Service
 public class GateWayWebServer {
-	static Logger logger = Logger.getLogger(GateWayWebServer.class.getName());
+	private Logger logger = Logger.getLogger(GateWayWebServer.class.getName());
 	@Resource
 	private HttpServerPipelineFactory httpServerPipelineFactory;
 	/**

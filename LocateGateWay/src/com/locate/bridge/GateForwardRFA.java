@@ -33,6 +33,7 @@ import com.locate.rmds.client.RFAUserManagement;
 import com.locate.rmds.handler.inter.IRequestHandler;
 import com.locate.rmds.processer.ItemManager;
 import com.locate.rmds.processer.RFALoginClient;
+import com.locate.rmds.processer.face.IProcesser;
 import com.reuters.rfa.omm.OMMMsg.MsgType;
 
 /**
@@ -49,6 +50,8 @@ public class GateForwardRFA {
 	QSConsumerProxy mainApp;
 	@Resource(name="futhureRequestHandler")
 	private IRequestHandler requestHandler;
+	@Resource
+	private ItemManager itemManager;
 	
 	public int process(ClientInfo clientInfo){
 		long startTime = System.currentTimeMillis();
@@ -143,6 +146,10 @@ public class GateForwardRFA {
 		return resultCode;
 	}
 	
+	public void sendRicRequest(String pItemName,byte responseMsgType){
+		itemManager.sendRicRequest(pItemName, responseMsgType);
+	}
+	
 //	private void processNewsComponseRequest(Document req,String clientName,byte responseMsgType){
 //		List<String> itemNames = pickupClientReqItem(req);
 //		if(!checkRequestItem(responseMsgType,clientName,itemNames))
@@ -226,13 +233,16 @@ public class GateForwardRFA {
 		return true;
 	}
 
+	/**
+	 * 取消产品的订阅,并释放该产品所有资源
+	 * @param itemName
+	 */
 	public void closeHandler(String itemName) {
-		ItemManager itemHandler = DataBaseCache.subscribeItemManagerMap.get(itemName);
+		IProcesser itemHandler = DataBaseCache.RIC_ITEMMANAGER_Map.get(itemName);
 		//取消订阅该产品
 		if(itemHandler!=null){
 			itemHandler.closeRequest();
 		}
-		DataBaseCache._clientRequestItemManager.remove(itemName);
 	}
 	
 //	private boolean checkRequestNews(byte msgType,String userName,List<String> newsKey){

@@ -29,6 +29,7 @@ import com.locate.common.GateWayMessageTypes;
 import com.locate.common.XmlMessageUtil;
 import com.locate.gate.coder.EncrytDecoder;
 import com.locate.gate.coder.EncrytEncoder;
+import com.locate.gate.hanlder.AdapterHandler;
 import com.locate.gate.hanlder.GatewayServerHandler;
 import com.locate.rmds.RFAServerManager;
 import com.locate.rmds.util.SystemProperties;
@@ -39,6 +40,9 @@ public class GateWayServer {
 	
 	@Resource
 	private GatewayServerHandler gateWayServerHandler;
+	
+	@Resource
+	private AdapterHandler adapterHandler;
 
 	/**
 	 * Create the TCP server
@@ -60,6 +64,7 @@ public class GateWayServer {
 				pipeline.addLast("fixLengthDecoder", new LengthFieldBasedFrameDecoder(64 * 1024, 0, 2, 0, 2));
 				pipeline.addLast("encrytDecoder", new EncrytDecoder());
 				pipeline.addLast("hander", gateWayServerHandler);
+				pipeline.addLast("adptor", adapterHandler);
 //				pipeline.addLast("timeout", new IdleStateHandler(new HashedWheelTimer(), 10, 10, 0));
 //				pipeline.addLast("hearbeat", new Heartbeat());
 				return pipeline;

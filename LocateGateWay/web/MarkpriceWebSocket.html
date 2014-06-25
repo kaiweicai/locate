@@ -62,25 +62,28 @@
 		var websocket = new WebSocket(webSoketUrl);
 		var name = $("#ric").val();
 		alert("websocket send message:" + name);
+		
 		websocket.onmessage = function(evt) {
 			var data = evt.data;
 			//var marketPrice = JSON.stringify(data);
 
-			var temp = eval('(' + data + ')');
+			var marketPrice = eval('(' + data + ')');
 			console.log(data);
 			//var marketPrice=JSON.parse(temp);
-			var fileds = temp.response.fields;
-			if (fileds.length > 0 && !initial) {
-				updateTable(fileds);
-			}
-			if (fileds.length > 0 && initial) {
-				initialTable(fileds);
+			if(marketPrice.response.fields){
+				var fileds = marketPrice.response.fields;
+				if (fileds.length > 0 && !initial) {
+					updateTable(fileds);
+				}
+				if (fileds.length > 0 && initial) {
+					initialTable(fileds);
+				}
 			}
 		}
 
 		websocket.onopen = function(evt) {
-			this.send(name);
 			alert("websocket opened!");
+			this.send(name);
 		};
 
 		websocket.onclose = function(evt) {

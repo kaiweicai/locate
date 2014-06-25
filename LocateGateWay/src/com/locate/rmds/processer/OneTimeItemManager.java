@@ -173,7 +173,7 @@ public class OneTimeItemManager implements Client
 			_itemGroupManager.applyGroup(itemHandle, group);
 		}
         
-		GateWayResponser.sentInitialToChannel(respMsg.getMsgType(),responseMsg, clientRequestItemName,channelID);
+		GateWayResponser.sendSnapShotToChannel(respMsg.getMsgType(),responseMsg, clientRequestItemName,channelID);
         if(responseMsg != null){
         	long endTime = System.currentTimeMillis();
         	_logger.info("publish Item "+clientRequestItemName+" use time "+(endTime-startTime)+" microseconds");

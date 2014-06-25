@@ -14,6 +14,7 @@ import com.locate.common.XmlMessageUtil;
 import com.locate.gate.server.GateWayServer;
 import com.locate.rmds.QSConsumerProxy;
 import com.locate.rmds.RFAServerManager;
+import com.locate.rmds.processer.face.IProcesser;
 import com.locate.rmds.statistic.CycleStatistics;
 import com.locate.rmds.statistic.LogTool;
 import com.locate.rmds.statistic.OutputFormatter;
@@ -54,7 +55,7 @@ import com.reuters.rfa.session.omm.OMMSolicitedItemEvent;
  * 
  */
 @Service
-public class WebItemManager implements Client {
+public class WebItemManager implements Client,IProcesser {
 	Handle itemHandle;
 	@Resource
 	QSConsumerProxy mainApp;
@@ -165,7 +166,7 @@ public class WebItemManager implements Client {
 		// Completion event indicates that the stream was closed by RFA
 		if (event.getType() == Event.COMPLETION_EVENT) {
 			logger.info(_className + ": Receive a COMPLETION_EVENT, " + event.getHandle());
-			DataBaseCache.recipientsMap.get(clientRequestItemName).close();
+//			DataBaseCache.recipientsMap.get(clientRequestItemName).close();
 			return;
 		}
 

@@ -27,7 +27,7 @@ public abstract class BaseRequestHandler implements IRequestHandler {
 	 */
 	@Deprecated
 	public void regiestItemRequestManager(String itemName,ItemManager instance){
-		DataBaseCache._clientRequestItemManager.put(itemName,instance);
+		DataBaseCache.CLIENT_ITEMMANAGER_MAP.put(itemName,instance);
 //		ItemManager itemRequestManager = RFASocketServer._clientRequestItemManager.get(itemName);
 //		if(itemRequestManagerList == null){
 //			itemRequestManagerList = new ArrayList();

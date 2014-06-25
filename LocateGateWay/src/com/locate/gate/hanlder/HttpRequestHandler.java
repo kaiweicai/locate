@@ -1,23 +1,20 @@
 package com.locate.gate.hanlder;
 
-import static org.jboss.netty.handler.codec.http.HttpHeaders.is100ContinueExpected;
 import static org.jboss.netty.handler.codec.http.HttpHeaders.isKeepAlive;
+import static org.jboss.netty.handler.codec.http.HttpHeaders.setContentLength;
 import static org.jboss.netty.handler.codec.http.HttpHeaders.Names.CONTENT_LENGTH;
+import static org.jboss.netty.handler.codec.http.HttpHeaders.Names.CONTENT_TYPE;
 import static org.jboss.netty.handler.codec.http.HttpHeaders.Names.COOKIE;
 import static org.jboss.netty.handler.codec.http.HttpHeaders.Names.SET_COOKIE;
+import static org.jboss.netty.handler.codec.http.HttpMethod.GET;
 import static org.jboss.netty.handler.codec.http.HttpResponseStatus.CONTINUE;
+import static org.jboss.netty.handler.codec.http.HttpResponseStatus.FORBIDDEN;
+import static org.jboss.netty.handler.codec.http.HttpResponseStatus.NOT_FOUND;
 import static org.jboss.netty.handler.codec.http.HttpResponseStatus.OK;
 import static org.jboss.netty.handler.codec.http.HttpVersion.HTTP_1_1;
-import static org.jboss.netty.handler.codec.http.HttpHeaders.setContentLength;
-import static org.jboss.netty.handler.codec.http.HttpMethod.GET;
-import static org.jboss.netty.handler.codec.http.HttpResponseStatus.FORBIDDEN;
-import static org.jboss.netty.handler.codec.http.HttpHeaders.Names.CONTENT_TYPE;
-import static org.jboss.netty.handler.codec.http.HttpResponseStatus.NOT_FOUND;
 
 import java.io.File;
 import java.io.RandomAccessFile;
-import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -29,6 +26,7 @@ import org.jboss.netty.channel.Channel;
 import org.jboss.netty.channel.ChannelFuture;
 import org.jboss.netty.channel.ChannelFutureListener;
 import org.jboss.netty.channel.ChannelHandlerContext;
+import org.jboss.netty.channel.ChannelPipeline;
 import org.jboss.netty.channel.ChannelStateEvent;
 import org.jboss.netty.channel.ExceptionEvent;
 import org.jboss.netty.channel.MessageEvent;
@@ -39,14 +37,11 @@ import org.jboss.netty.handler.codec.http.Cookie;
 import org.jboss.netty.handler.codec.http.CookieDecoder;
 import org.jboss.netty.handler.codec.http.CookieEncoder;
 import org.jboss.netty.handler.codec.http.DefaultHttpResponse;
-import org.jboss.netty.handler.codec.http.HttpChunk;
-import org.jboss.netty.handler.codec.http.HttpChunkTrailer;
 import org.jboss.netty.handler.codec.http.HttpHeaders;
 import org.jboss.netty.handler.codec.http.HttpMethod;
 import org.jboss.netty.handler.codec.http.HttpRequest;
 import org.jboss.netty.handler.codec.http.HttpResponse;
 import org.jboss.netty.handler.codec.http.HttpResponseStatus;
-import org.jboss.netty.handler.codec.http.QueryStringDecoder;
 import org.jboss.netty.handler.codec.http.websocketx.CloseWebSocketFrame;
 import org.jboss.netty.handler.codec.http.websocketx.PingWebSocketFrame;
 import org.jboss.netty.handler.codec.http.websocketx.PongWebSocketFrame;
@@ -56,19 +51,13 @@ import org.jboss.netty.handler.codec.http.websocketx.WebSocketServerHandshaker;
 import org.jboss.netty.handler.codec.http.websocketx.WebSocketServerHandshakerFactory;
 import org.jboss.netty.handler.stream.ChunkedFile;
 import org.jboss.netty.util.CharsetUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.locate.bridge.GateForwardRFA;
 import com.locate.common.DataBaseCache;
 import com.locate.common.GateWayMessageTypes;
-import com.locate.gate.server.GateWayWebServer;
 import com.locate.gate.server.WebSocketServerIndexPage;
 import com.locate.rmds.QSConsumerProxy;
-import com.locate.rmds.processer.ItemGroupManager;
-import com.locate.rmds.processer.ItemManager;
-import com.locate.rmds.processer.OneTimeItemManager;
-import com.locate.rmds.processer.WebItemManager;
 import com.sun.istack.internal.logging.Logger;
 
 @Service
@@ -78,13 +67,13 @@ public class HttpRequestHandler extends SimpleChannelUpstreamHandler {
 	private boolean readingChunks;
 	@Resource
 	private QSConsumerProxy mainApp;
-	@Resource
-	WebItemManager webItemManager;
+//	@Resource
+//	WebItemManager webItemManager;
 	@Resource
 	private GateForwardRFA gateForwardRFA;
 	private static final String WEBSOCKET_PATH = "/websocket";
 	private WebSocketServerHandshaker handshaker;
-	private ChannelGroup webSocketGroup = new DefaultChannelGroup();
+	
 	@Resource
 	private WebSocketServerIndexPage webSocketServerIndexPage;
 	@Override
@@ -178,7 +167,7 @@ public class HttpRequestHandler extends SimpleChannelUpstreamHandler {
 
 			ChannelBuffer content = webSocketServerIndexPage.getContent(getWebSocketLocation(req));
 
-			res.setHeader(CONTENT_TYPE, "text/html; charset=UTF-8");
+			res.headers().set(CONTENT_TYPE, "text/html; charset=UTF-8");
 			setContentLength(res, content.readableBytes());
 
 			res.setContent(content);
@@ -189,24 +178,22 @@ public class HttpRequestHandler extends SimpleChannelUpstreamHandler {
 			sendHttpResponse(ctx, req, res);
 			return;
 		}
-
-		// Handshake
+			// Handshake
 		WebSocketServerHandshakerFactory wsFactory = new WebSocketServerHandshakerFactory(
 				this.getWebSocketLocation(req), null, false);
 		this.handshaker = wsFactory.newHandshaker(req);
 		if (this.handshaker == null) {
 			wsFactory.sendUnsupportedWebSocketVersionResponse(ctx.getChannel());
-		} else {
+		} else {// websocket连接成功.
 			this.handshaker.handshake(ctx.getChannel(), req);
-			System.out.println(DataBaseCache.recipientsMap.size());
-//			DataBaseCache.recipientsMap.put(ctx.getChannel());
-			webSocketGroup.add(ctx.getChannel());
-			System.out.println(DataBaseCache.recipientsMap.size());
-			System.out.println(ctx.getChannel().getId());
+			ChannelPipeline pipeline = ctx.getPipeline();
+			pipeline.addLast("webAdpterHandler", new WebAdapterHandler());
+			DataBaseCache.webSocketGroup.add(ctx.getChannel());
 		}
 	}
 
 	private void handleWebSocketFrame(ChannelHandlerContext ctx, WebSocketFrame frame) {
+		Channel channel = ctx.getChannel();
 		// Check for closing frame
 		if (frame instanceof CloseWebSocketFrame) {
 			this.handshaker.close(ctx.getChannel(), (CloseWebSocketFrame) frame);
@@ -223,16 +210,18 @@ public class HttpRequestHandler extends SimpleChannelUpstreamHandler {
 		String ric = ((TextWebSocketFrame) frame).getText();
 		logger.info(String.format("Channel %s received %s", ctx.getChannel().getId(), ric));
 		
-		ChannelGroup httpChannelGroup = DataBaseCache.recipientsMap.get(ric);
+		ChannelGroup httpChannelGroup = DataBaseCache.itemNameChannelMap.get(ric);
 		if (httpChannelGroup == null) {
 			httpChannelGroup = new DefaultChannelGroup("httpChannelGroup");
-			DataBaseCache.recipientsMap.put(ric, httpChannelGroup);
+			DataBaseCache.itemNameChannelMap.put(ric, httpChannelGroup);
 		}
-		httpChannelGroup.add(ctx.getChannel());
-		webItemManager.sendRICRequest(ric, GateWayMessageTypes.RESPONSE_FUTURE);
+		if(!httpChannelGroup.contains(channel)){
+			httpChannelGroup.add(channel);
+		}
+		gateForwardRFA.sendRicRequest(ric, GateWayMessageTypes.RESPONSE_FUTURE);
 		
-		webSocketGroup.write(new TextWebSocketFrame(ric.toUpperCase()));
-		ctx.getChannel().write(new TextWebSocketFrame(ric.toUpperCase()));
+//		DataBaseCache.webSocketGroup.write(new TextWebSocketFrame(ric.toUpperCase()));
+//		ctx.getChannel().write(new TextWebSocketFrame(ric.toUpperCase()+"订购成功."));
 	}
 
 	private void sendHttpResponse(ChannelHandlerContext ctx, HttpRequest req, HttpResponse res) {
@@ -250,7 +239,7 @@ public class HttpRequestHandler extends SimpleChannelUpstreamHandler {
 	}
 
 	private String getWebSocketLocation(HttpRequest req) {
-		return "ws://" + req.getHeader(HttpHeaders.Names.HOST) + WEBSOCKET_PATH;
+		return "ws://" + req.headers().get(HttpHeaders.Names.HOST) + WEBSOCKET_PATH;
 	}
 
 	private void writeResponse(MessageEvent e, String uri) {
@@ -328,8 +317,21 @@ public class HttpRequestHandler extends SimpleChannelUpstreamHandler {
 	@Override
 	public void channelClosed(ChannelHandlerContext ctx, ChannelStateEvent e) throws Exception {
 		logger.info("channel has been closed.");
-		webSocketGroup.remove(ctx.getChannel());
-		webItemManager.closeRequest();
+		
+		Channel channel = ctx.getChannel();
+		DataBaseCache.allChannelGroup.remove(channel);
+		//遍历所有的channelgoup,发现有该channel的就remove掉.如果该channelGroup为空,
+		for(Entry<String,ChannelGroup> entry:DataBaseCache.webItemChannelMap.entrySet()){
+			String itemName = entry.getKey();
+			ChannelGroup channelGroup = entry.getValue();
+			if(channelGroup.contains(channel)){
+				channelGroup.remove(channel);
+			}
+			if(channelGroup.isEmpty()){
+				channelGroup = null;
+				gateForwardRFA.closeHandler(itemName);
+			}
+		}
 	}
 
 	static class Config {

@@ -195,6 +195,7 @@ public class GatewayServerHandler extends SimpleChannelHandler {
 				channelGroup = null;
 				gateForwardRFA.closeHandler(itemName);
 			}
+			break;
 		}
 	}
 	/**

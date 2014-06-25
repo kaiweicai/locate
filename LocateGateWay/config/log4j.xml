@@ -11,8 +11,8 @@
 
 	<appender name="FILE"
 		class="org.apache.log4j.RollingFileAppender">
-		<param name="File" value="logs\\rmdsLog.log" />
-		<param name="MaxFileSize" value="6048KB" />
+		<param name="File" value="logs/rmdsLog.log" />
+		<param name="MaxFileSize" value="10240KB" />
 		<param name="Threshold" value="ALL" />
 		<param name="MaxBackupIndex" value="512" />
 		<layout class="org.apache.log4j.PatternLayout">
@@ -32,7 +32,7 @@
 		<level value="ERROR" />
 	</logger>
 	<logger name="org.springframework">
-		<level value="ERROR" />
+		<level value="debug" />
 	</logger>
 	<root>
     	<appender-ref ref="CONSOLE" />

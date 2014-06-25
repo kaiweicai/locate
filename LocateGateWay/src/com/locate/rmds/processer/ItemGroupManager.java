@@ -7,7 +7,10 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.Resource;
+
 import org.apache.log4j.Logger;
+import org.springframework.stereotype.Service;
 
 import com.locate.rmds.QSConsumerProxy;
 import com.reuters.rfa.common.Client;
@@ -43,19 +46,20 @@ import com.reuters.rfa.session.omm.OMMItemIntSpec;
  * HAS_ITEM_GROUP} flag set you call {@link #applyGroup(Handle, OMMItemGroup)
  * applyGroup()}.
  */
-@Deprecated
+@Service
 public class ItemGroupManager implements Client
 {
 
 	static Logger _logger = Logger.getLogger(ItemGroupManager.class.getName());
+	@Resource
 	QSConsumerProxy _mainApp;
     Handle _directoryHandle;
-    private String _name;
+    private String _name = "ItemGroupManager";;
 
-    Map<String, HashMap<OMMItemGroup, GroupEntry>> _services; // Key=serviceName,
+    Map<String, HashMap<OMMItemGroup, GroupEntry>> _services= new HashMap<String, HashMap<OMMItemGroup, GroupEntry>>();; // Key=serviceName,
                                                               // value=Map(key=groupId,
                                                               // value=ServiceEntry)
-    Map<Handle, HandleEntry> _handles; // key=handle, value=HandleEntry
+    Map<Handle, HandleEntry> _handles=new HashMap<Handle, HandleEntry>(); // key=handle, value=HandleEntry
 
     /*
      * _services --> SERVICE_A --> Group 1 --> Item 1, Item 2 --> Group 2 -->
@@ -85,15 +89,6 @@ public class ItemGroupManager implements Client
         public String serviceName;
         public String itemName;
         public GroupEntry serviceEntry;
-    }
-
-    public ItemGroupManager(QSConsumerProxy app)
-    {
-        _mainApp = app;
-        _name = "ItemGroupManager";
-
-        _services = new HashMap<String, HashMap<OMMItemGroup, GroupEntry>>();
-        _handles = new HashMap<Handle, HandleEntry>();
     }
 
     /**
