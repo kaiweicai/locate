@@ -53,7 +53,11 @@
 		}
 		return tr;
 	}
-
+	
+	function sendMessage() {
+		rfasocket = openWebSocket();
+	}
+	
 	function openWebSocket() {
 		var socket= $("#port").val();
 		var address = $("#ipaddress").val();
@@ -79,7 +83,7 @@
 					initialTable(fileds);
 				}
 			}
-		}
+		};
 
 		websocket.onopen = function(evt) {
 			alert("websocket opened!");
@@ -94,10 +98,6 @@
 			alert("websocket error:" + evt);
 		};
 		return websocket;
-	}
-
-	function sendMessage() {
-		rfasocket = openWebSocket();
 	}
 
 	window.onbeforeunload = function() {

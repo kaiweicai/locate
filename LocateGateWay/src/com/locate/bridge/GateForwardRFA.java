@@ -146,9 +146,9 @@ public class GateForwardRFA {
 		return resultCode;
 	}
 	
-	public void sendRicRequest(String pItemName,byte responseMsgType){
-		itemManager.sendRicRequest(pItemName, responseMsgType);
-	}
+//	public void sendRicRequest(String pItemName,byte responseMsgType){
+//		itemManager.sendRicRequest(pItemName, responseMsgType);
+//	}
 	
 //	private void processNewsComponseRequest(Document req,String clientName,byte responseMsgType){
 //		List<String> itemNames = pickupClientReqItem(req);

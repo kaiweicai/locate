@@ -20,6 +20,9 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 
+import org.dom4j.Document;
+import org.dom4j.DocumentFactory;
+import org.dom4j.Element;
 import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.buffer.ChannelBuffers;
 import org.jboss.netty.channel.Channel;
@@ -56,6 +59,8 @@ import org.springframework.stereotype.Service;
 import com.locate.bridge.GateForwardRFA;
 import com.locate.common.DataBaseCache;
 import com.locate.common.GateWayMessageTypes;
+import com.locate.common.RFANodeconstant;
+import com.locate.gate.model.ClientInfo;
 import com.locate.gate.server.WebSocketServerIndexPage;
 import com.locate.rmds.QSConsumerProxy;
 import com.sun.istack.internal.logging.Logger;
@@ -73,7 +78,8 @@ public class HttpRequestHandler extends SimpleChannelUpstreamHandler {
 	private GateForwardRFA gateForwardRFA;
 	private static final String WEBSOCKET_PATH = "/websocket";
 	private WebSocketServerHandshaker handshaker;
-	
+	@Resource
+	private WebAdapterHandler webAdapterHandler;
 	@Resource
 	private WebSocketServerIndexPage webSocketServerIndexPage;
 	@Override
@@ -186,19 +192,28 @@ public class HttpRequestHandler extends SimpleChannelUpstreamHandler {
 			wsFactory.sendUnsupportedWebSocketVersionResponse(ctx.getChannel());
 		} else {// websocket连接成功.
 			this.handshaker.handshake(ctx.getChannel(), req);
+			logger.info("create the websocket shakehand success!");
 			ChannelPipeline pipeline = ctx.getPipeline();
-			pipeline.addLast("webAdpterHandler", new WebAdapterHandler());
+			pipeline.addLast("webAdpterHandler", webAdapterHandler);
 			DataBaseCache.webSocketGroup.add(ctx.getChannel());
+			//将channelId和对应的channel放到map中,会写客户端的时候可以根据该id找到对应的channel.
+			if(!DataBaseCache.allChannelGroup.contains(ctx.getChannel())){
+				DataBaseCache.allChannelGroup.add(ctx.getChannel());
+			}
 		}
+		
 	}
 
 	private void handleWebSocketFrame(ChannelHandlerContext ctx, WebSocketFrame frame) {
 		Channel channel = ctx.getChannel();
 		// Check for closing frame
 		if (frame instanceof CloseWebSocketFrame) {
+			ctx.getPipeline().remove(webAdapterHandler);
 			this.handshaker.close(ctx.getChannel(), (CloseWebSocketFrame) frame);
+			ctx.getChannel().close();
 			return;
 		} else if (frame instanceof PingWebSocketFrame) {
+			ctx.getPipeline().remove(webAdapterHandler);
 			ctx.getChannel().write(new PongWebSocketFrame(frame.getBinaryData()));
 			return;
 		} else if (!(frame instanceof TextWebSocketFrame)) {
@@ -218,7 +233,30 @@ public class HttpRequestHandler extends SimpleChannelUpstreamHandler {
 		if(!httpChannelGroup.contains(channel)){
 			httpChannelGroup.add(channel);
 		}
-		gateForwardRFA.sendRicRequest(ric, GateWayMessageTypes.RESPONSE_FUTURE);
+		
+		
+		DocumentFactory documentFactory = DocumentFactory.getInstance();
+	    Document requestDoc =  documentFactory.createDocument();
+	    
+		Element rmds = requestDoc.addElement("rmds");
+		rmds.addElement(RFANodeconstant.LOCATE_NODE);
+		Element login = rmds.addElement("login");
+		login.addElement("userName").addText("ztcj");
+		login.addElement("password").addText("ztcj2013");
+		
+		ClientInfo clientInfo = new ClientInfo(requestDoc, "ztcj", channel.getId(), GateWayMessageTypes.LOGIN, "127.0.0.1");
+		gateForwardRFA.process(clientInfo);
+		
+		documentFactory = DocumentFactory.getInstance();
+	    requestDoc =  documentFactory.createDocument();
+	    rmds = requestDoc.addElement("rmds");
+		rmds.addElement(RFANodeconstant.LOCATE_NODE);
+		Element request = rmds.addElement("request");
+		Element item = request.addElement("item");
+		item.addElement("name").addText(ric);
+		
+		clientInfo = new ClientInfo(requestDoc, "ztcj", channel.getId(), GateWayMessageTypes.FUTURE_REQUEST, "127.0.0.1");
+		gateForwardRFA.process(clientInfo);
 		
 //		DataBaseCache.webSocketGroup.write(new TextWebSocketFrame(ric.toUpperCase()));
 //		ctx.getChannel().write(new TextWebSocketFrame(ric.toUpperCase()+"订购成功."));

@@ -197,4 +197,12 @@ public class FieldValue
     {
         return (_value == null) ? "" : _value.toString();
     }
+
+	@Override
+	public String toString() {
+		return "FieldValue [_name=" + _name + ", _value=" + _value + ", _type=" + _type + ", _fid=" + _fid + ", _fade="
+				+ _fade + ", _model=" + _model + "]";
+	}
+    
+    
 }
