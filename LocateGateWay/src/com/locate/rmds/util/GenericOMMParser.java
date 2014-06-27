@@ -918,8 +918,8 @@ public final class GenericOMMParser
     	Map<Short, FieldValue> filedId2FieldValueMap=DataBaseCache.filedValueMap.get(itemName);
     	FieldValue fieldValue = filedId2FieldValueMap.get(filedId);
     	if(fieldValue == null){
-			_logger.error("FiledValue not found in map by filedId!!!!"+filedId);
-			_logger.debug("failed info: itemName,"+itemName+" the ric filedValue map value is "+filedId2FieldValueMap);
+			_logger.debug("FiledValue not found in map by filedId!!!!"+filedId);
+//			_logger.debug("failed info: itemName,"+itemName+" the ric filedValue map value is "+filedId2FieldValueMap);
 		}
     	return fieldValue;
 	}

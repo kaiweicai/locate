@@ -40,8 +40,8 @@ public class DataBaseCache {
 	public static ChannelGroup webSocketGroup = new DefaultChannelGroup();
 	//订阅的itemName与订阅该itemName的所有客户的对应关系.
 	public static Map<String ,ChannelGroup> itemNameChannelMap = new HashMap<String,ChannelGroup>();
-	//增加web用户订阅的itemName与订阅该itemName的web客户的对应关系.
-	public static Map<String ,ChannelGroup> webItemChannelMap = new HashMap<String,ChannelGroup>();
+//	//增加web用户订阅的itemName与订阅该itemName的web客户的对应关系.
+//	public static Map<String ,ChannelGroup> webItemChannelMap = new HashMap<String,ChannelGroup>();
 	/**
 	 * 订阅的产品itemName与订阅该产品的消息处理器的映射关系.
 	 */

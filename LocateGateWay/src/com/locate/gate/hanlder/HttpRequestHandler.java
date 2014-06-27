@@ -359,7 +359,7 @@ public class HttpRequestHandler extends SimpleChannelUpstreamHandler {
 		Channel channel = ctx.getChannel();
 		DataBaseCache.allChannelGroup.remove(channel);
 		//遍历所有的channelgoup,发现有该channel的就remove掉.如果该channelGroup为空,
-		for(Entry<String,ChannelGroup> entry:DataBaseCache.webItemChannelMap.entrySet()){
+		for(Entry<String,ChannelGroup> entry:DataBaseCache.itemNameChannelMap.entrySet()){
 			String itemName = entry.getKey();
 			ChannelGroup channelGroup = entry.getValue();
 			if(channelGroup.contains(channel)){

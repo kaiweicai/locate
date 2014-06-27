@@ -138,7 +138,7 @@ public class HttpWayResponser {
 		}
 		
 		
-		ChannelGroup channelGroup = DataBaseCache.webItemChannelMap.get(itemName);
+//		ChannelGroup channelGroup = DataBaseCache.webItemChannelMap.get(itemName);
 		XmlMessageUtil.addLocateInfo(doc, msgType, RFAServerManager.sequenceNo.getAndIncrement(), 0);
 		String content = null;
 		byte[] result = null;
@@ -154,7 +154,7 @@ public class HttpWayResponser {
 			response.setHeader(HttpHeaders.Names.CONTENT_LENGTH, String.valueOf(fileLength));
 			ChannelBuffer buffer = ChannelBuffers.buffer(result.length);
 			buffer.writeBytes(result);
-			channelGroup.write(buffer);
+//			channelGroup.write(buffer);
 			logger.info("downStream message is :"+content);
 			// 这里又要重新温习下http的方法，head方法与get方法类似，但是服务器在响应中只返回首部，不会返回实体的主体部分
 //			if (!request.getMethod().equals(HttpMethod.HEAD)) {
@@ -179,7 +179,7 @@ public class HttpWayResponser {
 	
 	public static void writeWebSocket(byte msgType, Document doc, String itemName, HttpRequest request) {
 
-		ChannelGroup channelGroup = DataBaseCache.webItemChannelMap.get(itemName);
+//		ChannelGroup channelGroup = DataBaseCache.webItemChannelMap.get(itemName);
 		XmlMessageUtil.addLocateInfo(doc, msgType, RFAServerManager.sequenceNo.getAndIncrement(), 0);
 		String content = null;
 		String result = null;
@@ -187,7 +187,7 @@ public class HttpWayResponser {
 		result = JsonUtil.getJSONFromXml(content).toString();
 		ChannelGroupFuture futhure = null;
 		try {
-			channelGroup.write(new TextWebSocketFrame(result));
+//			channelGroup.write(new TextWebSocketFrame(result));
 			logger.info("downStream message is :" + content);
 			// 这里又要重新温习下http的方法，head方法与get方法类似，但是服务器在响应中只返回首部，不会返回实体的主体部分
 			// if (!request.getMethod().equals(HttpMethod.HEAD)) {
