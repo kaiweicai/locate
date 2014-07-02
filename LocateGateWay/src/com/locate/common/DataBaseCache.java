@@ -45,6 +45,6 @@ public class DataBaseCache {
 	/**
 	 * 订阅的产品itemName与订阅该产品的消息处理器的映射关系.
 	 */
-	public static Map<String,IProcesser> RIC_ITEMMANAGER_Map = new HashMap<String,IProcesser>();
+	public static Map<String,ItemManager> RIC_ITEMMANAGER_Map = new HashMap<String,ItemManager>();
 	public static Map<String, Map<Short, FieldValue>> filedValueMap = new HashMap<String, Map<Short, FieldValue>>();
 }

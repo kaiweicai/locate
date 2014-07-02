@@ -47,8 +47,8 @@ public class RFAServerManager extends Thread {
 				demo.startDispatch();
 			}
 		} catch (Exception e) {
-			_logger.error(e.getMessage(), e);
-			demo.cleanup();
+			_logger.error("System error occure, Please contact with Cloud.Wei",e);
+//			demo.cleanup();
 		}
 	}
 

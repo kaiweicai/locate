@@ -52,8 +52,7 @@ import com.reuters.rfa.session.omm.OMMSolicitedItemEvent;
  * @author Cloud.Wei
  *
  */
-@Service
-@Scope("prototype")
+@Service("itemManager")@Scope("prototype")
 public class ItemManager implements Client,IProcesser
 {
 	Handle  itemHandle;
@@ -420,5 +419,15 @@ public class ItemManager implements Client,IProcesser
         // increment the time line
 //        _timeline += _appInput.statsMonitorIntervalInSecs;
     }
+
+
+	public Handle getItemHandle() {
+		return itemHandle;
+	}
+
+
+	public void setItemHandle(Handle itemHandle) {
+		this.itemHandle = itemHandle;
+	}
 	
 }

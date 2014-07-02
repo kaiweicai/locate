@@ -13,8 +13,15 @@ import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
 
 import org.apache.log4j.Logger;
+import org.jboss.netty.channel.group.ChannelGroup;
+import org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor;
+import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
+import org.springframework.beans.factory.support.DefaultListableBeanFactory;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
+import com.locate.LocateGateWayMain;
 import com.locate.common.DataBaseCache;
 import com.locate.rmds.client.RFAUserManagement;
 import com.locate.rmds.processer.ItemGroupManager;
@@ -65,7 +72,6 @@ public class QSConsumerProxy{
 	protected RFALoginClient _loginClient;
 	@Resource
 	protected ItemGroupManager _itemGroupManager;
-	@Resource
 	ItemManager itemManager;
 	protected OMMEncoder _encoder;
 	protected OMMPool _pool;
@@ -330,8 +336,9 @@ public class QSConsumerProxy{
 
 	// This method utilizes ItemManager class to request items
 	public ItemManager itemRequests(String itemName, byte responseMsgType,int channelId) {
-		Map<String,IProcesser> subscribeItemManagerMap = DataBaseCache.RIC_ITEMMANAGER_Map;
-		if(subscribeItemManagerMap.containsKey(itemName)){
+		Map<String,ItemManager> subscribeItemManagerMap = DataBaseCache.RIC_ITEMMANAGER_Map;
+		boolean needRenewSubscribeItem=checkSubscribeStatus(itemName);
+		if(needRenewSubscribeItem){
 			//已经订阅过该产品,只需要发送一个一次订阅请求,返回一个snapshot即可.
 			OneTimeItemManager oneTimeItemManager =  new OneTimeItemManager(this, _itemGroupManager,channelId);
 			oneTimeItemManager.sendOneTimeRequest(itemName, responseMsgType);
@@ -340,6 +347,7 @@ public class QSConsumerProxy{
 			return null;
 		}else{
 			//一个产品对应一个itemManager对象
+			itemManager=LocateGateWayMain.springContext.getBean("itemManager",ItemManager.class);
 			subscribeItemManagerMap.put(itemName, itemManager);
 			// Send requests
 			itemManager.sendRicRequest(itemName, responseMsgType);
@@ -371,6 +379,27 @@ public class QSConsumerProxy{
 //			RFApplication.showLog.insert( HtmlUtils.htmlUnescape(responseData.asXML()), 0);
 //		}
 //	}
+
+	/**
+	 * 检查RIC_ITEMMANAGER_Map是否包含该产品,如果没有该产品则直接订阅该产品.
+	 * 检查该订阅产品下对应的itemHandler是否是激活状态.如果不是激活状态.需要重新订阅.
+	 * @param itemName
+	 * @return
+	 */
+	private boolean checkSubscribeStatus(String itemName) {
+		Map<String, ItemManager> subscribeItemManagerMap = DataBaseCache.RIC_ITEMMANAGER_Map;
+		ItemManager itemManager = subscribeItemManagerMap.get(itemName);
+		if(itemManager!=null){
+			Handle itemHandle = subscribeItemManagerMap.get(itemName).getItemHandle();
+			if(itemHandle!=null&&!itemHandle.isActive()){
+				return false;
+			}
+		}
+		if (!subscribeItemManagerMap.containsKey(itemName)) {
+			return false;
+		}
+		return true;
+	}
 
 	public void newsItemRequests() {
 		// Initialize item manager for item domains

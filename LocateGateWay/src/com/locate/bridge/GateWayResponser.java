@@ -46,6 +46,9 @@ public class GateWayResponser {
 	public static void sentMrketPriceToSubsribeChannel(Document response, String itemName) {
 		ChannelGroup channelGroup = DataBaseCache.itemNameChannelMap.get(itemName);
 		channelGroup.write(response);
+		if(channelGroup.size()==0){
+			logger.error("channel has been clean,but the ric not be register! The itemName"+itemName);
+		}
 		logger.info("send message is :" + response.asXML() + " to order group" + channelGroup.getName());
 	}
 

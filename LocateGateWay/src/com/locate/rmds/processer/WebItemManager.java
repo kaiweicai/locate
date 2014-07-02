@@ -54,8 +54,9 @@ import com.reuters.rfa.session.omm.OMMSolicitedItemEvent;
  * @author Cloud.Wei
  * 
  */
+@Deprecated
 @Service
-public class WebItemManager implements Client,IProcesser {
+public class WebItemManager implements Client {
 	Handle itemHandle;
 	@Resource
 	QSConsumerProxy mainApp;

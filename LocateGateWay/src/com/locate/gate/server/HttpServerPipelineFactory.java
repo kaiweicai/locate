@@ -12,8 +12,8 @@ import org.jboss.netty.handler.codec.http.HttpResponseEncoder;
 import org.jboss.netty.handler.stream.ChunkedWriteHandler;
 import org.springframework.stereotype.Service;
 
+import com.locate.gate.coder.WebAdapterHandler;
 import com.locate.gate.hanlder.HttpRequestHandler;
-import com.locate.gate.hanlder.WebAdapterHandler;
 
 @Service
 public class HttpServerPipelineFactory implements ChannelPipelineFactory {

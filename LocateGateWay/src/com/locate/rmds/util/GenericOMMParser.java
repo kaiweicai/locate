@@ -245,25 +245,26 @@ public final class GenericOMMParser
 				&& !msg.isSet(OMMMsg.Indication.DO_NOT_RIPPLE);
 		byte msgType = msg.getMsgType();
 		
-		
-		if (msgType == OMMMsg.MsgType.REFRESH_RESP) {
+		// 初始化,记录该item的所有FiledValue到Map中.
+		if (msgType == OMMMsg.MsgType.REFRESH_RESP && DataBaseCache.filedValueMap.get(itemName) == null) {
 			if (msg.getDataType() == OMMTypes.FIELD_LIST) {
 				OMMFieldList fieldList = (OMMFieldList) msg.getPayload();
-				Map fieldListMap = new LinkedHashMap();
+				Map<Short, FieldValue> fieldListMap = new LinkedHashMap<Short, FieldValue>();
 				DataBaseCache.filedValueMap.put(itemName, fieldListMap);
 				for (Iterator<?> fiter = fieldList.iterator(); fiter.hasNext();) {
 					OMMFieldEntry fentry = (OMMFieldEntry) fiter.next();
 					FidDef fiddef = CURRENT_DICTIONARY.getFidDef(fentry.getFieldId());
 					if (fiddef != null) {
-						FieldValue field = getValue(itemName, fiddef.getFieldId());
-						if (field == null) {
-							short type = fentry.getDataType();
-							if (type == OMMTypes.UNKNOWN)
-								type = fiddef.getOMMType();
-							field = new FieldValue(null, fiddef);
-							field.update(fentry);
-							fieldListMap.put(fiddef.getFieldId(), field);
-						}
+						// FieldValue field = getValue(itemName,
+						// fiddef.getFieldId());
+						// if (field == null) {
+						short type = fentry.getDataType();
+						if (type == OMMTypes.UNKNOWN)
+							type = fiddef.getOMMType();
+						FieldValue field = new FieldValue(null, fiddef);
+						field.update(fentry);
+						fieldListMap.put(fiddef.getFieldId(), field);
+						// }
 					}
 				}
 			}
@@ -919,7 +920,6 @@ public final class GenericOMMParser
     	FieldValue fieldValue = filedId2FieldValueMap.get(filedId);
     	if(fieldValue == null){
 			_logger.debug("FiledValue not found in map by filedId!!!!"+filedId);
-//			_logger.debug("failed info: itemName,"+itemName+" the ric filedValue map value is "+filedId2FieldValueMap);
 		}
     	return fieldValue;
 	}

@@ -15,6 +15,8 @@ import static org.jboss.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 
 import java.io.File;
 import java.io.RandomAccessFile;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -60,6 +62,7 @@ import com.locate.bridge.GateForwardRFA;
 import com.locate.common.DataBaseCache;
 import com.locate.common.GateWayMessageTypes;
 import com.locate.common.RFANodeconstant;
+import com.locate.gate.coder.WebAdapterHandler;
 import com.locate.gate.model.ClientInfo;
 import com.locate.gate.server.WebSocketServerIndexPage;
 import com.locate.rmds.QSConsumerProxy;
@@ -358,6 +361,7 @@ public class HttpRequestHandler extends SimpleChannelUpstreamHandler {
 		
 		Channel channel = ctx.getChannel();
 		DataBaseCache.allChannelGroup.remove(channel);
+		List<String> unregisterList = new ArrayList<String>();
 		//遍历所有的channelgoup,发现有该channel的就remove掉.如果该channelGroup为空,
 		for(Entry<String,ChannelGroup> entry:DataBaseCache.itemNameChannelMap.entrySet()){
 			String itemName = entry.getKey();
@@ -365,9 +369,16 @@ public class HttpRequestHandler extends SimpleChannelUpstreamHandler {
 			if(channelGroup.contains(channel)){
 				channelGroup.remove(channel);
 			}
-			if(channelGroup.isEmpty()){
-				channelGroup = null;
+			if(channelGroup.isEmpty()){//没有用户订阅了,退订该item
+				unregisterList.add(itemName);
 				gateForwardRFA.closeHandler(itemName);
+			}
+		}
+		//清空掉该itemname和ChannelGroup的对应关系.
+		for (String itemName : unregisterList) {
+			ChannelGroup itemChannelGroup = DataBaseCache.itemNameChannelMap.get(itemName);
+			if (itemChannelGroup.isEmpty()) {
+				DataBaseCache.itemNameChannelMap.remove(itemName);
 			}
 		}
 	}

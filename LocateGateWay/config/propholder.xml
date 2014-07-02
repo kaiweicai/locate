@@ -14,8 +14,10 @@
 	http://www.springframework.org/schema/tool/spring-tool-3.0.xsd 
 	http://www.springframework.org/schema/context 
 	http://www.springframework.org/schema/context/spring-context-3.0.xsd">
-
-	<!-- <bean id="newsContentManager" class="com.locate.rmds.processer.NewsContentManager" 
+	
+	<!-- 
+	<bean id="itemManager" class="com.locate.rmds.processer.ItemManager" scope="prototype"></bean>
+	<bean id="newsContentManager" class="com.locate.rmds.processer.NewsContentManager" 
 		scope="singleton"> <constructor-arg ref="consumerProxy"/> </bean> -->
 	<!-- 使用annotation 自动注册bean,并检查@Required,@Autowired的属性已被注入,多个路径用逗号分割 -->
 	<context:component-scan base-package="com.locate" />

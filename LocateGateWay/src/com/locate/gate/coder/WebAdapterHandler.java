@@ -1,4 +1,4 @@
-package com.locate.gate.hanlder;
+package com.locate.gate.coder;
 
 import org.apache.log4j.Logger;
 import org.dom4j.Document;
