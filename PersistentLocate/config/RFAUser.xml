@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<system>
+		<user>
+			<name>ztcj</name>
+			<password>8ba6b1018366eb6b7ffd4769dc45a266</password>
+			<permission>
+				<items>
+					<item>ALL</item>
+					<limit>4c6d2db7b781a2e0</limit>
+				</items>
+				<!-- <items>
+					<item>stock</item>
+					<limit>4c16472fc70069ff</limit>
+				</items>
+				<items>
+					<item>currency</item>
+					<limit>4c16472fc70069ff</limit>
+				</items>
+				<items>
+					<item>future</item>
+					<limit>4c16472fc70069ff</limit>
+				</items>
+				<items>
+					<item>option</item>
+					<limit>4c16472fc70069ff</limit>
+				</items>
+				<items>
+					<item>index</item>
+					<limit>4c16472fc70069ff</limit>
+				</items>
+				<items>
+					<item>news</item>
+					<limit>ec6dc339acac1e4a</limit>
+				</items>-->
+			</permission>
+		</user>
+</system>
