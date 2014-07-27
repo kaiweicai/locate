@@ -29,7 +29,7 @@ public class FilePriceKeeper implements IPriceKeeper {
 	}
 
 	private void init() {
-		executorService = Executors.newSingleThreadExecutor();
+//		executorService = Executors.newSingleThreadExecutor();
 		DateFormat dateFormat = new SimpleDateFormat("yyyyMMddhhmmss");
 		Date date = new Date();
 		String dateEnd = dateFormat.format(date);
@@ -46,16 +46,25 @@ public class FilePriceKeeper implements IPriceKeeper {
 		}
 	}
 
+//	public void persistentThePrice(final JSON jsonObjectt) {
+//		executorService.execute(new Runnable() {
+//			@Override
+//			public void run() {
+//				try {
+//					fileWriter.write(jsonObjectt.toString()+"\n");
+//				} catch (IOException e) {
+//					logger.error("write file error!", e);
+//				}
+//			}
+//		});
+//	}
+	
 	public void persistentThePrice(final JSON jsonObjectt) {
-		executorService.execute(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					fileWriter.write(jsonObjectt.toString()+"\n");
-				} catch (IOException e) {
-					logger.error("write file error!", e);
-				}
-			}
-		});
+		try {
+			fileWriter.write(jsonObjectt.toString() + "\n");
+			fileWriter.flush();
+		} catch (IOException e) {
+			logger.error("write file error!", e);
+		}
 	}
 }

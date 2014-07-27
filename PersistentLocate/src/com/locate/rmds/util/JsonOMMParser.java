@@ -4,7 +4,6 @@ import java.io.ByteArrayInputStream;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
@@ -18,7 +17,6 @@ import org.dom4j.Element;
 import com.locate.common.DataBaseCache;
 import com.locate.common.RFANodeconstant;
 import com.locate.gate.model.JsonModel;
-import com.locate.gate.model.JsonModel.PayLoad;
 import com.locate.rmds.gui.viewer.FieldValue;
 import com.reuters.rfa.ansipage.Page;
 import com.reuters.rfa.ansipage.PageUpdate;
@@ -46,12 +44,12 @@ import com.reuters.rfa.omm.OMMIterable;
 import com.reuters.rfa.omm.OMMMap;
 import com.reuters.rfa.omm.OMMMapEntry;
 import com.reuters.rfa.omm.OMMMsg;
+import com.reuters.rfa.omm.OMMMsg.MsgType;
 import com.reuters.rfa.omm.OMMPriority;
 import com.reuters.rfa.omm.OMMSeries;
 import com.reuters.rfa.omm.OMMTypes;
 import com.reuters.rfa.omm.OMMVector;
 import com.reuters.rfa.omm.OMMVectorEntry;
-import com.reuters.rfa.omm.OMMMsg.MsgType;
 import com.reuters.rfa.rdm.RDMDictionary;
 import com.reuters.rfa.rdm.RDMInstrument;
 import com.reuters.rfa.rdm.RDMMsgTypes;
@@ -496,6 +494,7 @@ public final class JsonOMMParser
 
     private static final void parseAggregate(OMMData data, StringBuffer logMsg, int tabLevel,Element fields,boolean ripple,String itemName,byte msgType,JsonModel jsonModel)
     {
+//    	jsonModel.getPayLoadSet().add(new String[]{"id","name","type","value"});
     	Map<Short,Element> rippleMap = new HashMap<Short,Element>();
         parseAggregateHeader(data, logMsg, tabLevel,fields);
         int fieldNum = 0;
@@ -608,7 +607,7 @@ public final class JsonOMMParser
      * PrintStream
      * data is OMMMessage Attribute
      */
-    public static final void parseData(OMMData data, StringBuffer logMsg, int tabLevel,Element fieldsElement,boolean ripple,PayLoad payload)
+    public static final void parseData(OMMData data, StringBuffer logMsg, int tabLevel,Element fieldsElement,boolean ripple,String[] payload)
     {
         if (data.isBlank())
         	logMsg.append("\n");
@@ -686,7 +685,7 @@ public final class JsonOMMParser
             try
             {
             	fieldsElement.addElement(RFANodeconstant.RESPONSE_FIELDS_FIELD_VALUE_NODE).addText(data.toString());
-            	payload.setValue(data.toString());
+            	payload[3]=String.valueOf(data.toString());
             	logMsg.append(data.toString());
             }
             catch (Exception e)
@@ -790,7 +789,7 @@ public final class JsonOMMParser
 
     private static final void parseEntry(OMMEntry entry, StringBuffer logMsg, int tabLevel,Element fields,boolean ripple,String itemName,byte msgType,Map<Short,Element> rippleMap,JsonModel jsonModel)
     {
-    	PayLoad payLoad =  jsonModel.new PayLoad();
+    	String[] payLoad =  new String[4];
     	jsonModel.getPayLoadSet().add(payLoad);
 		OMMFieldEntry fe = (OMMFieldEntry) entry;
 		FidDef fiddef = CURRENT_DICTIONARY.getFidDef(fe.getFieldId());
@@ -835,7 +834,7 @@ public final class JsonOMMParser
 					logMsg.append(tmp.toString());
 					//使用XAU=时,Bid1和Ask1既是Ripple的field,RFA又同时传送过来了相应的值.避免重复.
 					Element tmpElement=rippleField.addElement(RFANodeconstant.RESPONSE_FIELDS_FIELD_VALUE_NODE).addText(tmp.toString());
-					payLoad.setValue(tmp.toString());
+					payLoad[3]=(tmp.toString());
 					rippleMap.put(fieldId, rippleField);
 					tmp = fieldValue.setValue(tmp);
 					rippleFieldDef = CURRENT_DICTIONARY.getFidDef(fieldId);
@@ -850,8 +849,8 @@ public final class JsonOMMParser
 			case OMMTypes.FIELD_ENTRY: {
 				if (CURRENT_DICTIONARY != null) {
 					if (fiddef != null) {
-						payLoad.setId(fiddef.getFieldId());
-						payLoad.setName(fiddef.getName());
+						payLoad[0]=String.valueOf(fiddef.getFieldId());
+						payLoad[1]=String.valueOf(fiddef.getName());
 						dumpFieldEntryHeader(fe, fiddef, logMsg, tabLevel + 1, elementField);
 						OMMData data = null;
 						if (fe.getDataType() == OMMTypes.UNKNOWN)
@@ -869,14 +868,14 @@ public final class JsonOMMParser
 						// logMsg.append(" data type="+OMMTypes.toString(data.getType())+" ");
 						String dataType=RFATypeConvert.convertField(OMMTypes.toString(data.getType()));
 						elementField.addElement(RFANodeconstant.RESPONSE_FIELDS_FIELD_TYPE_NODE).addText(dataType);
-						payLoad.setDataType(dataType);
+						payLoad[2]=String.valueOf(dataType);
 						if (data.getType() == OMMTypes.ENUM) {
 							String value = CURRENT_DICTIONARY.expandedValueFor(fiddef.getFieldId(),
 									((OMMEnum) data).getValue());
 							dumpIndent(logMsg, tabLevel);
 							logMsg.append(value);
 							elementField.addElement(RFANodeconstant.RESPONSE_FIELDS_FIELD_VALUE_NODE).addText(value);
-							payLoad.setValue(value);
+							payLoad[3]=String.valueOf(value);
 							// logMsg.append(CURRENT_DICTIONARY.expandedValueFor(fiddef.getFieldId(),
 							// ((OMMEnum)data).getValue()));
 						} else

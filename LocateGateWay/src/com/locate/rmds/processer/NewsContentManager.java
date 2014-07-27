@@ -151,7 +151,7 @@ public class NewsContentManager  implements Client {
 		// this.responseMessageType = responseMsgType;
 		_logger.info(NewsContentManager.class.getName()
 				+ ".sendRequest: Feed news content item requests for " + pnac);
-		String serviceName = mainApp._serviceName;
+		String serviceName = mainApp.serviceName;
 //		String[] itemNames = { newsId };
 		short msgModelType = RDMMsgTypes.MARKET_PRICE;
 

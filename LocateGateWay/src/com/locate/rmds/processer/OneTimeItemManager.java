@@ -80,7 +80,7 @@ public class OneTimeItemManager implements Client
     {
     	this.responseMessageType = responseMsgType;
     	_logger.info(_className+".sendOneTimeRequest: Sending item("+pItemName+") requests to server ");
-        String serviceName = _mainApp._serviceName;
+        String serviceName = _mainApp.serviceName;
         this.clientRequestItemName = pItemName;
         String[] itemNames = {pItemName};
         short msgModelType = RDMMsgTypes.MARKET_PRICE;

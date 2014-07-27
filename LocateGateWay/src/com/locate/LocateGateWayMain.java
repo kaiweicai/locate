@@ -7,6 +7,7 @@ import org.apache.log4j.xml.DOMConfigurator;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
+import com.locate.common.SystemConstant;
 import com.locate.rmds.RFAServerManager;
 
 /**
@@ -21,10 +22,9 @@ public class LocateGateWayMain {
 		DOMConfigurator.configureAndWatch("config/log4j.xml");
 	}
 	static Logger logger = Logger.getLogger(LocateGateWayMain.class);
-	public static ApplicationContext springContext;
 
 	public static void main(String[] args) {
 		logger.info("start LocateGateWay!");
-		springContext = new FileSystemXmlApplicationContext(new String[] { "config/propholder.xml" });
+		SystemConstant.springContext = new FileSystemXmlApplicationContext(new String[] { "config/propholder.xml" });
 	}
 }

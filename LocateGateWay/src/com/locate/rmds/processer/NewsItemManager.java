@@ -14,6 +14,7 @@ import com.locate.LocateGateWayMain;
 import com.locate.bridge.GateWayResponser;
 import com.locate.common.GateWayMessageTypes;
 import com.locate.common.RFANodeconstant;
+import com.locate.common.SystemConstant;
 import com.locate.gate.server.GateWayServer;
 import com.locate.rmds.QSConsumerProxy;
 import com.locate.rmds.util.EventFieldUtils;
@@ -137,7 +138,7 @@ public class NewsItemManager implements Client {
 	// creates streaming request messages for items and register them to RFA
 	public void sendRequest(String pItemName) {
 		_logger.info("sendRequest: Sending news requests");
-		String serviceName = _mainApp._serviceName;
+		String serviceName = _mainApp.serviceName;
 		String[] itemNames = { pItemName };
 		short msgModelType = RDMMsgTypes.MARKET_PRICE;
 
@@ -225,7 +226,7 @@ public class NewsItemManager implements Client {
 			_logger.info("##############The news has subscribed########################");
 			newsXmlMap.put(pnac, responseMsg);
 			// Initialize news request manager for news domains
-			NewsContentManager newContentManager = (NewsContentManager)LocateGateWayMain.springContext.getBean("newsContentManager");
+			NewsContentManager newContentManager = SystemConstant.springContext.getBean("newsContentManager",NewsContentManager.class);
 			// Send requests
 			newContentManager.sendRequest(pnac, pnac, new StringBuffer());
 		}

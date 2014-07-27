@@ -23,11 +23,14 @@ import org.springframework.stereotype.Service;
 
 import com.locate.LocateGateWayMain;
 import com.locate.common.DataBaseCache;
+import com.locate.common.GateWayMessageTypes;
+import com.locate.common.SystemConstant;
 import com.locate.rmds.client.RFAUserManagement;
 import com.locate.rmds.processer.ItemGroupManager;
 import com.locate.rmds.processer.ItemManager;
 import com.locate.rmds.processer.NewsItemManager;
 import com.locate.rmds.processer.OneTimeItemManager;
+import com.locate.rmds.processer.PersistentItemManager;
 import com.locate.rmds.processer.RFALoginClient;
 import com.locate.rmds.processer.face.IProcesser;
 import com.locate.rmds.sub.DirectoryClient;
@@ -75,7 +78,7 @@ public class QSConsumerProxy{
 	ItemManager itemManager;
 	protected OMMEncoder _encoder;
 	protected OMMPool _pool;
-	public String _serviceName = "DIRECT_FEED";
+	public String serviceName;
 	private boolean all = true;
 	protected static String _configFile = "config/rfaConfig.properties";
 	public static FieldDictionary dictionary;
@@ -184,7 +187,7 @@ public class QSConsumerProxy{
 		if (all) {
 			// Load RFA user config
 			RFAUserManagement.init();
-			this._serviceName = SystemProperties
+			this.serviceName = SystemProperties
 					.getProperties(SystemProperties.RFA_SERVICE_NAME);
 		}
 		login();
@@ -208,8 +211,8 @@ public class QSConsumerProxy{
         msg.setMsgModelType(RDMMsgTypes.DIRECTORY);
         msg.setIndicationFlags(OMMMsg.Indication.REFRESH);
         OMMAttribInfo ai = _pool.acquireAttribInfo();
-        if (_serviceName.length() > 0)
-            ai.setServiceName(_serviceName);
+        if (serviceName.length() > 0)
+            ai.setServiceName(serviceName);
         ai.setFilter(RDMService.Filter.INFO | RDMService.Filter.STATE);
         msg.setAttribInfo(ai);
         spec.setMsg(msg);
@@ -347,7 +350,7 @@ public class QSConsumerProxy{
 			return null;
 		}else{
 			//一个产品对应一个itemManager对象
-			itemManager=LocateGateWayMain.springContext.getBean("itemManager",ItemManager.class);
+			itemManager=SystemConstant.springContext.getBean("itemManager",ItemManager.class);
 			subscribeItemManagerMap.put(itemName, itemManager);
 			// Send requests
 			itemManager.sendRicRequest(itemName, responseMsgType);
@@ -502,7 +505,7 @@ public class QSConsumerProxy{
 	}
 
 	protected String getServiceName() {
-		return _serviceName;
+		return serviceName;
 	}
 
 	// This is a main method of the QuickStartConsumer application.
@@ -524,7 +527,7 @@ public class QSConsumerProxy{
 		// should be set to the service name that is offered by the provider.
 		// The name is passed as a command line parameter.
 		if ((argv != null) && (argv.length > 1)) {
-			demo._serviceName = argv[0];
+			demo.serviceName = argv[0];
 			demo._configFile = argv[1];
 		} else {
 			System.exit(0);

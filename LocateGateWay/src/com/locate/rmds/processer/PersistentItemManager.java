@@ -2,6 +2,9 @@ package com.locate.rmds.processer;
 
 import javax.annotation.Resource;
 
+import net.sf.json.JSON;
+import net.sf.json.JSONObject;
+
 import org.apache.log4j.Logger;
 import org.dom4j.Document;
 import org.springframework.context.annotation.Scope;
@@ -9,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import com.locate.bridge.GateWayResponser;
 import com.locate.common.DataBaseCache;
+import com.locate.common.JsonUtil;
 import com.locate.common.XmlMessageUtil;
 import com.locate.gate.server.GateWayServer;
 import com.locate.rmds.QSConsumerProxy;
@@ -52,13 +56,13 @@ import com.reuters.rfa.session.omm.OMMSolicitedItemEvent;
  * @author Cloud.Wei
  *
  */
-@Service("itemManager")@Scope("prototype")
-public class ItemManager implements Client,IProcesser
+@Service("persistentItemManager")@Scope("prototype")
+public class PersistentItemManager implements IProcesser
 {
 	Handle  itemHandle;
 	@Resource
 	QSConsumerProxy _mainApp;
-    static Logger _logger = Logger.getLogger(ItemManager.class.getName());
+    static Logger logger = Logger.getLogger(PersistentItemManager.class.getName());
     @Resource
     ItemGroupManager _itemGroupManager;
     public String clientRequestItemName;
@@ -131,61 +135,45 @@ public class ItemManager implements Client,IProcesser
 		_post_resent_cycleStats = new CycleStatistics("postResent");
 	}
     
-    // constructor
-//    public ItemManager(QSConsumerProxy mainApp, ItemGroupManager itemGroupManager,String clientName)
-//    {
-//    	this._mainApp = mainApp;
-//        this._itemGroupManager = itemGroupManager;
-//        this.clientName = clientName;
-//    }
-    // creates streaming request messages for items and register them to RFA
-    public void sendRicRequest(String pItemName,byte responseMsgType)
-    {
-    	this.responseMessageType = responseMsgType;
-    	_logger.info(_className+".sendRequest: Sending item("+pItemName+") requests to server ");
-        String serviceName = _mainApp.serviceName;
-        this.clientRequestItemName = pItemName;
-        String[] itemNames = {pItemName};
-        short msgModelType = RDMMsgTypes.MARKET_PRICE;
+	public void sendRicRequest(String pItemName, byte responseMsgType) {
+		this.responseMessageType = responseMsgType;
+		logger.info(_className + ".sendRequest: Sending item(" + pItemName + ") requests to server ");
+		String serviceName = _mainApp.serviceName;
+		this.clientRequestItemName = pItemName;
+		String[] itemNames = { pItemName };
+		short msgModelType = RDMMsgTypes.MARKET_PRICE;
 
-        OMMItemIntSpec ommItemIntSpec = new OMMItemIntSpec();
+		OMMItemIntSpec ommItemIntSpec = new OMMItemIntSpec();
 
-        //Preparing item request message
-        OMMPool pool = _mainApp.getPool();
-        OMMMsg ommmsg = pool.acquireMsg();
+		// Preparing item request message
+		OMMPool pool = _mainApp.getPool();
+		OMMMsg ommmsg = pool.acquireMsg();
 
-        ommmsg.setMsgType(OMMMsg.MsgType.REQUEST);
-        ommmsg.setMsgModelType(msgModelType);
-        ommmsg.setIndicationFlags(OMMMsg.Indication.REFRESH);
-        ommmsg.setPriority((byte) 1, 1);
-        
-        // Setting OMMMsg with negotiated version info from login handle        
-        if( _mainApp.getLoginHandle() != null )
-        {
-        	ommmsg.setAssociatedMetaInfo(_mainApp.getLoginHandle());
-        }
+		ommmsg.setMsgType(OMMMsg.MsgType.REQUEST);
+		ommmsg.setMsgModelType(msgModelType);
+		ommmsg.setIndicationFlags(OMMMsg.Indication.REFRESH);
+		ommmsg.setPriority((byte) 1, 1);
 
-        // register for each item
+		// Setting OMMMsg with negotiated version info from login handle
+		if (_mainApp.getLoginHandle() != null) {
+			ommmsg.setAssociatedMetaInfo(_mainApp.getLoginHandle());
+		}
+
+		// register for each item
 		for (int i = 0; i < itemNames.length; i++) {
 			String itemName = itemNames[i];
-//			this.clientRequestItemName = itemName;
-			_logger.info(_className + ": Subscribing to " + itemName);
+			// this.clientRequestItemName = itemName;
+			logger.info(_className + ": Subscribing to " + itemName);
 
 			ommmsg.setAttribInfo(serviceName, itemName, RDMInstrument.NameType.RIC);
 
 			// Set the message into interest spec
 			ommItemIntSpec.setMsg(ommmsg);
-			/**
-			 * 重要逻辑:
-			 * 向data source注册感兴趣的Item,EventQueue使用QSConsumerProxy的Queue,监听器就是itemManager自己.
-			 * dataSource产生感兴趣的时间后通过eventQueue向外发布.ItemManager能够收到这个事件.
-			 * itemmanager 想所有订阅了该产品的channelGroup回写收到的消息.
-			 */
 			itemHandle = _mainApp.getOMMConsumer().registerClient(_mainApp.getEventQueue(), ommItemIntSpec, this, null);
 			_itemGroupManager.addItem(serviceName, itemName, itemHandle);
 		}
-        pool.releaseMsg(ommmsg);
-    }
+		pool.releaseMsg(ommmsg);
+	}
     
 
     /**
@@ -213,17 +201,18 @@ public class ItemManager implements Client,IProcesser
     	// Completion event indicates that the stream was closed by RFA
     	if (event.getType() == Event.COMPLETION_EVENT) 
     	{
-    		_logger.info(_className+": Receive a COMPLETION_EVENT, "+ event.getHandle());
+    		logger.info("Receive a COMPLETION_EVENT, "+ event.getHandle());
+    		logger.info("RIC IS "+this.clientRequestItemName +" has been finished");
     		//@TODO 判断是否通知所有现存客户端某个产品已经停止发布.
     		return;
     	}
 
     	// check for an event type; it should be item event.
-        _logger.info(_className+".processEvent: Received Item("+clientRequestItemName+") Event from server ");
+        logger.info(_className+".processEvent: Received Item("+clientRequestItemName+") Event from server ");
         if (event.getType() != Event.OMM_ITEM_EVENT) 
         {
         	//这里程序太危险了,因为RFA给的消息有误就要退出程序.恐怖的逻辑啊.还是去掉cleanup好了.
-            _logger.error("ERROR: "+_className+" Received an unsupported Event type.");
+            logger.error("ERROR: "+_className+" Received an unsupported Event type.");
 //            _mainApp.cleanup();
             return;
         }
@@ -233,20 +222,12 @@ public class ItemManager implements Client,IProcesser
         Document responseMsg = GenericOMMParser.parse(respMsg, clientRequestItemName);
         //将信息开始处理时间加入到消息中
 		XmlMessageUtil.addStartHandleTime(responseMsg, startTime);
-        //如果是状态消息.处理后直接发送给客户端.
+        //如果是状态消息.记录一个警告日志.
         if(respMsg.getMsgType()==OMMMsg.MsgType.STATUS_RESP && (respMsg.has(OMMMsg.HAS_STATE))){
         	byte streamState= respMsg.getState().getStreamState();
         	byte dataState = respMsg.getState().getDataState();
-			byte msgType = respMsg.getMsgType();
-			String state = respMsg.getState().toString();
-			responseMsg = XmlMessageUtil.generateStatusResp(state,streamState,dataState,msgType);
-			XmlMessageUtil.addLocateInfo(responseMsg, msgType, RFAServerManager.sequenceNo.getAndIncrement(), 0);
-			GateWayResponser.sentMrketPriceToSubsribeChannel(responseMsg, clientRequestItemName);
-			_logger.warn("RFA server has new state. streamState:"+streamState+" datasstate "+dataState);
+			logger.warn("RFA server has new state. streamState:"+streamState+" datasstate "+dataState);
 			return;
-        }
-        if (respMsg.getMsgType() == OMMMsg.MsgType.REFRESH_RESP){
-        	initialDocument = responseMsg;
         }
         
         // Status response can contain group id
@@ -258,29 +239,16 @@ public class ItemManager implements Client,IProcesser
 		}
         
 		XmlMessageUtil.addLocateInfo(responseMsg, respMsg.getMsgType(), RFAServerManager.sequenceNo.getAndIncrement(), 0);
-		GateWayResponser.sentMrketPriceToSubsribeChannel(responseMsg, clientRequestItemName);
+		//保存报价信息以供查询.
+		iPriceKeeper priceKeeper = new FilePriceKeeper(this.clientRequestItemName);
+		JSON jsonObject = JsonUtil.getJSONFromXml(responseMsg.asXML()) ;
+		priceKeeper.persistentThePrice(jsonObject);
+//		GateWayResponser.sentMrketPriceToSubsribeChannel(responseMsg, clientRequestItemName);
         if(responseMsg != null){
-//        	List<String> clientNameList =  GateWayServer._requestItemNameList.get(clientRequestItemName);
-//        	if(clientNameList != null){
-//	        	for(String clientName : clientNameList){
-//		        	session = RFASocketServer._clientRequestSession.get(clientName+clientRequestItemName);
-        	
-//	        	}
-//        	}
         	long endTime = System.currentTimeMillis();
-        	_logger.info("publish Item "+clientRequestItemName+" use time "+(endTime-startTime)+" microseconds");
-//            _mainApp.updateResponseStat((endTime-startTime),responseMsg);
+        	logger.info("publish Item "+clientRequestItemName+" use time "+(endTime-startTime)+" microseconds");
         }
-        
     }
-    
-    public void sendInitialDocument(int channelId) {
-    	if(initialDocument!=null){
-    		long startTime = System.currentTimeMillis();
-    		XmlMessageUtil.addStartHandleTime(initialDocument, startTime);
-    		GateWayResponser.sendSnapShotToChannel(OMMMsg.MsgType.REFRESH_RESP, initialDocument, clientRequestItemName,channelId);
-    	}
-	}
     
     /**
      * Handle solicited item events.

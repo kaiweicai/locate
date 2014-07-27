@@ -78,7 +78,7 @@ public class WebItemManager implements Client {
 		this.request = request;
 		this.responseMessageType = responseMsgType;
 		logger.info(_className + ".webRequest: Sending item(" + pItemName + ") requests to server ");
-		String serviceName = mainApp._serviceName;
+		String serviceName = mainApp.serviceName;
 		this.clientRequestItemName = pItemName;
 		String[] itemNames = { pItemName };
 		short msgModelType = RDMMsgTypes.MARKET_PRICE;
@@ -118,7 +118,7 @@ public class WebItemManager implements Client {
 		public void sendRICRequest(String pItemName, byte responseMsgType) {
 			this.responseMessageType = responseMsgType;
 			logger.info(_className + ".webRequest: Sending item(" + pItemName + ") requests to server ");
-			String serviceName = mainApp._serviceName;
+			String serviceName = mainApp.serviceName;
 			this.clientRequestItemName = pItemName;
 			String[] itemNames = { pItemName };
 			short msgModelType = RDMMsgTypes.MARKET_PRICE;
