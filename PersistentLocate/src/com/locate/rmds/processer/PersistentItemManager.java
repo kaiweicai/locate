@@ -6,13 +6,10 @@ import net.sf.json.JSON;
 import net.sf.json.JSONObject;
 
 import org.apache.log4j.Logger;
-import org.dom4j.Document;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import com.locate.common.DataBaseCache;
-import com.locate.common.JsonUtil;
-import com.locate.common.XmlMessageUtil;
 import com.locate.gate.model.JsonModel;
 import com.locate.rmds.QSConsumerProxy;
 import com.locate.rmds.RFAServerManager;
@@ -21,7 +18,6 @@ import com.locate.rmds.statistic.CycleStatistics;
 import com.locate.rmds.statistic.LogTool;
 import com.locate.rmds.statistic.OutputFormatter;
 import com.locate.rmds.statistic.ResourceStatistics;
-import com.locate.rmds.util.GenericOMMParser;
 import com.locate.rmds.util.JsonOMMParser;
 import com.reuters.rfa.common.Event;
 import com.reuters.rfa.common.Handle;
@@ -52,68 +48,65 @@ import com.reuters.rfa.session.omm.OMMSolicitedItemEvent;
 // QSConsumerDemo _mainApp - main application class
 /**
  * 该类有多个实例.一个订阅的产品对应一个itemManager.
+ * 
  * @author Cloud.Wei
- *
+ * 
  */
-@Service("persistentItemManager")@Scope("prototype")
-public class PersistentItemManager implements IProcesser
-{
-	Handle  itemHandle;
+@Service("persistentItemManager")
+@Scope("prototype")
+public class PersistentItemManager implements IProcesser {
+	Handle itemHandle;
 	@Resource
 	QSConsumerProxy _mainApp;
-    static Logger logger = Logger.getLogger(PersistentItemManager.class.getName());
-    @Resource
-    ItemGroupManager _itemGroupManager;
-    public String clientRequestItemName;
-//    public String clientName;
-    public byte responseMessageType;
+	static Logger logger = Logger.getLogger(PersistentItemManager.class.getName());
+	@Resource
+	ItemGroupManager _itemGroupManager;
+	public String clientRequestItemName;
+	// public String clientName;
+	public byte responseMessageType;
 
-    private	String	_className = "ItemManager";
+	private String _className = "ItemManager";
 
-    private IPriceKeeper priceKeeper;
-    
-	private Integer channelID = 0;
+	private IPriceKeeper priceKeeper;
 
-	private Document initialDocument;
-	
 	// requests
 	static private int _request_count;
-    static private CycleStatistics _request_cycleStats;
-    
-    //refreshes
-    static private int _refresh_count;
-    static private CycleStatistics _refresh_cycleStats;
-    
+	static private CycleStatistics _request_cycleStats;
+
+	// refreshes
+	static private int _refresh_count;
+	static private CycleStatistics _refresh_cycleStats;
+
 	// updates
-    static private int _update_count;
-    static private CycleStatistics _update_cycleStats;
-    static long _update_begin_milliTime;
-	
+	static private int _update_count;
+	static private CycleStatistics _update_cycleStats;
+	static long _update_begin_milliTime;
+
 	// posts
-    static private int _post_received_count;
-    static private int _post_resent_count;
-    static private CycleStatistics _post_received_cycleStats;
-    static private CycleStatistics _post_resent_cycleStats;
-    
- // resource usage ( CPU and Memory )
-    static ResourceStatistics _resourceStats;
-    
- // close
-    static private int _close_count;
-    static private CycleStatistics _close_cycleStats;
-	
-    // display
-    static LogTool _consoleLogger;
-    static LogTool _statsFileLogger;
-    static OutputFormatter outputFormatter;
-    static StringBuilder _statsStringBuffer;
-    static int _timeline;
-    
+	static private int _post_received_count;
+	static private int _post_resent_count;
+	static private CycleStatistics _post_received_cycleStats;
+	static private CycleStatistics _post_resent_cycleStats;
+
+	// resource usage ( CPU and Memory )
+	static ResourceStatistics _resourceStats;
+
+	// close
+	static private int _close_count;
+	static private CycleStatistics _close_cycleStats;
+
+	// display
+	static LogTool _consoleLogger;
+	static LogTool _statsFileLogger;
+	static OutputFormatter outputFormatter;
+	static StringBuilder _statsStringBuffer;
+	static int _timeline;
+
 	static {
 		_statsStringBuffer = new StringBuilder(1024);
 		// output formatter
-        outputFormatter = new OutputFormatter();
-        outputFormatter.initializeDateFormat("yyyy-MM-dd HH:mm:ss", "UTC");
+		outputFormatter = new OutputFormatter();
+		outputFormatter.initializeDateFormat("yyyy-MM-dd HH:mm:ss", "UTC");
 		String _myName = "AdminClient";
 		_consoleLogger = new LogTool();
 		_consoleLogger.log2Screen();
@@ -135,7 +128,7 @@ public class PersistentItemManager implements IProcesser
 		_post_received_cycleStats = new CycleStatistics("postReceived");
 		_post_resent_cycleStats = new CycleStatistics("postResent");
 	}
-    
+
 	public void sendRicRequest(String pItemName, byte responseMsgType) {
 		this.responseMessageType = responseMsgType;
 		logger.info(_className + ".sendRequest: Sending item(" + pItemName + ") requests to server ");
@@ -176,9 +169,8 @@ public class PersistentItemManager implements IProcesser
 		pool.releaseMsg(ommmsg);
 		priceKeeper = new FilePriceKeeper(pItemName);
 	}
-    
 
-    /**
+	/**
      * 
      */
 	public void closeRequest() {
@@ -188,74 +180,74 @@ public class PersistentItemManager implements IProcesser
 		DataBaseCache.CLIENT_ITEMMANAGER_MAP.remove(clientRequestItemName);
 	}
 
-    // This is a Client method. When an event for this client is dispatched,
-    // this method gets called.
-    public void processEvent(Event event)
-    {
-    	long startTime = System.currentTimeMillis();
-    	switch (event.getType())
-        {
-            case Event.OMM_SOLICITED_ITEM_EVENT:
-                processOMMSolicitedItemEvent((OMMSolicitedItemEvent)event);
-                break;
-        }
-    	
-    	// Completion event indicates that the stream was closed by RFA
-    	if (event.getType() == Event.COMPLETION_EVENT) 
-    	{
-    		logger.info("Receive a COMPLETION_EVENT, "+ event.getHandle());
-    		logger.info("RIC IS "+this.clientRequestItemName +" has been finished");
-    		//@TODO 判断是否通知所有现存客户端某个产品已经停止发布.
-    		return;
-    	}
+	// This is a Client method. When an event for this client is dispatched,
+	// this method gets called.
+	public void processEvent(Event event) {
+		long startTime = System.currentTimeMillis();
+		switch (event.getType()) {
+		case Event.OMM_SOLICITED_ITEM_EVENT:
+			processOMMSolicitedItemEvent((OMMSolicitedItemEvent) event);
+			break;
+		}
 
-    	// check for an event type; it should be item event.
-        logger.info(_className+".processEvent: Received Item("+clientRequestItemName+") Event from server ");
-        if (event.getType() != Event.OMM_ITEM_EVENT) 
-        {
-        	//这里程序太危险了,因为RFA给的消息有误就要退出程序.恐怖的逻辑啊.还是去掉cleanup好了.
-            logger.error("ERROR: "+_className+" Received an unsupported Event type.");
-//            _mainApp.cleanup();
-            return;
-        }
-
-        OMMItemEvent ommItemEvent = (OMMItemEvent) event;
-        OMMMsg respMsg = ommItemEvent.getMsg();
-        JsonModel jsonModel = JsonOMMParser.parse(respMsg, clientRequestItemName);
-        jsonModel.setLocateSeqNumber(RFAServerManager.sequenceNo.getAndIncrement());
-        //如果是状态消息.记录一个警告日志.
-        if(respMsg.getMsgType()==OMMMsg.MsgType.STATUS_RESP && (respMsg.has(OMMMsg.HAS_STATE))){
-        	byte streamState= respMsg.getState().getStreamState();
-        	byte dataState = respMsg.getState().getDataState();
-			logger.warn("RFA server has new state. streamState:"+streamState+" datasstate "+dataState);
+		// Completion event indicates that the stream was closed by RFA
+		if (event.getType() == Event.COMPLETION_EVENT) {
+			logger.info("Receive a COMPLETION_EVENT, " + event.getHandle());
+			logger.info("RIC IS " + this.clientRequestItemName + " has been finished");
+			// @TODO 判断是否通知所有现存客户端某个产品已经停止发布.
 			return;
-        }
-        
-        // Status response can contain group id
+		}
+
+		// check for an event type; it should be item event.
+		logger.info(_className + ".processEvent: Received Item(" + clientRequestItemName + ") Event from server ");
+		if (event.getType() != Event.OMM_ITEM_EVENT) {
+			//收到一个不支持的消息,记录该消息,直接返回.
+			logger.error("ERROR:Received an unsupported Event type. event is "+event);
+			// _mainApp.cleanup();
+			return;
+		}
+
+		OMMItemEvent ommItemEvent = (OMMItemEvent) event;
+		OMMMsg respMsg = ommItemEvent.getMsg();
+		JsonModel jsonModel = JsonOMMParser.parse(respMsg, clientRequestItemName);
+		jsonModel.setLocateSeqNumber(RFAServerManager.sequenceNo.getAndIncrement());
+		// 如果是状态消息.记录一个警告日志.
+		if (respMsg.getMsgType() == OMMMsg.MsgType.STATUS_RESP && (respMsg.has(OMMMsg.HAS_STATE))) {
+			byte streamState = respMsg.getState().getStreamState();
+			byte dataState = respMsg.getState().getDataState();
+			logger.warn("RFA server has new state. streamState:" + streamState + " datasstate " + dataState);
+			return;
+		}
+
+		// Status response can contain group id
 		if ((respMsg.getMsgType() == OMMMsg.MsgType.REFRESH_RESP)
 				|| (respMsg.getMsgType() == OMMMsg.MsgType.STATUS_RESP && respMsg.has(OMMMsg.HAS_ITEM_GROUP))) {
 			OMMItemGroup group = respMsg.getItemGroup();
 			Handle itemHandle = event.getHandle();
 			_itemGroupManager.applyGroup(itemHandle, group);
 		}
-        
-//		XmlMessageUtil.addLocateInfo(responseMsg, respMsg.getMsgType(), RFAServerManager.sequenceNo.getAndIncrement(), 0);
-		//保存报价信息以供查询.
-//		JSON jsonObject = JsonUtil.getJSONFromXml(responseMsg.asXML()) ;
+
+		// XmlMessageUtil.addLocateInfo(responseMsg, respMsg.getMsgType(),
+		// RFAServerManager.sequenceNo.getAndIncrement(), 0);
+		// 保存报价信息以供查询.
+		// JSON jsonObject = JsonUtil.getJSONFromXml(responseMsg.asXML()) ;
 		JSON jsonObject = JSONObject.fromObject(jsonModel);
 		priceKeeper.persistentThePrice(jsonObject);
-//		GateWayResponser.sentMrketPriceToSubsribeChannel(responseMsg, clientRequestItemName);
-        if(jsonModel != null){
-        	long endTime = System.currentTimeMillis();
-        	logger.info("publish Item "+clientRequestItemName+" use time "+(endTime-startTime)+" microseconds");
-        }
-    }
-    
-    /**
-     * Handle solicited item events.
-     * 
-     * @param event the event to be processed.
-     */
+		// GateWayResponser.sentMrketPriceToSubsribeChannel(responseMsg,
+		// clientRequestItemName);
+		if (jsonModel != null) {
+			long endTime = System.currentTimeMillis();
+			logger.info("publish Item " + clientRequestItemName + " use time " + (endTime - startTime)
+					+ " microseconds");
+		}
+	}
+
+	/**
+	 * Handle solicited item events.
+	 * 
+	 * @param event
+	 *            the event to be processed.
+	 */
 	protected void processOMMSolicitedItemEvent(OMMSolicitedItemEvent event) {
 		OMMMsg msg = event.getMsg();
 
@@ -263,141 +255,123 @@ public class PersistentItemManager implements IProcesser
 			handleItemEvent(event);
 		}
 	}
+
 	/**
-     * Process incoming item events and call the appropriate method to process
-     * the event. Called from the AdminClient.
-     * 
-     * @param event the event to process/handle.
-     */
-    @SuppressWarnings("deprecation")
-    void handleItemEvent(OMMSolicitedItemEvent event)
-    {
-        switch (event.getMsg().getMsgType())
-        {
-            case OMMMsg.MsgType.REQUEST:
-            {
-            	++_request_count;
-//                processItemRequest(event);
-                return;
-            }
+	 * Process incoming item events and call the appropriate method to process
+	 * the event. Called from the AdminClient.
+	 * 
+	 * @param event
+	 *            the event to process/handle.
+	 */
+	@SuppressWarnings("deprecation")
+	void handleItemEvent(OMMSolicitedItemEvent event) {
+		switch (event.getMsg().getMsgType()) {
+		case OMMMsg.MsgType.REQUEST: {
+			++_request_count;
+			// processItemRequest(event);
+			return;
+		}
 
-//            case OMMMsg.MsgType.POST:
-//            {
-//                processPostMessage(event);
-//                return;
-//            }
-//
-//            case OMMMsg.MsgType.CLOSE_REQ:
-//            {
-//                processCloseItem(event);
-//                return;
-//            }
+		// case OMMMsg.MsgType.POST:
+		// {
+		// processPostMessage(event);
+		// return;
+		// }
+		//
+		// case OMMMsg.MsgType.CLOSE_REQ:
+		// {
+		// processCloseItem(event);
+		// return;
+		// }
 
-            case OMMMsg.MsgType.STREAMING_REQ:
-            case OMMMsg.MsgType.NONSTREAMING_REQ:
-            case OMMMsg.MsgType.PRIORITY_REQ:
-            {
-                OMMMsg ommMsg = event.getMsg();
+		case OMMMsg.MsgType.STREAMING_REQ:
+		case OMMMsg.MsgType.NONSTREAMING_REQ:
+		case OMMMsg.MsgType.PRIORITY_REQ: {
+			OMMMsg ommMsg = event.getMsg();
 
-                _consoleLogger.println("Received deprecated message type of "
-                        + OMMMsg.MsgType.toString(ommMsg.getMsgType()) + ", not supported. ");
-                return;
-            }
+			_consoleLogger.println("Received deprecated message type of "
+					+ OMMMsg.MsgType.toString(ommMsg.getMsgType()) + ", not supported. ");
+			return;
+		}
 
-            default:
-                break;
-        }
-    }
-    
-    /**
-     * Gathers, calculate, displays and writes the metrics. Called by
-     * application thread periodically.
-     */
-    public static void runMetricsForCurrentInterval()
-    {
-        // calculate cycle metrics
-        _request_cycleStats.calculateDifference(_request_count);
-        _refresh_cycleStats.calculateDifference(_refresh_count);
-        _update_cycleStats.calculatePeriodicRate(_update_count,_update_begin_milliTime);
+		default:
+			break;
+		}
+	}
 
-        _post_received_cycleStats.calculateDifference(_post_received_count);
-        _post_resent_cycleStats.calculateDifference(_post_resent_count);
+	/**
+	 * Gathers, calculate, displays and writes the metrics. Called by
+	 * application thread periodically.
+	 */
+	public static void runMetricsForCurrentInterval() {
+		// calculate cycle metrics
+		_request_cycleStats.calculateDifference(_request_count);
+		_refresh_cycleStats.calculateDifference(_refresh_count);
+		_update_cycleStats.calculatePeriodicRate(_update_count, _update_begin_milliTime);
 
-        _resourceStats.updateResourceStatistics();
+		_post_received_cycleStats.calculateDifference(_post_received_count);
+		_post_resent_cycleStats.calculateDifference(_post_resent_count);
 
-        String s = null;
+		_resourceStats.updateResourceStatistics();
 
-        // display statistics to console
-//        if (_appInput.bDisplayStats == true){
-            _close_cycleStats.calculateDifference(_close_count);
+		String s = null;
 
-            // update console metrics for this cycle
-            s = String.format("%03d: UpdRate: %,6d, CPU: %s, Mem: %6.2fMB%n", _timeline,
-                              _update_cycleStats.periodicRate,
-                              _resourceStats.getCurrentCPULoadAsPercentString(),
-                              _resourceStats.currentMemoryUsage);
+		// display statistics to console
+		// if (_appInput.bDisplayStats == true){
+		_close_cycleStats.calculateDifference(_close_count);
 
-            _consoleLogger.print(s);
+		// update console metrics for this cycle
+		s = String.format("%03d: UpdRate: %,6d, CPU: %s, Mem: %6.2fMB%n", _timeline, _update_cycleStats.periodicRate,
+				_resourceStats.getCurrentCPULoadAsPercentString(), _resourceStats.currentMemoryUsage);
 
-            // request console metrics for this cycle
-            if (_request_cycleStats.periodicCount > 0)
-            {
-                _consoleLogger.print(String.format(
-                        "- Received %,6d item requests (total: %,6d), sent %,6d images (total: %,6d)%n",
-                        _request_cycleStats.periodicCount,
-                        _request_count,
-                        _refresh_cycleStats.periodicCount,
-                        _refresh_count));
-            }
+		_consoleLogger.print(s);
 
-            // close console metrics for this cycle
-            if (_close_cycleStats.periodicCount > 0)
-            {
-                _consoleLogger.print(String.format("- Received %,6d closes%n", _close_cycleStats.periodicCount));
-            }
+		// request console metrics for this cycle
+		if (_request_cycleStats.periodicCount > 0) {
+			_consoleLogger.print(String.format(
+					"- Received %,6d item requests (total: %,6d), sent %,6d images (total: %,6d)%n",
+					_request_cycleStats.periodicCount, _request_count, _refresh_cycleStats.periodicCount,
+					_refresh_count));
+		}
 
-            // post console metrics for this cycle
-            if (_post_received_cycleStats.periodicCount > 0)
-            {
-                _consoleLogger.print(String.format("- Posting: received %,6d, sent %,6d%n",
-                      _post_received_cycleStats.periodicCount,
-                      _post_resent_cycleStats.periodicCount));
-            }
+		// close console metrics for this cycle
+		if (_close_cycleStats.periodicCount > 0) {
+			_consoleLogger.print(String.format("- Received %,6d closes%n", _close_cycleStats.periodicCount));
+		}
 
-        // write periodic statistics to output stats file ( provStat.out )
+		// post console metrics for this cycle
+		if (_post_received_cycleStats.periodicCount > 0) {
+			_consoleLogger.print(String.format("- Posting: received %,6d, sent %,6d%n",
+					_post_received_cycleStats.periodicCount, _post_resent_cycleStats.periodicCount));
+		}
 
-        // "Update rate: %8d, CPU: %6.2f, Mem: %6.2fMB%n",
-        s = String.format("%s, %d, %d, %d, %d, %s, %.2f%n",
-                          outputFormatter.getDateTimeAsString(),
-                          _request_cycleStats.periodicCount, 
-                          _refresh_cycleStats.periodicCount,
-                          _update_cycleStats.periodicCount, 
-                          _post_resent_cycleStats.periodicCount,
-                          _resourceStats.getCurrentCPULoadAsString(),
-                          _resourceStats.currentMemoryUsage);
+		// write periodic statistics to output stats file ( provStat.out )
 
-        _statsStringBuffer.append(s);
+		// "Update rate: %8d, CPU: %6.2f, Mem: %6.2fMB%n",
+		s = String.format("%s, %d, %d, %d, %d, %s, %.2f%n", outputFormatter.getDateTimeAsString(),
+				_request_cycleStats.periodicCount, _refresh_cycleStats.periodicCount, _update_cycleStats.periodicCount,
+				_post_resent_cycleStats.periodicCount, _resourceStats.getCurrentCPULoadAsString(),
+				_resourceStats.currentMemoryUsage);
 
-        // flush to file for every 1k length;
-        // this avoids file access for every line
-        if (_statsStringBuffer.length() >= 1024)
-        {
-            _statsFileLogger.print(_statsStringBuffer.toString());
-            _statsStringBuffer.setLength(0);
-        }
+		_statsStringBuffer.append(s);
 
-        // increment the time line
-//        _timeline += _appInput.statsMonitorIntervalInSecs;
-    }
+		// flush to file for every 1k length;
+		// this avoids file access for every line
+		if (_statsStringBuffer.length() >= 1024) {
+			_statsFileLogger.print(_statsStringBuffer.toString());
+			_statsStringBuffer.setLength(0);
+		}
 
+		// increment the time line
+		// _timeline += _appInput.statsMonitorIntervalInSecs;
+	}
 
 	public Handle getItemHandle() {
 		return itemHandle;
 	}
 
-
 	public void setItemHandle(Handle itemHandle) {
 		this.itemHandle = itemHandle;
 	}
-	
+
 }

@@ -17,8 +17,8 @@ import org.dom4j.Document;
 import com.locate.bridge.GateWayResponser;
 import com.locate.common.XmlMessageUtil;
 import com.locate.rmds.QSConsumerProxy;
-import com.locate.rmds.sub.RDMServiceInfo;
-import com.locate.rmds.sub.ServiceInfo;
+import com.locate.rmds.dict.RDMServiceInfo;
+import com.locate.rmds.dict.ServiceInfo;
 import com.locate.rmds.util.GenericNormalOmmParser;
 import com.locate.rmds.util.GenericOMMParser;
 import com.reuters.rfa.common.Client;
@@ -188,7 +188,7 @@ public class RFALoginClient implements Client
 			RFALoginClient.STATE = respMsg.getState().toString();
 			byte msgType =respMsg.getMsgType();
 			Document responseMsg = XmlMessageUtil.generateStatusResp(RFALoginClient.STATE,RFALoginClient.STREAM_STATE,RFALoginClient.DATA_STATE,msgType);
-			//½«ÐÅÏ¢¿ªÊ¼´¦ÀíÊ±¼ä¼ÓÈëµ½ÏûÏ¢ÖÐ
+			//ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ëµ½ï¿½ï¿½Ï¢ï¿½ï¿½
 			XmlMessageUtil.addStartHandleTime(responseMsg, startTime);
 			GateWayResponser.brodcastStateResp(responseMsg);
 		}

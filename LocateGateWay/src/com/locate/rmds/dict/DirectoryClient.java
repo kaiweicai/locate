@@ -1,4 +1,4 @@
-package com.locate.rmds.sub;
+package com.locate.rmds.dict;
 
 /**
  * DirectoryClient is a callback client that provides a handler defined by an

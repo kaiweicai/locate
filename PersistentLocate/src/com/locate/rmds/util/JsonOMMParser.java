@@ -126,14 +126,15 @@ public final class JsonOMMParser
     }
 
     /**
-     * parse msg and print it in a table-nested format to System.out
+     * parse msg and print it in a table-nested format to log4j
      * 这个方法有太多的业务逻辑.应该把这些业务逻辑提出来.让这个方法成为一个通用的方法.
      */
     public static final JsonModel parse(OMMMsg msg,String itemName)
     {
 //    	_logger.info("orignal OMMMsg is "+ msg);
-    	if(itemName == null)
-    		itemName = "";
+		if (itemName == null) {
+			itemName = "";
+		}
     	StringBuffer logMsg = new StringBuffer();
     	JsonModel jsonModel = new JsonModel();
     	DocumentFactory factory = DocumentFactory.getInstance();

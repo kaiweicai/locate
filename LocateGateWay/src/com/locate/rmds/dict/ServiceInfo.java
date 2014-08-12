@@ -1,4 +1,4 @@
-package com.locate.rmds.sub;
+package com.locate.rmds.dict;
 
 import java.util.Iterator;
 

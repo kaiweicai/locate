@@ -28,6 +28,10 @@ public class SystemProperties {
 	public static final String RFA_CONNETION_TYPE = "rfa.connetion.type";
 	public static final String RFA_CONNETION_SERVER_LIST = "rfa.connetion.serverList";
 	public static final String RFA_CONNETION_PORTNUMBER = "rfa.connetion.portNumber";
+	
+	public static final String ADMIN_NEED_NOTIFY = "admin.need.notify";
+	public static final String ADMIN_USER_EMAIL = "admin.user.email";
+	public static final String SMTP_ADMIN_USER_EMAIL = "smtp.admin.user.email";
 
 	public static void init(String propertiesFile) {
 		// InputStream inputStream = this.getClass().getResourceAsStream(propertiesFile);
@@ -53,7 +57,7 @@ public class SystemProperties {
 			if (StringUtils.isEmpty(systemProperties.get(name))) {
 				_logger.error("Can't find configuration for " + name, new Exception(
 						"Can't find configuration in config file."));
-				System.exit(-1);
+//				System.exit(-1);
 			}
 			return systemProperties.get(name);
 		}
