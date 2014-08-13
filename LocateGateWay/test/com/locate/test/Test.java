@@ -14,7 +14,7 @@ public class Test {
 			SystemProperties.init("config/rfaConfig.properties");
 			String needNotify = SystemProperties.getProperties(SystemProperties.ADMIN_NEED_NOTIFY);
 			if (needNotify.equalsIgnoreCase("true")) {
-				notifier.notifyAdmin();
+				notifier.notifyAdmin("test","test");
 			}
 		}
 	}

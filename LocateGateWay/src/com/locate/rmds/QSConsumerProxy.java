@@ -49,10 +49,10 @@ import com.reuters.rfa.session.Session;
 import com.reuters.rfa.session.omm.OMMConsumer;
 import com.reuters.rfa.session.omm.OMMItemIntSpec;
 /**  
-*  ×÷Õß:Cloud wei   
+*  ï¿½ï¿½ï¿½ï¿½:Cloud wei   
 *  E-mail:kaiweicai@163.com   
-*  ´´½¨Ê±¼ä£º2014.5.26   
-*  ÀàËµÃ÷  netty game  
+*  ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ä£º2014.5.26   
+*  ï¿½ï¿½Ëµï¿½ï¿½  netty game  
 */  
 @Service
 public class QSConsumerProxy{
@@ -62,6 +62,7 @@ public class QSConsumerProxy{
 	protected Session _session;
 	protected EventQueue _eventQueue;
 	protected OMMConsumer _consumer;
+	@Resource
 	protected RFALoginClient _loginClient;
 	@Resource
 	protected ItemGroupManager _itemGroupManager;
@@ -186,9 +187,6 @@ public class QSConsumerProxy{
 
 	// This method utilizes the LoginClient class to send login request
 	public void login() {
-		// Initialize client for login domain.
-		_loginClient = new RFALoginClient(this);
-
 		// Send login request
 		_loginClient.sendRequest();
 	}
@@ -308,11 +306,8 @@ public class QSConsumerProxy{
 	// This method is called when the login was not successful
 	// The application exits
 	public void loginFailure() {
-		logger.error("Login has been denied / rejected / closed");
-//		logger.error("Preparing to clean up and exiting");
+		logger.error("Login has been denied / rejected / closed ");
 		RFAServerManager.setConnectedDataSource(false);
-		_loginClient = null;
-//		cleanup();
 	}
 
 	// This method utilizes ItemManager class to request items
@@ -332,14 +327,14 @@ public class QSConsumerProxy{
 		Map<String,ItemManager> subscribeItemManagerMap = DataBaseCache.RIC_ITEMMANAGER_Map;
 		boolean needRenewSubscribeItem=checkSubscribeStatus(itemName);
 		if(needRenewSubscribeItem){
-			//ÒÑ¾­¶©ÔÄ¹ý¸Ã²úÆ·,Ö»ÐèÒª·¢ËÍÒ»¸öÒ»´Î¶©ÔÄÇëÇó,·µ»ØÒ»¸ösnapshot¼´¿É.
+			//ï¿½Ñ¾ï¿½ï¿½ï¿½ï¿½Ä¹ï¿½Ã²ï¿½Æ·,Ö»ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½Ò»ï¿½Î¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½,ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½snapshotï¿½ï¿½ï¿½ï¿½.
 			OneTimeItemManager oneTimeItemManager =  new OneTimeItemManager(this, _itemGroupManager,channelId);
 			oneTimeItemManager.sendOneTimeRequest(itemName, responseMsgType);
 //			ItemManager subscibeItemManager =  subscribeItemManagerMap.get(itemName);
 //			subscibeItemManager.sendInitialDocument(channelId);
 			return null;
 		}else{
-			//Ò»¸ö²úÆ·¶ÔÓ¦Ò»¸öitemManager¶ÔÏó
+			//Ò»ï¿½ï¿½ï¿½ï¿½Æ·ï¿½ï¿½Ó¦Ò»ï¿½ï¿½itemManagerï¿½ï¿½ï¿½ï¿½
 			itemManager=SystemConstant.springContext.getBean("itemManager",ItemManager.class);
 			subscribeItemManagerMap.put(itemName, itemManager);
 			// Send requests
@@ -374,8 +369,8 @@ public class QSConsumerProxy{
 //	}
 
 	/**
-	 * ¼ì²éRIC_ITEMMANAGER_MapÊÇ·ñ°üº¬¸Ã²úÆ·,Èç¹ûÃ»ÓÐ¸Ã²úÆ·ÔòÖ±½Ó¶©ÔÄ¸Ã²úÆ·.
-	 * ¼ì²é¸Ã¶©ÔÄ²úÆ·ÏÂ¶ÔÓ¦µÄitemHandlerÊÇ·ñÊÇ¼¤»î×´Ì¬.Èç¹û²»ÊÇ¼¤»î×´Ì¬.ÐèÒªÖØÐÂ¶©ÔÄ.
+	 * ï¿½ï¿½ï¿½RIC_ITEMMANAGER_Mapï¿½Ç·ï¿½ï¿½Ã²ï¿½Æ·,ï¿½ï¿½ï¿½Ã»ï¿½Ð¸Ã²ï¿½Æ·ï¿½ï¿½Ö±ï¿½Ó¶ï¿½ï¿½Ä¸Ã²ï¿½Æ·.
+	 * ï¿½ï¿½ï¿½Ã¶ï¿½ï¿½Ä²ï¿½Æ·ï¿½Â¶ï¿½Ó¦ï¿½ï¿½itemHandlerï¿½Ç·ï¿½ï¿½Ç¼ï¿½ï¿½ï¿½×´Ì¬.ï¿½ï¿½ï¿½ï¿½Ç¼ï¿½ï¿½ï¿½×´Ì¬.ï¿½ï¿½Òªï¿½ï¿½ï¿½Â¶ï¿½ï¿½ï¿½.
 	 * @param itemName
 	 * @return
 	 */

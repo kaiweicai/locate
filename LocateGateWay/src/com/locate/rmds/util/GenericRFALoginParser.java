@@ -62,12 +62,12 @@ import com.reuters.rfa.utility.HexDump;
  * values. CURRENT_DICTIONARY requires only one FieldDictionary to be used at a
  * time. CURRENT_PAGE requires only one page to be parsed at a time.
  */
-public final class GenericNormalOmmParser
+public final class GenericRFALoginParser
 {
     private static HashMap<Integer, FieldDictionary> DICTIONARIES = new HashMap<Integer, FieldDictionary>();
     private static FieldDictionary CURRENT_DICTIONARY;
     private static Page CURRENT_PAGE;
-    static Logger _logger = Logger.getLogger(GenericOMMParser.class.getName());
+    static Logger _logger = Logger.getLogger(GenericRFALoginParser.class.getName());
 //    static Logger _logger;
     private static boolean INTERNAL_DEBUG = false;
     
@@ -470,7 +470,7 @@ public final class GenericNormalOmmParser
             parseEntry(entry, logMsg, tabLevel + 1,field);
             
         }
-        _logger.info("test for cloud wei```````````````````````fieldNub is "+fieldNum);
+        _logger.info("test for cloud wei```````````````````````fieldNum is "+fieldNum);
     }
 
     /**

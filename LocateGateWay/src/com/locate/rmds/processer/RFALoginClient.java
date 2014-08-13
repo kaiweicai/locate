@@ -7,20 +7,19 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.Resource;
+
 import org.apache.log4j.Logger;
-
-
-
-
 import org.dom4j.Document;
+import org.springframework.stereotype.Component;
 
 import com.locate.bridge.GateWayResponser;
 import com.locate.common.XmlMessageUtil;
 import com.locate.rmds.QSConsumerProxy;
 import com.locate.rmds.dict.RDMServiceInfo;
 import com.locate.rmds.dict.ServiceInfo;
-import com.locate.rmds.util.GenericNormalOmmParser;
-import com.locate.rmds.util.GenericOMMParser;
+import com.locate.rmds.processer.face.INotifier;
+import com.locate.rmds.util.GenericRFALoginParser;
 import com.reuters.rfa.common.Client;
 import com.reuters.rfa.common.Event;
 import com.reuters.rfa.common.Handle;
@@ -59,35 +58,29 @@ import com.reuters.rfa.session.omm.OMMItemIntSpec;
 //							application uses this handle to identify this client
 // QSConsumerDemo _mainApp - main application class
 
+@Component
 public class RFALoginClient implements Client
 {
     Handle _loginHandle;
+    @Resource
     QSConsumerProxy _mainApp;
+    @Resource(name="emailNotifier")
+    INotifier notifier;
     public static byte STREAM_STATE = 0;
     public static byte DATA_STATE = 0;
     static Logger _logger = Logger.getLogger(RFALoginClient.class.getName());
 	public static String STATE = "";
 //    static Logger _logger;
-	private String _className = "LoginClient";
 	Map<String, ServiceInfo> _services = new HashMap<String, ServiceInfo>();
-	private HashMap<Handle, Integer> _dictHandles;
-	FieldDictionary _dictionary;
-	// constructor
-	public RFALoginClient(QSConsumerProxy mainApp)
-    {
-        _mainApp = mainApp;
-        this._dictHandles = new HashMap();
-        this._dictionary = QSConsumerProxy.dictionary;
-//        _logger = _mainApp._logger;
-    }
-    
+	private HashMap<Handle, Integer> _dictHandles=new HashMap<Handle, Integer>();
+	FieldDictionary _dictionary=QSConsumerProxy.dictionary;;
     // Gets encoded streaming request messages for Login and register it to RFA
     public void sendRequest()
     {
         OMMMsg ommmsg = encodeLoginReqMsg();
         OMMItemIntSpec ommItemIntSpec = new OMMItemIntSpec();
         ommItemIntSpec.setMsg(ommmsg);
-        _logger.info(_className+": Sending login request");
+        _logger.info("Sending login request");
         _loginHandle = _mainApp.getOMMConsumer().registerClient(
                         _mainApp.getEventQueue(), ommItemIntSpec, this, null);
     }
@@ -148,7 +141,7 @@ public class RFALoginClient implements Client
     	// Completion event indicates that the stream was closed by RFA
     	if (event.getType() == Event.COMPLETION_EVENT) 
     	{
-    		_logger.info(_className+": Receive a COMPLETION_EVENT, "+ event.getHandle());
+    		_logger.info("Receive a COMPLETION_EVENT, "+ event.getHandle());
     		return;
     	}
 
@@ -175,8 +168,8 @@ public class RFALoginClient implements Client
         // The login is unsuccessful, RFA forwards the message from the network
         if (respMsg.isFinal()) 
         {
-        	_logger.info(_className+": Login Response message is final.");
-        	GenericNormalOmmParser.parse(respMsg,null);
+        	_logger.info(" Login Response message is final.");
+        	GenericRFALoginParser.parse(respMsg,null);
         	_mainApp.loginFailure();
         	return;
         }
@@ -188,7 +181,6 @@ public class RFALoginClient implements Client
 			RFALoginClient.STATE = respMsg.getState().toString();
 			byte msgType =respMsg.getMsgType();
 			Document responseMsg = XmlMessageUtil.generateStatusResp(RFALoginClient.STATE,RFALoginClient.STREAM_STATE,RFALoginClient.DATA_STATE,msgType);
-			//����Ϣ��ʼ����ʱ����뵽��Ϣ��
 			XmlMessageUtil.addStartHandleTime(responseMsg, startTime);
 			GateWayResponser.brodcastStateResp(responseMsg);
 		}
@@ -196,22 +188,32 @@ public class RFALoginClient implements Client
 		if ((respMsg.getMsgType() == OMMMsg.MsgType.STATUS_RESP) && (respMsg.has(OMMMsg.HAS_STATE))
 				&& (respMsg.getState().getStreamState() == OMMState.Stream.OPEN)
 				&& (respMsg.getState().getDataState() == OMMState.Data.OK)) {
-			_logger.info(_className + ": Received Login STATUS OK Response");
-			GenericNormalOmmParser.parse(respMsg, "RFALogin");
+			_logger.info("Received Login STATUS OK Response");
+			GenericRFALoginParser.parse(respMsg, "RFALogin");
 			_mainApp.processLogin();
 			_mainApp.registerDirectory(this);
-		} else // This message is sent by RFA indicating that RFA is processing the login
-		{
+		} else if(respMsg.getMsgType() == OMMMsg.MsgType.STATUS_RESP&&respMsg.has(OMMMsg.HAS_STATE)
+				&& (respMsg.getState().getStreamState() == OMMState.Stream.OPEN)
+				&& respMsg.getState().getDataState() == OMMState.Data.SUSPECT){
+			_logger.error("RFA server has new state. The server has been suspect!\n Received Login Response - "
+					+ OMMMsg.MsgType.toString(respMsg.getMsgType()));
+			_mainApp.loginFailure();
+			notifier.notifyAdmin(
+					"RFA server new state\n",
+					"RFA server has new state. The server state is "
+							+ (respMsg.has(OMMMsg.HAS_STATE) ? respMsg.getState() : "has no stat"));
+			GenericRFALoginParser.parse(respMsg, "RFALogin");
+		}else{
 			_logger.error("Login not success.Please check!\n Received Login Response - "
 					+ OMMMsg.MsgType.toString(respMsg.getMsgType()));
 			_mainApp.loginFailure();
-			GenericNormalOmmParser.parse(respMsg, "RFALogin");
+			GenericRFALoginParser.parse(respMsg, "RFALogin");
 		}
     }
     
     protected void processDirectoryMsg(OMMMsg msg)
     {
-    	GenericNormalOmmParser.parse(msg,"DIRECTORY");
+    	GenericRFALoginParser.parse(msg,"DIRECTORY");
 
         if (msg.getDataType() == OMMTypes.NO_DATA)
         {
@@ -306,7 +308,7 @@ public class RFALoginClient implements Client
 		int msgType = msg.getMsgType();
 
 		if ((msgType == 7) || (msgType == 8)) {
-			GenericNormalOmmParser.parse(msg,"Dictionary");
+			GenericRFALoginParser.parse(msg,"Dictionary");
 			return;
 		}
 

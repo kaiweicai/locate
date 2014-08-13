@@ -7,12 +7,13 @@ import org.springframework.context.support.FileSystemXmlApplicationContext;
 import com.locate.common.SystemConstant;
 import com.locate.rmds.processer.EmailNotifier;
 import com.locate.rmds.processer.face.INotifier;
-import com.locate.rmds.util.SystemProperties;
 
 /**
  * 
- * @author cloudwei Locate 主要启动程序. 一切从这里开始. 负责启动RFA的主程序和Locate Gate Way 的主程序.
- *         使用spring来管理类.
+ * @author cloudwei Locate 
+ * 主启动程序. 
+ * 负责连接RFA的主程序和LocateGateWay的主程序.
+ * 使用spring容器加载并管理所有的类.
  */
 public class LocateGateWayMain {
 	static {
@@ -30,13 +31,12 @@ public class LocateGateWayMain {
 
 	static class ShutdownWorker extends Thread{
 		public void run(){
-			System.out.println("Shutdown is run!!!!");
+			System.out.println("Shutdown worker is run!!!!");
 			INotifier notifier = new EmailNotifier();
-			String needNotify = SystemProperties.getProperties(SystemProperties.ADMIN_NEED_NOTIFY);
-			if (needNotify.equalsIgnoreCase("true")) {
-				notifier.notifyAdmin();
-			}
-			System.out.println("Shutdown is end!!!!");
+			String title="Locate server shutdowning";
+			String content="The Locate server is shutdowned. Please check!!!";
+			notifier.notifyAdmin(title,content);
+			System.out.println("Shutdown worker is end!!!!");
 		}
 	}
 }
