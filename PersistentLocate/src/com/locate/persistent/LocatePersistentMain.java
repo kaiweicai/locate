@@ -9,11 +9,9 @@ import com.locate.common.SystemConstant;
 import com.locate.rmds.QSConsumerProxy;
 
 /**
- * 
- * @author cloudwei Locate 
- * Ö÷ÒªÆô¶¯³ÌĞò. Ò»ÇĞ´ÓÕâÀï¿ªÊ¼. 
- * ¸ºÔğÆô¶¯RFAµÄÖ÷³ÌĞòºÍLocate Gate Way µÄÖ÷³ÌĞò.
- * Ê¹ÓÃspringÀ´¹ÜÀíÀà.
+ * @author CloudWei kaiweicai@163.com
+ * create time 2014å¹´8æœˆ12æ—¥
+ * @copyRight by Author
  */
 public class LocatePersistentMain {
 	static {

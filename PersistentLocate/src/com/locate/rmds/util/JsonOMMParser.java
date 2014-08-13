@@ -139,15 +139,9 @@ public final class JsonOMMParser
     	JsonModel jsonModel = new JsonModel();
     	DocumentFactory factory = DocumentFactory.getInstance();
     	Document responseMsg =  factory.createDocument();
-    	Element rmdsElement = responseMsg.addElement(RFANodeconstant.RESPONSE_ROOT_NODE);
-    	rmdsElement.addElement(RFANodeconstant.LOCATE_NODE);
-    	Element response = rmdsElement.addElement(RFANodeconstant.RESPONSE_RESPONSE_NODE);
     	jsonModel.setItem(itemName);
-    	Element reqItem = response.addElement(RFANodeconstant.RESPONSE_ITEM_NODE);
-    	reqItem.addElement(RFANodeconstant.RESPONSE_ITEM_NAME_NODE).addText(itemName);
-    	Element fields = response.addElement(RFANodeconstant.RESPONSE_FIELDS_NODE);
     	
-    	parseMsg(msg, logMsg,fields,itemName,jsonModel);
+    	parseMsg(msg, logMsg,itemName,jsonModel);
         _logger.info(logMsg.toString());
 //        _logger.info(responseMsg.asXML());
 //        if(fields.elements().size() > 0){
@@ -241,12 +235,12 @@ public final class JsonOMMParser
      * parse msg and print it in a table-nested format to the provided
      * PrintStream
      */
-    public static final void parseMsg(OMMMsg msg, StringBuffer logMsg,Element fieldsElement,String itemName,JsonModel jsonModel)
+    public static final void parseMsg(OMMMsg msg, StringBuffer logMsg,String itemName,JsonModel jsonModel)
     {
-        parseMsg(msg, logMsg, 0,fieldsElement,itemName,jsonModel);
+        parseMsg(msg, logMsg, 0,itemName,jsonModel);
     }
 
-	static final void parseMsg(OMMMsg msg, StringBuffer logMsg, int tabLevel, Element fieldsElement,String itemName,JsonModel jsonModel) {
+	static final void parseMsg(OMMMsg msg, StringBuffer logMsg, int tabLevel,String itemName,JsonModel jsonModel) {
 		boolean ripple = (msg.getMsgType() == OMMMsg.MsgType.UPDATE_RESP)
 				&& !msg.isSet(OMMMsg.Indication.DO_NOT_RIPPLE);
 		byte msgType = msg.getMsgType();
@@ -409,7 +403,7 @@ public final class JsonOMMParser
 			if (ai.has(OMMAttribInfo.HAS_ATTRIB)) {
 				dumpIndent(logMsg, tabLevel + 2);
 				logMsg.append("Attrib");
-				parseData(ai.getAttrib(), logMsg, tabLevel + 2, fieldsElement,false,null);
+				parseData(ai.getAttrib(), logMsg, tabLevel + 2, false,null);
 				logMsg.append("\n");
 			}
 		}
@@ -417,7 +411,7 @@ public final class JsonOMMParser
 		logMsg.append(" Payload: ");
 		if (msg.getDataType() != OMMTypes.NO_DATA) {
 			logMsg.append(" " + msg.getPayload().getEncodedLength() + " bytes");
-			parsePyLoad(msg.getPayload(), logMsg, tabLevel + 1, fieldsElement,ripple,itemName,msgType,jsonModel);
+			parsePyLoad(msg.getPayload(), logMsg, tabLevel + 1, ripple,itemName,msgType,jsonModel);
 			logMsg.append("\n ");
 		} else {
 			dumpIndent(logMsg, tabLevel + 2);
@@ -493,11 +487,11 @@ public final class JsonOMMParser
 //        parseData(data, null, 0,field,false);
 //    }
 
-    private static final void parseAggregate(OMMData data, StringBuffer logMsg, int tabLevel,Element fields,boolean ripple,String itemName,byte msgType,JsonModel jsonModel)
+    private static final void parseAggregate(OMMData data, StringBuffer logMsg, int tabLevel,boolean ripple,String itemName,byte msgType,JsonModel jsonModel)
     {
 //    	jsonModel.getPayLoadSet().add(new String[]{"id","name","type","value"});
     	Map<Short,Element> rippleMap = new HashMap<Short,Element>();
-        parseAggregateHeader(data, logMsg, tabLevel,fields);
+        parseAggregateHeader(data, logMsg, tabLevel);
         int fieldNum = 0;
         for (Iterator iter = ((OMMIterable)data).iterator(); iter.hasNext();)
         {
@@ -505,7 +499,7 @@ public final class JsonOMMParser
 //        	field = fields.addElement("Field");
 //        	logMsg.append("\n");
             OMMEntry entry = (OMMEntry)iter.next();
-            parseEntry(entry, logMsg, tabLevel + 1,fields,ripple,itemName,msgType,rippleMap,jsonModel);
+            parseEntry(entry, logMsg, tabLevel + 1,ripple,itemName,msgType,rippleMap,jsonModel);
         }
         _logger.debug("test for cloud wei```````````````````````fieldNub is "+fieldNum);
     }
@@ -515,12 +509,12 @@ public final class JsonOMMParser
      * PrintStream
      * data is OMMMessage Attribute
      */
-    public static final void parsePyLoad(OMMData data, StringBuffer logMsg, int tabLevel,Element fieldsElement,boolean ripple,String itemName,byte msgType,JsonModel jsonModel)
+    public static final void parsePyLoad(OMMData data, StringBuffer logMsg, int tabLevel,boolean ripple,String itemName,byte msgType,JsonModel jsonModel)
     {
         if (data.isBlank())
         	logMsg.append("\n");
         else if (OMMTypes.isAggregate(data.getType()))
-            parseAggregate(data, logMsg, tabLevel + 1,fieldsElement,ripple,itemName,msgType,jsonModel);
+            parseAggregate(data, logMsg, tabLevel + 1,ripple,itemName,msgType,jsonModel);
         else if ((data.getType() == OMMTypes.RMTES_STRING)
                 && ((OMMDataBuffer)data).hasPartialUpdates())
         {
@@ -586,13 +580,13 @@ public final class JsonOMMParser
         }
         else if (data.getType() == OMMTypes.MSG)
         {
-            parseMsg((OMMMsg)data, logMsg, tabLevel + 1,fieldsElement,itemName,jsonModel);
+            parseMsg((OMMMsg)data, logMsg, tabLevel + 1,itemName,jsonModel);
         }
         else
         {
             try
             {
-            	fieldsElement.addElement(RFANodeconstant.RESPONSE_FIELDS_FIELD_VALUE_NODE).addText(data.toString());
+//            	fieldsElement.addElement(RFANodeconstant.RESPONSE_FIELDS_FIELD_VALUE_NODE).addText(data.toString());
             	logMsg.append(data.toString());
             }
             catch (Exception e)
@@ -608,12 +602,12 @@ public final class JsonOMMParser
      * PrintStream
      * data is OMMMessage Attribute
      */
-    public static final void parseData(OMMData data, StringBuffer logMsg, int tabLevel,Element fieldsElement,boolean ripple,String[] payload)
+    public static final void parseData(OMMData data, StringBuffer logMsg, int tabLevel,boolean ripple,String[] payload)
     {
         if (data.isBlank())
         	logMsg.append("\n");
         else if (OMMTypes.isAggregate(data.getType()))
-            parseAggregate(data, logMsg, tabLevel + 1,fieldsElement,ripple,"",(byte)0,null);
+            parseAggregate(data, logMsg, tabLevel + 1,ripple,"",(byte)0,null);
         else if ((data.getType() == OMMTypes.RMTES_STRING)
                 && ((OMMDataBuffer)data).hasPartialUpdates())
         {
@@ -679,13 +673,13 @@ public final class JsonOMMParser
         }
         else if (data.getType() == OMMTypes.MSG)
         {
-            parseMsg((OMMMsg)data, logMsg, tabLevel + 1,fieldsElement,"",null);
+            parseMsg((OMMMsg)data, logMsg, tabLevel + 1,"",null);
         }
         else
         {
             try
             {
-            	fieldsElement.addElement(RFANodeconstant.RESPONSE_FIELDS_FIELD_VALUE_NODE).addText(data.toString());
+//            	fieldsElement.addElement(RFANodeconstant.RESPONSE_FIELDS_FIELD_VALUE_NODE).addText(data.toString());
             	payload[3]=String.valueOf(data.toString());
             	logMsg.append(data.toString());
             }
@@ -697,7 +691,7 @@ public final class JsonOMMParser
         }
     }
 
-    private static final void parseAggregateHeader(OMMData data, StringBuffer logMsg, int tabLevel,Element fields )
+    private static final void parseAggregateHeader(OMMData data, StringBuffer logMsg, int tabLevel )
     {
     	dumpIndent(logMsg, tabLevel);
         short dataType = data.getType();
@@ -719,7 +713,7 @@ public final class JsonOMMParser
                 {
                 	dumpIndent(logMsg, tabLevel+1);
                 	logMsg.append("SUMMARY");
-                    parseData(s.getSummaryData(), logMsg, tabLevel + 1,fields,false,null);
+                    parseData(s.getSummaryData(), logMsg, tabLevel + 1,false,null);
                 }
                 if (s.has(OMMSeries.HAS_DATA_DEFINITIONS))
                 {
@@ -742,7 +736,7 @@ public final class JsonOMMParser
                 {
                 	dumpIndent(logMsg, tabLevel);
                 	logMsg.append("SUMMARY");
-                    parseData(s.getSummaryData(), logMsg, tabLevel + 1,fields,false,null);
+                    parseData(s.getSummaryData(), logMsg, tabLevel + 1,false,null);
                 }
             }
                 break;
@@ -758,7 +752,7 @@ public final class JsonOMMParser
                 {
                 	dumpIndent(logMsg, tabLevel+1);
                 	logMsg.append("SUMMARY");
-                    parseData(s.getSummaryData(), logMsg, tabLevel + 1,fields,false,null);
+                    parseData(s.getSummaryData(), logMsg, tabLevel + 1,false,null);
                 }
             }
                 break;
@@ -788,7 +782,7 @@ public final class JsonOMMParser
     
     
 
-    private static final void parseEntry(OMMEntry entry, StringBuffer logMsg, int tabLevel,Element fields,boolean ripple,String itemName,byte msgType,Map<Short,Element> rippleMap,JsonModel jsonModel)
+    private static final void parseEntry(OMMEntry entry, StringBuffer logMsg, int tabLevel,boolean ripple,String itemName,byte msgType,Map<Short,Element> rippleMap,JsonModel jsonModel)
     {
     	String[] payLoad =  new String[4];
     	jsonModel.getPayLoadSet().add(payLoad);
@@ -804,10 +798,10 @@ public final class JsonOMMParser
 			DataBaseCache.filedValueMap.get(itemName).put(fiddef.getFieldId(), fieldValue);
 		}
 		short fId = fieldValue.getFieldId();
-		Element ele =rippleMap.get(fId);
-		if(ele !=null){
-			fields.remove(ele);
-		}
+//		Element ele =rippleMap.get(fId);
+//		if(ele !=null){
+//			fields.remove(ele);
+//		}
 		Short rippleId = fiddef.getRippleFieldId();
 
 		if (msgType == MsgType.UPDATE_RESP) {
@@ -821,22 +815,22 @@ public final class JsonOMMParser
 					
 					short fieldId = fieldValue.getFieldId();
 					//避免重复,删除掉原有的可能存在缓存中的Element的值.即使没有删除.该值也不影响客户端数据的有效性.
-					Element e = rippleMap.get(fieldId);
-					if(e !=null){
-						rippleMap.remove(fieldId);
-						boolean removeResult = fields.remove(e);
-						_logger.info("remove result "+removeResult);
-					}
-					Element rippleField = fields.addElement("Field");
+//					Element e = rippleMap.get(fieldId);
+//					if(e !=null){
+//						rippleMap.remove(fieldId);
+//						boolean removeResult = fields.remove(e);
+//						_logger.info("remove result "+removeResult);
+//					}
+//					Element rippleField = fields.addElement("Field");
 					FidDef rippleDef = CURRENT_DICTIONARY.getFidDef(rippleFieldDef.getRippleFieldId());
-					dumpFieldEntryHeader(fieldValue, rippleDef, logMsg, tabLevel + 1, rippleField);
-					rippleField.addElement(RFANodeconstant.RESPONSE_FIELDS_FIELD_TYPE_NODE).addText(
-							RFATypeConvert.convertField(OMMTypes.toString(fieldValue.getOMMType())));
-					logMsg.append(tmp.toString());
+//					dumpFieldEntryHeader(fieldValue, rippleDef, logMsg, tabLevel + 1, rippleField);
+//					rippleField.addElement(RFANodeconstant.RESPONSE_FIELDS_FIELD_TYPE_NODE).addText(
+//							RFATypeConvert.convertField(OMMTypes.toString(fieldValue.getOMMType())));
+//					logMsg.append(tmp.toString());
 					//使用XAU=时,Bid1和Ask1既是Ripple的field,RFA又同时传送过来了相应的值.避免重复.
-					Element tmpElement=rippleField.addElement(RFANodeconstant.RESPONSE_FIELDS_FIELD_VALUE_NODE).addText(tmp.toString());
+//					Element tmpElement=rippleField.addElement(RFANodeconstant.RESPONSE_FIELDS_FIELD_VALUE_NODE).addText(tmp.toString());
 					payLoad[3]=(tmp.toString());
-					rippleMap.put(fieldId, rippleField);
+//					rippleMap.put(fieldId, rippleField);
 					tmp = fieldValue.setValue(tmp);
 					rippleFieldDef = CURRENT_DICTIONARY.getFidDef(fieldId);
 				}
@@ -844,7 +838,7 @@ public final class JsonOMMParser
 		}
 	
 		
-		Element elementField = fields.addElement("Field");
+//		Element elementField = fields.addElement("Field");
 		try {
 			switch (entry.getType()) {
 			case OMMTypes.FIELD_ENTRY: {
@@ -852,7 +846,7 @@ public final class JsonOMMParser
 					if (fiddef != null) {
 						payLoad[0]=String.valueOf(fiddef.getFieldId());
 						payLoad[1]=String.valueOf(fiddef.getName());
-						dumpFieldEntryHeader(fe, fiddef, logMsg, tabLevel + 1, elementField);
+						dumpFieldEntryHeader(fe, fiddef, logMsg, tabLevel + 1);
 						OMMData data = null;
 						if (fe.getDataType() == OMMTypes.UNKNOWN)
 							data = fe.getData(fiddef.getOMMType());
@@ -868,22 +862,22 @@ public final class JsonOMMParser
 						// DictionaryConverter.
 						// logMsg.append(" data type="+OMMTypes.toString(data.getType())+" ");
 						String dataType=RFATypeConvert.convertField(OMMTypes.toString(data.getType()));
-						elementField.addElement(RFANodeconstant.RESPONSE_FIELDS_FIELD_TYPE_NODE).addText(dataType);
+//						elementField.addElement(RFANodeconstant.RESPONSE_FIELDS_FIELD_TYPE_NODE).addText(dataType);
 						payLoad[2]=String.valueOf(dataType);
 						if (data.getType() == OMMTypes.ENUM) {
 							String value = CURRENT_DICTIONARY.expandedValueFor(fiddef.getFieldId(),
 									((OMMEnum) data).getValue());
 							dumpIndent(logMsg, tabLevel);
 							logMsg.append(value);
-							elementField.addElement(RFANodeconstant.RESPONSE_FIELDS_FIELD_VALUE_NODE).addText(value);
+//							elementField.addElement(RFANodeconstant.RESPONSE_FIELDS_FIELD_VALUE_NODE).addText(value);
 							payLoad[3]=String.valueOf(value);
 							// logMsg.append(CURRENT_DICTIONARY.expandedValueFor(fiddef.getFieldId(),
 							// ((OMMEnum)data).getValue()));
 						} else
-							parseData(data, logMsg, tabLevel, elementField, ripple,payLoad);
+							parseData(data, logMsg, tabLevel,  ripple,payLoad);
 					}
 				} else {
-					dumpFieldEntryHeader(fe, null, logMsg, tabLevel, elementField);
+					dumpFieldEntryHeader(fe, null, logMsg, tabLevel);
 					if (fe.getDataType() == OMMTypes.UNKNOWN) {
 						OMMDataBuffer data = (OMMDataBuffer) fe.getData();
 						dumpIndent(logMsg, tabLevel);
@@ -892,35 +886,35 @@ public final class JsonOMMParser
 					// defined data already has type
 					{
 						OMMData data = fe.getData();
-						parseData(data, logMsg, tabLevel, elementField, ripple,null);
+						parseData(data, logMsg, tabLevel, ripple,null);
 					}
 				}
 			}
 				break;
 			case OMMTypes.ELEMENT_ENTRY:
-				dumpElementEntryHeader((OMMElementEntry) entry, logMsg, tabLevel + 1, elementField);
-				parseData(entry.getData(), logMsg, tabLevel, elementField, false,null);
+				dumpElementEntryHeader((OMMElementEntry) entry, logMsg, tabLevel + 1);
+				parseData(entry.getData(), logMsg, tabLevel,  false,null);
 				break;
 			case OMMTypes.MAP_ENTRY:
-				dumpMapEntryHeader((OMMMapEntry) entry, logMsg, tabLevel, elementField);
+				dumpMapEntryHeader((OMMMapEntry) entry, logMsg, tabLevel);
 				if ((((OMMMapEntry) entry).getAction() != OMMMapEntry.Action.DELETE)
 						&& entry.getDataType() != OMMTypes.NO_DATA)
-					parseData(entry.getData(), logMsg, tabLevel, elementField, false,null);
+					parseData(entry.getData(), logMsg, tabLevel, false,null);
 				break;
 			case OMMTypes.VECTOR_ENTRY:
 				dumpVectorEntryHeader((OMMVectorEntry) entry, logMsg, tabLevel);
 				if ((((OMMVectorEntry) entry).getAction() != OMMVectorEntry.Action.DELETE)
 						&& (((OMMVectorEntry) entry).getAction() != OMMVectorEntry.Action.CLEAR))
-					parseData(entry.getData(), logMsg, tabLevel, elementField, false,null);
+					parseData(entry.getData(), logMsg, tabLevel, false,null);
 				break;
 			case OMMTypes.FILTER_ENTRY:
 				dumpFilterEntryHeader((OMMFilterEntry) entry, logMsg, tabLevel);
 				if (((OMMFilterEntry) entry).getAction() != OMMFilterEntry.Action.CLEAR)
-					parseData(entry.getData(), logMsg, tabLevel, elementField, false,null);
+					parseData(entry.getData(), logMsg, tabLevel,  false,null);
 				break;
 			default:
 				dumpEntryHeader(entry, logMsg, tabLevel);
-				parseData(entry.getData(), logMsg, tabLevel, elementField, false,null);
+				parseData(entry.getData(), logMsg, tabLevel, false,null);
 				break;
 			}
 		} catch (OMMException e) {
@@ -947,10 +941,10 @@ public final class JsonOMMParser
     }
 
     private static final void dumpFieldEntryHeader(OMMFieldEntry entry, FidDef def, StringBuffer logMsg,
-            int tabLevel,Element field)
+            int tabLevel)
     {
     	
-    	field.addElement(RFANodeconstant.RESPONSE_FIELDS_FIELD_ID_NODE).addText(String.valueOf(entry.getFieldId()));
+//    	field.addElement(RFANodeconstant.RESPONSE_FIELDS_FIELD_ID_NODE).addText(String.valueOf(entry.getFieldId()));
     	dumpIndent(logMsg,tabLevel);
         logMsg.append(OMMTypes.toString(entry.getType())+" "+entry.getFieldId());
         if (def == null)
@@ -959,7 +953,7 @@ public final class JsonOMMParser
         }
         else
         {
-        	field.addElement(RFANodeconstant.RESPONSE_FIELDS_FIELD_NAME_NODE).addText(def.getName());
+//        	field.addElement(RFANodeconstant.RESPONSE_FIELDS_FIELD_NAME_NODE).addText(def.getName());
         	dumpIndent(logMsg,tabLevel);
         	logMsg.append("/");
         	logMsg.append(def.getName()); 
@@ -993,11 +987,10 @@ public final class JsonOMMParser
     }
     
 
-	private static final void dumpElementEntryHeader(OMMElementEntry entry, StringBuffer logMsg, int tabLevel,
-			Element field) {
+	private static final void dumpElementEntryHeader(OMMElementEntry entry, StringBuffer logMsg, int tabLevel) {
 		dumpIndent(logMsg, tabLevel);
 		logMsg.append(OMMTypes.toString(entry.getType()) + " " + entry.getName() + ": ");
-		field.addAttribute(OMMTypes.toString(entry.getType()), entry.getName());
+//		field.addAttribute(OMMTypes.toString(entry.getType()), entry.getName());
 		if ((entry.getDataType() >= OMMTypes.BASE_FORMAT) || (entry.getDataType() == OMMTypes.ARRAY))
 			logMsg.append("\n  ");
 	}
@@ -1023,7 +1016,7 @@ public final class JsonOMMParser
 
     }
 
-    private static final void dumpMapEntryHeader(OMMMapEntry entry, StringBuffer logMsg, int tabLevel,Element field)
+    private static final void dumpMapEntryHeader(OMMMapEntry entry, StringBuffer logMsg, int tabLevel)
     {
         
         logMsg.append(OMMTypes.toString(entry.getType()));
@@ -1039,7 +1032,7 @@ public final class JsonOMMParser
 
         
         logMsg.append("\nKey: ");
-        parseData(entry.getKey(), logMsg, 0,field,false,null);
+        parseData(entry.getKey(), logMsg, 0,false,null);
         
         logMsg.append("\n Value: ");
     }

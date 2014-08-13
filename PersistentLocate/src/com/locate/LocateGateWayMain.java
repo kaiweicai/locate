@@ -7,7 +7,6 @@ import org.springframework.context.support.FileSystemXmlApplicationContext;
 import com.locate.common.SystemConstant;
 
 /**
- * 
  * @author cloudwei Locate 
  * 主要启动程序. 一切从这里开始. 
  * 负责启动RFA的主程序和Locate Gate Way 的主程序.

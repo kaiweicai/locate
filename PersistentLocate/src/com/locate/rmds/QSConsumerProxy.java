@@ -29,7 +29,6 @@ import com.locate.rmds.processer.face.IProcesser;
 import com.locate.rmds.sub.DirectoryClient;
 import com.locate.rmds.sub.RDMServiceInfo;
 import com.locate.rmds.sub.ServiceInfo;
-import com.locate.rmds.util.GenericOMMParser;
 import com.locate.rmds.util.JsonOMMParser;
 import com.locate.rmds.util.SystemProperties;
 import com.reuters.rfa.common.Client;
