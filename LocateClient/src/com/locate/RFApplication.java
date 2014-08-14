@@ -5,7 +5,6 @@ import java.awt.Component;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,10 +12,12 @@ import java.util.Map;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.ScrollPaneLayout;
 import javax.swing.UIManager;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -32,7 +33,6 @@ import org.dyno.visual.swing.layouts.Leading;
 import org.jboss.netty.channel.SimpleChannelHandler;
 
 import com.locate.client.gui.StatusBar;
-import com.locate.common.DataBaseCache;
 import com.locate.common.GateWayMessageTypes;
 import com.locate.common.GateWayMessageTypes.RFAMessageName;
 import com.locate.common.NetTimeUtil;
@@ -114,41 +114,34 @@ public class RFApplication extends JFrame {
 	private void initComponents() {
 		
 		GroupLayout mainGroupLayout = new GroupLayout();
-		setLayout(mainGroupLayout);
+//		setLayout(mainGroupLayout);
+		JPanel panel = new JPanel();
+		panel.setLayout(mainGroupLayout);
+		JScrollPane sp = new JScrollPane(panel);
+//		sp.setLayout(mainGroupLayout);
+		getContentPane().add(sp);
+		panel.add(getUserNameLabel(), new Constraints(new Leading(550, 100, 12, 12), new Leading(19, 12, 12)));
+		panel.add(getUserNameTextField(), new Constraints(new Leading(670, 100, 12, 12), new Leading(19, 12, 12)));
+		panel.add(getPasswordLabel(), new Constraints(new Leading(550, 100, 12, 12), new Leading(50, 12, 12)));
+		panel.add(getPasswordTextField(), new Constraints(new Leading(670, 12, 12), new Leading(50, 12, 12)));
+		panel.add(getServerAddressLabel(), new Constraints(new Leading(550, 100, 12, 12), new Leading(80, 12, 12)));
+		panel.add(getServerAddressTextField(), new Constraints(new Leading(670, 100, 12, 12), new Leading(80, 12, 12)));
+		panel.add(getPortLabel(), new Constraints(new Leading(550, 100, 12, 12), new Leading(120, 12, 12)));
+		panel.add(getPortTextField(), new Constraints(new Leading(670, 100, 12, 12), new Leading(120, 12, 12)));
 		
-		add(getUserNameLabel(), new Constraints(new Leading(550, 100, 12, 12), new Leading(19, 12, 12)));
-		add(getUserNameTextField(), new Constraints(new Leading(670, 100, 12, 12), new Leading(19, 12, 12)));
-		add(getPasswordLabel(), new Constraints(new Leading(550, 100, 12, 12), new Leading(50, 12, 12)));
-		add(getPasswordTextField(), new Constraints(new Leading(670, 12, 12), new Leading(50, 12, 12)));
-		add(getServerAddressLabel(), new Constraints(new Leading(550, 100, 12, 12), new Leading(80, 12, 12)));
-		add(getServerAddressTextField(), new Constraints(new Leading(670, 100, 12, 12), new Leading(80, 12, 12)));
-		add(getPortLabel(), new Constraints(new Leading(550, 100, 12, 12), new Leading(120, 12, 12)));
-		add(getPortTextField(), new Constraints(new Leading(670, 100, 12, 12), new Leading(120, 12, 12)));
+		panel.add(getConnetedButton(), new Constraints(new Leading(550, 12, 12), new Leading(150, 12, 12)));
 		
-		add(getConnetedButton(), new Constraints(new Leading(550, 12, 12), new Leading(150, 12, 12)));
+		panel.add(getRicLabel(), new Constraints(new Leading(550, 100, 12, 12), new Leading(190, 12, 12)));
+		panel.add(getRicTextField(), new Constraints(new Leading(670, 100, 12, 12), new Leading(190, 12, 12)));
+		panel.add(getOpenButton(), new Constraints(new Leading(550, 12, 12), new Leading(220, 12, 12)));
+		panel.add(getTableScrollPane(), new Constraints(new Leading(550, 12, 12), new Leading(280, 12, 12)));
+		panel.add(getUseTimeTextLabel(), new Constraints(new Leading(550, 12, 12), new Leading(720, 12, 12)));
 		
-		add(getRicLabel(), new Constraints(new Leading(550, 100, 12, 12), new Leading(190, 12, 12)));
-		add(getRicTextField(), new Constraints(new Leading(670, 100, 12, 12), new Leading(190, 12, 12)));
-		add(getOpenButton(), new Constraints(new Leading(550, 12, 12), new Leading(220, 12, 12)));
-		add(getTableScrollPane(), new Constraints(new Leading(550, 12, 12), new Leading(280, 12, 12)));
-		add(getUseTimeTextLabel(), new Constraints(new Leading(550, 12, 12), new Leading(720, 12, 12)));
+		panel.add(getCloseButton(), new Constraints(new Leading(1063, 12, 12), new Leading(10, 12, 12)));
 		
-//		add(getCurrentUserTitle(), new Constraints(new Leading(40, 111, 12, 12), new Leading(19, 12, 12)));
-//		add(getCurrentUserNumber(), new Constraints(new Leading(169, 91, 10, 10), new Leading(19, 12, 12)));
-//		add(getCurrentRequestNumber(), new Constraints(new Leading(402, 85, 10, 10), new Leading(19, 12, 12)));
-//		add(getCurrentRequestTitle(), new Constraints(new Leading(272, 112, 12, 12), new Leading(19, 12, 12)));
-//		add(getAvgTitle(), new Constraints(new Leading(801, 148, 10, 10), new Leading(19, 10, 10)));
-//		add(getResponseNumber(), new Constraints(new Leading(682, 95, 10, 10), new Leading(19, 12, 12)));
-//		add(getResponseTitle(), new Constraints(new Leading(555, 99, 10, 10), new Leading(19, 12, 12)));
-//		add(getAvgTimes(), new Constraints(new Leading(972, 73, 10, 10), new Leading(15, 10, 10)));
-		add(getCloseButton(), new Constraints(new Leading(1063, 12, 12), new Leading(10, 12, 12)));
-		
-		add(getJScrollPane0(), new Constraints(new Leading(30, 500, 10, 10), new Leading(51, 700, 10, 10)));
-		add(getStatusBar(), new Constraints(new Leading(30, 500, 10, 10), new Leading(770, 50, 10, 10)));
-		
-		setSize(1024, 900);
-		// this.pack();
-//		(new RemoveMoreData()).start();
+		panel.add(getJScrollPane0(), new Constraints(new Leading(30, 500, 10, 10), new Leading(51, 700, 10, 10)));
+		panel.add(getStatusBar(), new Constraints(new Leading(30, 500, 10, 10), new Leading(770, 50, 10, 10)));
+		setSize(1024, 600);
 	}
 	
 	public void initialPriceModel(){
@@ -156,7 +149,6 @@ public class RFApplication extends JFrame {
 	
 	/**
 	 * add by cloud
-	 * 得到用户名称标签
 	 * @return
 	 */
 	private JLabel getUserNameLabel() {
@@ -254,7 +246,7 @@ public class RFApplication extends JFrame {
 	private JButton getCloseButton() {
 		if (closeButton == null) {
 			closeButton = new JButton();
-			closeButton.setText("关闭程序");
+			closeButton.setText("close locate client");
 			closeButton.addMouseListener(new MouseAdapter() {
 				public void mouseClicked(MouseEvent event) {
 					shutdownLocateGateWay();
@@ -401,29 +393,6 @@ public class RFApplication extends JFrame {
 	}
 
 	
-//	private void initialDataModel(TableModel tableModel) {
-//		tableModel.setValueAt("productName", 0, 0);
-//		tableModel.setValueAt("MarketPrice", 1, 0);
-//		
-//		tableModel.setValueAt("黄金期货", 0, 1);
-//		tableModel.setValueAt(100, 1, 1);
-//	}
-//
-//	private JLabel getAvgTimes() {
-//		if (avgTimes == null) {
-//			avgTimes = new JLabel();
-//			avgTimes.setText("0");
-//		}
-//		return avgTimes;
-//	}
-//
-//	private JLabel getAvgTitle() {
-//		if (avgTitle == null) {
-//			avgTitle = new JLabel();
-//			avgTitle.setText("平均数据处理时间(MS):");
-//		}
-//		return avgTitle;
-//	}
 
 	private JScrollPane getTableScrollPane() {
 		if (tableScrollPane == null) {
@@ -468,54 +437,6 @@ public class RFApplication extends JFrame {
 		}
 		return showLog;
 	}
-
-//	private JLabel getResponseNumber() {
-//		if (responseNumber == null) {
-//			responseNumber = new JLabel();
-//			responseNumber.setText("0");
-//		}
-//		return responseNumber;
-//	}
-//
-//	private JLabel getResponseTitle() {
-//		if (responseTitle == null) {
-//			responseTitle = new JLabel();
-//			responseTitle.setText("返回数据个数:");
-//		}
-//		return responseTitle;
-//	}
-//
-//	private JLabel getCurrentRequestNumber() {
-//		if (currentRequestNumber == null) {
-//			currentRequestNumber = new JLabel();
-//			currentRequestNumber.setText("0");
-//		}
-//		return currentRequestNumber;
-//	}
-//
-//	private JLabel getCurrentRequestTitle() {
-//		if (currentRequestTitle == null) {
-//			currentRequestTitle = new JLabel();
-//			currentRequestTitle.setText("当前请求代码数:");
-//		}
-//		return currentRequestTitle;
-//	}
-//
-//	private JLabel getCurrentUserNumber() {
-//		if (currentUserNumber == null) {
-//			currentUserNumber = new JLabel();
-//			currentUserNumber.setText("0");
-//		}
-//		return currentUserNumber;
-//	}
-//
-//	private JLabel getCurrentUserTitle() {
-//		if (currentUserTitle == null) {
-//			currentUserTitle = new JLabel();
-//			currentUserTitle.setText("当前连接用户数:");
-//		}
-//		return currentUserTitle;
-//	}
 	private static void installLnF() {
 		try {
 			String lnfClassname = PREFERRED_LOOK_AND_FEEL;
