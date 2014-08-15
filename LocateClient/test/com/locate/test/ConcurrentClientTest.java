@@ -15,8 +15,8 @@ import org.junit.Test;
 import com.locate.RFASample;
 import com.locate.common.GateWayMessageTypes;
 import com.locate.common.XmlMessageUtil;
-import com.locate.face.BussinessInterface;
-import com.locate.face.ClientConnectedInterface;
+import com.locate.face.IBussiness;
+import com.locate.face.IClientConnected;
 import com.locate.gate.handler.ClientConnector;
 import com.reuters.rfa.omm.OMMMsg.MsgType;
 
@@ -26,7 +26,7 @@ public class ConcurrentClientTest {
 	@Test
 	public void cuncrrentUserTest() throws Exception {
 		RFASample sample = new RFASample();
-		// Ïò·þÎñÆ÷·¢ËÍRICÇëÇó.BussinessHandlerµÄhandleMessage·½·¨¾Í¿ÉÒÔ½ÓÊÕµ½·þÎñÆ÷·µ»ØµÄÊÐ³¡¼Û¸ñÁË.
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½RICï¿½ï¿½ï¿½ï¿½.BussinessHandlerï¿½ï¿½handleMessageï¿½ï¿½ï¿½ï¿½ï¿½Í¿ï¿½ï¿½Ô½ï¿½ï¿½Õµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Øµï¿½ï¿½Ð³ï¿½ï¿½Û¸ï¿½ï¿½ï¿½.
 		FileReader fr = new FileReader(new File("testResource/Ric.txt"));
 		BufferedReader br = new BufferedReader(fr);
 		String ric = null;
@@ -34,7 +34,7 @@ public class ConcurrentClientTest {
 		List<RFASample> sampleList = new ArrayList<RFASample>();
 		for (int i = 0; i < 20; i++) {
 			sample = new RFASample();
-			// Ïò·þÎñÆ÷×¢²á¿Í»§¶ËÐÅÏ¢.²ÎÊý1·þÎñÆ÷ip,²ÎÊý2·þÎñÆ÷¶Ë¿Ú,²ÎÊý3¿Í»§Ãû³Æ,²ÎÊý4¿Í»§ÃÜÂë.
+			// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×¢ï¿½ï¿½Í»ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢.ï¿½ï¿½ï¿½ï¿½1ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ip,ï¿½ï¿½ï¿½ï¿½2ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ë¿ï¿½,ï¿½ï¿½ï¿½ï¿½3ï¿½Í»ï¿½ï¿½ï¿½ï¿½,ï¿½ï¿½ï¿½ï¿½4ï¿½Í»ï¿½ï¿½ï¿½ï¿½ï¿½.
 			sample.clientConnetor.conneteLocateGateWay("61.144.244.173", 8888, "ztcj", "ztcj2013");
 			sampleList.add(sample);
 			for (int j = 0; j < 50; j++) {

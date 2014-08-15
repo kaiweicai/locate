@@ -15,8 +15,8 @@ import org.junit.Test;
 import com.locate.RFASample;
 import com.locate.common.GateWayMessageTypes;
 import com.locate.common.XmlMessageUtil;
-import com.locate.face.BussinessInterface;
-import com.locate.face.ClientConnectedInterface;
+import com.locate.face.IBussiness;
+import com.locate.face.IClientConnected;
 import com.locate.gate.handler.ClientConnector;
 import com.reuters.rfa.omm.OMMMsg.MsgType;
 
@@ -29,7 +29,7 @@ public class ConcurrentRicTest {
 		sample = new RFASample();
 //		sample.clientConnetor.conneteLocateGateWay("61.144.244.173", 8888, "ztcj", "ztcj2013");
 		sample.clientConnetor.conneteLocateGateWay("54.250.181.110", 8888, "ztcj", "ztcj2013");
-		// Ïò·þÎñÆ÷·¢ËÍRICÇëÇó.BussinessHandlerµÄhandleMessage·½·¨¾Í¿ÉÒÔ½ÓÊÕµ½·þÎñÆ÷·µ»ØµÄÊÐ³¡¼Û¸ñÁË.
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½RICï¿½ï¿½ï¿½ï¿½.BussinessHandlerï¿½ï¿½handleMessageï¿½ï¿½ï¿½ï¿½ï¿½Í¿ï¿½ï¿½Ô½ï¿½ï¿½Õµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Øµï¿½ï¿½Ð³ï¿½ï¿½Û¸ï¿½ï¿½ï¿½.
 		FileReader fr = new FileReader(new File("testResource/Ric.txt"));
 		BufferedReader br = new BufferedReader(fr);
 		String ric = null;

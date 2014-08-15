@@ -30,21 +30,21 @@ import org.jboss.netty.handler.timeout.IdleStateEvent;
 import com.locate.common.GateWayMessageTypes;
 import com.locate.common.RFANodeconstant;
 import com.locate.common.XmlMessageUtil;
-import com.locate.face.BussinessInterface;
-import com.locate.face.ClientConnectedInterface;
+import com.locate.face.IBussiness;
+import com.locate.face.IClientConnected;
 import com.locate.gate.coder.EncrytDecoder;
 import com.locate.gate.coder.EncrytEncoder;
 import com.locate.rmds.RFAServerManager;
 
-public class ClientConnector implements ClientConnectedInterface {
+public class ClientConnector implements IClientConnected {
 	Logger logger = Logger.getLogger(ClientConnector.class);
 	private Channel Clientchannel;
 	private ClientBootstrap bootstrap;
 	private boolean conLocate;
 	private SimpleChannelHandler clientHandler;
-	private BussinessInterface bussinessHandler;
+	private IBussiness bussinessHandler;
 
-	public ClientConnector(BussinessInterface bussinessHandler) {
+	public ClientConnector(IBussiness bussinessHandler) {
 		this.bussinessHandler = bussinessHandler;
 		this.clientHandler = new ClientHandler(bussinessHandler);
 		initNettyClient();

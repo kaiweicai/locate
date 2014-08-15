@@ -9,12 +9,12 @@ import org.jboss.netty.channel.ExceptionEvent;
 import org.jboss.netty.channel.MessageEvent;
 import org.jboss.netty.channel.SimpleChannelHandler;
 
-import com.locate.face.BussinessInterface;
+import com.locate.face.IBussiness;
 
 public class ClientHandler extends SimpleChannelHandler {
-	private BussinessInterface bussinessHandler;
+	private IBussiness bussinessHandler;
 	private long t0, t1;
-	public ClientHandler(BussinessInterface bussinessHandler) {
+	public ClientHandler(IBussiness bussinessHandler) {
 		this.bussinessHandler = bussinessHandler;
 	}
 

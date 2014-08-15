@@ -1,39 +1,30 @@
 package com.locate;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.dom4j.Document;
-import org.dom4j.Element;
-import org.jboss.netty.channel.SimpleChannelHandler;
 import org.junit.Test;
 
 import com.locate.common.GateWayMessageTypes;
-import com.locate.common.RFANodeconstant;
 import com.locate.common.XmlMessageUtil;
-import com.locate.common.GateWayMessageTypes.RFAMessageName;
-import com.locate.face.BussinessInterface;
-import com.locate.face.ClientConnectedInterface;
+import com.locate.face.IBussiness;
+import com.locate.face.IClientConnected;
 import com.locate.gate.handler.ClientConnector;
-import com.locate.gate.handler.ClientHandler;
-import com.locate.gate.model.CustomerFiled;
 import com.reuters.rfa.omm.OMMMsg.MsgType;
 
 public class RFASample {
-	//Ïò·şÎñÆ÷·¢ËÍÇëÇóµÄ¿Í»§¶Ë½Ó¿Ú.
-	public ClientConnectedInterface clientConnetor;
+	//å‘æœåŠ¡å™¨å‘é€è¯·æ±‚çš„å®¢æˆ·ç«¯æ¥å£.
+	public IClientConnected clientConnetor;
 	
-	//ÊµÀı»¯
+	//å®ä¾‹åŒ–
 	public RFASample(){
-		//BussinessInterface¸Ã½Ó¿ÚÊÇ½ÓÊÜ·şÎñÆ÷Êı¾İµÄ½Ó¿Ú.Õâ¸ö½Ó¿ÚÇë¿Í»§Ò»¶¨Òª×Ô¼ºÊµÏÖ.
-		BussinessInterface bussinessHandler = new BussinessHandler();
-		//ClientConnectedInterfaceÏò·şÎñÆ÷·¢ËÍÇëÇóµÄ½Ó¿Ú.Õâ¸ö½Ó¿Ú¿Í»§ÎŞĞèÊµÏÖ.Ö»Òªµ÷ÓÃÕâ¸öClientConnectorÕâ¸öÀàÀïÃæµÄ·½·¨¾ÍºÃÁË.
+		//BussinessInterfaceè¯¥æ¥å£æ˜¯æ¥å—æœåŠ¡å™¨æ•°æ®çš„æ¥å£.è¿™ä¸ªæ¥å£è¯·å®¢æˆ·ä¸€å®šè¦è‡ªå·±å®ç°.
+		IBussiness bussinessHandler = new BussinessHandler();
+		//ClientConnectedInterfaceå‘æœåŠ¡å™¨å‘é€è¯·æ±‚çš„æ¥å£.è¿™ä¸ªæ¥å£å®¢æˆ·æ— éœ€å®ç°.åªè¦è°ƒç”¨è¿™ä¸ªClientConnectorè¿™ä¸ªç±»é‡Œé¢çš„æ–¹æ³•å°±å¥½äº†.
 		clientConnetor = new ClientConnector(bussinessHandler);
 	}
 	
-	class BussinessHandler implements BussinessInterface{
+	class BussinessHandler implements IBussiness{
 		/* 
-		 * ¿Í»§×ÔĞĞÊµÏÖÊµÏÖ´¦ÀíÈÎºÎÍøÂçÒì³£µÄ´úÂë.
+		 * å®¢æˆ·è‡ªè¡Œå®ç°å®ç°å¤„ç†ä»»ä½•ç½‘ç»œå¼‚å¸¸çš„ä»£ç .
 		 */
 		@Override
 		public void handleException(Throwable e){
@@ -41,8 +32,8 @@ public class RFASample {
 		}
 		
 		/* 
-		 * ¿Í»§ÊµÏÖÊı¾İ´¦ÀíµÄ´úÂë.²ÎÊımessageÊÇ·şÎñÆ÷·¢ËÍ¹ıÀ´µÄ×Ö·û´®ĞÎÊ½µÄÊı¾İ.
-		 * ¿ÉÒÔÓÃDom4jÖ±½Ó×ª»»³ÉDomĞÎÊ½.
+		 * å®¢æˆ·å®ç°æ•°æ®å¤„ç†çš„ä»£ç .å‚æ•°messageæ˜¯æœåŠ¡å™¨å‘é€è¿‡æ¥çš„å­—ç¬¦ä¸²å½¢å¼çš„æ•°æ®.
+		 * å¯ä»¥ç”¨Dom4jç›´æ¥è½¬æ¢æˆDomå½¢å¼.
 		 */
 		@Override
 		public void handleMessage(String message){
@@ -53,21 +44,21 @@ public class RFASample {
 				return;
 			}
 			switch(msgType){
-				//Ê×ÏÈ·şÎñÆ÷»á·¢ËÍ¹ıÀ´Ò»¸ösnapshotµÄĞÅÏ¢.ÀïÃæ°üÀ¨¸ÃRIC¶ÔÓ¦µÄËùÓĞ×Ö¶Î.
+				//é¦–å…ˆæœåŠ¡å™¨ä¼šå‘é€è¿‡æ¥ä¸€ä¸ªsnapshotçš„ä¿¡æ¯.é‡Œé¢åŒ…æ‹¬è¯¥RICå¯¹åº”çš„æ‰€æœ‰å­—æ®µ.
 				case MsgType.REFRESH_RESP:
 					System.out.println(document);
 					break;
-				//È»ºó·şÎñÆ÷»á·¢ËÍºÜ¶à¸üĞÂµÄMarketPrice.¸ÃĞÅÏ¢Ö»°üÀ¨ĞèÒª¸üĞÂµÄ×Ö¶Î.
-				//ÈçRIC: XAU= Ö»»á·¢ËÍBID,BID1,BID2,ASK,ASK1,ASK2µÈ×Ö¶Î.
+				//ç„¶åæœåŠ¡å™¨ä¼šå‘é€å¾ˆå¤šæ›´æ–°çš„MarketPrice.è¯¥ä¿¡æ¯åªåŒ…æ‹¬éœ€è¦æ›´æ–°çš„å­—æ®µ.
+				//å¦‚RIC: XAU= åªä¼šå‘é€BID,BID1,BID2,ASK,ASK1,ASK2ç­‰å­—æ®µ.
 				case MsgType.UPDATE_RESP:
 					System.out.println(document);
 					break;
-				//Èç¹û·şÎñÆ÷ÓĞÍ¨Öª·şÎñÆ÷×´Ì¬¸Ä±äµÄĞÅÏ¢,»áÊ¹ÓÃ´Ë×´Ì¬ĞÅÏ¢.
+				//å¦‚æœæœåŠ¡å™¨æœ‰é€šçŸ¥æœåŠ¡å™¨çŠ¶æ€æ”¹å˜çš„ä¿¡æ¯,ä¼šä½¿ç”¨æ­¤çŠ¶æ€ä¿¡æ¯.
 				case GateWayMessageTypes.RESPONSE_LOGIN:
 				case MsgType.STATUS_RESP:
 					System.out.println("");
 					break;
-				//·şÎñÆ÷·¢ËÍÁËÎ´ÖªµÄÏûÏ¢,Ò»°ãÕâÀï²»ÓÃ´¦Àí.ÈÓµô¸ÃÏûÏ¢¾ÍºÃÁË.
+				//æœåŠ¡å™¨å‘é€äº†æœªçŸ¥çš„æ¶ˆæ¯,ä¸€èˆ¬è¿™é‡Œä¸ç”¨å¤„ç†.æ‰”æ‰è¯¥æ¶ˆæ¯å°±å¥½äº†.
 				default:
 					System.out.println("Not should to here! message type is "+MsgType.REFRESH_RESP);
 			}
@@ -85,9 +76,9 @@ public class RFASample {
 	
 	public static void main(String[] args) {
 		RFASample sample = new RFASample();
-		//Ïò·şÎñÆ÷×¢²á¿Í»§¶ËĞÅÏ¢.²ÎÊı1·şÎñÆ÷ip,²ÎÊı2·şÎñÆ÷¶Ë¿Ú,²ÎÊı3¿Í»§Ãû³Æ,²ÎÊı4¿Í»§ÃÜÂë.
+		//å‘æœåŠ¡å™¨æ³¨å†Œå®¢æˆ·ç«¯ä¿¡æ¯.å‚æ•°1æœåŠ¡å™¨ip,å‚æ•°2æœåŠ¡å™¨ç«¯å£,å‚æ•°3å®¢æˆ·åç§°,å‚æ•°4å®¢æˆ·å¯†ç .
 		sample.clientConnetor.conneteLocateGateWay("61.144.244.173", 8888, "ztcj", "ztcj2013");
-		//Ïò·şÎñÆ÷·¢ËÍRICÇëÇó.BussinessHandlerµÄhandleMessage·½·¨¾Í¿ÉÒÔ½ÓÊÕµ½·şÎñÆ÷·µ»ØµÄÊĞ³¡¼Û¸ñÁË.
+		//å‘æœåŠ¡å™¨å‘é€RICè¯·æ±‚.BussinessHandlerçš„handleMessageæ–¹æ³•å°±å¯ä»¥æ¥æ”¶åˆ°æœåŠ¡å™¨è¿”å›çš„å¸‚åœºä»·æ ¼äº†.
 		sample.clientConnetor.openRICMarket("XAU=");
 		sample.clientConnetor.openRICMarket("XAG=");
 	}

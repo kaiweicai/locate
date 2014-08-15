@@ -38,8 +38,8 @@ import com.locate.common.GateWayMessageTypes.RFAMessageName;
 import com.locate.common.NetTimeUtil;
 import com.locate.common.RFANodeconstant;
 import com.locate.common.XmlMessageUtil;
-import com.locate.face.BussinessInterface;
-import com.locate.face.ClientConnectedInterface;
+import com.locate.face.IBussiness;
+import com.locate.face.IClientConnected;
 import com.locate.gate.handler.ClientConnector;
 import com.locate.gate.handler.ClientHandler;
 import com.locate.gate.model.CustomerFiled;
@@ -97,14 +97,14 @@ public class RFApplication extends JFrame {
 	public static long totalResponseNumber = 0;
 	public static long totalProcessTime = 0;
 	UpdateTableColore updateTablePriceThread = new UpdateTableColore();
-	private ClientConnectedInterface clientConnetor;
+	private IClientConnected clientConnetor;
 
 	private static final String PREFERRED_LOOK_AND_FEEL = "javax.swing.plaf.metal.MetalLookAndFeel";
 
 	public RFApplication() {
 		DOMConfigurator.configureAndWatch("config/log4j.xml");
 		initComponents();
-		BussinessInterface bussinessHandler = new UIHandler();
+		IBussiness bussinessHandler = new UIHandler();
 		SimpleChannelHandler clientHandler = new ClientHandler(bussinessHandler);
 		clientConnetor = new ClientConnector(bussinessHandler);
 //		initNettyClient();
@@ -480,7 +480,7 @@ public class RFApplication extends JFrame {
 		System.exit(0);
 	}
 	
-	class UIHandler implements BussinessInterface{
+	class UIHandler implements IBussiness{
 		/* (non-Javadoc)
 		 * @see com.locate.client.gui.BussinessInterface#handleException(java.lang.Throwable)
 		 */
