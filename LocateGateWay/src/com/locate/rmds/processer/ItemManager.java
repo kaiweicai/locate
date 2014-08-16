@@ -13,12 +13,12 @@ import com.locate.common.XmlMessageUtil;
 import com.locate.gate.server.GateWayServer;
 import com.locate.rmds.QSConsumerProxy;
 import com.locate.rmds.RFAServerManager;
+import com.locate.rmds.parser.GenericOMMParser;
 import com.locate.rmds.processer.face.IProcesser;
 import com.locate.rmds.statistic.CycleStatistics;
 import com.locate.rmds.statistic.LogTool;
 import com.locate.rmds.statistic.OutputFormatter;
 import com.locate.rmds.statistic.ResourceStatistics;
-import com.locate.rmds.util.GenericOMMParser;
 import com.reuters.rfa.common.Client;
 import com.reuters.rfa.common.Event;
 import com.reuters.rfa.common.Handle;
@@ -48,7 +48,7 @@ import com.reuters.rfa.session.omm.OMMSolicitedItemEvent;
 //							application uses this handles to identify the items
 // QSConsumerDemo _mainApp - main application class
 /**
- * ¸ÃÀàÓÐ¶à¸öÊµÀý.Ò»¸ö¶©ÔÄµÄ²úÆ·¶ÔÓ¦Ò»¸öitemManager.
+ * ï¿½ï¿½ï¿½ï¿½ï¿½Ð¶ï¿½ï¿½Êµï¿½ï¿½.Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ÄµÄ²ï¿½Æ·ï¿½ï¿½Ó¦Ò»ï¿½ï¿½itemManager.
  * @author Cloud.Wei
  *
  */
@@ -176,10 +176,10 @@ public class ItemManager implements Client,IProcesser
 			// Set the message into interest spec
 			ommItemIntSpec.setMsg(ommmsg);
 			/**
-			 * ÖØÒªÂß¼­:
-			 * Ïòdata source×¢²á¸ÐÐËÈ¤µÄItem,EventQueueÊ¹ÓÃQSConsumerProxyµÄQueue,¼àÌýÆ÷¾ÍÊÇitemManager×Ô¼º.
-			 * dataSource²úÉú¸ÐÐËÈ¤µÄÊ±¼äºóÍ¨¹ýeventQueueÏòÍâ·¢²¼.ItemManagerÄÜ¹»ÊÕµ½Õâ¸öÊÂ¼þ.
-			 * itemmanager ÏëËùÓÐ¶©ÔÄÁË¸Ã²úÆ·µÄchannelGroup»ØÐ´ÊÕµ½µÄÏûÏ¢.
+			 * ï¿½ï¿½Òªï¿½ß¼ï¿½:
+			 * ï¿½ï¿½data source×¢ï¿½ï¿½ï¿½ï¿½ï¿½È¤ï¿½ï¿½Item,EventQueueÊ¹ï¿½ï¿½QSConsumerProxyï¿½ï¿½Queue,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½itemManagerï¿½Ô¼ï¿½.
+			 * dataSourceï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¤ï¿½ï¿½Ê±ï¿½ï¿½ï¿½Í¨ï¿½ï¿½eventQueueï¿½ï¿½ï¿½â·¢ï¿½ï¿½.ItemManagerï¿½Ü¹ï¿½ï¿½Õµï¿½ï¿½ï¿½ï¿½ï¿½Â¼ï¿½.
+			 * itemmanager ï¿½ï¿½ï¿½ï¿½ï¿½Ð¶ï¿½ï¿½ï¿½ï¿½Ë¸Ã²ï¿½Æ·ï¿½ï¿½channelGroupï¿½ï¿½Ð´ï¿½Õµï¿½ï¿½ï¿½ï¿½ï¿½Ï¢.
 			 */
 			itemHandle = _mainApp.getOMMConsumer().registerClient(_mainApp.getEventQueue(), ommItemIntSpec, this, null);
 			_itemGroupManager.addItem(serviceName, itemName, itemHandle);
@@ -214,7 +214,7 @@ public class ItemManager implements Client,IProcesser
     	if (event.getType() == Event.COMPLETION_EVENT) 
     	{
     		_logger.info(_className+": Receive a COMPLETION_EVENT, "+ event.getHandle());
-    		//@TODO ÅÐ¶ÏÊÇ·ñÍ¨ÖªËùÓÐÏÖ´æ¿Í»§¶ËÄ³¸ö²úÆ·ÒÑ¾­Í£Ö¹·¢²¼.
+    		//@TODO ï¿½Ð¶ï¿½ï¿½Ç·ï¿½Í¨Öªï¿½ï¿½ï¿½ï¿½ï¿½Ö´ï¿½Í»ï¿½ï¿½ï¿½Ä³ï¿½ï¿½ï¿½ï¿½Æ·ï¿½Ñ¾ï¿½Í£Ö¹ï¿½ï¿½ï¿½ï¿½.
     		return;
     	}
 
@@ -222,7 +222,7 @@ public class ItemManager implements Client,IProcesser
         _logger.info(_className+".processEvent: Received Item("+clientRequestItemName+") Event from server ");
         if (event.getType() != Event.OMM_ITEM_EVENT) 
         {
-        	//ÕâÀï³ÌÐòÌ«Î£ÏÕÁË,ÒòÎªRFA¸øµÄÏûÏ¢ÓÐÎó¾ÍÒªÍË³ö³ÌÐò.¿Ö²ÀµÄÂß¼­°¡.»¹ÊÇÈ¥µôcleanupºÃÁË.
+        	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì«Î£ï¿½ï¿½ï¿½ï¿½,ï¿½ï¿½ÎªRFAï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½Ë³ï¿½ï¿½ï¿½ï¿½ï¿½.ï¿½Ö²ï¿½ï¿½ï¿½ï¿½ß¼ï¿½ï¿½ï¿½.ï¿½ï¿½ï¿½ï¿½È¥ï¿½ï¿½cleanupï¿½ï¿½ï¿½ï¿½.
             _logger.error("ERROR: "+_className+" Received an unsupported Event type.");
 //            _mainApp.cleanup();
             return;
@@ -231,9 +231,9 @@ public class ItemManager implements Client,IProcesser
         OMMItemEvent ommItemEvent = (OMMItemEvent) event;
         OMMMsg respMsg = ommItemEvent.getMsg();
         Document responseMsg = GenericOMMParser.parse(respMsg, clientRequestItemName);
-        //½«ÐÅÏ¢¿ªÊ¼´¦ÀíÊ±¼ä¼ÓÈëµ½ÏûÏ¢ÖÐ
+        //ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ëµ½ï¿½ï¿½Ï¢ï¿½ï¿½
 		XmlMessageUtil.addStartHandleTime(responseMsg, startTime);
-        //Èç¹ûÊÇ×´Ì¬ÏûÏ¢.´¦ÀíºóÖ±½Ó·¢ËÍ¸ø¿Í»§¶Ë.
+        //ï¿½ï¿½ï¿½ï¿½ï¿½×´Ì¬ï¿½ï¿½Ï¢.ï¿½ï¿½ï¿½ï¿½ï¿½Ö±ï¿½Ó·ï¿½ï¿½Í¸ï¿½Í»ï¿½ï¿½ï¿½.
         if(respMsg.getMsgType()==OMMMsg.MsgType.STATUS_RESP && (respMsg.has(OMMMsg.HAS_STATE))){
         	byte streamState= respMsg.getState().getStreamState();
         	byte dataState = respMsg.getState().getDataState();

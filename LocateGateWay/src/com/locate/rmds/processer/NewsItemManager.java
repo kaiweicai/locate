@@ -17,8 +17,8 @@ import com.locate.common.RFANodeconstant;
 import com.locate.common.SystemConstant;
 import com.locate.gate.server.GateWayServer;
 import com.locate.rmds.QSConsumerProxy;
+import com.locate.rmds.parser.GenericOMMParser;
 import com.locate.rmds.util.EventFieldUtils;
-import com.locate.rmds.util.GenericOMMParser;
 import com.locate.rmds.util.RFACommon;
 import com.reuters.rfa.common.Client;
 import com.reuters.rfa.common.Event;
@@ -233,7 +233,7 @@ public class NewsItemManager implements Client {
 	}
 
 	/**
-	 * Õâ¸ö·½·¨ÓÐÊ²Ã´×÷ÓÃ,ÖØµãÑÐ¾¿
+	 * ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê²Ã´ï¿½ï¿½ï¿½ï¿½,ï¿½Øµï¿½ï¿½Ð¾ï¿½
 	 * @param nevent
 	 */
 	protected void processHeadline(OMMItemEvent nevent) {

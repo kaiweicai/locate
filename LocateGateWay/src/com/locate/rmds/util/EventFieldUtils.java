@@ -5,6 +5,7 @@ import org.apache.log4j.PropertyConfigurator;
 import org.junit.Test;
 
 import com.locate.rmds.QSConsumerProxy;
+import com.locate.rmds.parser.GenericOMMParser;
 import com.reuters.rfa.common.Event;
 import com.reuters.rfa.dictionary.FidDef;
 import com.reuters.rfa.dictionary.FieldDictionary;

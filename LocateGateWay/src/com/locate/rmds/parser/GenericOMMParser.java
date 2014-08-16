@@ -1,4 +1,4 @@
-package com.locate.rmds.util;
+package com.locate.rmds.parser;
 
 import java.io.ByteArrayInputStream;
 import java.util.HashMap;
@@ -15,6 +15,8 @@ import org.dom4j.Element;
 import com.locate.common.DataBaseCache;
 import com.locate.common.RFANodeconstant;
 import com.locate.rmds.gui.viewer.FieldValue;
+import com.locate.rmds.util.ExampleUtil;
+import com.locate.rmds.util.RFATypeConvert;
 import com.reuters.rfa.ansipage.Page;
 import com.reuters.rfa.ansipage.PageUpdate;
 import com.reuters.rfa.common.PublisherPrincipalIdentity;
@@ -124,7 +126,7 @@ public final class GenericOMMParser
 
     /**
      * parse msg and print it in a table-nested format to System.out
-     * Õâ¸ö·½·¨ÓĞÌ«¶àµÄÒµÎñÂß¼­.Ó¦¸Ã°ÑÕâĞ©ÒµÎñÂß¼­Ìá³öÀ´.ÈÃÕâ¸ö·½·¨³ÉÎªÒ»¸öÍ¨ÓÃµÄ·½·¨.
+     * ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì«ï¿½ï¿½ï¿½Òµï¿½ï¿½ï¿½ß¼ï¿½.Ó¦ï¿½Ã°ï¿½ï¿½ï¿½Ğ©Òµï¿½ï¿½ï¿½ß¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÎªÒ»ï¿½ï¿½Í¨ï¿½ÃµÄ·ï¿½ï¿½ï¿½.
      */
     public static final Document parse(OMMMsg msg,String itemName)
     {
@@ -245,7 +247,7 @@ public final class GenericOMMParser
 				&& !msg.isSet(OMMMsg.Indication.DO_NOT_RIPPLE);
 		byte msgType = msg.getMsgType();
 		
-		// ³õÊ¼»¯,¼ÇÂ¼¸ÃitemµÄËùÓĞFiledValueµ½MapÖĞ.
+		// ï¿½ï¿½Ê¼ï¿½ï¿½,ï¿½ï¿½Â¼ï¿½ï¿½itemï¿½ï¿½ï¿½ï¿½ï¿½ï¿½FiledValueï¿½ï¿½Mapï¿½ï¿½.
 		if (msgType == OMMMsg.MsgType.REFRESH_RESP && DataBaseCache.filedValueMap.get(itemName) == null) {
 			if (msg.getDataType() == OMMTypes.FIELD_LIST) {
 				OMMFieldList fieldList = (OMMFieldList) msg.getPayload();
@@ -786,7 +788,7 @@ public final class GenericOMMParser
 		// add the ripple data
 		FieldValue fieldValue = getValue(itemName, fiddef.getFieldId());
 		if(fieldValue==null){
-			//Strange:ÔÚµÚÒ»¶©ÔÄ¸Ã²úÆ·µÄmapÖĞÎŞ·¨ÕÒµ½¸ÃfieldId¶ÔÓ¦µÄfieldValue,²»Ó¦¸Ã´æÔÚµÄÂß¼­
+			//Strange:ï¿½Úµï¿½Ò»ï¿½ï¿½ï¿½Ä¸Ã²ï¿½Æ·ï¿½ï¿½mapï¿½ï¿½ï¿½Ş·ï¿½ï¿½Òµï¿½ï¿½ï¿½fieldIdï¿½ï¿½Ó¦ï¿½ï¿½fieldValue,ï¿½ï¿½Ó¦ï¿½Ã´ï¿½ï¿½Úµï¿½ï¿½ß¼ï¿½
 			fieldValue=new FieldValue(null, fiddef);
 			fieldValue.update(fe);
 			_logger.debug("The fieldValue which can not be found is:"+fieldValue);
@@ -802,14 +804,14 @@ public final class GenericOMMParser
 		if (msgType == MsgType.UPDATE_RESP) {
 			if (ripple && rippleId != 0) {
 				FidDef rippleFieldDef = fiddef;
-				//µÃµ½µ±Ç°ÁĞµÄÖµ
+				//ï¿½Ãµï¿½ï¿½ï¿½Ç°ï¿½Ğµï¿½Öµ
 				Object tmp = fieldValue.getStringValue();
-				//Èç¹ûµ±Ç°ÁĞÓĞÒıÓÃ(ripple	)µÄÁĞ,ÄÇ´Ó»º´æÖĞÈ¡³ö±£´æµÄÒıÓÃÁĞµÄÉÏ´ÎµÄÖµ¶ÔÏó.
+				//ï¿½ï¿½ï¿½Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(ripple	)ï¿½ï¿½ï¿½ï¿½,ï¿½Ç´Ó»ï¿½ï¿½ï¿½ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ğµï¿½ï¿½Ï´Îµï¿½Öµï¿½ï¿½ï¿½ï¿½.
 				while ((rippleFieldDef.getRippleFieldId() != 0)
 						&& ((fieldValue = getValue(itemName, rippleFieldDef.getRippleFieldId())) != null)) {
 					
 					short fieldId = fieldValue.getFieldId();
-					//±ÜÃâÖØ¸´,É¾³ıµôÔ­ÓĞµÄ¿ÉÄÜ´æÔÚ»º´æÖĞµÄElementµÄÖµ.¼´Ê¹Ã»ÓĞÉ¾³ı.¸ÃÖµÒ²²»Ó°Ïì¿Í»§¶ËÊı¾İµÄÓĞĞ§ĞÔ.
+					//ï¿½ï¿½ï¿½ï¿½ï¿½Ø¸ï¿½,É¾ï¿½ï¿½ï¿½Ô­ï¿½ĞµÄ¿ï¿½ï¿½Ü´ï¿½ï¿½Ú»ï¿½ï¿½ï¿½ï¿½Ğµï¿½Elementï¿½ï¿½Öµ.ï¿½ï¿½Ê¹Ã»ï¿½ï¿½É¾ï¿½ï¿½.ï¿½ï¿½ÖµÒ²ï¿½ï¿½Ó°ï¿½ï¿½Í»ï¿½ï¿½ï¿½ï¿½ï¿½İµï¿½ï¿½ï¿½Ğ§ï¿½ï¿½.
 					Element e = rippleMap.get(fieldId);
 					if(e !=null){
 						rippleMap.remove(fieldId);
@@ -822,7 +824,7 @@ public final class GenericOMMParser
 					rippleField.addElement(RFANodeconstant.RESPONSE_FIELDS_FIELD_TYPE_NODE).addText(
 							RFATypeConvert.convertField(OMMTypes.toString(fieldValue.getOMMType())));
 					logMsg.append(tmp.toString());
-					//Ê¹ÓÃXAU=Ê±,Bid1ºÍAsk1¼ÈÊÇRippleµÄfield,RFAÓÖÍ¬Ê±´«ËÍ¹ıÀ´ÁËÏàÓ¦µÄÖµ.±ÜÃâÖØ¸´.
+					//Ê¹ï¿½ï¿½XAU=Ê±,Bid1ï¿½ï¿½Ask1ï¿½ï¿½ï¿½ï¿½Rippleï¿½ï¿½field,RFAï¿½ï¿½Í¬Ê±ï¿½ï¿½ï¿½Í¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó¦ï¿½ï¿½Öµ.ï¿½ï¿½ï¿½ï¿½ï¿½Ø¸ï¿½.
 					Element tmpElement=rippleField.addElement(RFANodeconstant.RESPONSE_FIELDS_FIELD_VALUE_NODE).addText(tmp.toString());
 					rippleMap.put(fieldId, rippleField);
 					tmp = fieldValue.setValue(tmp);
@@ -846,7 +848,7 @@ public final class GenericOMMParser
 							// defined data already has type
 							data = fe.getData();
 						if (rippleId > 0) {
-							// ÕâÀïĞèÒª¼ÇÂ¼¸Ãfield×îĞÂµÄÖµµ½mapÖĞ,·½±ãÏÂ´ÎÖ±½Ó¶ÁÈ¡
+							// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½Â¼ï¿½ï¿½fieldï¿½ï¿½ï¿½Âµï¿½Öµï¿½ï¿½mapï¿½ï¿½,ï¿½ï¿½ï¿½ï¿½ï¿½Â´ï¿½Ö±ï¿½Ó¶ï¿½È¡
 							FieldValue firstFieldValue = DataBaseCache.filedValueMap.get(itemName).get(
 									fe.getFieldId());
 							firstFieldValue.setValue(data.toString());

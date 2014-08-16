@@ -17,12 +17,12 @@ import com.locate.common.XmlMessageUtil;
 import com.locate.gate.server.GateWayServer;
 import com.locate.rmds.QSConsumerProxy;
 import com.locate.rmds.RFAServerManager;
+import com.locate.rmds.parser.GenericOMMParser;
 import com.locate.rmds.processer.face.IProcesser;
 import com.locate.rmds.statistic.CycleStatistics;
 import com.locate.rmds.statistic.LogTool;
 import com.locate.rmds.statistic.OutputFormatter;
 import com.locate.rmds.statistic.ResourceStatistics;
-import com.locate.rmds.util.GenericOMMParser;
 import com.reuters.rfa.common.Client;
 import com.reuters.rfa.common.Event;
 import com.reuters.rfa.common.Handle;
@@ -52,7 +52,7 @@ import com.reuters.rfa.session.omm.OMMSolicitedItemEvent;
 //							application uses this handles to identify the items
 // QSConsumerDemo _mainApp - main application class
 /**
- * ¸ÃÀàÓÐ¶à¸öÊµÀý.Ò»¸ö¶©ÔÄµÄ²úÆ·¶ÔÓ¦Ò»¸öitemManager.
+ * ï¿½ï¿½ï¿½ï¿½ï¿½Ð¶ï¿½ï¿½Êµï¿½ï¿½.Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ÄµÄ²ï¿½Æ·ï¿½ï¿½Ó¦Ò»ï¿½ï¿½itemManager.
  * @author Cloud.Wei
  *
  */
@@ -203,7 +203,7 @@ public class PersistentItemManager implements IProcesser
     	{
     		logger.info("Receive a COMPLETION_EVENT, "+ event.getHandle());
     		logger.info("RIC IS "+this.clientRequestItemName +" has been finished");
-    		//@TODO ÅÐ¶ÏÊÇ·ñÍ¨ÖªËùÓÐÏÖ´æ¿Í»§¶ËÄ³¸ö²úÆ·ÒÑ¾­Í£Ö¹·¢²¼.
+    		//@TODO ï¿½Ð¶ï¿½ï¿½Ç·ï¿½Í¨Öªï¿½ï¿½ï¿½ï¿½ï¿½Ö´ï¿½Í»ï¿½ï¿½ï¿½Ä³ï¿½ï¿½ï¿½ï¿½Æ·ï¿½Ñ¾ï¿½Í£Ö¹ï¿½ï¿½ï¿½ï¿½.
     		return;
     	}
 
@@ -211,7 +211,7 @@ public class PersistentItemManager implements IProcesser
         logger.info(_className+".processEvent: Received Item("+clientRequestItemName+") Event from server ");
         if (event.getType() != Event.OMM_ITEM_EVENT) 
         {
-        	//ÕâÀï³ÌÐòÌ«Î£ÏÕÁË,ÒòÎªRFA¸øµÄÏûÏ¢ÓÐÎó¾ÍÒªÍË³ö³ÌÐò.¿Ö²ÀµÄÂß¼­°¡.»¹ÊÇÈ¥µôcleanupºÃÁË.
+        	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì«Î£ï¿½ï¿½ï¿½ï¿½,ï¿½ï¿½ÎªRFAï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½Ë³ï¿½ï¿½ï¿½ï¿½ï¿½.ï¿½Ö²ï¿½ï¿½ï¿½ï¿½ß¼ï¿½ï¿½ï¿½.ï¿½ï¿½ï¿½ï¿½È¥ï¿½ï¿½cleanupï¿½ï¿½ï¿½ï¿½.
             logger.error("ERROR: "+_className+" Received an unsupported Event type.");
 //            _mainApp.cleanup();
             return;
@@ -220,9 +220,9 @@ public class PersistentItemManager implements IProcesser
         OMMItemEvent ommItemEvent = (OMMItemEvent) event;
         OMMMsg respMsg = ommItemEvent.getMsg();
         Document responseMsg = GenericOMMParser.parse(respMsg, clientRequestItemName);
-        //½«ÐÅÏ¢¿ªÊ¼´¦ÀíÊ±¼ä¼ÓÈëµ½ÏûÏ¢ÖÐ
+        //ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ëµ½ï¿½ï¿½Ï¢ï¿½ï¿½
 		XmlMessageUtil.addStartHandleTime(responseMsg, startTime);
-        //Èç¹ûÊÇ×´Ì¬ÏûÏ¢.¼ÇÂ¼Ò»¸ö¾¯¸æÈÕÖ¾.
+        //ï¿½ï¿½ï¿½ï¿½ï¿½×´Ì¬ï¿½ï¿½Ï¢.ï¿½ï¿½Â¼Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¾.
         if(respMsg.getMsgType()==OMMMsg.MsgType.STATUS_RESP && (respMsg.has(OMMMsg.HAS_STATE))){
         	byte streamState= respMsg.getState().getStreamState();
         	byte dataState = respMsg.getState().getDataState();
@@ -239,7 +239,7 @@ public class PersistentItemManager implements IProcesser
 		}
         
 		XmlMessageUtil.addLocateInfo(responseMsg, respMsg.getMsgType(), RFAServerManager.sequenceNo.getAndIncrement(), 0);
-		//±£´æ±¨¼ÛÐÅÏ¢ÒÔ¹©²éÑ¯.
+		//ï¿½ï¿½ï¿½æ±¨ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½Ô¹ï¿½ï¿½ï¿½Ñ¯.
 		iPriceKeeper priceKeeper = new FilePriceKeeper(this.clientRequestItemName);
 		JSON jsonObject = JsonUtil.getJSONFromXml(responseMsg.asXML()) ;
 		priceKeeper.persistentThePrice(jsonObject);

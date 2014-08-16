@@ -1,4 +1,4 @@
-package com.locate.rmds.util;
+package com.locate.rmds.parser;
 
 import java.io.ByteArrayInputStream;
 import java.io.PrintStream;
@@ -13,7 +13,10 @@ import org.dom4j.Element;
 
 
 
+
 import com.locate.common.RFANodeconstant;
+import com.locate.rmds.util.ExampleUtil;
+import com.locate.rmds.util.RFATypeConvert;
 import com.reuters.rfa.ansipage.Page;
 import com.reuters.rfa.ansipage.PageUpdate;
 import com.reuters.rfa.common.PublisherPrincipalIdentity;
