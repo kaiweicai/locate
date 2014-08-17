@@ -43,7 +43,7 @@ import com.reuters.rfa.session.omm.OMMSolicitedItemEvent;
 //							application uses this handles to identify the items
 // QSConsumerDemo _mainApp - main application class
 /**
- * ¸ÃÀàÓĞ¶à¸öÊµÀı.Ò»¸ö¶©ÔÄµÄ²úÆ·¶ÔÓ¦Ò»¸öitemManager.
+ * è¯¥ç±»æœ‰å¤šä¸ªå®ä¾‹.ä¸€ä¸ªè®¢é˜…çš„äº§å“å¯¹åº”ä¸€ä¸ªitemManager.
  * @author Cloud.Wei
  *
  */
@@ -90,7 +90,7 @@ public class OneTimeItemManager implements Client
         //Preparing item request message
         OMMPool pool = _mainApp.getPool();
         OMMMsg ommmsg = pool.acquireMsg();
-        //NONSTREAMING_REQÎªÖ»È¡Ò»¸ösnapshort.
+        //NONSTREAMING_REQä¸ºåªå–ä¸€ä¸ªsnapshort.
         ommmsg.setMsgType(OMMMsg.MsgType.NONSTREAMING_REQ);
         ommmsg.setMsgModelType(msgModelType);
 //        ommmsg.setIndicationFlags(OMMMsg.Indication.REFRESH);
@@ -141,7 +141,7 @@ public class OneTimeItemManager implements Client
         _logger.info(_className+".processEvent: Received Item("+clientRequestItemName+") Event from server ");
         if (event.getType() != Event.OMM_ITEM_EVENT) 
         {
-        	//ÕâÀï³ÌĞòÌ«Î£ÏÕÁË,ÒòÎªRFA¸øµÄÏûÏ¢ÓĞÎó¾ÍÒªÍË³ö³ÌĞò.¿Ö²ÀµÄÂß¼­°¡.»¹ÊÇÈ¥µôcleanupºÃÁË.
+        	//è¿™é‡Œç¨‹åºå¤ªå±é™©äº†,å› ä¸ºRFAç»™çš„æ¶ˆæ¯æœ‰è¯¯å°±è¦é€€å‡ºç¨‹åº.ææ€–çš„é€»è¾‘å•Š.è¿˜æ˜¯å»æ‰cleanupå¥½äº†.
             _logger.error("ERROR: "+_className+" Received an unsupported Event type.");
 //            _mainApp.cleanup();
             return;
@@ -150,9 +150,9 @@ public class OneTimeItemManager implements Client
         OMMItemEvent ommItemEvent = (OMMItemEvent) event;
         OMMMsg respMsg = ommItemEvent.getMsg();
         Document responseMsg = GenericOMMParser.parse(respMsg, clientRequestItemName);
-        //½«ĞÅÏ¢¿ªÊ¼´¦ÀíÊ±¼ä¼ÓÈëµ½ÏûÏ¢ÖĞ
+        //å°†ä¿¡æ¯å¼€å§‹å¤„ç†æ—¶é—´åŠ å…¥åˆ°æ¶ˆæ¯ä¸­
 		XmlMessageUtil.addStartHandleTime(responseMsg, startTime);
-        //Èç¹ûÊÇ×´Ì¬ÏûÏ¢.´¦ÀíºóÖ±½Ó·¢ËÍ¸ø¿Í»§¶Ë.
+        //å¦‚æœæ˜¯çŠ¶æ€æ¶ˆæ¯.å¤„ç†åç›´æ¥å‘é€ç»™å®¢æˆ·ç«¯.
         if(respMsg.getMsgType()==OMMMsg.MsgType.STATUS_RESP && (respMsg.has(OMMMsg.HAS_STATE))){
         	byte streamState= respMsg.getState().getStreamState();
         	byte dataState = respMsg.getState().getDataState();

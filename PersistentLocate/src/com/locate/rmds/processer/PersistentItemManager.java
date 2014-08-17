@@ -47,7 +47,7 @@ import com.reuters.rfa.session.omm.OMMSolicitedItemEvent;
 //							application uses this handles to identify the items
 // QSConsumerDemo _mainApp - main application class
 /**
- * ¸ÃÀàÓĞ¶à¸öÊµÀı.Ò»¸ö¶©ÔÄµÄ²úÆ·¶ÔÓ¦Ò»¸öitemManager.
+ * è¯¥ç±»æœ‰å¤šä¸ªå®ä¾‹.ä¸€ä¸ªè®¢é˜…çš„äº§å“å¯¹åº”ä¸€ä¸ªitemManager.
  * 
  * @author Cloud.Wei
  * 
@@ -194,14 +194,14 @@ public class PersistentItemManager implements IProcesser {
 		if (event.getType() == Event.COMPLETION_EVENT) {
 			logger.info("Receive a COMPLETION_EVENT, " + event.getHandle());
 			logger.info("RIC IS " + this.clientRequestItemName + " has been finished");
-			// @TODO ÅĞ¶ÏÊÇ·ñÍ¨ÖªËùÓĞÏÖ´æ¿Í»§¶ËÄ³¸ö²úÆ·ÒÑ¾­Í£Ö¹·¢²¼.
+			// @TODO åˆ¤æ–­æ˜¯å¦é€šçŸ¥æ‰€æœ‰ç°å­˜å®¢æˆ·ç«¯æŸä¸ªäº§å“å·²ç»åœæ­¢å‘å¸ƒ.
 			return;
 		}
 
 		// check for an event type; it should be item event.
 		logger.info(_className + ".processEvent: Received Item(" + clientRequestItemName + ") Event from server ");
 		if (event.getType() != Event.OMM_ITEM_EVENT) {
-			//ÊÕµ½Ò»¸ö²»Ö§³ÖµÄÏûÏ¢,¼ÇÂ¼¸ÃÏûÏ¢,Ö±½Ó·µ»Ø.
+			//æ”¶åˆ°ä¸€ä¸ªä¸æ”¯æŒçš„æ¶ˆæ¯,è®°å½•è¯¥æ¶ˆæ¯,ç›´æ¥è¿”å›.
 			logger.error("ERROR:Received an unsupported Event type. event is "+event);
 			// _mainApp.cleanup();
 			return;
@@ -211,7 +211,7 @@ public class PersistentItemManager implements IProcesser {
 		OMMMsg respMsg = ommItemEvent.getMsg();
 		JsonModel jsonModel = JsonOMMParser.parse(respMsg, clientRequestItemName);
 		jsonModel.setLocateSeqNumber(RFAServerManager.sequenceNo.getAndIncrement());
-		// Èç¹ûÊÇ×´Ì¬ÏûÏ¢.¼ÇÂ¼Ò»¸ö¾¯¸æÈÕÖ¾.
+		// å¦‚æœæ˜¯çŠ¶æ€æ¶ˆæ¯.è®°å½•ä¸€ä¸ªè­¦å‘Šæ—¥å¿—.
 		if (respMsg.getMsgType() == OMMMsg.MsgType.STATUS_RESP && (respMsg.has(OMMMsg.HAS_STATE))) {
 			byte streamState = respMsg.getState().getStreamState();
 			byte dataState = respMsg.getState().getDataState();
@@ -229,7 +229,7 @@ public class PersistentItemManager implements IProcesser {
 
 		// XmlMessageUtil.addLocateInfo(responseMsg, respMsg.getMsgType(),
 		// RFAServerManager.sequenceNo.getAndIncrement(), 0);
-		// ±£´æ±¨¼ÛĞÅÏ¢ÒÔ¹©²éÑ¯.
+		// ä¿å­˜æŠ¥ä»·ä¿¡æ¯ä»¥ä¾›æŸ¥è¯¢.
 		// JSON jsonObject = JsonUtil.getJSONFromXml(responseMsg.asXML()) ;
 		JSON jsonObject = JSONObject.fromObject(jsonModel);
 		priceKeeper.persistentThePrice(jsonObject);

@@ -186,7 +186,7 @@ public class RFALoginClient implements Client
 			RFALoginClient.STATE = respMsg.getState().toString();
 			byte msgType =respMsg.getMsgType();
 			Document responseMsg = XmlMessageUtil.generateStatusResp(RFALoginClient.STATE,RFALoginClient.STREAM_STATE,RFALoginClient.DATA_STATE,msgType);
-			//½«ĞÅÏ¢¿ªÊ¼´¦ÀíÊ±¼ä¼ÓÈëµ½ÏûÏ¢ÖĞ
+			//å°†ä¿¡æ¯å¼€å§‹å¤„ç†æ—¶é—´åŠ å…¥åˆ°æ¶ˆæ¯ä¸­
 			XmlMessageUtil.addStartHandleTime(responseMsg, startTime);
 			GateWayResponser.brodcastStateResp(responseMsg);
 		}

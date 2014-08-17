@@ -233,7 +233,7 @@ public class NewsItemManager implements Client {
 	}
 
 	/**
-	 * Õâ¸ö·½·¨ÓĞÊ²Ã´×÷ÓÃ,ÖØµãÑĞ¾¿
+	 * è¿™ä¸ªæ–¹æ³•æœ‰ä»€ä¹ˆä½œç”¨,é‡ç‚¹ç ”ç©¶
 	 * @param nevent
 	 */
 	protected void processHeadline(OMMItemEvent nevent) {

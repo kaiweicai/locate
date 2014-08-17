@@ -149,7 +149,7 @@ public class TestSocketClient{
 	}
 	
 	public void createClientConnetion() {
-		// ´´½¨¿Í»§¶ËchannelµÄ¸¨ÖúÀà,·¢ÆğconnectionÇëÇó
+		// åˆ›å»ºå®¢æˆ·ç«¯channelçš„è¾…åŠ©ç±»,å‘èµ·connectionè¯·æ±‚
 		ChannelFactory factory = new NioClientSocketChannelFactory(Executors.newCachedThreadPool(),
 				Executors.newCachedThreadPool());
 		ClientBootstrap bootstrap = new ClientBootstrap(factory);
@@ -175,7 +175,7 @@ public class TestSocketClient{
 	    Document requestDoc =  documentFactory.createDocument();
 		switch( msgType){
 		    case GateWayMessageTypes.ERROR : 
-				System.out.println("ÊÕµ½°üº¬´íÎóĞÅÏ¢µÄÏûÏ¢");
+				System.out.println("æ”¶åˆ°åŒ…å«é”™è¯¯ä¿¡æ¯çš„æ¶ˆæ¯");
 		    	break;
 		    case GateWayMessageTypes.LOGINWRONGUSER :
 		    	createWrongLoginRequest(requestDoc);

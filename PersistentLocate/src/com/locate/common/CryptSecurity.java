@@ -24,60 +24,60 @@ public class CryptSecurity {
 		}
 	}
 	/**
-	 * ¸ù¾İÃÜ³×½øĞĞDES¼ÓÃÜ
+	 * æ ¹æ®å¯†åŒ™è¿›è¡ŒDESåŠ å¯†
 	 * 
 	 * @param key
-	 *            ÃÜ³×
+	 *            å¯†åŒ™
 	 * @param info
-	 *            Òª¼ÓÃÜµÄĞÅÏ¢
-	 * @return String ¼ÓÃÜºóµÄĞÅÏ¢
+	 *            è¦åŠ å¯†çš„ä¿¡æ¯
+	 * @return String åŠ å¯†åçš„ä¿¡æ¯
 	 */
 	public static String encryptToDES(SecretKey key,String info) {
-		// ¶¨Òå ¼ÓÃÜËã·¨,¿ÉÓÃ DES,DESede,Blowfish
+		// å®šä¹‰ åŠ å¯†ç®—æ³•,å¯ç”¨ DES,DESede,Blowfish
 		String Algorithm = "DES";
-		// ¼ÓÃÜËæ»úÊıÉú³ÉÆ÷ (RNG),(¿ÉÒÔ²»Ğ´)
+		// åŠ å¯†éšæœºæ•°ç”Ÿæˆå™¨ (RNG),(å¯ä»¥ä¸å†™)
 //		SecureRandom sr = new SecureRandom();
-		// ¶¨ÒåÒªÉú³ÉµÄÃÜÎÄ
+		// å®šä¹‰è¦ç”Ÿæˆçš„å¯†æ–‡
 		byte[] cipherByte = null;
 		try {
-			// µÃµ½¼ÓÃÜ/½âÃÜÆ÷
+			// å¾—åˆ°åŠ å¯†/è§£å¯†å™¨
 			Cipher c1 = Cipher.getInstance(Algorithm);
-			// ÓÃÖ¸¶¨µÄÃÜÔ¿ºÍÄ£Ê½³õÊ¼»¯Cipher¶ÔÏó
-			// ²ÎÊı:(ENCRYPT_MODE, DECRYPT_MODE, WRAP_MODE,UNWRAP_MODE)
+			// ç”¨æŒ‡å®šçš„å¯†é’¥å’Œæ¨¡å¼åˆå§‹åŒ–Cipherå¯¹è±¡
+			// å‚æ•°:(ENCRYPT_MODE, DECRYPT_MODE, WRAP_MODE,UNWRAP_MODE)
 //			c1.init(Cipher.ENCRYPT_MODE, key, sr);
 			c1.init(Cipher.ENCRYPT_MODE, key);
-			// ¶ÔÒª¼ÓÃÜµÄÄÚÈİ½øĞĞ±àÂë´¦Àí,
+			// å¯¹è¦åŠ å¯†çš„å†…å®¹è¿›è¡Œç¼–ç å¤„ç†,
 			cipherByte = c1.doFinal(info.getBytes("UTF-8"));
 		} catch (Exception e) {
 			logger.error("Decrypt String error! String is "+info +e);
 		}
-		// ·µ»ØÃÜÎÄµÄÊ®Áù½øÖÆĞÎÊ½
+		// è¿”å›å¯†æ–‡çš„åå…­è¿›åˆ¶å½¢å¼
 		return Base64.encode(cipherByte);
 	}
 
 	/**
-	 * ¸ù¾İÃÜ³×½øĞĞDES½âÃÜ
+	 * æ ¹æ®å¯†åŒ™è¿›è¡ŒDESè§£å¯†
 	 * 
 	 * @param key
-	 *            ÃÜ³×
+	 *            å¯†åŒ™
 	 * @param sInfo
-	 *            Òª½âÃÜµÄÃÜÎÄ
-	 * @return String ·µ»Ø½âÃÜºóĞÅÏ¢
+	 *            è¦è§£å¯†çš„å¯†æ–‡
+	 * @return String è¿”å›è§£å¯†åä¿¡æ¯
 	 */
 	public static String decryptByDES(SecretKey key,String sInfo) {
-		// ¶¨Òå ¼ÓÃÜËã·¨,
+		// å®šä¹‰ åŠ å¯†ç®—æ³•,
 		String Algorithm = "DES";
-		// ¼ÓÃÜËæ»úÊıÉú³ÉÆ÷ (RNG)
+		// åŠ å¯†éšæœºæ•°ç”Ÿæˆå™¨ (RNG)
 //		SecureRandom sr = new SecureRandom();
 		byte[] cipherByte = null;
 		String result = null;
 		try {
-			// µÃµ½¼ÓÃÜ/½âÃÜÆ÷
+			// å¾—åˆ°åŠ å¯†/è§£å¯†å™¨
 			Cipher c1 = Cipher.getInstance(Algorithm);
-			// ÓÃÖ¸¶¨µÄÃÜÔ¿ºÍÄ£Ê½³õÊ¼»¯Cipher¶ÔÏó
+			// ç”¨æŒ‡å®šçš„å¯†é’¥å’Œæ¨¡å¼åˆå§‹åŒ–Cipherå¯¹è±¡
 //			c1.init(Cipher.DECRYPT_MODE, key, sr);
 			c1.init(Cipher.DECRYPT_MODE, key);
-			// ¶ÔÒª½âÃÜµÄÄÚÈİ½øĞĞ±àÂë´¦Àí
+			// å¯¹è¦è§£å¯†çš„å†…å®¹è¿›è¡Œç¼–ç å¤„ç†
 			cipherByte = c1.doFinal(Base64.decode(sInfo));
 			result = new String(cipherByte, "UTF-8");
 		} catch (Exception e) {
@@ -88,10 +88,10 @@ public class CryptSecurity {
 	}
 
 	/**
-	 * ½«¶ş½øÖÆ×ª»¯Îª16½øÖÆ×Ö·û´®
+	 * å°†äºŒè¿›åˆ¶è½¬åŒ–ä¸º16è¿›åˆ¶å­—ç¬¦ä¸²
 	 * 
 	 * @param b
-	 *            ¶ş½øÖÆ×Ö½ÚÊı×é
+	 *            äºŒè¿›åˆ¶å­—èŠ‚æ•°ç»„
 	 * @return String
 	 */
 	public static String byte2hex(byte[] b) {
@@ -109,7 +109,7 @@ public class CryptSecurity {
 	}
 
 	/**
-	 * Ê®Áù½øÖÆ×Ö·û´®×ª»¯Îª2½øÖÆ
+	 * åå…­è¿›åˆ¶å­—ç¬¦ä¸²è½¬åŒ–ä¸º2è¿›åˆ¶
 	 * 
 	 * @param hex
 	 * @return
@@ -124,7 +124,7 @@ public class CryptSecurity {
 	}
 
 	/**
-	 * ½«Á½¸öASCII×Ö·ûºÏ³ÉÒ»¸ö×Ö½Ú£» Èç£º"EF"--> 0xEF
+	 * å°†ä¸¤ä¸ªASCIIå­—ç¬¦åˆæˆä¸€ä¸ªå­—èŠ‚ï¼› å¦‚ï¼š"EF"--> 0xEF
 	 * 
 	 * @param src0
 	 *            byte
@@ -142,7 +142,7 @@ public class CryptSecurity {
 
 	@Test
 	public void test() {
-		String info = "ÎºÓÂ°¢µÂ¿ËÀï·ò°Â¶ª·Ö¿ìÀÖabccdefadfadskllkjalkdfdklfajdsl¿¨»úµÄ·¨ÂÉ¿ò¼Üfkjaklsf;lgs l;retpofsl;gskdfl;gks;fgklvb;sldfkg'lwekrptoks;lfg;lsdfgkls;dfkg;lsdfkglkjlks";
+		String info = "é­å‹‡é˜¿å¾·å…‹é‡Œå¤«å¥¥ä¸¢åˆ†å¿«ä¹abccdefadfadskllkjalkdfdklfajdslå¡æœºçš„æ³•å¾‹æ¡†æ¶fkjaklsf;lgs l;retpofsl;gskdfl;gks;fgklvb;sldfkg'lwekrptoks;lfg;lsdfgkls;dfkg;lsdfkglkjlks";
 		SecretKey key = null;
 		try {
 			key = KeyGenerator.getInstance("DES").generateKey();

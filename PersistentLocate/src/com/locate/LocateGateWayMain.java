@@ -8,9 +8,9 @@ import com.locate.common.SystemConstant;
 
 /**
  * @author cloudwei Locate 
- * Ö÷ÒªÆô¶¯³ÌĞò. Ò»ÇĞ´ÓÕâÀï¿ªÊ¼. 
- * ¸ºÔğÆô¶¯RFAµÄÖ÷³ÌĞòºÍLocate Gate Way µÄÖ÷³ÌĞò.
- * Ê¹ÓÃspringÀ´¹ÜÀíÀà.
+ * ä¸»è¦å¯åŠ¨ç¨‹åº. ä¸€åˆ‡ä»è¿™é‡Œå¼€å§‹. 
+ * è´Ÿè´£å¯åŠ¨RFAçš„ä¸»ç¨‹åºå’ŒLocate Gate Way çš„ä¸»ç¨‹åº.
+ * ä½¿ç”¨springæ¥ç®¡ç†ç±».
  */
 public class LocateGateWayMain {
 	static {

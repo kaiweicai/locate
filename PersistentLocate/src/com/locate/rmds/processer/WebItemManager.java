@@ -49,7 +49,7 @@ import com.reuters.rfa.session.omm.OMMSolicitedItemEvent;
 //							application uses this handles to identify the items
 // QSConsumerDemo _mainApp - main application class
 /**
- * ¸ÃÀàÓĞ¶à¸öÊµÀı.Ò»¸ö¶©ÔÄµÄ²úÆ·¶ÔÓ¦Ò»¸öitemManager.
+ * è¯¥ç±»æœ‰å¤šä¸ªå®ä¾‹.ä¸€ä¸ªè®¢é˜…çš„äº§å“å¯¹åº”ä¸€ä¸ªitemManager.
  * 
  * @author Cloud.Wei
  * 
@@ -88,7 +88,7 @@ public class WebItemManager implements Client {
 		// Preparing item request message
 		OMMPool pool = mainApp.getPool();
 		OMMMsg ommmsg = pool.acquireMsg();
-		// NONSTREAMING_REQÎªÖ»È¡Ò»¸ösnapshort.
+		// NONSTREAMING_REQä¸ºåªå–ä¸€ä¸ªsnapshort.
 		ommmsg.setMsgType(OMMMsg.MsgType.NONSTREAMING_REQ);
 		ommmsg.setMsgModelType(msgModelType);
 		// ommmsg.setIndicationFlags(OMMMsg.Indication.REFRESH);
@@ -128,7 +128,7 @@ public class WebItemManager implements Client {
 			// Preparing item request message
 			OMMPool pool = mainApp.getPool();
 			OMMMsg ommmsg = pool.acquireMsg();
-			// NONSTREAMING_REQÎªÖ»È¡Ò»¸ösnapshort.
+			// NONSTREAMING_REQä¸ºåªå–ä¸€ä¸ªsnapshort.
 			ommmsg.setMsgType(OMMMsg.MsgType.REQUEST);
 			ommmsg.setMsgModelType(msgModelType);
 			// ommmsg.setIndicationFlags(OMMMsg.Indication.REFRESH);
@@ -181,9 +181,9 @@ public class WebItemManager implements Client {
 		OMMItemEvent ommItemEvent = (OMMItemEvent) event;
 		OMMMsg respMsg = ommItemEvent.getMsg();
 		Document responseMsg = GenericOMMParser.parse(respMsg, clientRequestItemName);
-		// ½«ĞÅÏ¢¿ªÊ¼´¦ÀíÊ±¼ä¼ÓÈëµ½ÏûÏ¢ÖĞ
+		// å°†ä¿¡æ¯å¼€å§‹å¤„ç†æ—¶é—´åŠ å…¥åˆ°æ¶ˆæ¯ä¸­
 		XmlMessageUtil.addStartHandleTime(responseMsg, startTime);
-		// Èç¹ûÊÇ×´Ì¬ÏûÏ¢.´¦ÀíºóÖ±½Ó·¢ËÍ¸ø¶©ÔÄÁË¸Ã²úÆ·µÄËùÓĞ¿Í»§.
+		// å¦‚æœæ˜¯çŠ¶æ€æ¶ˆæ¯.å¤„ç†åç›´æ¥å‘é€ç»™è®¢é˜…äº†è¯¥äº§å“çš„æ‰€æœ‰å®¢æˆ·.
 		if (respMsg.getMsgType() == OMMMsg.MsgType.STATUS_RESP && (respMsg.has(OMMMsg.HAS_STATE))) {
 			byte streamState = respMsg.getState().getStreamState();
 			byte dataState = respMsg.getState().getDataState();

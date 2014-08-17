@@ -127,7 +127,7 @@ public final class JsonOMMParser
 
     /**
      * parse msg and print it in a table-nested format to log4j
-     * Õâ¸ö·½·¨ÓĞÌ«¶àµÄÒµÎñÂß¼­.Ó¦¸Ã°ÑÕâĞ©ÒµÎñÂß¼­Ìá³öÀ´.ÈÃÕâ¸ö·½·¨³ÉÎªÒ»¸öÍ¨ÓÃµÄ·½·¨.
+     * è¿™ä¸ªæ–¹æ³•æœ‰å¤ªå¤šçš„ä¸šåŠ¡é€»è¾‘.åº”è¯¥æŠŠè¿™äº›ä¸šåŠ¡é€»è¾‘æå‡ºæ¥.è®©è¿™ä¸ªæ–¹æ³•æˆä¸ºä¸€ä¸ªé€šç”¨çš„æ–¹æ³•.
      */
     public static final JsonModel parse(OMMMsg msg,String itemName)
     {
@@ -245,7 +245,7 @@ public final class JsonOMMParser
 				&& !msg.isSet(OMMMsg.Indication.DO_NOT_RIPPLE);
 		byte msgType = msg.getMsgType();
 		
-		// ³õÊ¼»¯,¼ÇÂ¼¸ÃitemµÄËùÓĞFiledValueµ½MapÖĞ.
+		// åˆå§‹åŒ–,è®°å½•è¯¥itemçš„æ‰€æœ‰FiledValueåˆ°Mapä¸­.
 		if (msgType == OMMMsg.MsgType.REFRESH_RESP && DataBaseCache.filedValueMap.get(itemName) == null) {
 			if (msg.getDataType() == OMMTypes.FIELD_LIST) {
 				OMMFieldList fieldList = (OMMFieldList) msg.getPayload();
@@ -791,7 +791,7 @@ public final class JsonOMMParser
 		// add the ripple data
 		FieldValue fieldValue = getValue(itemName, fiddef.getFieldId());
 		if(fieldValue==null){
-			//Strange:ÔÚµÚÒ»¶©ÔÄ¸Ã²úÆ·µÄmapÖĞÎŞ·¨ÕÒµ½¸ÃfieldId¶ÔÓ¦µÄfieldValue,²»Ó¦¸Ã´æÔÚµÄÂß¼­
+			//Strange:åœ¨ç¬¬ä¸€è®¢é˜…è¯¥äº§å“çš„mapä¸­æ— æ³•æ‰¾åˆ°è¯¥fieldIdå¯¹åº”çš„fieldValue,ä¸åº”è¯¥å­˜åœ¨çš„é€»è¾‘
 			fieldValue=new FieldValue(null, fiddef);
 			fieldValue.update(fe);
 			_logger.debug("The fieldValue which can not be found is:"+fieldValue);
@@ -807,14 +807,14 @@ public final class JsonOMMParser
 		if (msgType == MsgType.UPDATE_RESP) {
 			if (ripple && rippleId != 0) {
 				FidDef rippleFieldDef = fiddef;
-				//µÃµ½µ±Ç°ÁĞµÄÖµ
+				//å¾—åˆ°å½“å‰åˆ—çš„å€¼
 				Object tmp = fieldValue.getStringValue();
-				//Èç¹ûµ±Ç°ÁĞÓĞÒıÓÃ(ripple	)µÄÁĞ,ÄÇ´Ó»º´æÖĞÈ¡³ö±£´æµÄÒıÓÃÁĞµÄÉÏ´ÎµÄÖµ¶ÔÏó.
+				//å¦‚æœå½“å‰åˆ—æœ‰å¼•ç”¨(ripple	)çš„åˆ—,é‚£ä»ç¼“å­˜ä¸­å–å‡ºä¿å­˜çš„å¼•ç”¨åˆ—çš„ä¸Šæ¬¡çš„å€¼å¯¹è±¡.
 				while ((rippleFieldDef.getRippleFieldId() != 0)
 						&& ((fieldValue = getValue(itemName, rippleFieldDef.getRippleFieldId())) != null)) {
 					
 					short fieldId = fieldValue.getFieldId();
-					//±ÜÃâÖØ¸´,É¾³ıµôÔ­ÓĞµÄ¿ÉÄÜ´æÔÚ»º´æÖĞµÄElementµÄÖµ.¼´Ê¹Ã»ÓĞÉ¾³ı.¸ÃÖµÒ²²»Ó°Ïì¿Í»§¶ËÊı¾İµÄÓĞĞ§ĞÔ.
+					//é¿å…é‡å¤,åˆ é™¤æ‰åŸæœ‰çš„å¯èƒ½å­˜åœ¨ç¼“å­˜ä¸­çš„Elementçš„å€¼.å³ä½¿æ²¡æœ‰åˆ é™¤.è¯¥å€¼ä¹Ÿä¸å½±å“å®¢æˆ·ç«¯æ•°æ®çš„æœ‰æ•ˆæ€§.
 //					Element e = rippleMap.get(fieldId);
 //					if(e !=null){
 //						rippleMap.remove(fieldId);
@@ -827,7 +827,7 @@ public final class JsonOMMParser
 //					rippleField.addElement(RFANodeconstant.RESPONSE_FIELDS_FIELD_TYPE_NODE).addText(
 //							RFATypeConvert.convertField(OMMTypes.toString(fieldValue.getOMMType())));
 //					logMsg.append(tmp.toString());
-					//Ê¹ÓÃXAU=Ê±,Bid1ºÍAsk1¼ÈÊÇRippleµÄfield,RFAÓÖÍ¬Ê±´«ËÍ¹ıÀ´ÁËÏàÓ¦µÄÖµ.±ÜÃâÖØ¸´.
+					//ä½¿ç”¨XAU=æ—¶,Bid1å’ŒAsk1æ—¢æ˜¯Rippleçš„field,RFAåˆåŒæ—¶ä¼ é€è¿‡æ¥äº†ç›¸åº”çš„å€¼.é¿å…é‡å¤.
 //					Element tmpElement=rippleField.addElement(RFANodeconstant.RESPONSE_FIELDS_FIELD_VALUE_NODE).addText(tmp.toString());
 					payLoad[3]=(tmp.toString());
 //					rippleMap.put(fieldId, rippleField);
@@ -854,7 +854,7 @@ public final class JsonOMMParser
 							// defined data already has type
 							data = fe.getData();
 						if (rippleId > 0) {
-							// ÕâÀïĞèÒª¼ÇÂ¼¸Ãfield×îĞÂµÄÖµµ½mapÖĞ,·½±ãÏÂ´ÎÖ±½Ó¶ÁÈ¡
+							// è¿™é‡Œéœ€è¦è®°å½•è¯¥fieldæœ€æ–°çš„å€¼åˆ°mapä¸­,æ–¹ä¾¿ä¸‹æ¬¡ç›´æ¥è¯»å–
 							FieldValue firstFieldValue = DataBaseCache.filedValueMap.get(itemName).get(
 									fe.getFieldId());
 							firstFieldValue.setValue(data.toString());

@@ -12,8 +12,8 @@ import com.locate.common.XmlMessageUtil;
 import com.locate.rmds.RFAServerManager;
 
 /**
- * ½«ÏûÏ¢´Ócore×ª·¢µ½font,¸ôÀëcoreºÍfrontµÄ´úÂë.
- * RFA Í¨¹ı¸Ã³ÌĞò½«ÏûÏ¢·¢ËÍµ½gateway.
+ * å°†æ¶ˆæ¯ä»coreè½¬å‘åˆ°font,éš”ç¦»coreå’Œfrontçš„ä»£ç .
+ * RFA é€šè¿‡è¯¥ç¨‹åºå°†æ¶ˆæ¯å‘é€åˆ°gateway.
  * 
  * @author cloud wei
  * 

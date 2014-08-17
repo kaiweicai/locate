@@ -10,7 +10,7 @@ import com.locate.rmds.QSConsumerProxy;
 
 /**
  * @author CloudWei kaiweicai@163.com
- * create time 2014年8月12日
+ * create time 2014骞?链?2镞?
  * @copyRight by Author
  */
 public class LocatePersistentMain {

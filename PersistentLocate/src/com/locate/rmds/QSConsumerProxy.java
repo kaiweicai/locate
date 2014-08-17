@@ -52,10 +52,10 @@ import com.reuters.rfa.session.Session;
 import com.reuters.rfa.session.omm.OMMConsumer;
 import com.reuters.rfa.session.omm.OMMItemIntSpec;
 /**  
-*  ×÷Õß:Cloud wei   
+*  ä½œè€…:Cloud wei   
 *  E-mail:kaiweicai@163.com   
-*  ´´½¨Ê±¼ä£º2014.5.26   
-*  ÀàËµÃ÷  netty game  
+*  åˆ›å»ºæ—¶é—´ï¼š2014.5.26   
+*  ç±»è¯´æ˜  netty game  
 */  
 @Service(value="qSConsumerProxy")
 public class QSConsumerProxy{
@@ -315,14 +315,14 @@ public class QSConsumerProxy{
 		Map<String,ItemManager> subscribeItemManagerMap = DataBaseCache.RIC_ITEMMANAGER_Map;
 		boolean needRenewSubscribeItem=checkSubscribeStatus(itemName);
 		if(needRenewSubscribeItem){
-			//ÒÑ¾­¶©ÔÄ¹ı¸Ã²úÆ·,Ö»ĞèÒª·¢ËÍÒ»¸öÒ»´Î¶©ÔÄÇëÇó,·µ»ØÒ»¸ösnapshot¼´¿É.
+			//å·²ç»è®¢é˜…è¿‡è¯¥äº§å“,åªéœ€è¦å‘é€ä¸€ä¸ªä¸€æ¬¡è®¢é˜…è¯·æ±‚,è¿”å›ä¸€ä¸ªsnapshotå³å¯.
 			OneTimeItemManager oneTimeItemManager =  new OneTimeItemManager(this, _itemGroupManager,channelId);
 			oneTimeItemManager.sendOneTimeRequest(itemName, responseMsgType);
 //			ItemManager subscibeItemManager =  subscribeItemManagerMap.get(itemName);
 //			subscibeItemManager.sendInitialDocument(channelId);
 			return null;
 		}else{
-			//Ò»¸ö²úÆ·¶ÔÓ¦Ò»¸öitemManager¶ÔÏó
+			//ä¸€ä¸ªäº§å“å¯¹åº”ä¸€ä¸ªitemManagerå¯¹è±¡
 			itemManager=SystemConstant.springContext.getBean("itemManager",ItemManager.class);
 			itemManager.sendRicRequest(itemName, responseMsgType);
 			return itemManager;
@@ -355,8 +355,8 @@ public class QSConsumerProxy{
 //	}
 
 	/**
-	 * ¼ì²éRIC_ITEMMANAGER_MapÊÇ·ñ°üº¬¸Ã²úÆ·,Èç¹ûÃ»ÓĞ¸Ã²úÆ·ÔòÖ±½Ó¶©ÔÄ¸Ã²úÆ·.
-	 * ¼ì²é¸Ã¶©ÔÄ²úÆ·ÏÂ¶ÔÓ¦µÄitemHandlerÊÇ·ñÊÇ¼¤»î×´Ì¬.Èç¹û²»ÊÇ¼¤»î×´Ì¬.ĞèÒªÖØĞÂ¶©ÔÄ.
+	 * æ£€æŸ¥RIC_ITEMMANAGER_Mapæ˜¯å¦åŒ…å«è¯¥äº§å“,å¦‚æœæ²¡æœ‰è¯¥äº§å“åˆ™ç›´æ¥è®¢é˜…è¯¥äº§å“.
+	 * æ£€æŸ¥è¯¥è®¢é˜…äº§å“ä¸‹å¯¹åº”çš„itemHandleræ˜¯å¦æ˜¯æ¿€æ´»çŠ¶æ€.å¦‚æœä¸æ˜¯æ¿€æ´»çŠ¶æ€.éœ€è¦é‡æ–°è®¢é˜….
 	 * @param itemName
 	 * @return
 	 */
@@ -389,7 +389,7 @@ public class QSConsumerProxy{
 	}
 
 	/**
-	 * ¶©ÔÄÖ¸¶¨µÄ¼¯ÖĞ²úÆ·
+	 * è®¢é˜…æŒ‡å®šçš„é›†ä¸­äº§å“
 	 */
 	public void makeOrder() {
 		String ricArray = SystemProperties.getProperties(SystemProperties.RIC_ARRAY);

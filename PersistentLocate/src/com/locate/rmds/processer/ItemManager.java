@@ -48,7 +48,7 @@ import com.reuters.rfa.session.omm.OMMSolicitedItemEvent;
 //							application uses this handles to identify the items
 // QSConsumerDemo _mainApp - main application class
 /**
- * ¸ÃÀàÓĞ¶à¸öÊµÀı.Ò»¸ö¶©ÔÄµÄ²úÆ·¶ÔÓ¦Ò»¸öitemManager.
+ * è¯¥ç±»æœ‰å¤šä¸ªå®ä¾‹.ä¸€ä¸ªè®¢é˜…çš„äº§å“å¯¹åº”ä¸€ä¸ªitemManager.
  * @author Cloud.Wei
  *
  */
@@ -176,10 +176,10 @@ public class ItemManager implements Client,IProcesser
 			// Set the message into interest spec
 			ommItemIntSpec.setMsg(ommmsg);
 			/**
-			 * ÖØÒªÂß¼­:
-			 * Ïòdata source×¢²á¸ĞĞËÈ¤µÄItem,EventQueueÊ¹ÓÃQSConsumerProxyµÄQueue,¼àÌıÆ÷¾ÍÊÇitemManager×Ô¼º.
-			 * dataSource²úÉú¸ĞĞËÈ¤µÄÊ±¼äºóÍ¨¹ıeventQueueÏòÍâ·¢²¼.ItemManagerÄÜ¹»ÊÕµ½Õâ¸öÊÂ¼ş.
-			 * itemmanager ÏëËùÓĞ¶©ÔÄÁË¸Ã²úÆ·µÄchannelGroup»ØĞ´ÊÕµ½µÄÏûÏ¢.
+			 * é‡è¦é€»è¾‘:
+			 * å‘data sourceæ³¨å†Œæ„Ÿå…´è¶£çš„Item,EventQueueä½¿ç”¨QSConsumerProxyçš„Queue,ç›‘å¬å™¨å°±æ˜¯itemManagerè‡ªå·±.
+			 * dataSourceäº§ç”Ÿæ„Ÿå…´è¶£çš„æ—¶é—´åé€šè¿‡eventQueueå‘å¤–å‘å¸ƒ.ItemManagerèƒ½å¤Ÿæ”¶åˆ°è¿™ä¸ªäº‹ä»¶.
+			 * itemmanager æƒ³æ‰€æœ‰è®¢é˜…äº†è¯¥äº§å“çš„channelGroupå›å†™æ”¶åˆ°çš„æ¶ˆæ¯.
 			 */
 			itemHandle = _mainApp.getOMMConsumer().registerClient(_mainApp.getEventQueue(), ommItemIntSpec, this, null);
 			_itemGroupManager.addItem(serviceName, itemName, itemHandle);
@@ -221,7 +221,7 @@ public class ItemManager implements Client,IProcesser
         _logger.info(_className+".processEvent: Received Item("+clientRequestItemName+") Event from server ");
         if (event.getType() != Event.OMM_ITEM_EVENT) 
         {
-        	//ÕâÀï³ÌĞòÌ«Î£ÏÕÁË,ÒòÎªRFA¸øµÄÏûÏ¢ÓĞÎó¾ÍÒªÍË³ö³ÌĞò.¿Ö²ÀµÄÂß¼­°¡.»¹ÊÇÈ¥µôcleanupºÃÁË.
+        	//è¿™é‡Œç¨‹åºå¤ªå±é™©äº†,å› ä¸ºRFAç»™çš„æ¶ˆæ¯æœ‰è¯¯å°±è¦é€€å‡ºç¨‹åº.ææ€–çš„é€»è¾‘å•Š.è¿˜æ˜¯å»æ‰cleanupå¥½äº†.
             _logger.error("ERROR: "+_className+" Received an unsupported Event type.");
 //            _mainApp.cleanup();
             return;
@@ -230,9 +230,9 @@ public class ItemManager implements Client,IProcesser
         OMMItemEvent ommItemEvent = (OMMItemEvent) event;
         OMMMsg respMsg = ommItemEvent.getMsg();
         Document responseMsg = GenericOMMParser.parse(respMsg, clientRequestItemName);
-        //½«ĞÅÏ¢¿ªÊ¼´¦ÀíÊ±¼ä¼ÓÈëµ½ÏûÏ¢ÖĞ
+        //å°†ä¿¡æ¯å¼€å§‹å¤„ç†æ—¶é—´åŠ å…¥åˆ°æ¶ˆæ¯ä¸­
 		XmlMessageUtil.addStartHandleTime(responseMsg, startTime);
-        //Èç¹ûÊÇ×´Ì¬ÏûÏ¢.´¦ÀíºóÖ±½Ó·¢ËÍ¸ø¿Í»§¶Ë.
+        //å¦‚æœæ˜¯çŠ¶æ€æ¶ˆæ¯.å¤„ç†åç›´æ¥å‘é€ç»™å®¢æˆ·ç«¯.
         if(respMsg.getMsgType()==OMMMsg.MsgType.STATUS_RESP && (respMsg.has(OMMMsg.HAS_STATE))){
         	byte streamState= respMsg.getState().getStreamState();
         	byte dataState = respMsg.getState().getDataState();
