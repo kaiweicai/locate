@@ -51,7 +51,7 @@ public class ClientConnector implements IClientConnected {
 	}
 	
 	private void initNettyClient() {
-		// ´´½¨¿Í»§¶ËchannelµÄ¸¨ÖúÀà,·¢ÆğconnectionÇëÇó
+		// åˆ›å»ºå®¢æˆ·ç«¯channelçš„è¾…åŠ©ç±»,å‘èµ·connectionè¯·æ±‚
 		ChannelFactory factory = new NioClientSocketChannelFactory(Executors.newCachedThreadPool(),
 				Executors.newCachedThreadPool());
 		bootstrap = new ClientBootstrap(factory);
@@ -123,7 +123,7 @@ public class ClientConnector implements IClientConnected {
 		@Override
 		public void channelIdle(ChannelHandlerContext ctx, IdleStateEvent e) throws Exception {
 			if(e.getState()==IdleState.ALL_IDLE){
-				logger.debug("Á´Â·¿ÕÏĞ,·¢ËÍĞÄÌø S:{" + e.getChannel().getRemoteAddress() + "} - C:{"
+				logger.debug("é“¾è·¯ç©ºé—²,å‘é€å¿ƒè·³ S:{" + e.getChannel().getRemoteAddress() + "} - C:{"
 						+ e.getChannel().getLocalAddress() + "} idleState:{" + e.getState() + "}");
 			}
 			super.channelIdle(ctx, e);

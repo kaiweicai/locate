@@ -7,7 +7,7 @@ import java.util.Map;
 import org.jboss.netty.channel.group.ChannelGroup;
 import org.jboss.netty.channel.group.DefaultChannelGroup;
 /*
- * ¸ÃÀàÖ÷Òª´æ·ÅÏµÍ³ÖĞ»º´æÊı¾İ.
+ * è¯¥ç±»ä¸»è¦å­˜æ”¾ç³»ç»Ÿä¸­ç¼“å­˜æ•°æ®.
  */
 public class DataBaseCache {
 	public static final long checkTime = NetTimeUtil.getNetTime() - System.currentTimeMillis();
@@ -27,11 +27,11 @@ public class DataBaseCache {
 	public static Map<String,Byte> _clientResponseType = new HashMap();
 	
 	//add by Cloud Wei
-	//¹ÜÀíchannelIdºÍchannelµÄÓ³Éä¹ØÏµ.
+	//ç®¡ç†channelIdå’Œchannelçš„æ˜ å°„å…³ç³».
 	public static ChannelGroup allChannelGroup = new DefaultChannelGroup("allChannels"); 
-	//¶©ÔÄµÄitemNameÓë¶©ÔÄ¸ÃitemNameµÄËùÓĞ¿Í»§µÄ¶ÔÓ¦¹ØÏµ.
+	//è®¢é˜…çš„itemNameä¸è®¢é˜…è¯¥itemNameçš„æ‰€æœ‰å®¢æˆ·çš„å¯¹åº”å…³ç³».
 	public static Map<String ,ChannelGroup> itemNameChannelMap = new HashMap<String,ChannelGroup>();
-	//¶©ÔÄµÄ²úÆ·itemNameÓë¶©ÔÄ¸Ã²úÆ·µÄÏûÏ¢´¦ÀíÆ÷µÄÓ³Éä¹ØÏµ.
+	//è®¢é˜…çš„äº§å“itemNameä¸è®¢é˜…è¯¥äº§å“çš„æ¶ˆæ¯å¤„ç†å™¨çš„æ˜ å°„å…³ç³».
 //	public static Map<String,ItemManager> subscribeItemManagerMap = new HashMap<String,ItemManager>();
 //	public static Map<String, Map<Short, FieldValue>> filedValueMap = new HashMap<String, Map<Short, FieldValue>>();
 }

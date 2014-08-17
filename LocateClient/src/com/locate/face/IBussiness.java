@@ -3,7 +3,7 @@ package com.locate.face;
  * Client implements this Interface 
  * Handle the data which transport from Locate.
  * @author CloudWei kaiweicai@163.com
- * create time 2014年8月15日
+ * create time 20142014年8月15日
  * @copyRight by Author
  */
 public interface IBussiness {
