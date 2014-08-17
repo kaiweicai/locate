@@ -49,10 +49,10 @@ import com.reuters.rfa.session.Session;
 import com.reuters.rfa.session.omm.OMMConsumer;
 import com.reuters.rfa.session.omm.OMMItemIntSpec;
 /**  
-*  ����:Cloud wei   
+*  锟斤拷锟斤拷:Cloud wei   
 *  E-mail:kaiweicai@163.com   
-*  ����ʱ�䣺2014.5.26   
-*  ��˵��  netty game  
+*  锟斤拷锟斤拷时锟戒：2014.5.26   
+*  锟斤拷说锟斤拷  netty game  
 */  
 @Service
 public class QSConsumerProxy{
@@ -327,14 +327,14 @@ public class QSConsumerProxy{
 		Map<String,ItemManager> subscribeItemManagerMap = DataBaseCache.RIC_ITEMMANAGER_Map;
 		boolean needRenewSubscribeItem=checkSubscribeStatus(itemName);
 		if(needRenewSubscribeItem){
-			//�Ѿ����Ĺ�ò�Ʒ,ֻ��Ҫ����һ��һ�ζ�������,����һ��snapshot����.
+			//锟窖撅拷锟斤拷锟侥癸拷貌锟狡?只锟斤拷要锟斤拷锟斤拷一锟斤拷一锟轿讹拷锟斤拷锟斤拷锟斤拷,锟斤拷锟斤拷一锟斤拷snapshot锟斤拷锟斤拷.
 			OneTimeItemManager oneTimeItemManager =  new OneTimeItemManager(this, _itemGroupManager,channelId);
 			oneTimeItemManager.sendOneTimeRequest(itemName, responseMsgType);
 //			ItemManager subscibeItemManager =  subscribeItemManagerMap.get(itemName);
 //			subscibeItemManager.sendInitialDocument(channelId);
 			return null;
 		}else{
-			//һ����Ʒ��Ӧһ��itemManager����
+			//一锟斤拷锟斤拷品锟斤拷应一锟斤拷itemManager锟斤拷锟斤拷
 			itemManager=SystemConstant.springContext.getBean("itemManager",ItemManager.class);
 			subscribeItemManagerMap.put(itemName, itemManager);
 			// Send requests
@@ -369,8 +369,8 @@ public class QSConsumerProxy{
 //	}
 
 	/**
-	 * ���RIC_ITEMMANAGER_Map�Ƿ��ò�Ʒ,���û�иò�Ʒ��ֱ�Ӷ��ĸò�Ʒ.
-	 * ���ö��Ĳ�Ʒ�¶�Ӧ��itemHandler�Ƿ��Ǽ���״̬.����Ǽ���״̬.��Ҫ���¶���.
+	 * 锟斤拷锟絉IC_ITEMMANAGER_Map锟角凤拷锟矫诧拷品,锟斤拷锟矫伙拷懈貌锟狡凤拷锟街憋拷佣锟斤拷母貌锟狡?
+	 * 锟斤拷锟矫讹拷锟侥诧拷品锟铰讹拷应锟斤拷itemHandler锟角凤拷锟角硷拷锟斤拷状态.锟斤拷锟斤拷羌锟斤拷锟阶刺?锟斤拷要锟斤拷锟铰讹拷锟斤拷.
 	 * @param itemName
 	 * @return
 	 */

@@ -103,18 +103,18 @@ public class HttpRequestHandler extends SimpleChannelUpstreamHandler {
 //			logger.info("-----------------------------------------------------------------");
 //			/**
 //			 * 100 Continue
-//			 * ÊÇÕâÑùµÄÒ»ÖÖÇé¿ö£ºHTTP¿Í»§¶Ë³ÌĞòÓĞÒ»¸öÊµÌåµÄÖ÷Ìå²¿·ÖÒª·¢ËÍ¸ø·şÎñÆ÷£¬µ«Ï£ÍûÔÚ·¢ËÍÖ®Ç°²é¿´ÏÂ·şÎñÆ÷ÊÇ·ñ»á
-//			 * ½ÓÊÜÕâ¸öÊµÌå£¬ËùÒÔÔÚ·¢ËÍÊµÌåÖ®Ç°ÏÈ·¢ËÍÁËÒ»¸öĞ¯´ø100
-//			 * ContinueµÄExpectÇëÇóÊ×²¿µÄÇëÇó¡£·şÎñÆ÷ÔÚÊÕµ½ÕâÑùµÄÇëÇóºó£¬Ó¦¸ÃÓÃ 100 Continue»òÒ»Ìõ´íÎóÂëÀ´½øĞĞÏìÓ¦¡£
+//			 * æ˜¯è¿™æ ·çš„ä¸€ç§æƒ…å†µï¼šHTTPå®¢æˆ·ç«¯ç¨‹åºæœ‰ä¸€ä¸ªå®ä½“çš„ä¸»ä½“éƒ¨åˆ†è¦å‘é€ç»™æœåŠ¡å™¨ï¼Œä½†å¸Œæœ›åœ¨å‘é€ä¹‹å‰æŸ¥çœ‹ä¸‹æœåŠ¡å™¨æ˜¯å¦ä¼š
+//			 * æ¥å—è¿™ä¸ªå®ä½“ï¼Œæ‰€ä»¥åœ¨å‘é€å®ä½“ä¹‹å‰å…ˆå‘é€äº†ä¸€ä¸ªæºå¸¦100
+//			 * Continueçš„Expectè¯·æ±‚é¦–éƒ¨çš„è¯·æ±‚ã€‚æœåŠ¡å™¨åœ¨æ”¶åˆ°è¿™æ ·çš„è¯·æ±‚åï¼Œåº”è¯¥ç”¨ 100 Continueæˆ–ä¸€æ¡é”™è¯¯ç æ¥è¿›è¡Œå“åº”ã€‚
 //			 */
 //			if (is100ContinueExpected(request)) {
 //				send100Continue(e);
 //			}
-//			// ½âÎöhttpÍ·²¿
+//			// è§£æhttpå¤´éƒ¨
 //			for (Map.Entry<String, String> h : request.headers()) {
 //				System.out.println("HEADER: " + h.getKey() + " = " + h.getValue() + "\r\n");
 //			}
-//			// ½âÎöÇëÇó²ÎÊı
+//			// è§£æè¯·æ±‚å‚æ•°
 //			QueryStringDecoder queryStringDecoder = new QueryStringDecoder(request.getUri());
 //			Map<String, List<String>> params = queryStringDecoder.getParameters();
 //			String ric = "";
@@ -145,7 +145,7 @@ public class HttpRequestHandler extends SimpleChannelUpstreamHandler {
 //				}
 //				// writeResponse(e, uri);
 //			}
-//		} else {// Îª·Ö¿é±àÂëÊ±
+//		} else {// ä¸ºåˆ†å—ç¼–ç æ—¶
 //			HttpChunk chunk = (HttpChunk) e.getMessage();
 //			if (chunk.isLast()) {
 //				readingChunks = false;
@@ -193,13 +193,13 @@ public class HttpRequestHandler extends SimpleChannelUpstreamHandler {
 		this.handshaker = wsFactory.newHandshaker(req);
 		if (this.handshaker == null) {
 			wsFactory.sendUnsupportedWebSocketVersionResponse(ctx.getChannel());
-		} else {// websocketÁ¬½Ó³É¹¦.
+		} else {// websocketè¿æ¥æˆåŠŸ.
 			this.handshaker.handshake(ctx.getChannel(), req);
 			logger.info("create the websocket shakehand success!");
 			ChannelPipeline pipeline = ctx.getPipeline();
 			pipeline.addLast("webAdpterHandler", webAdapterHandler);
 			DataBaseCache.webSocketGroup.add(ctx.getChannel());
-			//½«channelIdºÍ¶ÔÓ¦µÄchannel·Åµ½mapÖĞ,»áĞ´¿Í»§¶ËµÄÊ±ºò¿ÉÒÔ¸ù¾İ¸ÃidÕÒµ½¶ÔÓ¦µÄchannel.
+			//å°†channelIdå’Œå¯¹åº”çš„channelæ”¾åˆ°mapä¸­,ä¼šå†™å®¢æˆ·ç«¯çš„æ—¶å€™å¯ä»¥æ ¹æ®è¯¥idæ‰¾åˆ°å¯¹åº”çš„channel.
 			if(!DataBaseCache.allChannelGroup.contains(ctx.getChannel())){
 				DataBaseCache.allChannelGroup.add(ctx.getChannel());
 			}
@@ -262,7 +262,7 @@ public class HttpRequestHandler extends SimpleChannelUpstreamHandler {
 		gateForwardRFA.process(clientInfo);
 		
 //		DataBaseCache.webSocketGroup.write(new TextWebSocketFrame(ric.toUpperCase()));
-//		ctx.getChannel().write(new TextWebSocketFrame(ric.toUpperCase()+"¶©¹º³É¹¦."));
+//		ctx.getChannel().write(new TextWebSocketFrame(ric.toUpperCase()+"è®¢è´­æˆåŠŸ."));
 	}
 
 	private void sendHttpResponse(ChannelHandlerContext ctx, HttpRequest req, HttpResponse res) {
@@ -284,19 +284,19 @@ public class HttpRequestHandler extends SimpleChannelUpstreamHandler {
 	}
 
 	private void writeResponse(MessageEvent e, String uri) {
-		// ½âÎöConnectionÊ×²¿£¬ÅĞ¶ÏÊÇ·ñÎª³Ö¾ÃÁ¬½Ó
+		// è§£æConnectioné¦–éƒ¨ï¼Œåˆ¤æ–­æ˜¯å¦ä¸ºæŒä¹…è¿æ¥
 		boolean keepAlive = isKeepAlive(request);
 
 		// Build the response object.
 		HttpResponse response = new DefaultHttpResponse(HTTP_1_1, OK);
 		response.setStatus(HttpResponseStatus.OK);
-		// ·şÎñ¶Ë¿ÉÒÔÍ¨¹ılocationÊ×²¿½«¿Í»§¶Ëµ¼ÏòÄ³¸ö×ÊÔ´µÄµØÖ·¡£
+		// æœåŠ¡ç«¯å¯ä»¥é€šè¿‡locationé¦–éƒ¨å°†å®¢æˆ·ç«¯å¯¼å‘æŸä¸ªèµ„æºçš„åœ°å€ã€‚
 		// response.addHeader("Location", uri);
 		if (keepAlive) {
 			// Add 'Content-Length' header only for a keep-alive connection.
 			response.setHeader(CONTENT_LENGTH, response.getContent().readableBytes());
 		}
-		// µÃµ½¿Í»§¶ËµÄcookieĞÅÏ¢£¬²¢ÔÙ´ÎĞ´µ½¿Í»§¶Ë
+		// å¾—åˆ°å®¢æˆ·ç«¯çš„cookieä¿¡æ¯ï¼Œå¹¶å†æ¬¡å†™åˆ°å®¢æˆ·ç«¯
 		String cookieString = request.getHeader(COOKIE);
 		if (cookieString != null) {
 			CookieDecoder cookieDecoder = new CookieDecoder();
@@ -311,14 +311,14 @@ public class HttpRequestHandler extends SimpleChannelUpstreamHandler {
 		}
 		final String path = "test/com/locate/test/common/message.json";
 		File localFile = new File(path);
-		// Èç¹ûÎÄ¼şÒş²Ø»òÕß²»´æÔÚ
+		// å¦‚æœæ–‡ä»¶éšè—æˆ–è€…ä¸å­˜åœ¨
 		if (localFile.isHidden() || !localFile.exists()) {
-			// Âß¼­´¦Àí
+			// é€»è¾‘å¤„ç†
 			return;
 		}
-		// Èç¹ûÇëÇóÂ·¾¶ÎªÄ¿Â¼
+		// å¦‚æœè¯·æ±‚è·¯å¾„ä¸ºç›®å½•
 		if (localFile.isDirectory()) {
-			// Âß¼­´¦Àí
+			// é€»è¾‘å¤„ç†
 			return;
 		}
 		RandomAccessFile raf = null;
@@ -328,7 +328,7 @@ public class HttpRequestHandler extends SimpleChannelUpstreamHandler {
 			response.setHeader(HttpHeaders.Names.CONTENT_LENGTH, String.valueOf(fileLength));
 			Channel ch = e.getChannel();
 			ch.write(response);
-			// ÕâÀïÓÖÒªÖØĞÂÎÂÏ°ÏÂhttpµÄ·½·¨£¬head·½·¨Óëget·½·¨ÀàËÆ£¬µ«ÊÇ·şÎñÆ÷ÔÚÏìÓ¦ÖĞÖ»·µ»ØÊ×²¿£¬²»»á·µ»ØÊµÌåµÄÖ÷Ìå²¿·Ö
+			// è¿™é‡Œåˆè¦é‡æ–°æ¸©ä¹ ä¸‹httpçš„æ–¹æ³•ï¼Œheadæ–¹æ³•ä¸getæ–¹æ³•ç±»ä¼¼ï¼Œä½†æ˜¯æœåŠ¡å™¨åœ¨å“åº”ä¸­åªè¿”å›é¦–éƒ¨ï¼Œä¸ä¼šè¿”å›å®ä½“çš„ä¸»ä½“éƒ¨åˆ†
 			if (!request.getMethod().equals(HttpMethod.HEAD)) {
 				ch.write(new ChunkedFile(raf, 0, fileLength, 8192));// 8kb
 			}
@@ -362,19 +362,19 @@ public class HttpRequestHandler extends SimpleChannelUpstreamHandler {
 		Channel channel = ctx.getChannel();
 		DataBaseCache.allChannelGroup.remove(channel);
 		List<String> unregisterList = new ArrayList<String>();
-		//±éÀúËùÓĞµÄchannelgoup,·¢ÏÖÓĞ¸ÃchannelµÄ¾Íremoveµô.Èç¹û¸ÃchannelGroupÎª¿Õ,
+		//éå†æ‰€æœ‰çš„channelgoup,å‘ç°æœ‰è¯¥channelçš„å°±removeæ‰.å¦‚æœè¯¥channelGroupä¸ºç©º,
 		for(Entry<String,ChannelGroup> entry:DataBaseCache.itemNameChannelMap.entrySet()){
 			String itemName = entry.getKey();
 			ChannelGroup channelGroup = entry.getValue();
 			if(channelGroup.contains(channel)){
 				channelGroup.remove(channel);
 			}
-			if(channelGroup.isEmpty()){//Ã»ÓĞÓÃ»§¶©ÔÄÁË,ÍË¶©¸Ãitem
+			if(channelGroup.isEmpty()){//æ²¡æœ‰ç”¨æˆ·è®¢é˜…äº†,é€€è®¢è¯¥item
 				unregisterList.add(itemName);
 				gateForwardRFA.closeHandler(itemName);
 			}
 		}
-		//Çå¿Õµô¸ÃitemnameºÍChannelGroupµÄ¶ÔÓ¦¹ØÏµ.
+		//æ¸…ç©ºæ‰è¯¥itemnameå’ŒChannelGroupçš„å¯¹åº”å…³ç³».
 		for (String itemName : unregisterList) {
 			ChannelGroup itemChannelGroup = DataBaseCache.itemNameChannelMap.get(itemName);
 			if (itemChannelGroup.isEmpty()) {

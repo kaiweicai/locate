@@ -58,7 +58,7 @@ public class GateWayServer {
 			public ChannelPipeline getPipeline() throws Exception {
 //				ChannelPipeline pipeline =Channels.pipeline(new GateWayDecoder(),new GateWayEncoder(),gateWayServerHandler);
 				ChannelPipeline pipeline = Channels.pipeline();
-				//Èç¹û·şÎñÆ÷¶ËÒ»Ö±¶¼Ã»ÓĞÏò¸Ãchannel·¢ËÍĞÅÏ¢,ĞèÒªÌáĞÑ¿Í»§¶Ë.
+				//å¦‚æœæœåŠ¡å™¨ç«¯ä¸€ç›´éƒ½æ²¡æœ‰å‘è¯¥channelå‘é€ä¿¡æ¯,éœ€è¦æé†’å®¢æˆ·ç«¯.
 				pipeline.addLast("fixLengthEncoder", new LengthFieldPrepender(2));
 				pipeline.addLast("encrytEncoder", new EncrytEncoder());
 				pipeline.addLast("fixLengthDecoder", new LengthFieldBasedFrameDecoder(64 * 1024, 0, 2, 0, 2));

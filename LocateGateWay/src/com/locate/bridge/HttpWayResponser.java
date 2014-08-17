@@ -45,7 +45,7 @@ import com.locate.rmds.RFAServerManager;
 import com.reuters.rfa.omm.OMMMsg;
 
 /**
- * RFA Í¨¹ı¸Ã³ÌĞò½«ÏûÏ¢·¢ËÍµ½gateway.
+ * RFA é€šè¿‡è¯¥ç¨‹åºå°†æ¶ˆæ¯å‘é€åˆ°gateway.
  * 
  * @author cloud wei
  * 
@@ -111,19 +111,19 @@ public class HttpWayResponser {
 	}
 
 	public static void sentwebResponse2Channel(byte msgType, Document doc, String itemName,HttpRequest request) {
-		// ½âÎöConnectionÊ×²¿£¬ÅĞ¶ÏÊÇ·ñÎª³Ö¾ÃÁ¬½Ó
+		// è§£æConnectioné¦–éƒ¨ï¼Œåˆ¤æ–­æ˜¯å¦ä¸ºæŒä¹…è¿æ¥
 		boolean keepAlive = isKeepAlive(request);
 		
 		// Build the response object.
 		HttpResponse response = new DefaultHttpResponse(HTTP_1_1, OK);
 		response.setStatus(HttpResponseStatus.OK);
-		// ·şÎñ¶Ë¿ÉÒÔÍ¨¹ılocationÊ×²¿½«¿Í»§¶Ëµ¼ÏòÄ³¸ö×ÊÔ´µÄµØÖ·¡£
+		// æœåŠ¡ç«¯å¯ä»¥é€šè¿‡locationé¦–éƒ¨å°†å®¢æˆ·ç«¯å¯¼å‘æŸä¸ªèµ„æºçš„åœ°å€ã€‚
 		// response.addHeader("Location", uri);
 		if (keepAlive) {
 			// Add 'Content-Length' header only for a keep-alive connection.
 			response.setHeader(CONTENT_LENGTH, response.getContent().readableBytes());
 		}
-		// µÃµ½¿Í»§¶ËµÄcookieĞÅÏ¢£¬²¢ÔÙ´ÎĞ´µ½¿Í»§¶Ë
+		// å¾—åˆ°å®¢æˆ·ç«¯çš„cookieä¿¡æ¯ï¼Œå¹¶å†æ¬¡å†™åˆ°å®¢æˆ·ç«¯
 		String cookieString = request.getHeader(COOKIE);
 		if (cookieString != null) {
 			CookieDecoder cookieDecoder = new CookieDecoder();
@@ -156,7 +156,7 @@ public class HttpWayResponser {
 			buffer.writeBytes(result);
 //			channelGroup.write(buffer);
 			logger.info("downStream message is :"+content);
-			// ÕâÀïÓÖÒªÖØĞÂÎÂÏ°ÏÂhttpµÄ·½·¨£¬head·½·¨Óëget·½·¨ÀàËÆ£¬µ«ÊÇ·şÎñÆ÷ÔÚÏìÓ¦ÖĞÖ»·µ»ØÊ×²¿£¬²»»á·µ»ØÊµÌåµÄÖ÷Ìå²¿·Ö
+			// è¿™é‡Œåˆè¦é‡æ–°æ¸©ä¹ ä¸‹httpçš„æ–¹æ³•ï¼Œheadæ–¹æ³•ä¸getæ–¹æ³•ç±»ä¼¼ï¼Œä½†æ˜¯æœåŠ¡å™¨åœ¨å“åº”ä¸­åªè¿”å›é¦–éƒ¨ï¼Œä¸ä¼šè¿”å›å®ä½“çš„ä¸»ä½“éƒ¨åˆ†
 //			if (!request.getMethod().equals(HttpMethod.HEAD)) {
 //				channelGroup.write(new ChunkedInput(result, 0, fileLength, 8192));// 8kb
 //			}
@@ -189,7 +189,7 @@ public class HttpWayResponser {
 		try {
 //			channelGroup.write(new TextWebSocketFrame(result));
 			logger.info("downStream message is :" + content);
-			// ÕâÀïÓÖÒªÖØĞÂÎÂÏ°ÏÂhttpµÄ·½·¨£¬head·½·¨Óëget·½·¨ÀàËÆ£¬µ«ÊÇ·şÎñÆ÷ÔÚÏìÓ¦ÖĞÖ»·µ»ØÊ×²¿£¬²»»á·µ»ØÊµÌåµÄÖ÷Ìå²¿·Ö
+			// è¿™é‡Œåˆè¦é‡æ–°æ¸©ä¹ ä¸‹httpçš„æ–¹æ³•ï¼Œheadæ–¹æ³•ä¸getæ–¹æ³•ç±»ä¼¼ï¼Œä½†æ˜¯æœåŠ¡å™¨åœ¨å“åº”ä¸­åªè¿”å›é¦–éƒ¨ï¼Œä¸ä¼šè¿”å›å®ä½“çš„ä¸»ä½“éƒ¨åˆ†
 			// if (!request.getMethod().equals(HttpMethod.HEAD)) {
 			// channelGroup.write(new ChunkedInput(result, 0, fileLength,
 			// 8192));// 8kb

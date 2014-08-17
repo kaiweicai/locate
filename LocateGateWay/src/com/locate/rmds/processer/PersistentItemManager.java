@@ -52,7 +52,7 @@ import com.reuters.rfa.session.omm.OMMSolicitedItemEvent;
 //							application uses this handles to identify the items
 // QSConsumerDemo _mainApp - main application class
 /**
- * �����ж��ʵ��.һ�����ĵĲ�Ʒ��Ӧһ��itemManager.
+ * 锟斤拷锟斤拷锟叫讹拷锟绞碉拷锟?一锟斤拷锟斤拷锟侥的诧拷品锟斤拷应一锟斤拷itemManager.
  * @author Cloud.Wei
  *
  */
@@ -203,7 +203,7 @@ public class PersistentItemManager implements IProcesser
     	{
     		logger.info("Receive a COMPLETION_EVENT, "+ event.getHandle());
     		logger.info("RIC IS "+this.clientRequestItemName +" has been finished");
-    		//@TODO �ж��Ƿ�֪ͨ�����ִ�ͻ���ĳ����Ʒ�Ѿ�ֹͣ����.
+    		//@TODO 锟叫讹拷锟角凤拷通知锟斤拷锟斤拷锟街达拷突锟斤拷锟侥筹拷锟斤拷锟狡凤拷丫锟酵Ｖ癸拷锟斤拷锟?
     		return;
     	}
 
@@ -211,7 +211,7 @@ public class PersistentItemManager implements IProcesser
         logger.info(_className+".processEvent: Received Item("+clientRequestItemName+") Event from server ");
         if (event.getType() != Event.OMM_ITEM_EVENT) 
         {
-        	//�������̫Σ����,��ΪRFA�����Ϣ�����Ҫ�˳�����.�ֲ����߼���.����ȥ��cleanup����.
+        	//锟斤拷锟斤拷锟斤拷锟教ｏ拷锟斤拷锟?锟斤拷为RFA锟斤拷锟斤拷锟较拷锟斤拷锟斤拷要锟剿筹拷锟斤拷锟斤拷.锟街诧拷锟斤拷锟竭硷拷锟斤拷.锟斤拷锟斤拷去锟斤拷cleanup锟斤拷锟斤拷.
             logger.error("ERROR: "+_className+" Received an unsupported Event type.");
 //            _mainApp.cleanup();
             return;
@@ -220,9 +220,9 @@ public class PersistentItemManager implements IProcesser
         OMMItemEvent ommItemEvent = (OMMItemEvent) event;
         OMMMsg respMsg = ommItemEvent.getMsg();
         Document responseMsg = GenericOMMParser.parse(respMsg, clientRequestItemName);
-        //����Ϣ��ʼ����ʱ����뵽��Ϣ��
+        //锟斤拷锟斤拷息锟斤拷始锟斤拷锟斤拷时锟斤拷锟斤拷氲斤拷锟较拷锟?
 		XmlMessageUtil.addStartHandleTime(responseMsg, startTime);
-        //�����״̬��Ϣ.��¼һ��������־.
+        //锟斤拷锟斤拷锟阶刺拷锟较?锟斤拷录一锟斤拷锟斤拷锟斤拷锟斤拷志.
         if(respMsg.getMsgType()==OMMMsg.MsgType.STATUS_RESP && (respMsg.has(OMMMsg.HAS_STATE))){
         	byte streamState= respMsg.getState().getStreamState();
         	byte dataState = respMsg.getState().getDataState();
@@ -239,7 +239,7 @@ public class PersistentItemManager implements IProcesser
 		}
         
 		XmlMessageUtil.addLocateInfo(responseMsg, respMsg.getMsgType(), RFAServerManager.sequenceNo.getAndIncrement(), 0);
-		//���汨����Ϣ�Թ���ѯ.
+		//锟斤拷锟芥报锟斤拷锟斤拷息锟皆癸拷锟斤拷询.
 		iPriceKeeper priceKeeper = new FilePriceKeeper(this.clientRequestItemName);
 		JSON jsonObject = JsonUtil.getJSONFromXml(responseMsg.asXML()) ;
 		priceKeeper.persistentThePrice(jsonObject);

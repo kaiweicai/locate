@@ -33,11 +33,11 @@ public class NetTimeUtil {
 	
 	public static void main(String[] args) throws Exception {
 		long startTime = System.currentTimeMillis();
-		// 取得资源对象
+		// 鍙栧緱璧勬簮瀵硅薄
 		URL url = new URL("http://www.bjtime.cn");
-		// 生成连接对象
+		// 鐢熸垚杩炴帴瀵硅薄
 		URLConnection uc = url.openConnection();
-		// 发出连接
+		// 鍙戝嚭杩炴帴
 		uc.connect();
 		long time = uc.getDate();
 		System.out.println("long time:" + time);

@@ -14,11 +14,11 @@ import net.sf.json.xml.XMLSerializer;
 
 public class JsonUtil {
 	/**
-	 * ½«xml×Ö·û´®×ª»»ÎªJSON¶ÔÏó
+	 * å°†xmlå­—ç¬¦ä¸²è½¬æ¢ä¸ºJSONå¯¹è±¡
 	 * 
 	 * @param xmlFile
-	 *            xml×Ö·û´®
-	 * @return JSON¶ÔÏó
+	 *            xmlå­—ç¬¦ä¸²
+	 * @return JSONå¯¹è±¡
 	 */
 	public static JSON getJSONFromXml(String xmlString) {
 		XMLSerializer xmlSerializer = new XMLSerializer();
@@ -27,9 +27,9 @@ public class JsonUtil {
 	}
 	
     /** 
-     * ½«xmlDocument×ª»»ÎªJSON¶ÔÏó 
+     * å°†xmlDocumentè½¬æ¢ä¸ºJSONå¯¹è±¡ 
      * @param xmlDocument XML Document 
-     * @return JSON¶ÔÏó 
+     * @return JSONå¯¹è±¡ 
      */  
     public JSON getJSONFromXml(Document xmlDocument) {  
         String xmlString = xmlDocument.toString();  
@@ -37,27 +37,27 @@ public class JsonUtil {
     }
     
     /** 
-     * ½«xml×Ö·û´®×ª»»ÎªJSON×Ö·û´® 
+     * å°†xmlå­—ç¬¦ä¸²è½¬æ¢ä¸ºJSONå­—ç¬¦ä¸² 
      * @param xmlString 
-     * @return JSON×Ö·û´® 
+     * @return JSONå­—ç¬¦ä¸² 
      */  
     public String getJSONStringFromXml(String xmlString ) {  
         return getJSONFromXml(xmlString).toString();  
     }  
     
     /** 
-     * ½«xmlDocument×ª»»ÎªJSON×Ö·û´® 
+     * å°†xmlDocumentè½¬æ¢ä¸ºJSONå­—ç¬¦ä¸² 
      * @param xmlDocument XML Document 
-     * @return JSON×Ö·û´® 
+     * @return JSONå­—ç¬¦ä¸² 
      */  
     public String getXMLtoJSONString(Document xmlDocument) {  
         return getJSONStringFromXml(xmlDocument.toString());  
     }  
     
     /** 
-     * ¶ÁÈ¡XMLÎÄ¼ş×¼»»ÎªJSON×Ö·û´® 
-     * @param xmlFile  XMLÎÄ¼ş 
-     * @return JSON×Ö·û´® 
+     * è¯»å–XMLæ–‡ä»¶å‡†æ¢ä¸ºJSONå­—ç¬¦ä¸² 
+     * @param xmlFile  XMLæ–‡ä»¶ 
+     * @return JSONå­—ç¬¦ä¸² 
      */  
     public String getXMLFiletoJSONString(String xmlFile) {  
         InputStream is = JsonUtil.class.getResourceAsStream(xmlFile);  
@@ -74,20 +74,20 @@ public class JsonUtil {
     }
     
     /** 
-     * ½«Java¶ÔÏó×ª»»ÎªJSON¸ñÊ½µÄ×Ö·û´® 
+     * å°†Javaå¯¹è±¡è½¬æ¢ä¸ºJSONæ ¼å¼çš„å­—ç¬¦ä¸² 
      *  
      * @param javaObj 
-     *            POJO,ÀıÈçÈÕÖ¾µÄmodel 
-     * @return JSON¸ñÊ½µÄString×Ö·û´® 
+     *            POJO,ä¾‹å¦‚æ—¥å¿—çš„model 
+     * @return JSONæ ¼å¼çš„Stringå­—ç¬¦ä¸² 
      */  
     public static String getJsonStringFromJavaPOJO(Object javaObj) {  
         return JSONObject.fromObject(javaObj).toString(1);  
     }  
     
     /** 
-     * ½«Map×¼»»ÎªJSON×Ö·û´® 
+     * å°†Mapå‡†æ¢ä¸ºJSONå­—ç¬¦ä¸² 
      * @param map 
-     * @return JSON×Ö·û´® 
+     * @return JSONå­—ç¬¦ä¸² 
      */  
     public static  String getJsonStringFromMap(Map<?, ?> map) {  
         JSONObject object = JSONObject.fromObject(map);  

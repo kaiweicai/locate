@@ -18,7 +18,7 @@ import com.locate.rmds.processer.face.INotifier;
 import com.locate.rmds.util.SystemProperties;
 
 /**
- * @author CloudWei kaiweicai@163.com create time 2014年8月12日
+ * @author CloudWei kaiweicai@163.com create time 20142014年8月12日
  * @copyRight by Author
  */
 @Component
@@ -47,7 +47,7 @@ public class EmailNotifier implements INotifier {
 				emailMessage.setText(content);
 				emailMessage.saveChanges();
 				Transport transport = emailSession.getTransport("smtp");
-				transport.connect(mailSmtpHost, smtpMailUserName, smtpMailPassword); // 这个邮箱可随便使用
+				transport.connect(mailSmtpHost, smtpMailUserName, smtpMailPassword);
 				transport.sendMessage(emailMessage, emailMessage.getAllRecipients());
 				transport.close();
 			} catch (AddressException e) {

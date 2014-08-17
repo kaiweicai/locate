@@ -106,7 +106,7 @@ public class GatewayServerHandler extends SimpleChannelHandler {
 //			
 //			Channel channel = e.getChannel();
 //			
-//			//½«channelIdºÍ¶ÔÓ¦µÄchannel·Åµ½mapÖĞ,»áĞ´¿Í»§¶ËµÄÊ±ºò¿ÉÒÔ¸ù¾İ¸ÃidÕÒµ½¶ÔÓ¦µÄchannel.
+//			//å°†channelIdå’Œå¯¹åº”çš„channelæ”¾åˆ°mapä¸­,ä¼šå†™å®¢æˆ·ç«¯çš„æ—¶å€™å¯ä»¥æ ¹æ®è¯¥idæ‰¾åˆ°å¯¹åº”çš„channel.
 //			if(!GateWayServer.allChannelGroup.contains(channel)){
 //				GateWayServer.allChannelGroup.add(channel);
 //			}
@@ -154,7 +154,7 @@ public class GatewayServerHandler extends SimpleChannelHandler {
 			
 			Channel channel = e.getChannel();
 			
-			//½«channelIdºÍ¶ÔÓ¦µÄchannel·Åµ½mapÖĞ,»áĞ´¿Í»§¶ËµÄÊ±ºò¿ÉÒÔ¸ù¾İ¸ÃidÕÒµ½¶ÔÓ¦µÄchannel.
+			//å°†channelIdå’Œå¯¹åº”çš„channelæ”¾åˆ°mapä¸­,ä¼šå†™å®¢æˆ·ç«¯çš„æ—¶å€™å¯ä»¥æ ¹æ®è¯¥idæ‰¾åˆ°å¯¹åº”çš„channel.
 			if(!DataBaseCache.allChannelGroup.contains(channel)){
 				DataBaseCache.allChannelGroup.add(channel);
 			}
@@ -188,19 +188,19 @@ public class GatewayServerHandler extends SimpleChannelHandler {
 		Channel channel = ctx.getChannel();
 		DataBaseCache.allChannelGroup.remove(channel);
 		List<String> unregisterList = new ArrayList<String>();
-		//±éÀúËùÓĞµÄchannelgoup,·¢ÏÖÓĞ¸ÃchannelµÄ¾Íremoveµô.Èç¹û¸ÃchannelGroupÎª¿Õ,
+		//éå†æ‰€æœ‰çš„channelgoup,å‘ç°æœ‰è¯¥channelçš„å°±removeæ‰.å¦‚æœè¯¥channelGroupä¸ºç©º,
 		for(Entry<String,ChannelGroup> entry:DataBaseCache.itemNameChannelMap.entrySet()){
 			String itemName = entry.getKey();
 			ChannelGroup channelGroup = entry.getValue();
 			if(channelGroup.contains(channel)){
 				channelGroup.remove(channel);
 			}
-			if(channelGroup.isEmpty()){//Ã»ÓĞÓÃ»§¶©ÔÄÁË,ÍË¶©¸Ãitem
+			if(channelGroup.isEmpty()){//æ²¡æœ‰ç”¨æˆ·è®¢é˜…äº†,é€€è®¢è¯¥item
 				unregisterList.add(itemName);
 				gateForwardRFA.closeHandler(itemName);
 			}
 		}
-		//Çå¿Õµô¸ÃitemnameºÍChannelGroupµÄ¶ÔÓ¦¹ØÏµ.
+		//æ¸…ç©ºæ‰è¯¥itemnameå’ŒChannelGroupçš„å¯¹åº”å…³ç³».
 		for (String itemName : unregisterList) {
 			ChannelGroup itemChannelGroup = DataBaseCache.itemNameChannelMap.get(itemName);
 			if (itemChannelGroup.isEmpty()) {

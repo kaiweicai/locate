@@ -11,9 +11,9 @@ import com.locate.rmds.processer.face.INotifier;
 /**
  * 
  * @author cloudwei Locate 
- * Ö÷Æô¶¯³ÌĞò. 
- * ¸ºÔğÁ¬½ÓRFAµÄÖ÷³ÌĞòºÍLocateGateWayµÄÖ÷³ÌĞò.
- * Ê¹ÓÃspringÈİÆ÷¼ÓÔØ²¢¹ÜÀíËùÓĞµÄÀà.
+ * ä¸»å¯åŠ¨ç¨‹åº. 
+ * è´Ÿè´£è¿æ¥RFAçš„ä¸»ç¨‹åºå’ŒLocateGateWayçš„ä¸»ç¨‹åº.
+ * ä½¿ç”¨springå®¹å™¨åŠ è½½å¹¶ç®¡ç†æ‰€æœ‰çš„ç±».
  */
 public class LocateGateWayMain {
 	static {

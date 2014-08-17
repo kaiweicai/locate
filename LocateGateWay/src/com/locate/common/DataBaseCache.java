@@ -12,7 +12,7 @@ import com.locate.rmds.gui.viewer.FieldValue;
 import com.locate.rmds.processer.ItemManager;
 import com.locate.rmds.processer.face.IProcesser;
 /*
- * ¸ÃÀàÖ÷Òª´æ·ÅÏµÍ³ÖĞ»º´æÊı¾İ.
+ * è¯¥ç±»ä¸»è¦å­˜æ”¾ç³»ç»Ÿä¸­ç¼“å­˜æ•°æ®.
  */
 public class DataBaseCache {
 	static Logger logger = Logger.getLogger(DataBaseCache.class);
@@ -34,16 +34,16 @@ public class DataBaseCache {
 	public static Map<String,Byte> _clientResponseType = new HashMap<String,Byte>();
 	
 	//add by Cloud Wei
-	//¹ÜÀíchannelIdºÍchannelµÄÓ³Éä¹ØÏµ.
+	//ç®¡ç†channelIdå’Œchannelçš„æ˜ å°„å…³ç³».
 	public static ChannelGroup allChannelGroup = new DefaultChannelGroup("allChannels");
-	//´æ·ÅËùÓĞwebÁ¬½ÓµÄchannel.ÔİÊ±Ã»ÓĞÌ«´ó×÷ÓÃ.
+	//å­˜æ”¾æ‰€æœ‰webè¿æ¥çš„channel.æš‚æ—¶æ²¡æœ‰å¤ªå¤§ä½œç”¨.
 	public static ChannelGroup webSocketGroup = new DefaultChannelGroup();
-	//¶©ÔÄµÄitemNameÓë¶©ÔÄ¸ÃitemNameµÄËùÓĞ¿Í»§µÄ¶ÔÓ¦¹ØÏµ.
+	//è®¢é˜…çš„itemNameä¸è®¢é˜…è¯¥itemNameçš„æ‰€æœ‰å®¢æˆ·çš„å¯¹åº”å…³ç³».
 	public static Map<String ,ChannelGroup> itemNameChannelMap = new HashMap<String,ChannelGroup>();
-//	//Ôö¼ÓwebÓÃ»§¶©ÔÄµÄitemNameÓë¶©ÔÄ¸ÃitemNameµÄweb¿Í»§µÄ¶ÔÓ¦¹ØÏµ.
+//	//å¢åŠ webç”¨æˆ·è®¢é˜…çš„itemNameä¸è®¢é˜…è¯¥itemNameçš„webå®¢æˆ·çš„å¯¹åº”å…³ç³».
 //	public static Map<String ,ChannelGroup> webItemChannelMap = new HashMap<String,ChannelGroup>();
 	/**
-	 * ¶©ÔÄµÄ²úÆ·itemNameÓë¶©ÔÄ¸Ã²úÆ·µÄÏûÏ¢´¦ÀíÆ÷µÄÓ³Éä¹ØÏµ.
+	 * è®¢é˜…çš„äº§å“itemNameä¸è®¢é˜…è¯¥äº§å“çš„æ¶ˆæ¯å¤„ç†å™¨çš„æ˜ å°„å…³ç³».
 	 */
 	public static Map<String,ItemManager> RIC_ITEMMANAGER_Map = new HashMap<String,ItemManager>();
 	public static Map<String, Map<Short, FieldValue>> filedValueMap = new HashMap<String, Map<Short, FieldValue>>();

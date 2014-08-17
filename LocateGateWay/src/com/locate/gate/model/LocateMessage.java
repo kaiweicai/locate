@@ -13,7 +13,7 @@ public class LocateMessage {
 	private int sequenceNo;
 	byte msgType;
 	int msgLength;
-	//如果发生错误errorCode>0;
+	//濡傛灉鍙戠敓閿欒errorCode>0;
 	int errorCode = 0;
 	String document;
 	

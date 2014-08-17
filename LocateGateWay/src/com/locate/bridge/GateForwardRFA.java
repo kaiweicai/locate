@@ -37,8 +37,8 @@ import com.locate.rmds.processer.face.IProcesser;
 import com.reuters.rfa.omm.OMMMsg.MsgType;
 
 /**
- * ËùÓĞgatewayÏµÍ³ÏòRFAÏµÍ³·¢ËÍµÄµÄÇëÇó±ØĞëÍ¨¹ı¸ÃÀà´úÎª·¢ËÍ.
- * Æğµ½¹µÍ¨gatewayºÍRFA¹µÍ¨µÄÇÅÁº×÷ÓÃ.
+ * æ‰€æœ‰gatewayç³»ç»Ÿå‘RFAç³»ç»Ÿå‘é€çš„çš„è¯·æ±‚å¿…é¡»é€šè¿‡è¯¥ç±»ä»£ä¸ºå‘é€.
+ * èµ·åˆ°æ²Ÿé€šgatewayå’ŒRFAæ²Ÿé€šçš„æ¡¥æ¢ä½œç”¨.
  * @author cloud wei
  *
  */
@@ -136,7 +136,7 @@ public class GateForwardRFA {
 //		    	processRequest(request,clientName,RFAMessageTypes.RESPONSE_ONE_TIMES);
 //		    	break;
 	    }
-		//resultCode´óÓÚÁã,±íÊ¾´¦Àí´æÔÚ´íÎóĞèÒªÏò¿Í»§¶Ë·¢ËÍ´íÎóĞÅÏ¢.
+		//resultCodeå¤§äºé›¶,è¡¨ç¤ºå¤„ç†å­˜åœ¨é”™è¯¯éœ€è¦å‘å®¢æˆ·ç«¯å‘é€é”™è¯¯ä¿¡æ¯.
 		if(resultCode>0){
 			responseData = XmlMessageUtil.createErrorDocument(resultCode,
 					RFAExceptionEnum.getExceptionDescription(resultCode));
@@ -234,12 +234,12 @@ public class GateForwardRFA {
 	}
 
 	/**
-	 * È¡Ïû²úÆ·µÄ¶©ÔÄ,²¢ÊÍ·Å¸Ã²úÆ·ËùÓĞ×ÊÔ´
+	 * å–æ¶ˆäº§å“çš„è®¢é˜…,å¹¶é‡Šæ”¾è¯¥äº§å“æ‰€æœ‰èµ„æº
 	 * @param itemName
 	 */
 	public void closeHandler(String itemName) {
 		IProcesser itemHandler = DataBaseCache.RIC_ITEMMANAGER_Map.get(itemName);
-		//È¡Ïû¶©ÔÄ¸Ã²úÆ·
+		//å–æ¶ˆè®¢é˜…è¯¥äº§å“
 		if(itemHandler!=null){
 			itemHandler.closeRequest();
 		}

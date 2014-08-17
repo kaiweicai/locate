@@ -49,7 +49,7 @@ import com.reuters.rfa.session.omm.OMMSolicitedItemEvent;
 //							application uses this handles to identify the items
 // QSConsumerDemo _mainApp - main application class
 /**
- * �����ж��ʵ��.һ�����ĵĲ�Ʒ��Ӧһ��itemManager.
+ * 锟斤拷锟斤拷锟叫讹拷锟绞碉拷锟?一锟斤拷锟斤拷锟侥的诧拷品锟斤拷应一锟斤拷itemManager.
  * 
  * @author Cloud.Wei
  * 
@@ -88,7 +88,7 @@ public class WebItemManager implements Client {
 		// Preparing item request message
 		OMMPool pool = mainApp.getPool();
 		OMMMsg ommmsg = pool.acquireMsg();
-		// NONSTREAMING_REQΪֻȡһ��snapshort.
+		// NONSTREAMING_REQ为只取一锟斤拷snapshort.
 		ommmsg.setMsgType(OMMMsg.MsgType.NONSTREAMING_REQ);
 		ommmsg.setMsgModelType(msgModelType);
 		// ommmsg.setIndicationFlags(OMMMsg.Indication.REFRESH);
@@ -128,7 +128,7 @@ public class WebItemManager implements Client {
 			// Preparing item request message
 			OMMPool pool = mainApp.getPool();
 			OMMMsg ommmsg = pool.acquireMsg();
-			// NONSTREAMING_REQΪֻȡһ��snapshort.
+			// NONSTREAMING_REQ为只取一锟斤拷snapshort.
 			ommmsg.setMsgType(OMMMsg.MsgType.REQUEST);
 			ommmsg.setMsgModelType(msgModelType);
 			// ommmsg.setIndicationFlags(OMMMsg.Indication.REFRESH);
@@ -181,9 +181,9 @@ public class WebItemManager implements Client {
 		OMMItemEvent ommItemEvent = (OMMItemEvent) event;
 		OMMMsg respMsg = ommItemEvent.getMsg();
 		Document responseMsg = GenericOMMParser.parse(respMsg, clientRequestItemName);
-		// ����Ϣ��ʼ����ʱ����뵽��Ϣ��
+		// 锟斤拷锟斤拷息锟斤拷始锟斤拷锟斤拷时锟斤拷锟斤拷氲斤拷锟较拷锟?
 		XmlMessageUtil.addStartHandleTime(responseMsg, startTime);
-		// �����״̬��Ϣ.�����ֱ�ӷ��͸����˸ò�Ʒ�����пͻ�.
+		// 锟斤拷锟斤拷锟阶刺拷锟较?锟斤拷锟斤拷锟街憋拷臃锟斤拷透锟斤拷锟斤拷烁貌锟狡凤拷锟斤拷锟斤拷锌突锟?
 		if (respMsg.getMsgType() == OMMMsg.MsgType.STATUS_RESP && (respMsg.has(OMMMsg.HAS_STATE))) {
 			byte streamState = respMsg.getState().getStreamState();
 			byte dataState = respMsg.getState().getDataState();
