@@ -126,7 +126,7 @@ public final class GenericOMMParser
 
     /**
      * parse msg and print it in a table-nested format to System.out
-     * 锟斤拷锟斤拷锟斤拷锟斤拷锟教拷锟斤拷业锟斤拷锟竭硷拷.应锟矫帮拷锟斤拷些业锟斤拷锟竭硷拷锟斤拷锟斤拷锟?锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟轿伙拷锟酵拷玫姆锟斤拷锟?
+     * 这个方法有太多的业务逻辑.应该把这些业务逻辑提出来.让这个方法成为一个通用的方法.
      */
     public static final Document parse(OMMMsg msg,String itemName)
     {
@@ -247,7 +247,7 @@ public final class GenericOMMParser
 				&& !msg.isSet(OMMMsg.Indication.DO_NOT_RIPPLE);
 		byte msgType = msg.getMsgType();
 		
-		// 锟斤拷始锟斤拷,锟斤拷录锟斤拷item锟斤拷锟斤拷锟斤拷FiledValue锟斤拷Map锟斤拷.
+		// 初始化,记录该item的所有FiledValue到Map中.
 		if (msgType == OMMMsg.MsgType.REFRESH_RESP && DataBaseCache.filedValueMap.get(itemName) == null) {
 			if (msg.getDataType() == OMMTypes.FIELD_LIST) {
 				OMMFieldList fieldList = (OMMFieldList) msg.getPayload();
@@ -788,7 +788,7 @@ public final class GenericOMMParser
 		// add the ripple data
 		FieldValue fieldValue = getValue(itemName, fiddef.getFieldId());
 		if(fieldValue==null){
-			//Strange:锟节碉拷一锟斤拷锟侥该诧拷品锟斤拷map锟斤拷锟睫凤拷锟揭碉拷锟斤拷fieldId锟斤拷应锟斤拷fieldValue,锟斤拷应锟矫达拷锟节碉拷锟竭硷拷
+			//Strange:在第一订阅该产品的map中无法找到该fieldId对应的fieldValue,不应该存在的逻辑
 			fieldValue=new FieldValue(null, fiddef);
 			fieldValue.update(fe);
 			_logger.debug("The fieldValue which can not be found is:"+fieldValue);
@@ -804,14 +804,14 @@ public final class GenericOMMParser
 		if (msgType == MsgType.UPDATE_RESP) {
 			if (ripple && rippleId != 0) {
 				FidDef rippleFieldDef = fiddef;
-				//锟矫碉拷锟斤拷前锟叫碉拷值
+				//得到当前列的值
 				Object tmp = fieldValue.getStringValue();
-				//锟斤拷锟角帮拷锟斤拷锟斤拷锟斤拷锟?ripple	)锟斤拷锟斤拷,锟角从伙拷锟斤拷锟斤拷取锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷械锟斤拷洗蔚锟街碉拷锟斤拷锟?
+				//如果当前列有引用(ripple	)的列,那从缓存中取出保存的引用列的上次的值对象.
 				while ((rippleFieldDef.getRippleFieldId() != 0)
 						&& ((fieldValue = getValue(itemName, rippleFieldDef.getRippleFieldId())) != null)) {
 					
 					short fieldId = fieldValue.getFieldId();
-					//锟斤拷锟斤拷锟截革拷,删锟斤拷锟皆拷械目锟斤拷艽锟斤拷诨锟斤拷锟斤拷械锟绋lement锟斤拷值.锟斤拷使没锟斤拷删锟斤拷.锟斤拷值也锟斤拷影锟斤拷突锟斤拷锟斤拷锟捷碉拷锟斤拷效锟斤拷.
+					//避免重复,删除掉原有的可能存在缓存中的Element的值.即使没有删除.该值也不影响客户端数据的有效性.
 					Element e = rippleMap.get(fieldId);
 					if(e !=null){
 						rippleMap.remove(fieldId);
@@ -824,7 +824,7 @@ public final class GenericOMMParser
 					rippleField.addElement(RFANodeconstant.RESPONSE_FIELDS_FIELD_TYPE_NODE).addText(
 							RFATypeConvert.convertField(OMMTypes.toString(fieldValue.getOMMType())));
 					logMsg.append(tmp.toString());
-					//使锟斤拷XAU=时,Bid1锟斤拷Ask1锟斤拷锟斤拷Ripple锟斤拷field,RFA锟斤拷同时锟斤拷锟酵癸拷锟斤拷锟斤拷锟斤拷应锟斤拷值.锟斤拷锟斤拷锟截革拷.
+					//使用XAU=时,Bid1和Ask1既是Ripple的field,RFA又同时传送过来了相应的值.避免重复.
 					Element tmpElement=rippleField.addElement(RFANodeconstant.RESPONSE_FIELDS_FIELD_VALUE_NODE).addText(tmp.toString());
 					rippleMap.put(fieldId, rippleField);
 					tmp = fieldValue.setValue(tmp);
@@ -848,7 +848,7 @@ public final class GenericOMMParser
 							// defined data already has type
 							data = fe.getData();
 						if (rippleId > 0) {
-							// 锟斤拷锟斤拷锟斤拷要锟斤拷录锟斤拷field锟斤拷锟铰碉拷值锟斤拷map锟斤拷,锟斤拷锟斤拷锟铰达拷直锟接讹拷取
+							// 这里需要记录该field最新的值到map中,方便下次直接读取
 							FieldValue firstFieldValue = DataBaseCache.filedValueMap.get(itemName).get(
 									fe.getFieldId());
 							firstFieldValue.setValue(data.toString());
