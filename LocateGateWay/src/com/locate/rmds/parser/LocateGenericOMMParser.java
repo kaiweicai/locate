@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.Vector;
 
 import javax.annotation.PostConstruct;
@@ -491,7 +492,7 @@ public final class LocateGenericOMMParser implements IOmmParser
      * @param msgType
      * @param rippleMap
      */
-    private static final void parseEntry(OMMEntry entry,LocateUnionMessage locateMessage,byte msgType,Map<Short,Element> rippleMap)
+    private final void parseEntry(OMMEntry entry,LocateUnionMessage locateMessage,byte msgType)
  {
 		OMMFieldEntry fe = (OMMFieldEntry) entry;
 		String itemName = locateMessage.getItemName();
@@ -513,34 +514,20 @@ public final class LocateGenericOMMParser implements IOmmParser
 //		}
 		
 		Short rippleId = fiddef.getRippleFieldId();
+		//put the ripple values of this ommEntry into payLoadSet. 
 		if (msgType == MsgType.UPDATE_RESP) {
 			if (ripple && rippleId != 0) {
-				FidDef rippleFieldDef = fiddef;
+				FidDef fieldDef = fiddef;
 				//得到当前列的值
 				Object tmp = fieldValue.getStringValue();
 				//如果当前列有引用(ripple	)的列,那从缓存中取出保存的引用列的上次的值对象.
-				while ((rippleFieldDef.getRippleFieldId() != 0)
-						&& ((fieldValue = getValue(itemName, rippleFieldDef.getRippleFieldId())) != null)) {
-					
-					short fieldId = fieldValue.getFieldId();
-					//避免重复,删除掉原有的可能存在缓存中的Element的值.即使没有删除.该值也不影响客户端数据的有效性.
-					Element e = rippleMap.get(fieldId);
-					if(e !=null){
-						rippleMap.remove(fieldId);
-						boolean removeResult = fields.remove(e);
-						logger.info("remove result "+removeResult);
-					}
-					Element rippleField = fields.addElement("Field");
-					FidDef rippleDef = CURRENT_DICTIONARY.getFidDef(rippleFieldDef.getRippleFieldId());
-					dumpFieldEntryHeader(fieldValue, rippleDef, logMsg, tabLevel + 1, rippleField);
-					rippleField.addElement(RFANodeconstant.RESPONSE_FIELDS_FIELD_TYPE_NODE).addText(
-							RFATypeConvert.convertField(OMMTypes.toString(fieldValue.getOMMType())));
-					logMsg.append(tmp.toString());
-					//使用XAU=时,Bid1和Ask1既是Ripple的field,RFA又同时传送过来了相应的值.避免重复.
-					Element tmpElement=rippleField.addElement(RFANodeconstant.RESPONSE_FIELDS_FIELD_VALUE_NODE).addText(tmp.toString());
-					rippleMap.put(fieldId, rippleField);
+				while ((fieldDef.getRippleFieldId() != 0)
+						&& ((fieldValue = getValue(itemName, fieldDef.getRippleFieldId())) != null)) {
+					short rippleFieldId = fieldValue.getFieldId();
+					FidDef rippleDef = CURRENT_DICTIONARY.getFidDef(fieldDef.getRippleFieldId());
 					tmp = fieldValue.setValue(tmp);
-					rippleFieldDef = CURRENT_DICTIONARY.getFidDef(fieldId);
+					putRippleValueIntoMessage(fieldValue,rippleDef,locateMessage);
+					fieldDef = CURRENT_DICTIONARY.getFidDef(rippleFieldId);
 				}
 			}
 		}
@@ -629,7 +616,22 @@ public final class LocateGenericOMMParser implements IOmmParser
 		}
  }
 
-    private static FieldValue getValue(String itemName,short filedId) {
+    /**
+     * Build the payload data and put it into the locate union message data set.
+     * @param fieldValue
+     * @param rippleFieldDef
+     * @param locateMessage
+     */
+	private void putRippleValueIntoMessage(FieldValue fieldValue, FidDef rippleFieldDef,
+			LocateUnionMessage locateMessage) {
+		Set<String[]> payLoadSet = locateMessage.getPayLoadSet();
+		String fieldType = RFATypeConvert.convertField(OMMTypes.toString(fieldValue.getOMMType()));
+		String filedId = String.valueOf(rippleFieldDef.getFieldId());
+		String[] rippleValue = new String[] { filedId, fieldType, rippleFieldDef.getName(), fieldValue.getStringValue() };
+		payLoadSet.add(rippleValue);
+	}
+
+	private static FieldValue getValue(String itemName,short filedId) {
     	Map<Short, FieldValue> filedId2FieldValueMap=ITEM_FIELD_MAP.get(itemName);
     	FieldValue fieldValue = filedId2FieldValueMap.get(filedId);
     	if(fieldValue == null){
