@@ -34,6 +34,7 @@ public class SystemProperties {
 	public static final String SMTP_ADMIN_USER_EMAIL = "smtp.admin.user.email";
 	public static final String SMTP_MAIL_USER_NAME = "smtp.mail.user.name";
 	public static final String SMTP_MAIL_PASSWORD = "smtp.mail.password";
+	public static final String RIPPLE = "ripple";
 
 	public static void init(String propertiesFile) {
 		// InputStream inputStream = this.getClass().getResourceAsStream(propertiesFile);

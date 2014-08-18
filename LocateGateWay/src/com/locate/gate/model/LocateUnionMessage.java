@@ -2,23 +2,39 @@ package com.locate.gate.model;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-public class JsonModel {
-	private String item;
+public class LocateUnionMessage {
+	//RIC name
+	private String itemName;
 	private String generatetime;
 	private long seqNumber;
 	private long locateSeqNumber;
-	private Set<String[]> payLoadSet=new HashSet<String[]>();
 	private String[] header = new String[]{"id","name","type","value"};
-
-	public JsonModel() {
+	private Set<String[]> payLoadSet = new HashSet<String[]>();
+	
+	public LocateUnionMessage() {
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd-hh-mm-ss");
 		this.generatetime = dateFormat.format(new Date());
 	}
 	
+	public LocateUnionMessage(String itemName) {
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd-hh-mm-ss");
+		this.generatetime = dateFormat.format(new Date());
+		this.itemName = itemName;
+	}
+	
+
+	public String getItemName() {
+		return itemName;
+	}
+
+	public void setItemName(String itemName) {
+		this.itemName = itemName;
+	}
 
 	public long getSeqNumber() {
 		return seqNumber;
@@ -27,15 +43,6 @@ public class JsonModel {
 	public void setSeqNumber(long seqNumber) {
 		this.seqNumber = seqNumber;
 	}
-
-	public String getItem() {
-		return item;
-	}
-
-	public void setItem(String item) {
-		this.item = item;
-	}
-
 
 	public String getGeneratetime() {
 		return generatetime;
@@ -68,4 +75,13 @@ public class JsonModel {
 	public void setHeader(String[] header) {
 		this.header = header;
 	}
+
+	@Override
+	public String toString() {
+		return "LocateUnionMessage [itemName=" + itemName + ", generatetime=" + generatetime + ", seqNumber="
+				+ seqNumber + ", locateSeqNumber=" + locateSeqNumber + ", header=" + Arrays.toString(header)
+				+ ", payLoadSet=" + payLoadSet + "]";
+	}
+	
+	
 }

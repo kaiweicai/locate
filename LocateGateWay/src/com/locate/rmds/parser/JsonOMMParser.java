@@ -16,7 +16,7 @@ import org.dom4j.Element;
 
 import com.locate.common.DataBaseCache;
 import com.locate.common.RFANodeconstant;
-import com.locate.gate.model.JsonModel;
+import com.locate.gate.model.LocateUnionMessage;
 import com.locate.rmds.gui.viewer.FieldValue;
 import com.locate.rmds.util.ExampleUtil;
 import com.locate.rmds.util.RFATypeConvert;
@@ -131,14 +131,14 @@ public final class JsonOMMParser
      * parse msg and print it in a table-nested format to log4j
      * 这个方法有太多的业务逻辑.应该把这些业务逻辑提出来.让这个方法成为一个通用的方法.
      */
-    public static final JsonModel parse(OMMMsg msg,String itemName)
+    public static final LocateUnionMessage parse(OMMMsg msg,String itemName)
     {
 //    	_logger.info("orignal OMMMsg is "+ msg);
 		if (itemName == null) {
 			itemName = "";
 		}
     	StringBuffer logMsg = new StringBuffer();
-    	JsonModel jsonModel = new JsonModel();
+    	LocateUnionMessage jsonModel = new LocateUnionMessage();
     	DocumentFactory factory = DocumentFactory.getInstance();
     	Document responseMsg =  factory.createDocument();
     	jsonModel.setItem(itemName);
@@ -237,12 +237,12 @@ public final class JsonOMMParser
      * parse msg and print it in a table-nested format to the provided
      * PrintStream
      */
-    public static final void parseMsg(OMMMsg msg, StringBuffer logMsg,String itemName,JsonModel jsonModel)
+    public static final void parseMsg(OMMMsg msg, StringBuffer logMsg,String itemName,LocateUnionMessage jsonModel)
     {
         parseMsg(msg, logMsg, 0,itemName,jsonModel);
     }
 
-	static final void parseMsg(OMMMsg msg, StringBuffer logMsg, int tabLevel,String itemName,JsonModel jsonModel) {
+	static final void parseMsg(OMMMsg msg, StringBuffer logMsg, int tabLevel,String itemName,LocateUnionMessage jsonModel) {
 		boolean ripple = (msg.getMsgType() == OMMMsg.MsgType.UPDATE_RESP)
 				&& !msg.isSet(OMMMsg.Indication.DO_NOT_RIPPLE);
 		byte msgType = msg.getMsgType();
@@ -489,7 +489,7 @@ public final class JsonOMMParser
 //        parseData(data, null, 0,field,false);
 //    }
 
-    private static final void parseAggregate(OMMData data, StringBuffer logMsg, int tabLevel,boolean ripple,String itemName,byte msgType,JsonModel jsonModel)
+    private static final void parseAggregate(OMMData data, StringBuffer logMsg, int tabLevel,boolean ripple,String itemName,byte msgType,LocateUnionMessage jsonModel)
     {
 //    	jsonModel.getPayLoadSet().add(new String[]{"id","name","type","value"});
     	Map<Short,Element> rippleMap = new HashMap<Short,Element>();
@@ -511,7 +511,7 @@ public final class JsonOMMParser
      * PrintStream
      * data is OMMMessage Attribute
      */
-    public static final void parsePyLoad(OMMData data, StringBuffer logMsg, int tabLevel,boolean ripple,String itemName,byte msgType,JsonModel jsonModel)
+    public static final void parsePyLoad(OMMData data, StringBuffer logMsg, int tabLevel,boolean ripple,String itemName,byte msgType,LocateUnionMessage jsonModel)
     {
         if (data.isBlank())
         	logMsg.append("\n");
@@ -784,7 +784,7 @@ public final class JsonOMMParser
     
     
 
-    private static final void parseEntry(OMMEntry entry, StringBuffer logMsg, int tabLevel,boolean ripple,String itemName,byte msgType,Map<Short,Element> rippleMap,JsonModel jsonModel)
+    private static final void parseEntry(OMMEntry entry, StringBuffer logMsg, int tabLevel,boolean ripple,String itemName,byte msgType,Map<Short,Element> rippleMap,LocateUnionMessage jsonModel)
     {
     	String[] payLoad =  new String[4];
     	jsonModel.getPayLoadSet().add(payLoad);
@@ -1097,7 +1097,7 @@ public final class JsonOMMParser
     }
 
     public static void main(String[] args) {
-    	JsonModel jsonModel = new JsonModel();
+    	LocateUnionMessage jsonModel = new LocateUnionMessage();
     	jsonModel.setItem("XAU=");
     	
 		JSONObject jsonObject = new JSONObject();
