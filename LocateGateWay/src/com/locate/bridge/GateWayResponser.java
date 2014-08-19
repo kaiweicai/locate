@@ -9,14 +9,14 @@ import org.jboss.netty.channel.group.ChannelGroup;
 
 import com.locate.common.DataBaseCache;
 import com.locate.common.XmlMessageUtil;
+import com.locate.gate.model.LocateUnionMessage;
 import com.locate.rmds.RFAServerManager;
 
 /**
- * 将消息从core转发到font,隔离core和front的代码.
- * RFA 通过该程序将消息发送到gateway.
- * 
- * @author cloud wei
- * 
+ * All responses send to customer handle by this class.
+ * @author CloudWei kaiweicai@163.com
+ * create time 2014��8��19��
+ * @copyRight by Author
  */
 public class GateWayResponser {
 
@@ -77,6 +77,16 @@ public class GateWayResponser {
 		}else{
 			logger.info("None user loginin!");
 		}
+	}
+
+	public static void notifyAllCustomersStateChange(LocateUnionMessage locateMessage) {
+		String itemName = locateMessage.getItemName();
+		ChannelGroup channelGroup = DataBaseCache.itemNameChannelMap.get(itemName);
+		channelGroup.write(locateMessage);
+		if(channelGroup.size()==0){
+			logger.error("channel has been clean,but the ric not be register! The itemName"+itemName);
+		}
+		logger.info("send message is :" + locateMessage + " to order group" + channelGroup.getName());
 	}
 
 }

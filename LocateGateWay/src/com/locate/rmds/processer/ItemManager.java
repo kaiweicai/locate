@@ -10,10 +10,12 @@ import org.springframework.stereotype.Service;
 import com.locate.bridge.GateWayResponser;
 import com.locate.common.DataBaseCache;
 import com.locate.common.XmlMessageUtil;
+import com.locate.gate.model.LocateUnionMessage;
 import com.locate.gate.server.GateWayServer;
 import com.locate.rmds.QSConsumerProxy;
 import com.locate.rmds.RFAServerManager;
 import com.locate.rmds.parser.GenericOMMParser;
+import com.locate.rmds.parser.face.IOmmParser;
 import com.locate.rmds.processer.face.IProcesser;
 import com.locate.rmds.statistic.CycleStatistics;
 import com.locate.rmds.statistic.LogTool;
@@ -48,7 +50,7 @@ import com.reuters.rfa.session.omm.OMMSolicitedItemEvent;
 //							application uses this handles to identify the items
 // QSConsumerDemo _mainApp - main application class
 /**
- * 锟斤拷锟斤拷锟叫讹拷锟绞碉拷锟?一锟斤拷锟斤拷锟侥的诧拷品锟斤拷应一锟斤拷itemManager.
+ * 该类有多个实例.一个订阅的产品对应一个itemManager.
  * @author Cloud.Wei
  *
  */
@@ -61,6 +63,8 @@ public class ItemManager implements Client,IProcesser
     static Logger _logger = Logger.getLogger(ItemManager.class.getName());
     @Resource
     ItemGroupManager _itemGroupManager;
+    @Resource(name="locateGenericOMMParser")
+    IOmmParser ommParser;
     public String clientRequestItemName;
 //    public String clientName;
     public byte responseMessageType;
@@ -176,10 +180,10 @@ public class ItemManager implements Client,IProcesser
 			// Set the message into interest spec
 			ommItemIntSpec.setMsg(ommmsg);
 			/**
-			 * 锟斤拷要锟竭硷拷:
-			 * 锟斤拷data source注锟斤拷锟斤拷锟饺わ拷锟绌tem,EventQueue使锟斤拷QSConsumerProxy锟斤拷Queue,锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷itemManager锟皆硷拷.
-			 * dataSource锟斤拷锟斤拷锟斤拷锟饺わ拷锟绞憋拷锟斤拷通锟斤拷eventQueue锟斤拷锟解发锟斤拷.ItemManager锟杰癸拷锟秸碉拷锟斤拷锟斤拷录锟?
-			 * itemmanager 锟斤拷锟斤拷锟叫讹拷锟斤拷锟剿该诧拷品锟斤拷channelGroup锟斤拷写锟秸碉拷锟斤拷锟斤拷息.
+			 * 重要逻辑:
+			 * 向data source注册感兴趣的Item,EventQueue使用QSConsumerProxy的Queue,监听器就是itemManager自己.
+			 * dataSource产生感兴趣的时间后通过eventQueue向外发布.ItemManager能够收到这个事件.
+			 * itemmanager 想所有订阅了该产品的channelGroup回写收到的消息.
 			 */
 			itemHandle = _mainApp.getOMMConsumer().registerClient(_mainApp.getEventQueue(), ommItemIntSpec, this, null);
 			_itemGroupManager.addItem(serviceName, itemName, itemHandle);
@@ -214,7 +218,7 @@ public class ItemManager implements Client,IProcesser
     	if (event.getType() == Event.COMPLETION_EVENT) 
     	{
     		_logger.info(_className+": Receive a COMPLETION_EVENT, "+ event.getHandle());
-    		//@TODO 锟叫讹拷锟角凤拷通知锟斤拷锟斤拷锟街达拷突锟斤拷锟侥筹拷锟斤拷锟狡凤拷丫锟酵Ｖ癸拷锟斤拷锟?
+    		//@TODO 判断是否通知所有现存客户端某个产品已经停止发布.
     		return;
     	}
 
@@ -222,7 +226,7 @@ public class ItemManager implements Client,IProcesser
         _logger.info(_className+".processEvent: Received Item("+clientRequestItemName+") Event from server ");
         if (event.getType() != Event.OMM_ITEM_EVENT) 
         {
-        	//锟斤拷锟斤拷锟斤拷锟教ｏ拷锟斤拷锟?锟斤拷为RFA锟斤拷锟斤拷锟较拷锟斤拷锟斤拷要锟剿筹拷锟斤拷锟斤拷.锟街诧拷锟斤拷锟竭硷拷锟斤拷.锟斤拷锟斤拷去锟斤拷cleanup锟斤拷锟斤拷.
+        	//这里程序太危险了,因为RFA给的消息有误就要退出程序.恐怖的逻辑啊.还是去掉cleanup好了.
             _logger.error("ERROR: "+_className+" Received an unsupported Event type.");
 //            _mainApp.cleanup();
             return;
@@ -230,17 +234,13 @@ public class ItemManager implements Client,IProcesser
 
         OMMItemEvent ommItemEvent = (OMMItemEvent) event;
         OMMMsg respMsg = ommItemEvent.getMsg();
-        Document responseMsg = GenericOMMParser.parse(respMsg, clientRequestItemName);
-        //锟斤拷锟斤拷息锟斤拷始锟斤拷锟斤拷时锟斤拷锟斤拷氲斤拷锟较拷锟?
-		XmlMessageUtil.addStartHandleTime(responseMsg, startTime);
-        //锟斤拷锟斤拷锟阶刺拷锟较?锟斤拷锟斤拷锟街憋拷臃锟斤拷透锟酵伙拷锟斤拷.
+        LocateUnionMessage locateMessage = ommParser.parse(respMsg, clientRequestItemName);
+        //将信息开始处理时间加入到消息中
+//		XmlMessageUtil.addStartHandleTime(responseMsg, startTime);
+        //如果是状态消息.处理后直接发送给客户端.
         if(respMsg.getMsgType()==OMMMsg.MsgType.STATUS_RESP && (respMsg.has(OMMMsg.HAS_STATE))){
-        	byte streamState= respMsg.getState().getStreamState();
-        	byte dataState = respMsg.getState().getDataState();
-			byte msgType = respMsg.getMsgType();
-			String state = respMsg.getState().toString();
-			responseMsg = XmlMessageUtil.generateStatusResp(state,streamState,dataState,msgType);
-			XmlMessageUtil.addLocateInfo(responseMsg, msgType, RFAServerManager.sequenceNo.getAndIncrement(), 0);
+        	ommParser.handelLocateState(respMsg, locateMessage);
+        	GateWayResponser.notifyAllCustomersStateChange(locateMessage);
 			GateWayResponser.sentMrketPriceToSubsribeChannel(responseMsg, clientRequestItemName);
 			_logger.warn("RFA server has new state. streamState:"+streamState+" datasstate "+dataState);
 			return;

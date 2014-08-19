@@ -18,6 +18,7 @@ import com.locate.common.DataBaseCache;
 import com.locate.common.RFANodeconstant;
 import com.locate.gate.model.LocateUnionMessage;
 import com.locate.rmds.gui.viewer.FieldValue;
+import com.locate.rmds.parser.face.IOmmParser;
 import com.locate.rmds.util.ExampleUtil;
 import com.locate.rmds.util.RFATypeConvert;
 import com.reuters.rfa.ansipage.Page;
@@ -141,7 +142,7 @@ public final class JsonOMMParser
     	LocateUnionMessage jsonModel = new LocateUnionMessage();
     	DocumentFactory factory = DocumentFactory.getInstance();
     	Document responseMsg =  factory.createDocument();
-    	jsonModel.setItem(itemName);
+    	jsonModel.setItemName(itemName);
     	
     	parseMsg(msg, logMsg,itemName,jsonModel);
         _logger.info(logMsg.toString());
@@ -248,11 +249,11 @@ public final class JsonOMMParser
 		byte msgType = msg.getMsgType();
 		
 		// 初始化,记录该item的所有FiledValue到Map中.
-		if (msgType == OMMMsg.MsgType.REFRESH_RESP && DataBaseCache.filedValueMap.get(itemName) == null) {
+		if (msgType == OMMMsg.MsgType.REFRESH_RESP && IOmmParser.ITEM_FIELD_MAP.get(itemName) == null) {
 			if (msg.getDataType() == OMMTypes.FIELD_LIST) {
 				OMMFieldList fieldList = (OMMFieldList) msg.getPayload();
 				Map<Short, FieldValue> fieldListMap = new LinkedHashMap<Short, FieldValue>();
-				DataBaseCache.filedValueMap.put(itemName, fieldListMap);
+				IOmmParser.ITEM_FIELD_MAP.put(itemName, fieldListMap);
 				for (Iterator<?> fiter = fieldList.iterator(); fiter.hasNext();) {
 					OMMFieldEntry fentry = (OMMFieldEntry) fiter.next();
 					FidDef fiddef = CURRENT_DICTIONARY.getFidDef(fentry.getFieldId());
@@ -797,7 +798,7 @@ public final class JsonOMMParser
 			fieldValue=new FieldValue(null, fiddef);
 			fieldValue.update(fe);
 			_logger.debug("The fieldValue which can not be found is:"+fieldValue);
-			DataBaseCache.filedValueMap.get(itemName).put(fiddef.getFieldId(), fieldValue);
+			IOmmParser.ITEM_FIELD_MAP.get(itemName).put(fiddef.getFieldId(), fieldValue);
 		}
 		short fId = fieldValue.getFieldId();
 //		Element ele =rippleMap.get(fId);
@@ -857,7 +858,7 @@ public final class JsonOMMParser
 							data = fe.getData();
 						if (rippleId > 0) {
 							// 这里需要记录该field最新的值到map中,方便下次直接读取
-							FieldValue firstFieldValue = DataBaseCache.filedValueMap.get(itemName).get(
+							FieldValue firstFieldValue = IOmmParser.ITEM_FIELD_MAP.get(itemName).get(
 									fe.getFieldId());
 							firstFieldValue.setValue(data.toString());
 						}
@@ -925,7 +926,7 @@ public final class JsonOMMParser
  }
 
     private static FieldValue getValue(String itemName,short filedId) {
-    	Map<Short, FieldValue> filedId2FieldValueMap=DataBaseCache.filedValueMap.get(itemName);
+    	Map<Short, FieldValue> filedId2FieldValueMap=IOmmParser.ITEM_FIELD_MAP.get(itemName);
     	FieldValue fieldValue = filedId2FieldValueMap.get(filedId);
     	if(fieldValue == null){
 			_logger.debug("FiledValue not found in map by filedId!!!!"+filedId);
@@ -1095,13 +1096,4 @@ public final class JsonOMMParser
             }
         }
     }
-
-    public static void main(String[] args) {
-    	LocateUnionMessage jsonModel = new LocateUnionMessage();
-    	jsonModel.setItem("XAU=");
-    	
-		JSONObject jsonObject = new JSONObject();
-		jsonObject.put("rmds", jsonModel);
-		System.out.println(jsonObject.toString());
-	}
 }
