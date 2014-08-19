@@ -1,2 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<rmds><response><item><name>MCU3=LX</name></item><fields><Field><id>5</id><name>TIMACT</name><type>Unknown</type><value>08:31</value></Field><Field><id>25</id><name>ASK</name><type>Double</type><value>6816.50</value></Field><Field><id>31</id><name>ASKSIZE</name><type>Double</type><value>1</value></Field><Field><id>346</id><name>ASK_TONE</name><type>String</type><value> </value></Field></fields></response></rmds>
+<rmds>
+	<response>
+		<item>
+			<name>MCU3=LX</name>
+		</item>
+		<fields>
+			<Field>
+				<id>5</id>
+				<name>TIMACT</name>
+				<type>Unknown</type>
+				<value>08:31</value>
+			</Field>
+			<Field>
+				<id>25</id>
+				<name>ASK</name>
+				<type>Double</type>
+				<value>6816.50</value>
+			</Field>
+			<Field>
+				<id>31</id>
+				<name>ASKSIZE</name>
+				<type>Double</type>
+				<value>1</value>
+			</Field>
+			<Field>
+				<id>346</id>
+				<name>ASK_TONE</name>
+				<type>String</type>
+				<value>
+				</value>
+			</Field>
+		</fields>
+	</response>
+</rmds>
+
+<rmds>
+	<generatetime>2014-08-20 00:19:32</generatetime>
+	<header>id</header>
+	<header>name</header>
+	<header>type</header>
+	<header>value</header>
+	<locateSeqNumber>0</locateSeqNumber>
+	<seqNumber>0</seqNumber>
+</rmds>

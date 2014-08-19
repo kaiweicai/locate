@@ -6,10 +6,12 @@ import org.dom4j.Document;
 import com.locate.bridge.GateWayResponser;
 import com.locate.common.DataBaseCache;
 import com.locate.common.XmlMessageUtil;
+import com.locate.gate.model.LocateUnionMessage;
 import com.locate.gate.server.GateWayServer;
 import com.locate.rmds.QSConsumerProxy;
 import com.locate.rmds.RFAServerManager;
 import com.locate.rmds.parser.GenericOMMParser;
+import com.locate.rmds.parser.LocateGenericOMMParser;
 import com.locate.rmds.statistic.CycleStatistics;
 import com.locate.rmds.statistic.LogTool;
 import com.locate.rmds.statistic.OutputFormatter;
@@ -43,7 +45,7 @@ import com.reuters.rfa.session.omm.OMMSolicitedItemEvent;
 //							application uses this handles to identify the items
 // QSConsumerDemo _mainApp - main application class
 /**
- * 锟斤拷锟斤拷锟叫讹拷锟绞碉拷锟?一锟斤拷锟斤拷锟侥的诧拷品锟斤拷应一锟斤拷itemManager.
+ * 该类有多个实例.一个订阅的产品对应一个itemManager.
  * @author Cloud.Wei
  *
  */
@@ -67,6 +69,7 @@ public class OneTimeItemManager implements Client
     static OutputFormatter _outputFormatter;
     static StringBuilder _statsStringBuffer;
     static int _timeline;
+    private LocateGenericOMMParser locateGenericOMMParser = new LocateGenericOMMParser();
     // constructor
     public OneTimeItemManager(QSConsumerProxy mainApp, ItemGroupManager itemGroupManager,int channelID)
     {
@@ -90,7 +93,7 @@ public class OneTimeItemManager implements Client
         //Preparing item request message
         OMMPool pool = _mainApp.getPool();
         OMMMsg ommmsg = pool.acquireMsg();
-        //NONSTREAMING_REQ为只取一锟斤拷snapshort.
+        //NONSTREAMING_REQ为只取一个snapshort.
         ommmsg.setMsgType(OMMMsg.MsgType.NONSTREAMING_REQ);
         ommmsg.setMsgModelType(msgModelType);
 //        ommmsg.setIndicationFlags(OMMMsg.Indication.REFRESH);
@@ -141,7 +144,7 @@ public class OneTimeItemManager implements Client
         _logger.info(_className+".processEvent: Received Item("+clientRequestItemName+") Event from server ");
         if (event.getType() != Event.OMM_ITEM_EVENT) 
         {
-        	//锟斤拷锟斤拷锟斤拷锟教ｏ拷锟斤拷锟?锟斤拷为RFA锟斤拷锟斤拷锟较拷锟斤拷锟斤拷要锟剿筹拷锟斤拷锟斤拷.锟街诧拷锟斤拷锟竭硷拷锟斤拷.锟斤拷锟斤拷去锟斤拷cleanup锟斤拷锟斤拷.
+        	//这里程序太危险了,因为RFA给的消息有误就要退出程序.恐怖的逻辑啊.还是去掉cleanup好了.
             _logger.error("ERROR: "+_className+" Received an unsupported Event type.");
 //            _mainApp.cleanup();
             return;
@@ -149,21 +152,7 @@ public class OneTimeItemManager implements Client
 
         OMMItemEvent ommItemEvent = (OMMItemEvent) event;
         OMMMsg respMsg = ommItemEvent.getMsg();
-        Document responseMsg = GenericOMMParser.parse(respMsg, clientRequestItemName);
-        //锟斤拷锟斤拷息锟斤拷始锟斤拷锟斤拷时锟斤拷锟斤拷氲斤拷锟较拷锟?
-		XmlMessageUtil.addStartHandleTime(responseMsg, startTime);
-        //锟斤拷锟斤拷锟阶刺拷锟较?锟斤拷锟斤拷锟街憋拷臃锟斤拷透锟酵伙拷锟斤拷.
-        if(respMsg.getMsgType()==OMMMsg.MsgType.STATUS_RESP && (respMsg.has(OMMMsg.HAS_STATE))){
-        	byte streamState= respMsg.getState().getStreamState();
-        	byte dataState = respMsg.getState().getDataState();
-			byte msgType = respMsg.getMsgType();
-			String state = respMsg.getState().toString();
-			responseMsg = XmlMessageUtil.generateStatusResp(state,streamState,dataState,msgType);
-			XmlMessageUtil.addLocateInfo(responseMsg, msgType, RFAServerManager.sequenceNo.getAndIncrement(), 0);
-			GateWayResponser.sentMrketPriceToSubsribeChannel(responseMsg, clientRequestItemName);;
-			_logger.warn("RFA server has new state. streamState:"+streamState+" datasstate "+dataState);
-			return;
-        }
+        LocateUnionMessage locateMessage = locateGenericOMMParser.parse(respMsg, clientRequestItemName);
         
         // Status response can contain group id
 		if ((respMsg.getMsgType() == OMMMsg.MsgType.REFRESH_RESP)
@@ -173,8 +162,8 @@ public class OneTimeItemManager implements Client
 			_itemGroupManager.applyGroup(itemHandle, group);
 		}
         
-		GateWayResponser.sendSnapShotToChannel(respMsg.getMsgType(),responseMsg, clientRequestItemName,channelID);
-        if(responseMsg != null){
+		GateWayResponser.sendSnapShotToChannel(locateMessage, channelID);
+        if(locateMessage != null){
         	long endTime = System.currentTimeMillis();
         	_logger.info("publish Item "+clientRequestItemName+" use time "+(endTime-startTime)+" microseconds");
         }

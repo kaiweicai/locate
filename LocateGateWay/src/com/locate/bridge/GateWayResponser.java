@@ -15,7 +15,7 @@ import com.locate.rmds.RFAServerManager;
 /**
  * All responses send to customer handle by this class.
  * @author CloudWei kaiweicai@163.com
- * create time 2014Äê8ÔÂ19ÈÕ
+ * create time 2014ï¿½ï¿½8ï¿½ï¿½19ï¿½ï¿½
  * @copyRight by Author
  */
 public class GateWayResponser {
@@ -43,21 +43,19 @@ public class GateWayResponser {
 		logger.info("downStream message is :"+response);
 	}
 
-	public static void sentMrketPriceToSubsribeChannel(Document response, String itemName) {
+	public static void sentMrketPriceToSubsribeChannel(LocateUnionMessage locateMessage) {
+		String itemName = locateMessage.getItemName();
 		ChannelGroup channelGroup = DataBaseCache.itemNameChannelMap.get(itemName);
-		channelGroup.write(response);
+		channelGroup.write(locateMessage);
 		if(channelGroup.size()==0){
 			logger.error("channel has been clean,but the ric not be register! The itemName"+itemName);
 		}
-		logger.info("send message is :" + response.asXML() + " to order group" + channelGroup.getName());
+		logger.info("send message is :" + locateMessage + " to order group" + channelGroup.getName());
 	}
 
-	public static void sendSnapShotToChannel(byte msgType, Document response, String itemName, int channelId) {
-		// LocateMessage message = new LocateMessage(msgType, response, 0);
-		// message.setSequenceNo(RFAServerManager.sequenceNo.getAndIncrement());
-		XmlMessageUtil.addLocateInfo(response, msgType, RFAServerManager.sequenceNo.getAndIncrement(), 0);
-		DataBaseCache.allChannelGroup.find(channelId).write(response);
-		logger.info("downStream message is :"+response);
+	public static void sendSnapShotToChannel(LocateUnionMessage locatMessage, int channelId) {
+		DataBaseCache.allChannelGroup.find(channelId).write(locatMessage);
+		logger.info("downStream message is :"+locatMessage);
 	}
 
 	public static void sentNotiFyResponseMsg(byte msgType, Document response, Integer channelId, int errorCode) {

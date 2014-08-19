@@ -2,11 +2,15 @@ package com.locate.gate.hanlder;
 
 import java.io.UnsupportedEncodingException;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Marshaller;
+
 import net.sf.json.JSON;
 import net.sf.json.JSONObject;
 
 import org.apache.log4j.Logger;
 import org.dom4j.Document;
+import org.dom4j.io.DocumentResult;
 import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.buffer.ChannelBuffers;
 import org.jboss.netty.channel.Channel;
@@ -21,6 +25,7 @@ import com.locate.rmds.util.SystemProperties;
 public class AdapterHandler extends OneToOneEncoder {
 	Logger logger = Logger.getLogger(getClass());
 	private static String defaultEncode = SystemProperties.getProperties(SystemProperties.DEFAULT_ENCODE);
+	
 	@Override
 	protected Object encode(ChannelHandlerContext ctx, Channel channel, Object msg) throws Exception {
 		
@@ -32,16 +37,14 @@ public class AdapterHandler extends OneToOneEncoder {
 				content = jsonObject.toString().getBytes("UTF-8");
 				break;
 			case "XML":
-				
+				JAXBContext context = JAXBContext.newInstance(LocateUnionMessage.class);
+				Marshaller marShaller = context.createMarshaller();
+				DocumentResult node = new DocumentResult();
+				marShaller.marshal(message, node);
+				content = node.getDocument().asXML().getBytes("UTF-8");
 				break;
 			default:
 				
-		}
-		
-		try {
-			content = message.asXML().getBytes("UTF-8");
-		} catch (UnsupportedEncodingException upsupportedEncodeException) {
-			logger.error("Not surport encoding", upsupportedEncodeException);
 		}
 		ChannelBuffer buffer = ChannelBuffers.buffer(content.length);
 		buffer.writeBytes(content);

@@ -49,10 +49,10 @@ import com.reuters.rfa.session.Session;
 import com.reuters.rfa.session.omm.OMMConsumer;
 import com.reuters.rfa.session.omm.OMMItemIntSpec;
 /**  
-*  锟斤拷锟斤拷:Cloud wei   
+*  作者:Cloud wei   
 *  E-mail:kaiweicai@163.com   
-*  锟斤拷锟斤拷时锟戒：2014.5.26   
-*  锟斤拷说锟斤拷  netty game  
+*  创建时间：2014.5.26   
+*  类说明  netty game  
 */  
 @Service
 public class QSConsumerProxy{
@@ -327,14 +327,14 @@ public class QSConsumerProxy{
 		Map<String,ItemManager> subscribeItemManagerMap = DataBaseCache.RIC_ITEMMANAGER_Map;
 		boolean needRenewSubscribeItem=checkSubscribeStatus(itemName);
 		if(needRenewSubscribeItem){
-			//锟窖撅拷锟斤拷锟侥癸拷貌锟狡?只锟斤拷要锟斤拷锟斤拷一锟斤拷一锟轿讹拷锟斤拷锟斤拷锟斤拷,锟斤拷锟斤拷一锟斤拷snapshot锟斤拷锟斤拷.
+			//已经订阅过该产品,只需要发送一个一次订阅请求,返回一个snapshot即可.
 			OneTimeItemManager oneTimeItemManager =  new OneTimeItemManager(this, _itemGroupManager,channelId);
 			oneTimeItemManager.sendOneTimeRequest(itemName, responseMsgType);
 //			ItemManager subscibeItemManager =  subscribeItemManagerMap.get(itemName);
 //			subscibeItemManager.sendInitialDocument(channelId);
 			return null;
 		}else{
-			//一锟斤拷锟斤拷品锟斤拷应一锟斤拷itemManager锟斤拷锟斤拷
+			//一个产品对应一个itemManager对象
 			itemManager=SystemConstant.springContext.getBean("itemManager",ItemManager.class);
 			subscribeItemManagerMap.put(itemName, itemManager);
 			// Send requests
@@ -369,8 +369,8 @@ public class QSConsumerProxy{
 //	}
 
 	/**
-	 * 锟斤拷锟絉IC_ITEMMANAGER_Map锟角凤拷锟矫诧拷品,锟斤拷锟矫伙拷懈貌锟狡凤拷锟街憋拷佣锟斤拷母貌锟狡?
-	 * 锟斤拷锟矫讹拷锟侥诧拷品锟铰讹拷应锟斤拷itemHandler锟角凤拷锟角硷拷锟斤拷状态.锟斤拷锟斤拷羌锟斤拷锟阶刺?锟斤拷要锟斤拷锟铰讹拷锟斤拷.
+	 * 检查RIC_ITEMMANAGER_Map是否包含该产品,如果没有该产品则直接订阅该产品.
+	 * 检查该订阅产品下对应的itemHandler是否是激活状态.如果不是激活状态.需要重新订阅.
 	 * @param itemName
 	 * @return
 	 */

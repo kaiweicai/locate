@@ -73,7 +73,7 @@ public class ItemManager implements Client,IProcesser
 
 	private Integer channelID = 0;
 
-	private Document initialDocument;
+	private LocateUnionMessage snapshotLocateMessage;
 	
 	// requests
 	static private int _request_count;
@@ -241,12 +241,11 @@ public class ItemManager implements Client,IProcesser
         if(respMsg.getMsgType()==OMMMsg.MsgType.STATUS_RESP && (respMsg.has(OMMMsg.HAS_STATE))){
         	ommParser.handelLocateState(respMsg, locateMessage);
         	GateWayResponser.notifyAllCustomersStateChange(locateMessage);
-			GateWayResponser.sentMrketPriceToSubsribeChannel(responseMsg, clientRequestItemName);
-			_logger.warn("RFA server has new state. streamState:"+streamState+" datasstate "+dataState);
+			_logger.warn("RFA server has new state. streamState:"+locateMessage.getStreamingState()+" datasstate "+locateMessage.getDataingState());
 			return;
         }
         if (respMsg.getMsgType() == OMMMsg.MsgType.REFRESH_RESP){
-        	initialDocument = responseMsg;
+        	snapshotLocateMessage = locateMessage;
         }
         
         // Status response can contain group id
@@ -257,28 +256,17 @@ public class ItemManager implements Client,IProcesser
 			_itemGroupManager.applyGroup(itemHandle, group);
 		}
         
-		XmlMessageUtil.addLocateInfo(responseMsg, respMsg.getMsgType(), RFAServerManager.sequenceNo.getAndIncrement(), 0);
-		GateWayResponser.sentMrketPriceToSubsribeChannel(responseMsg, clientRequestItemName);
-        if(responseMsg != null){
-//        	List<String> clientNameList =  GateWayServer._requestItemNameList.get(clientRequestItemName);
-//        	if(clientNameList != null){
-//	        	for(String clientName : clientNameList){
-//		        	session = RFASocketServer._clientRequestSession.get(clientName+clientRequestItemName);
-        	
-//	        	}
-//        	}
-        	long endTime = System.currentTimeMillis();
-        	_logger.info("publish Item "+clientRequestItemName+" use time "+(endTime-startTime)+" microseconds");
-//            _mainApp.updateResponseStat((endTime-startTime),responseMsg);
-        }
+		GateWayResponser.sentMrketPriceToSubsribeChannel(locateMessage);
+		long endTime = System.currentTimeMillis();
+		_logger.info("publish Item " + clientRequestItemName + " use time " + (endTime - startTime) + " microseconds");
         
     }
     
     public void sendInitialDocument(int channelId) {
-    	if(initialDocument!=null){
+    	if(snapshotLocateMessage!=null){
     		long startTime = System.currentTimeMillis();
-    		XmlMessageUtil.addStartHandleTime(initialDocument, startTime);
-    		GateWayResponser.sendSnapShotToChannel(OMMMsg.MsgType.REFRESH_RESP, initialDocument, clientRequestItemName,channelId);
+//    		XmlMessageUtil.addStartHandleTime(snapshotLocateMessage, startTime);
+    		GateWayResponser.sendSnapShotToChannel( snapshotLocateMessage,channelId);
     	}
 	}
     
