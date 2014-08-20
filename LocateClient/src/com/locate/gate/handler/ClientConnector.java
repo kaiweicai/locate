@@ -6,6 +6,7 @@ import java.util.concurrent.Executors;
 
 import net.sf.json.JSONObject;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.dom4j.Document;
 import org.dom4j.DocumentFactory;
@@ -28,8 +29,10 @@ import org.jboss.netty.handler.codec.frame.LengthFieldPrepender;
 import org.jboss.netty.handler.timeout.IdleState;
 import org.jboss.netty.handler.timeout.IdleStateAwareChannelHandler;
 import org.jboss.netty.handler.timeout.IdleStateEvent;
+import org.jboss.netty.util.internal.StringUtil;
 
 import com.locate.common.GateWayMessageTypes;
+import com.locate.common.LocateException;
 import com.locate.common.RFANodeconstant;
 import com.locate.common.SystemConstant;
 import com.locate.common.model.ClientRequest;
@@ -106,6 +109,10 @@ public class ClientConnector implements IClientConnector {
 	 */
 	@Override
 	public void openRICMarket(String ric){
+		if(StringUtils.isBlank(ric)){
+			logger.error("The RIC vlaue can not be blank!!");
+			throw new LocateException("The RIC vlaue can not be blank!!");
+		}
     	ClientRequest request = createFutureRequest(ric);
     	sentMessageToServer(request);
 	}
