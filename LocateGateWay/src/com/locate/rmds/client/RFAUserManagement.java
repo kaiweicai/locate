@@ -98,7 +98,7 @@ public class RFAUserManagement {
 		}
 	}
 	
-	public static boolean isCurrectPassword(String userName,String pwd){
+	public static boolean validateUser(String userName,String pwd){
 		RFAUser userModel = RFAUserList.get(userName);
 		String userRightPwd = userModel.getPassword();
 		try {

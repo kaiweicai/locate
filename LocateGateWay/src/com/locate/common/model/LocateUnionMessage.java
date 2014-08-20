@@ -42,6 +42,10 @@ public class LocateUnionMessage {
 	private String streamingState;
 	@XmlElement
 	private String dataingState;
+	@XmlElement
+	private int resultCode;
+	@XmlElement
+	private String resultDes;
 	@XmlElement()
 	private String[] header = new String[]{"id","name","type","value"};
 	
@@ -61,6 +65,24 @@ public class LocateUnionMessage {
 		this.itemName = itemName;
 	}
 	
+	@XmlTransient
+	public int getResultCode() {
+		return resultCode;
+	}
+
+	public void setResultCode(int resultCode) {
+		this.resultCode = resultCode;
+	}
+
+	@XmlTransient
+	public String getResultDes() {
+		return resultDes;
+	}
+
+	public void setResultDes(String resultDes) {
+		this.resultDes = resultDes;
+	}
+
 	@XmlTransient
 	public byte getMsgType() {
 		return msgType;

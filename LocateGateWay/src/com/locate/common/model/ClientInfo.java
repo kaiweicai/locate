@@ -2,27 +2,27 @@ package com.locate.common.model;
 
 
 public class ClientInfo {
-	private ClientRequest userRquest;
+	private ClientRequest clientRequest;
 	private String userName;
 	private int channelID;
 	private byte msgType;
 	private String clientIP;
 	
-	public ClientInfo(ClientRequest userRquest,String userName, int channelID,  String clientIP) {
+	public ClientInfo(ClientRequest userRquest, int channelID,  String clientIP) {
 		super();
-		this.userRquest = userRquest;
+		this.clientRequest = userRquest;
 		this.userName = userName;
 		this.channelID = channelID;
 		this.msgType = userRquest.getMsgType();
 		this.clientIP = clientIP;
 	}
 	
-	public ClientRequest getUserRquest() {
-		return userRquest;
+	public ClientRequest getClientRequest() {
+		return clientRequest;
 	}
 
-	public void setUserRquest(ClientRequest userRquest) {
-		this.userRquest = userRquest;
+	public void setClientRequest(ClientRequest userRquest) {
+		this.clientRequest = userRquest;
 	}
 	
 	public String getUserName() {
@@ -52,7 +52,7 @@ public class ClientInfo {
 
 	@Override
 	public String toString() {
-		return "ClientInfo [userRquest=" + userRquest + ", userName=" + userName + ", channelID=" + channelID
+		return "ClientInfo [userRquest=" + clientRequest + ", userName=" + userName + ", channelID=" + channelID
 				+ ", msgType=" + msgType + ", clientIP=" + clientIP + "]";
 	}
 }

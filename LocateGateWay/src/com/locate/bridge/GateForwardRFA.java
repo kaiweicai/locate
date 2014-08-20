@@ -9,13 +9,15 @@ import org.dom4j.Document;
 import org.springframework.stereotype.Service;
 
 import com.locate.common.DataBaseCache;
-import com.locate.common.GateWayExceptionTypes;
-import com.locate.common.GateWayExceptionTypes.RFAExceptionEnum;
+import com.locate.common.GateWayResponseTypes;
+import com.locate.common.GateWayResponseTypes.LocateResponseEnum;
 import com.locate.common.GateWayMessageTypes;
 import com.locate.common.model.ClientInfo;
+import com.locate.common.model.ClientRequest;
+import com.locate.common.model.LocateUnionMessage;
 import com.locate.common.utils.XmlMessageUtil;
 import com.locate.rmds.QSConsumerProxy;
-import com.locate.rmds.client.ClientUserLogin;
+import com.locate.rmds.client.ClientUserValidator;
 import com.locate.rmds.client.RFAUserManagement;
 import com.locate.rmds.handler.inter.IRequestHandler;
 import com.locate.rmds.processer.ItemManager;
@@ -41,35 +43,44 @@ public class GateForwardRFA {
 	public int process(ClientInfo clientInfo){
 		long startTime = System.currentTimeMillis();
 		int channelID = clientInfo.getChannelID();
-		Document request =clientInfo.getUserRquest();
+		ClientRequest request =clientInfo.getClientRequest();
 		String clientName=clientInfo.getUserName();
 		String clientIP = clientInfo.getClientIP();
 		byte _msgType=clientInfo.getMsgType();
-		ClientUserLogin clientUserLogin = new ClientUserLogin(clientIP);
+		ClientUserValidator clientUserLogin = new ClientUserValidator(clientIP);
 		
 		int resultCode =-1;
 		byte responseMsgType = -1;
-		Document responseData = null;
 		
 		if(_msgType != GateWayMessageTypes.LOGIN){
 	    	String userName = DataBaseCache._userConnection.get(clientIP);
 	    	if(userName == null){
-	    		resultCode = GateWayExceptionTypes.USER_NOT_LOGIN;
-				Document wrongMsg = XmlMessageUtil.createErrorDocument(resultCode,
-						GateWayExceptionTypes.RFAExceptionEnum.getExceptionDescription(resultCode));
-				GateWayResponser.sentNotiFyResponseMsg(GateWayMessageTypes.RESPONSE_LOGIN, wrongMsg, channelID,resultCode);
+	    		resultCode = GateWayResponseTypes.USER_NOT_LOGIN;
+	    		String resultDes = GateWayResponseTypes.RFAUserAuthentication.getDescription(resultCode);
+	    		LocateUnionMessage message = new LocateUnionMessage();
+	    		message.setResultCode(resultCode);
+	    		message.setResultDes(resultDes);
+	    		message.setMsgType(GateWayMessageTypes.RESPONSE_LOGIN);
+	    		
+				GateWayResponser.sentNotiFyResponseMsg(message, channelID);
 				_logger.error("Client didn't login system. sent error message to client");
-				return -1;
+				return resultCode;
 	    	}
 	    }
 		
 		switch( _msgType){
 		    case GateWayMessageTypes.LOGIN : 
 		    	responseMsgType = GateWayMessageTypes.RESPONSE_LOGIN;
-		    	responseData = clientUserLogin.authUserLogin(request,clientIP);
-		    	XmlMessageUtil.addStartHandleTime(responseData, startTime);
-		    	GateWayResponser.sentResponseMsg(GateWayMessageTypes.RESPONSE_LOGIN, responseData, channelID);
-		    	return 0;
+		    	resultCode = clientUserLogin.authUserLogin(request,clientIP);
+		    	
+		    	LocateUnionMessage message = new LocateUnionMessage();
+				String resultDes=GateWayResponseTypes.LocateResponseEnum.getResultDescription(resultCode);
+				message.setResultCode(resultCode);
+				message.setResultDes(resultDes);
+				message.setMsgType(GateWayMessageTypes.RESPONSE_LOGIN);
+				message.setStartTime(startTime);
+		    	GateWayResponser.sentResponseMsg( message, channelID);
+		    	return resultCode;
 		    case GateWayMessageTypes.UNREGISTER_REQUEST:
 		    	responseMsgType = GateWayMessageTypes.RESPONSE_UNREGISTER;
 		    	resultCode = requestHandler.processRequest(request,clientName,responseMsgType,channelID);
@@ -124,7 +135,7 @@ public class GateForwardRFA {
 		//resultCode大于零,表示处理存在错误需要向客户端发送错误信息.
 		if(resultCode>0){
 			responseData = XmlMessageUtil.createErrorDocument(resultCode,
-					RFAExceptionEnum.getExceptionDescription(resultCode));
+					LocateResponseEnum.getResultDescription(resultCode));
 			GateWayResponser.sentNotiFyResponseMsg(responseMsgType, responseData, channelID , resultCode);
 		}
 		

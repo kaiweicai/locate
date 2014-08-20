@@ -1,5 +1,6 @@
 package com.locate.common;
 
+@Deprecated
 public class RFANodeconstant {
 	
 	public final static String USER_LOGIN_USER_NAME = "//userName";

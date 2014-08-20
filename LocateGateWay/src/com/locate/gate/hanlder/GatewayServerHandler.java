@@ -162,13 +162,9 @@ public class GatewayServerHandler extends SimpleChannelHandler {
 			if(!DataBaseCache.allChannelGroup.contains(channel)){
 				DataBaseCache.allChannelGroup.add(channel);
 			}
-			if(StringUtils.isBlank(userName)){
-				userName = DataBaseCache._userConnection.get(clientIP);
-			}
-			ClientInfo clientInfo = new ClientInfo(request,userName, channel.getId(), clientIP);
-//		    ClientHandle clientHandle = (ClientHandle)LocateGateWayMain.springContext.getBean("clientHandler"); 
+			//store the channel of customer in a map according by the RIC 
 		    if(msgType != GateWayMessageTypes.LOGIN){
-				for (String subcribeItemName : XmlMessageUtil.pickupClientReqItem(userRequest)) {
+				for (String subcribeItemName : request.getRIC().split(",")) {
 					Map<String, ChannelGroup> subscribeChannelMap = DataBaseCache.itemNameChannelMap;
 					ChannelGroup subChannelGroup = subscribeChannelMap.get(subcribeItemName);
 					if (subChannelGroup == null) {
@@ -180,6 +176,8 @@ public class GatewayServerHandler extends SimpleChannelHandler {
 					}
 				}
 		    }
+		    
+			ClientInfo clientInfo = new ClientInfo(request, channel.getId(), clientIP);
 		    //RFAClientHandler process message and send the request to RFA.
 	    	gateForwardRFA.process(clientInfo);
 		} catch (Throwable throwable) {

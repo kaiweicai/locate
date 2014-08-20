@@ -24,16 +24,15 @@ public class GateWayResponser {
 	public static final Charset CHARSET = Charset.forName("UTF-8");
 	static Logger logger = Logger.getLogger(GateWayResponser.class.getName());
 
-	public static void sentResponseMsg(byte msgType, Document response, Integer channelId) {
+	public static void sentResponseMsg(LocateUnionMessage response, Integer channelId) {
 		// LocateMessage message = new LocateMessage(msgType, response, 0);
-		XmlMessageUtil.addLocateInfo(response, msgType, SystemConstant.sequenceNo.getAndIncrement(), 0);
 		Channel channel = DataBaseCache.allChannelGroup.find(channelId);
 		if (channel != null && channel.isConnected()) {
 			channel.write(response);
 		} else {
 			logger.error("The channel had been closed when write login response to client. Channel ID is " + channelId);
 		}
-		logger.info("downStream message is :"+response.asXML());
+		logger.info("downStream message is :"+response);
 	}
 
 	public static void sentAllChannelNews(byte msgType, Document response) {
@@ -59,8 +58,7 @@ public class GateWayResponser {
 		logger.info("downStream message is :"+locatMessage);
 	}
 
-	public static void sentNotiFyResponseMsg(byte msgType, Document response, Integer channelId, int errorCode) {
-		XmlMessageUtil.addLocateInfo(response, msgType, SystemConstant.sequenceNo.getAndIncrement(), errorCode);
+	public static void sentNotiFyResponseMsg(LocateUnionMessage response, Integer channelId) {
 		Channel channel = DataBaseCache.allChannelGroup.find(channelId);
 		if (channel != null && channel.isConnected()) {
 			channel.write(response);

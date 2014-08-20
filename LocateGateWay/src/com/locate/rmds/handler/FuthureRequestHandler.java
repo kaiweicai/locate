@@ -9,7 +9,7 @@ import org.dom4j.Document;
 import org.springframework.stereotype.Service;
 
 import com.locate.common.DataBaseCache;
-import com.locate.common.GateWayExceptionTypes;
+import com.locate.common.GateWayResponseTypes;
 import com.locate.rmds.QSConsumerProxy;
 import com.locate.rmds.RFAServerManager;
 import com.locate.rmds.processer.ItemManager;
@@ -25,7 +25,7 @@ public class FuthureRequestHandler extends BaseRequestHandler {
 		List<String> itemNames = pickupClientReqItem(req);
 		if(!RFAServerManager.isConnectedDataSource()){
 			logger.warn("The RFA Datasource not connected.Can not register the intresting Product!");
-			return GateWayExceptionTypes.RFA_SERVER_NOT_READY;
+			return GateWayResponseTypes.RFA_SERVER_NOT_READY;
 		}
 		logger.info("Begin register client request "+clientName);
 		for(String itemName : itemNames){
