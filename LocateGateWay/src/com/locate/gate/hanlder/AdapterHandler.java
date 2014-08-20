@@ -1,7 +1,5 @@
 package com.locate.gate.hanlder;
 
-import java.io.UnsupportedEncodingException;
-
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 
@@ -9,7 +7,6 @@ import net.sf.json.JSON;
 import net.sf.json.JSONObject;
 
 import org.apache.log4j.Logger;
-import org.dom4j.Document;
 import org.dom4j.io.DocumentResult;
 import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.buffer.ChannelBuffers;
@@ -18,7 +15,7 @@ import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.handler.codec.oneone.OneToOneEncoder;
 import org.springframework.stereotype.Service;
 
-import com.locate.gate.model.LocateUnionMessage;
+import com.locate.common.model.LocateUnionMessage;
 import com.locate.rmds.util.SystemProperties;
 
 @Service

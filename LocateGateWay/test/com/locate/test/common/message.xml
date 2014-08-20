@@ -34,12 +34,24 @@
 	</response>
 </rmds>
 
-<rmds>
-	<generatetime>2014-08-20 00:19:32</generatetime>
+<rmds itemName="XAU=">
+	<generatetime>2014-08-20 11:32:07</generatetime>
+	<seqNumber>0</seqNumber>
+	<locateSeqNumber>0</locateSeqNumber>
 	<header>id</header>
 	<header>name</header>
 	<header>type</header>
 	<header>value</header>
-	<locateSeqNumber>0</locateSeqNumber>
-	<seqNumber>0</seqNumber>
+	<Field>
+		<item>25</item>
+		<item>ASK</item>
+		<item>Double</item>
+		<item>6816.50</item>
+	</Field>
+	<Field>
+		<item>26</item>
+		<item>BID</item>
+		<item>Double</item>
+		<item>6820.44</item>
+	</Field>
 </rmds>

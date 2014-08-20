@@ -1,7 +1,5 @@
-package com.locate.gate.model;
+package com.locate.common.model;
 
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -13,52 +11,75 @@ import java.util.Set;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
-
-
-
-
-import net.sf.json.JSON;
 import net.sf.json.JSONObject;
 
 import org.dom4j.io.DocumentResult;
 
-import com.locate.rmds.RFAServerManager;
-import com.sun.corba.se.spi.orbutil.fsm.Guard.Result;
+import com.locate.common.SystemConstant;
 
 @XmlRootElement(name="rmds")
 public class LocateUnionMessage {
-	
+	@XmlAttribute(name="itemName")
 	private String itemName;//itemName将作为person的的一个属性
-	
+	@XmlElement
+	private long startTime;
+	@XmlElement
 	private String generatetime;
-	
+	@XmlElement
+	private byte msgType;
+	@XmlElement
 	private long seqNumber;
+	@XmlElement
 	private long locateSeqNumber;
+	@XmlElement
 	private String state;
+	@XmlElement
 	private String streamingState;
+	@XmlElement
 	private String dataingState;
+	@XmlElement()
 	private String[] header = new String[]{"id","name","type","value"};
+	
+	@XmlElement(name="Field")
 	private Set<String[]> payLoadSet = new HashSet<String[]>();
 	
 	public LocateUnionMessage() {
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		this.generatetime = dateFormat.format(new Date());
-		this.locateSeqNumber = RFAServerManager.sequenceNo.getAndIncrement();
+		this.locateSeqNumber = SystemConstant.sequenceNo.getAndIncrement();
 	}
 	
 	public LocateUnionMessage(String itemName) {
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		this.generatetime = dateFormat.format(new Date());
-		this.locateSeqNumber = RFAServerManager.sequenceNo.getAndIncrement();
+		this.locateSeqNumber = SystemConstant.sequenceNo.getAndIncrement();
 		this.itemName = itemName;
 	}
 	
-	@XmlAttribute
+	@XmlTransient
+	public byte getMsgType() {
+		return msgType;
+	}
+
+	public void setMsgType(byte msgType) {
+		this.msgType = msgType;
+	}
+	
+	@XmlTransient
+	public long getStartTime() {
+		return startTime;
+	}
+
+	public void setStartTime(long startTime) {
+		this.startTime = startTime;
+	}
+	
+	@XmlTransient
 	public String getItemName() {
 		return itemName;
 	}
@@ -67,7 +88,7 @@ public class LocateUnionMessage {
 		this.itemName = itemName;
 	}
 	
-	@XmlElement
+	@XmlTransient
 	public String getState() {
 		return state;
 	}
@@ -76,7 +97,7 @@ public class LocateUnionMessage {
 		this.state = state;
 	}
 
-	@XmlElement
+	@XmlTransient
 	public long getSeqNumber() {
 		return seqNumber;
 	}
@@ -85,7 +106,7 @@ public class LocateUnionMessage {
 		this.seqNumber = seqNumber;
 	}
 
-	@XmlElement
+	@XmlTransient
 	public String getGeneratetime() {
 		return generatetime;
 	}
@@ -94,7 +115,7 @@ public class LocateUnionMessage {
 		this.generatetime = generatetime;
 	}
 
-	@XmlElement
+	@XmlTransient
 	public long getLocateSeqNumber() {
 		return locateSeqNumber;
 	}
@@ -103,7 +124,7 @@ public class LocateUnionMessage {
 		this.locateSeqNumber = locateSeqNumber;
 	}
 
-	@XmlElement
+	@XmlTransient
 	public Set<String[]> getPayLoadSet() {
 		return payLoadSet;
 	}
@@ -112,7 +133,7 @@ public class LocateUnionMessage {
 		this.payLoadSet = payLoadSet;
 	}
 	
-	@XmlElement()
+	@XmlTransient
 	public String[] getHeader() {
 		return header;
 	}
@@ -121,7 +142,7 @@ public class LocateUnionMessage {
 		this.header = header;
 	}
 
-	@XmlElement
+	@XmlTransient
 	public String getStreamingState() {
 		return streamingState;
 	}
@@ -130,7 +151,7 @@ public class LocateUnionMessage {
 		this.streamingState = streamingState;
 	}
 	
-	@XmlElement
+	@XmlTransient
 	public String getDataingState() {
 		return dataingState;
 	}
@@ -150,8 +171,19 @@ public class LocateUnionMessage {
 		JAXBContext context = JAXBContext.newInstance(LocateUnionMessage.class);
 		// 下面代码演示将对象转变为xml
 		Marshaller m = context.createMarshaller();
-		LocateUnionMessage message = new LocateUnionMessage();
-		JSON jsonObject = JSONObject.fromObject(message);
+		LocateUnionMessage message = new LocateUnionMessage("XAU=");
+		
+		Set<String[]> payloadSet = new HashSet<String[]>();
+		payloadSet.add(new String[]{"25","ASK","Double","6816.50"});
+		payloadSet.add(new String[]{"26","BID","Double","6820.44"});
+		message.setPayLoadSet(payloadSet);
+		
+		
+		JSONObject jsonObject = JSONObject.fromObject(message);
+		String jsonString = jsonObject.toString();
+		JSONObject transJsonObject = JSONObject.fromObject(jsonString);
+		LocateUnionMessage myMessage = (LocateUnionMessage)JSONObject.toBean( transJsonObject, LocateUnionMessage.class);
+		System.out.println(myMessage);
 		System.out.println(jsonObject.toString());
 		DocumentResult node = new DocumentResult();
 		m.marshal(message, node);

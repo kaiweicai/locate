@@ -1,40 +1,25 @@
 package com.locate.bridge;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.Resource;
-import javax.swing.plaf.basic.BasicComboBoxUI.ItemHandler;
 
 import org.apache.log4j.Logger;
 import org.dom4j.Document;
-import org.dom4j.Element;
-import org.jboss.netty.channel.group.ChannelGroup;
-import org.jboss.netty.channel.group.DefaultChannelGroup;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import com.locate.common.DataBaseCache;
 import com.locate.common.GateWayExceptionTypes;
-import com.locate.common.GateWayMessageTypes;
-import com.locate.common.RFANodeconstant;
 import com.locate.common.GateWayExceptionTypes.RFAExceptionEnum;
-import com.locate.common.XmlMessageUtil;
-import com.locate.gate.hanlder.GatewayServerHandler;
-import com.locate.gate.model.ClientInfo;
-import com.locate.gate.model.LocateMessage;
-import com.locate.gate.model.RFAUserResponse;
-import com.locate.gate.server.GateWayServer;
+import com.locate.common.GateWayMessageTypes;
+import com.locate.common.model.ClientInfo;
+import com.locate.common.utils.XmlMessageUtil;
 import com.locate.rmds.QSConsumerProxy;
-import com.locate.rmds.RFAServerManager;
 import com.locate.rmds.client.ClientUserLogin;
 import com.locate.rmds.client.RFAUserManagement;
 import com.locate.rmds.handler.inter.IRequestHandler;
 import com.locate.rmds.processer.ItemManager;
-import com.locate.rmds.processer.RFALoginClient;
 import com.locate.rmds.processer.face.IProcesser;
-import com.reuters.rfa.omm.OMMMsg.MsgType;
 
 /**
  * 所有gateway系统向RFA系统发送的的请求必须通过该类代为发送.

@@ -10,6 +10,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.annotation.Resource;
 
+import net.sf.json.JSONObject;
+
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.dom4j.Document;
 import org.jboss.netty.buffer.ChannelBuffer;
@@ -26,8 +29,9 @@ import org.springframework.stereotype.Service;
 import com.locate.bridge.GateForwardRFA;
 import com.locate.common.DataBaseCache;
 import com.locate.common.GateWayMessageTypes;
-import com.locate.common.XmlMessageUtil;
-import com.locate.gate.model.ClientInfo;
+import com.locate.common.model.ClientInfo;
+import com.locate.common.model.ClientRequest;
+import com.locate.common.utils.XmlMessageUtil;
 import com.locate.rmds.handler.inter.IRequestHandler;
 
 @Service
@@ -141,16 +145,16 @@ public class GatewayServerHandler extends SimpleChannelHandler {
 		try {
 			ChannelBuffer channelBuffer = (ChannelBuffer) e.getMessage();
 			String msg = channelBuffer.toString(Charset.forName("UTF-8"));
-			Document userRequest = XmlMessageUtil.convertDocument(msg);
-			_logger.info("original message -------"+msg);
+			JSONObject jsonObject = JSONObject.fromObject(msg);
+			ClientRequest request = (ClientRequest)JSONObject.toBean(jsonObject,ClientRequest.class);
+			_logger.info("original message -------"+request);
 			
-			byte msgType = XmlMessageUtil.getMsgType(userRequest);
+			byte msgType = request.getMsgType();
 			// Judge client whether logon
-			String userName = null;
+			String userName = request.getUserName();
 
 			String clientIP = ((InetSocketAddress) e.getRemoteAddress()).getAddress().getHostAddress();
 			_logger.info("Server received " + clientIP + " messages, Request message type:" + msgType);
-			_logger.info("Client request :" + userRequest.asXML());
 			
 			Channel channel = e.getChannel();
 			
@@ -158,8 +162,10 @@ public class GatewayServerHandler extends SimpleChannelHandler {
 			if(!DataBaseCache.allChannelGroup.contains(channel)){
 				DataBaseCache.allChannelGroup.add(channel);
 			}
-			userName = DataBaseCache._userConnection.get(clientIP);
-			ClientInfo clientInfo = new ClientInfo(userRequest, userName, channel.getId(), msgType, clientIP);
+			if(StringUtils.isBlank(userName)){
+				userName = DataBaseCache._userConnection.get(clientIP);
+			}
+			ClientInfo clientInfo = new ClientInfo(request,userName, channel.getId(), clientIP);
 //		    ClientHandle clientHandle = (ClientHandle)LocateGateWayMain.springContext.getBean("clientHandler"); 
 		    if(msgType != GateWayMessageTypes.LOGIN){
 				for (String subcribeItemName : XmlMessageUtil.pickupClientReqItem(userRequest)) {

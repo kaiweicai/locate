@@ -1,29 +1,30 @@
-package com.locate.gate.model;
+package com.locate.common.model;
 
-import org.dom4j.Document;
 
 public class ClientInfo {
-	private Document userRquest;
+	private ClientRequest userRquest;
 	private String userName;
 	private int channelID;
 	private byte msgType;
 	private String clientIP;
 	
-	public ClientInfo(Document userRquest, String userName, int channelID, byte msgType, String clientIP) {
+	public ClientInfo(ClientRequest userRquest,String userName, int channelID,  String clientIP) {
 		super();
 		this.userRquest = userRquest;
 		this.userName = userName;
 		this.channelID = channelID;
-		this.msgType = msgType;
+		this.msgType = userRquest.getMsgType();
 		this.clientIP = clientIP;
 	}
 	
-	public Document getUserRquest() {
+	public ClientRequest getUserRquest() {
 		return userRquest;
 	}
-	public void setUserRquest(Document userRquest) {
+
+	public void setUserRquest(ClientRequest userRquest) {
 		this.userRquest = userRquest;
 	}
+	
 	public String getUserName() {
 		return userName;
 	}

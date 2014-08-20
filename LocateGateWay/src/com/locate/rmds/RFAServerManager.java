@@ -22,8 +22,6 @@ public class RFAServerManager extends Thread {
 	public static boolean stop = false;
 	StatisticThread statisticDemo;
 	
-	public static AtomicInteger sequenceNo = new AtomicInteger(0);
-	
 	private static boolean connectedDataSource;
 	@PostConstruct
 	public void init() {

@@ -26,7 +26,7 @@ import org.junit.Test;
 import org.springframework.stereotype.Service;
 
 import com.locate.common.GateWayMessageTypes;
-import com.locate.common.XmlMessageUtil;
+import com.locate.common.utils.XmlMessageUtil;
 import com.locate.gate.coder.EncrytDecoder;
 import com.locate.gate.coder.EncrytEncoder;
 import com.locate.gate.hanlder.GatewayServerHandler;

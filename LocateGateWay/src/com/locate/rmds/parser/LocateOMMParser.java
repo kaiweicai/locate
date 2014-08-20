@@ -11,7 +11,7 @@ import java.util.Vector;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
-import com.locate.gate.model.LocateUnionMessage;
+import com.locate.common.model.LocateUnionMessage;
 import com.locate.rmds.gui.viewer.FieldValue;
 import com.locate.rmds.parser.face.IOmmParser;
 import com.locate.rmds.util.RFATypeConvert;
@@ -49,13 +49,13 @@ import com.reuters.rfa.omm.OMMTypes;
  * @copyRight by Author
  */
 @Component
-public final class LocateGenericOMMParser implements IOmmParser {
+public final class LocateOMMParser implements IOmmParser {
 	private static boolean ripple = SystemProperties.getProperties(SystemProperties.RIPPLE).equalsIgnoreCase("true") ? true
 			: false;
 	private static HashMap<Integer, FieldDictionary> DICTIONARIES = new HashMap<Integer, FieldDictionary>();
 	private static FieldDictionary CURRENT_DICTIONARY;
 	private static Page CURRENT_PAGE;
-	static Logger logger = Logger.getLogger(LocateGenericOMMParser.class.getName());
+	static Logger logger = Logger.getLogger(LocateOMMParser.class.getName());
 
 	/**
 	 * This method should be called one before parsing and data.

@@ -3,27 +3,23 @@ package com.locate.rmds.processer;
 import javax.annotation.Resource;
 
 import net.sf.json.JSON;
-import net.sf.json.JSONObject;
 
 import org.apache.log4j.Logger;
 import org.dom4j.Document;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
-import com.locate.bridge.GateWayResponser;
 import com.locate.common.DataBaseCache;
-import com.locate.common.JsonUtil;
-import com.locate.common.XmlMessageUtil;
-import com.locate.gate.server.GateWayServer;
+import com.locate.common.SystemConstant;
+import com.locate.common.utils.JsonUtil;
+import com.locate.common.utils.XmlMessageUtil;
 import com.locate.rmds.QSConsumerProxy;
-import com.locate.rmds.RFAServerManager;
 import com.locate.rmds.parser.GenericOMMParser;
 import com.locate.rmds.processer.face.IProcesser;
 import com.locate.rmds.statistic.CycleStatistics;
 import com.locate.rmds.statistic.LogTool;
 import com.locate.rmds.statistic.OutputFormatter;
 import com.locate.rmds.statistic.ResourceStatistics;
-import com.reuters.rfa.common.Client;
 import com.reuters.rfa.common.Event;
 import com.reuters.rfa.common.Handle;
 import com.reuters.rfa.omm.OMMItemGroup;
@@ -238,7 +234,7 @@ public class PersistentItemManager implements IProcesser
 			_itemGroupManager.applyGroup(itemHandle, group);
 		}
         
-		XmlMessageUtil.addLocateInfo(responseMsg, respMsg.getMsgType(), RFAServerManager.sequenceNo.getAndIncrement(), 0);
+		XmlMessageUtil.addLocateInfo(responseMsg, respMsg.getMsgType(), SystemConstant.sequenceNo.getAndIncrement(), 0);
 		//锟斤拷锟芥报锟斤拷锟斤拷息锟皆癸拷锟斤拷询.
 		iPriceKeeper priceKeeper = new FilePriceKeeper(this.clientRequestItemName);
 		JSON jsonObject = JsonUtil.getJSONFromXml(responseMsg.asXML()) ;

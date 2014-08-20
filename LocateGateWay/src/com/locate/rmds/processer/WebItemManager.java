@@ -1,6 +1,5 @@
 package com.locate.rmds.processer;
 
-import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
 import org.apache.log4j.Logger;
@@ -9,17 +8,10 @@ import org.jboss.netty.handler.codec.http.HttpRequest;
 import org.springframework.stereotype.Service;
 
 import com.locate.bridge.HttpWayResponser;
-import com.locate.common.DataBaseCache;
-import com.locate.common.XmlMessageUtil;
-import com.locate.gate.server.GateWayServer;
+import com.locate.common.SystemConstant;
+import com.locate.common.utils.XmlMessageUtil;
 import com.locate.rmds.QSConsumerProxy;
-import com.locate.rmds.RFAServerManager;
 import com.locate.rmds.parser.GenericOMMParser;
-import com.locate.rmds.processer.face.IProcesser;
-import com.locate.rmds.statistic.CycleStatistics;
-import com.locate.rmds.statistic.LogTool;
-import com.locate.rmds.statistic.OutputFormatter;
-import com.locate.rmds.statistic.ResourceStatistics;
 import com.reuters.rfa.common.Client;
 import com.reuters.rfa.common.Event;
 import com.reuters.rfa.common.Handle;
@@ -30,7 +22,6 @@ import com.reuters.rfa.rdm.RDMInstrument;
 import com.reuters.rfa.rdm.RDMMsgTypes;
 import com.reuters.rfa.session.omm.OMMItemEvent;
 import com.reuters.rfa.session.omm.OMMItemIntSpec;
-import com.reuters.rfa.session.omm.OMMSolicitedItemEvent;
 
 // This class is a Client implementation that is utilized to handle item requests
 // and responses between application and RFA.
@@ -190,7 +181,7 @@ public class WebItemManager implements Client {
 			byte msgType = respMsg.getMsgType();
 			String state = respMsg.getState().toString();
 			responseMsg = XmlMessageUtil.generateStatusResp(state, streamState, dataState, msgType);
-			XmlMessageUtil.addLocateInfo(responseMsg, msgType, RFAServerManager.sequenceNo.getAndIncrement(), 0);
+			XmlMessageUtil.addLocateInfo(responseMsg, msgType, SystemConstant.sequenceNo.getAndIncrement(), 0);
 			HttpWayResponser.sentMrketPriceToSubsribeChannel(responseMsg, clientRequestItemName);
 			logger.warn("RFA server has new state. streamState:" + streamState + " datasstate " + dataState);
 			return;

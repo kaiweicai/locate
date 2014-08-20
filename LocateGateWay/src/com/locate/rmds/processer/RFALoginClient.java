@@ -14,11 +14,11 @@ import org.dom4j.Document;
 import org.springframework.stereotype.Component;
 
 import com.locate.bridge.GateWayResponser;
-import com.locate.common.XmlMessageUtil;
+import com.locate.common.utils.XmlMessageUtil;
 import com.locate.rmds.QSConsumerProxy;
 import com.locate.rmds.dict.RDMServiceInfo;
 import com.locate.rmds.dict.ServiceInfo;
-import com.locate.rmds.parser.GenericRFALoginParser;
+import com.locate.rmds.parser.RFALoginOMMParser;
 import com.locate.rmds.processer.face.INotifier;
 import com.reuters.rfa.common.Client;
 import com.reuters.rfa.common.Event;
@@ -169,7 +169,7 @@ public class RFALoginClient implements Client
         if (respMsg.isFinal()) 
         {
         	_logger.info(" Login Response message is final.");
-        	GenericRFALoginParser.parse(respMsg,null);
+        	RFALoginOMMParser.parse(respMsg,null);
         	_mainApp.loginFailure();
         	return;
         }
@@ -189,7 +189,7 @@ public class RFALoginClient implements Client
 				&& (respMsg.getState().getStreamState() == OMMState.Stream.OPEN)
 				&& (respMsg.getState().getDataState() == OMMState.Data.OK)) {
 			_logger.info("Received Login STATUS OK Response");
-			GenericRFALoginParser.parse(respMsg, "RFALogin");
+			RFALoginOMMParser.parse(respMsg, "RFALogin");
 			_mainApp.processLogin();
 			_mainApp.registerDirectory(this);
 		} else if(respMsg.getMsgType() == OMMMsg.MsgType.STATUS_RESP&&respMsg.has(OMMMsg.HAS_STATE)
@@ -202,18 +202,18 @@ public class RFALoginClient implements Client
 					"RFA server new state\n",
 					"RFA server has new state. The server state is "
 							+ (respMsg.has(OMMMsg.HAS_STATE) ? respMsg.getState() : "has no stat"));
-			GenericRFALoginParser.parse(respMsg, "RFALogin");
+			RFALoginOMMParser.parse(respMsg, "RFALogin");
 		}else{
 			_logger.error("Login not success.Please check!\n Received Login Response - "
 					+ OMMMsg.MsgType.toString(respMsg.getMsgType()));
 			_mainApp.loginFailure();
-			GenericRFALoginParser.parse(respMsg, "RFALogin");
+			RFALoginOMMParser.parse(respMsg, "RFALogin");
 		}
     }
     
     protected void processDirectoryMsg(OMMMsg msg)
     {
-    	GenericRFALoginParser.parse(msg,"DIRECTORY");
+    	RFALoginOMMParser.parse(msg,"DIRECTORY");
 
         if (msg.getDataType() == OMMTypes.NO_DATA)
         {
@@ -308,7 +308,7 @@ public class RFALoginClient implements Client
 		int msgType = msg.getMsgType();
 
 		if ((msgType == 7) || (msgType == 8)) {
-			GenericRFALoginParser.parse(msg,"Dictionary");
+			RFALoginOMMParser.parse(msg,"Dictionary");
 			return;
 		}
 

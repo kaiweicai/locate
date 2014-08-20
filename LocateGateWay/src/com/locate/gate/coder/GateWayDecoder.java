@@ -9,9 +9,9 @@ import org.jboss.netty.channel.Channel;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.handler.codec.frame.FrameDecoder;
 
-import com.locate.gate.model.LocateMessage;
-import com.locate.rmds.RFAServerManager;
+import com.locate.common.model.LocateUnionMessage;
 
+@Deprecated
 public class GateWayDecoder extends FrameDecoder {
 	
 	Logger logger = Logger.getLogger(GateWayDecoder.class);
@@ -69,8 +69,7 @@ public class GateWayDecoder extends FrameDecoder {
 		}catch(Exception e){
 			e.printStackTrace();
 		}
-		LocateMessage message = new LocateMessage(msgType,doc, errorCode);
-		message.setSequenceNo(sequenceNo);
+		LocateUnionMessage message = new LocateUnionMessage();
 		buffer.clear();
 		return message;
 	}

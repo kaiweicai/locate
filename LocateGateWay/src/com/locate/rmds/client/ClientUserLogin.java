@@ -1,19 +1,13 @@
 package com.locate.rmds.client;
 
-import java.net.InetSocketAddress;
-
 import org.apache.log4j.Logger;
 import org.dom4j.Document;
 import org.dom4j.Node;
-import org.jboss.netty.channel.Channel;
 
 import com.locate.common.DataBaseCache;
 import com.locate.common.GateWayExceptionTypes;
 import com.locate.common.RFANodeconstant;
-import com.locate.common.XmlMessageUtil;
-import com.locate.gate.hanlder.GatewayServerHandler;
-import com.locate.gate.model.RFAUserResponse;
-import com.locate.gate.server.GateWayServer;
+import com.locate.common.utils.XmlMessageUtil;
 import com.locate.rmds.processer.RFALoginClient;
 import com.reuters.rfa.omm.OMMState;
 

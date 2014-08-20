@@ -1,4 +1,4 @@
-package com.locate.common;
+package com.locate.common.utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,8 +9,11 @@ import org.dom4j.DocumentFactory;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 
+import com.locate.common.GateWayExceptionTypes;
+import com.locate.common.RFANodeconstant;
 import com.locate.common.GateWayExceptionTypes.RFAExceptionEnum;
 import com.locate.common.GateWayExceptionTypes.RFAUserAuthentication;
+import com.locate.common.SystemConstant;
 import com.locate.rmds.RFAServerManager;
 import com.reuters.rfa.omm.OMMState;
 
@@ -120,7 +123,7 @@ public class XmlMessageUtil {
 		locateElement.addElement(RFANodeconstant.ALL_STATE_NODE).addText(state);
 		locateElement.addElement(RFANodeconstant.STREAM_STATE_NODE).addText(streamingState);
 		locateElement.addElement(RFANodeconstant.DATA_STATE_NODE).addText(dataingState);
-		addLocateInfo(responseMsg, msgType, RFAServerManager.sequenceNo.getAndIncrement(), 0);
+		addLocateInfo(responseMsg, msgType, SystemConstant.sequenceNo.getAndIncrement(), 0);
 		return responseMsg;
 	}
 

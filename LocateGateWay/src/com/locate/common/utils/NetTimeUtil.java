@@ -1,4 +1,4 @@
-package com.locate.common;
+package com.locate.common.utils;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -8,6 +8,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.apache.log4j.Logger;
+
+import com.locate.common.DataBaseCache;
 
 public class NetTimeUtil {
 	static Logger logger = Logger.getLogger(NetTimeUtil.class);

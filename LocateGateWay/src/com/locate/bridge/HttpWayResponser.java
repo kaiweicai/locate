@@ -7,7 +7,6 @@ import static org.jboss.netty.handler.codec.http.HttpHeaders.Names.SET_COOKIE;
 import static org.jboss.netty.handler.codec.http.HttpResponseStatus.OK;
 import static org.jboss.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 
-import java.io.RandomAccessFile;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.util.Iterator;
@@ -18,8 +17,6 @@ import org.dom4j.Document;
 import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.buffer.ChannelBuffers;
 import org.jboss.netty.channel.Channel;
-import org.jboss.netty.channel.ChannelFuture;
-import org.jboss.netty.channel.ChannelFutureListener;
 import org.jboss.netty.channel.group.ChannelGroup;
 import org.jboss.netty.channel.group.ChannelGroupFuture;
 import org.jboss.netty.channel.group.ChannelGroupFutureListener;
@@ -28,21 +25,14 @@ import org.jboss.netty.handler.codec.http.CookieDecoder;
 import org.jboss.netty.handler.codec.http.CookieEncoder;
 import org.jboss.netty.handler.codec.http.DefaultHttpResponse;
 import org.jboss.netty.handler.codec.http.HttpHeaders;
-import org.jboss.netty.handler.codec.http.HttpMethod;
 import org.jboss.netty.handler.codec.http.HttpRequest;
 import org.jboss.netty.handler.codec.http.HttpResponse;
 import org.jboss.netty.handler.codec.http.HttpResponseStatus;
-import org.jboss.netty.handler.codec.http.websocketx.TextWebSocketFrame;
-import org.jboss.netty.handler.stream.ChunkedFile;
-import org.springframework.stereotype.Service;
 
 import com.locate.common.DataBaseCache;
-import com.locate.common.JsonUtil;
-import com.locate.common.XmlMessageUtil;
-import com.locate.gate.model.LocateMessage;
-import com.locate.gate.server.GateWayServer;
-import com.locate.rmds.RFAServerManager;
-import com.reuters.rfa.omm.OMMMsg;
+import com.locate.common.SystemConstant;
+import com.locate.common.utils.JsonUtil;
+import com.locate.common.utils.XmlMessageUtil;
 
 /**
  * RFA 通过该程序将消息发送到gateway.
@@ -58,7 +48,7 @@ public class HttpWayResponser {
 
 	public static void sentResponseMsg(byte msgType, Document response, Integer channelId) {
 		// LocateMessage message = new LocateMessage(msgType, response, 0);
-		XmlMessageUtil.addLocateInfo(response, msgType, RFAServerManager.sequenceNo.getAndIncrement(), 0);
+		XmlMessageUtil.addLocateInfo(response, msgType, SystemConstant.sequenceNo.getAndIncrement(), 0);
 		byte[] content = null;
 		try {
 			content = response.asXML().getBytes("UTF-8");
@@ -79,7 +69,7 @@ public class HttpWayResponser {
 	public static void sentAllChannelNews(byte msgType, Document response) {
 		// LocateMessage message = new LocateMessage(msgType, response, 0);
 		// message.setSequenceNo(RFAServerManager.sequenceNo.getAndIncrement());
-		XmlMessageUtil.addLocateInfo(response, msgType, RFAServerManager.sequenceNo.getAndIncrement(), 0);
+		XmlMessageUtil.addLocateInfo(response, msgType, SystemConstant.sequenceNo.getAndIncrement(), 0);
 		byte[] content = null;
 		try {
 			content = response.asXML().getBytes("UTF-8");
@@ -139,7 +129,7 @@ public class HttpWayResponser {
 		
 		
 //		ChannelGroup channelGroup = DataBaseCache.webItemChannelMap.get(itemName);
-		XmlMessageUtil.addLocateInfo(doc, msgType, RFAServerManager.sequenceNo.getAndIncrement(), 0);
+		XmlMessageUtil.addLocateInfo(doc, msgType, SystemConstant.sequenceNo.getAndIncrement(), 0);
 		String content = null;
 		byte[] result = null;
 		try {
@@ -180,7 +170,7 @@ public class HttpWayResponser {
 	public static void writeWebSocket(byte msgType, Document doc, String itemName, HttpRequest request) {
 
 //		ChannelGroup channelGroup = DataBaseCache.webItemChannelMap.get(itemName);
-		XmlMessageUtil.addLocateInfo(doc, msgType, RFAServerManager.sequenceNo.getAndIncrement(), 0);
+		XmlMessageUtil.addLocateInfo(doc, msgType, SystemConstant.sequenceNo.getAndIncrement(), 0);
 		String content = null;
 		String result = null;
 		content = doc.asXML();
@@ -203,7 +193,7 @@ public class HttpWayResponser {
 		// LocateMessage message = new LocateMessage(msgType, response,
 		// errorCode);
 		// message.setSequenceNo(RFAServerManager.sequenceNo.getAndIncrement());
-		XmlMessageUtil.addLocateInfo(response, msgType, RFAServerManager.sequenceNo.getAndIncrement(), errorCode);
+		XmlMessageUtil.addLocateInfo(response, msgType, SystemConstant.sequenceNo.getAndIncrement(), errorCode);
 		byte[] content = null;
 		try {
 			content = response.asXML().getBytes("UTF-8");

@@ -16,7 +16,7 @@ import org.dom4j.Element;
 
 import com.locate.common.DataBaseCache;
 import com.locate.common.RFANodeconstant;
-import com.locate.gate.model.LocateUnionMessage;
+import com.locate.common.model.LocateUnionMessage;
 import com.locate.rmds.gui.viewer.FieldValue;
 import com.locate.rmds.parser.face.IOmmParser;
 import com.locate.rmds.util.ExampleUtil;

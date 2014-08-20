@@ -8,7 +8,7 @@ import org.jboss.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import org.jboss.netty.handler.codec.oneone.OneToOneEncoder;
 import org.springframework.stereotype.Service;
 
-import com.locate.common.JsonUtil;
+import com.locate.common.utils.JsonUtil;
 
 @Service
 public class WebAdapterHandler extends OneToOneEncoder {

@@ -25,10 +25,9 @@ import org.junit.Test;
 
 import com.locate.common.GateWayMessageTypes;
 import com.locate.common.GateWayMessageTypes.RFAMessageName;
+import com.locate.common.model.LocateUnionMessage;
 import com.locate.gate.coder.GateWayDecoder;
 import com.locate.gate.coder.GateWayEncoder;
-import com.locate.gate.model.LocateMessage;
-import com.locate.rmds.RFAServerManager;
 
 
 public class TestSocketClient{
@@ -60,20 +59,20 @@ public class TestSocketClient{
 		@Override
 		public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
 			super.messageReceived(ctx, e);
-			LocateMessage message = (LocateMessage) e.getMessage();
+			LocateUnionMessage message = (LocateUnionMessage) e.getMessage();
 			byte msgType = message.getMsgType();
-			int length = message.getMsgLength();
-			System.out.println("receive messages length:" + length);
+//			int length = message.getMsgLength();
+//			System.out.println("receive messages length:" + length);
 			System.out.println("Received message type:" + RFAMessageName.getRFAMessageName(msgType));
 
-			Document document = message.getDocument();
-			if (document == null) {
-				System.out.println("Received server's  message is null ");
-				return;
-			}
-			String content = document.asXML();
-			// String content = response.asXML();
-			System.out.println("Received server's  message : " + content);
+//			Document document = message.getDocument();
+//			if (document == null) {
+//				System.out.println("Received server's  message is null ");
+//				return;
+//			}
+//			String content = document.asXML();
+//			// String content = response.asXML();
+//			System.out.println("Received server's  message : " + content);
 
 			t1 = System.currentTimeMillis();
 
@@ -115,10 +114,10 @@ public class TestSocketClient{
 
 	
 	private void sentMessageToServer(byte msgType,Document doc){
-		LocateMessage message = new LocateMessage(msgType, doc, 0);
-		message.setSequenceNo(RFAServerManager.sequenceNo.getAndIncrement());
-		ChannelFuture future = channel.write(message);
-		future.awaitUninterruptibly();
+//		LocateMessage message = new LocateMessage(msgType, doc, 0);
+//		message.setSequenceNo(SystemConstant.sequenceNo.getAndIncrement());
+//		ChannelFuture future = channel.write(message);
+//		future.awaitUninterruptibly();
 	}
 	
 	private void createCurrencyRequest(Document doc){

@@ -5,13 +5,13 @@ import org.dom4j.Document;
 
 import com.locate.bridge.GateWayResponser;
 import com.locate.common.DataBaseCache;
-import com.locate.common.XmlMessageUtil;
-import com.locate.gate.model.LocateUnionMessage;
+import com.locate.common.model.LocateUnionMessage;
+import com.locate.common.utils.XmlMessageUtil;
 import com.locate.gate.server.GateWayServer;
 import com.locate.rmds.QSConsumerProxy;
 import com.locate.rmds.RFAServerManager;
 import com.locate.rmds.parser.GenericOMMParser;
-import com.locate.rmds.parser.LocateGenericOMMParser;
+import com.locate.rmds.parser.LocateOMMParser;
 import com.locate.rmds.statistic.CycleStatistics;
 import com.locate.rmds.statistic.LogTool;
 import com.locate.rmds.statistic.OutputFormatter;
@@ -69,7 +69,7 @@ public class OneTimeItemManager implements Client
     static OutputFormatter _outputFormatter;
     static StringBuilder _statsStringBuffer;
     static int _timeline;
-    private LocateGenericOMMParser locateGenericOMMParser = new LocateGenericOMMParser();
+    private LocateOMMParser locateGenericOMMParser = new LocateOMMParser();
     // constructor
     public OneTimeItemManager(QSConsumerProxy mainApp, ItemGroupManager itemGroupManager,int channelID)
     {

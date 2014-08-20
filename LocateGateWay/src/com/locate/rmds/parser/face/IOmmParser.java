@@ -3,7 +3,7 @@ package com.locate.rmds.parser.face;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.locate.gate.model.LocateUnionMessage;
+import com.locate.common.model.LocateUnionMessage;
 import com.locate.rmds.gui.viewer.FieldValue;
 import com.reuters.rfa.omm.OMMMsg;
 

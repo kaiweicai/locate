@@ -65,12 +65,12 @@ import com.reuters.rfa.utility.HexDump;
  * values. CURRENT_DICTIONARY requires only one FieldDictionary to be used at a
  * time. CURRENT_PAGE requires only one page to be parsed at a time.
  */
-public final class GenericRFALoginParser
+public final class RFALoginOMMParser
 {
     private static HashMap<Integer, FieldDictionary> DICTIONARIES = new HashMap<Integer, FieldDictionary>();
     private static FieldDictionary CURRENT_DICTIONARY;
     private static Page CURRENT_PAGE;
-    static Logger _logger = Logger.getLogger(GenericRFALoginParser.class.getName());
+    static Logger _logger = Logger.getLogger(RFALoginOMMParser.class.getName());
 //    static Logger _logger;
     private static boolean INTERNAL_DEBUG = false;
     

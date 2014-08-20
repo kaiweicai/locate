@@ -8,14 +8,15 @@ import org.jboss.netty.channel.Channel;
 import org.jboss.netty.channel.group.ChannelGroup;
 
 import com.locate.common.DataBaseCache;
-import com.locate.common.XmlMessageUtil;
-import com.locate.gate.model.LocateUnionMessage;
+import com.locate.common.SystemConstant;
+import com.locate.common.model.LocateUnionMessage;
+import com.locate.common.utils.XmlMessageUtil;
 import com.locate.rmds.RFAServerManager;
 
 /**
- * All responses send to customer handle by this class.
+ * 
  * @author CloudWei kaiweicai@163.com
- * create time 2014��8��19��
+ * create time 2014年8月20日
  * @copyRight by Author
  */
 public class GateWayResponser {
@@ -25,7 +26,7 @@ public class GateWayResponser {
 
 	public static void sentResponseMsg(byte msgType, Document response, Integer channelId) {
 		// LocateMessage message = new LocateMessage(msgType, response, 0);
-		XmlMessageUtil.addLocateInfo(response, msgType, RFAServerManager.sequenceNo.getAndIncrement(), 0);
+		XmlMessageUtil.addLocateInfo(response, msgType, SystemConstant.sequenceNo.getAndIncrement(), 0);
 		Channel channel = DataBaseCache.allChannelGroup.find(channelId);
 		if (channel != null && channel.isConnected()) {
 			channel.write(response);
@@ -38,7 +39,7 @@ public class GateWayResponser {
 	public static void sentAllChannelNews(byte msgType, Document response) {
 		// LocateMessage message = new LocateMessage(msgType, response, 0);
 		// message.setSequenceNo(RFAServerManager.sequenceNo.getAndIncrement());
-		XmlMessageUtil.addLocateInfo(response, msgType, RFAServerManager.sequenceNo.getAndIncrement(), 0);
+		XmlMessageUtil.addLocateInfo(response, msgType, SystemConstant.sequenceNo.getAndIncrement(), 0);
 		DataBaseCache.allChannelGroup.write(response);
 		logger.info("downStream message is :"+response);
 	}
@@ -59,7 +60,7 @@ public class GateWayResponser {
 	}
 
 	public static void sentNotiFyResponseMsg(byte msgType, Document response, Integer channelId, int errorCode) {
-		XmlMessageUtil.addLocateInfo(response, msgType, RFAServerManager.sequenceNo.getAndIncrement(), errorCode);
+		XmlMessageUtil.addLocateInfo(response, msgType, SystemConstant.sequenceNo.getAndIncrement(), errorCode);
 		Channel channel = DataBaseCache.allChannelGroup.find(channelId);
 		if (channel != null && channel.isConnected()) {
 			channel.write(response);
