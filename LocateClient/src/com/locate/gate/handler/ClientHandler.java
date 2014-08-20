@@ -2,6 +2,8 @@ package com.locate.gate.handler;
 
 import java.nio.charset.Charset;
 
+import net.sf.json.JSONObject;
+
 import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.ChannelStateEvent;
@@ -9,6 +11,7 @@ import org.jboss.netty.channel.ExceptionEvent;
 import org.jboss.netty.channel.MessageEvent;
 import org.jboss.netty.channel.SimpleChannelHandler;
 
+import com.locate.common.model.LocateUnionMessage;
 import com.locate.face.IBussiness;
 
 public class ClientHandler extends SimpleChannelHandler {
@@ -28,7 +31,9 @@ public class ClientHandler extends SimpleChannelHandler {
 		super.messageReceived(ctx, e);
 		ChannelBuffer channelBuffer = (ChannelBuffer) e.getMessage();
 		String msg = channelBuffer.toString(Charset.forName("UTF-8"));
-		bussinessHandler.handleMessage(msg);
+		JSONObject transJsonObject = JSONObject.fromObject(msg);
+		LocateUnionMessage myMessage = (LocateUnionMessage)JSONObject.toBean( transJsonObject, LocateUnionMessage.class);
+		bussinessHandler.handleMessage(myMessage);
 		t1 = System.currentTimeMillis();
 	}
 	

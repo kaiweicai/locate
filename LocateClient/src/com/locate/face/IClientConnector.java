@@ -5,7 +5,7 @@ package com.locate.face;
  * @author CloudWei kaiweicai@163.com create time 2014年8月14日
  * @copyRight by Author
  */
-public interface IClientConnected {
+public interface IClientConnector {
 
 	/**
 	 * 向服务器申请注册客户端信息

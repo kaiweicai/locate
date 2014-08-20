@@ -4,6 +4,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.InetSocketAddress;
 import java.util.concurrent.Executors;
 
+import net.sf.json.JSONObject;
+
 import org.apache.log4j.Logger;
 import org.dom4j.Document;
 import org.dom4j.DocumentFactory;
@@ -29,16 +31,17 @@ import org.jboss.netty.handler.timeout.IdleStateEvent;
 
 import com.locate.common.GateWayMessageTypes;
 import com.locate.common.RFANodeconstant;
-import com.locate.common.XmlMessageUtil;
+import com.locate.common.SystemConstant;
+import com.locate.common.model.ClientRequest;
+import com.locate.common.utils.XmlMessageUtil;
 import com.locate.face.IBussiness;
-import com.locate.face.IClientConnected;
+import com.locate.face.IClientConnector;
 import com.locate.gate.coder.EncrytDecoder;
 import com.locate.gate.coder.EncrytEncoder;
-import com.locate.rmds.RFAServerManager;
 
-public class ClientConnector implements IClientConnected {
+public class ClientConnector implements IClientConnector {
 	Logger logger = Logger.getLogger(ClientConnector.class);
-	private Channel Clientchannel;
+	private Channel clientchannel;
 	private ClientBootstrap bootstrap;
 	private boolean conLocate;
 	private SimpleChannelHandler clientHandler;
@@ -46,7 +49,7 @@ public class ClientConnector implements IClientConnected {
 
 	public ClientConnector(IBussiness bussinessHandler) {
 		this.bussinessHandler = bussinessHandler;
-		this.clientHandler = new ClientHandler(bussinessHandler);
+		this.clientHandler = new ClientHandler(this.bussinessHandler);
 		initNettyClient();
 	}
 	
@@ -85,7 +88,7 @@ public class ClientConnector implements IClientConnected {
 		logger.info("start to conneted to server");
 		ChannelFuture future = bootstrap.connect(new InetSocketAddress(serverAddress,port));
 		try{
-			Clientchannel = future.getChannel();
+			clientchannel = future.getChannel();
 			future.awaitUninterruptibly();
 		}catch(Exception e){
 			logger.error("NIO error "+e.getCause());
@@ -93,11 +96,9 @@ public class ClientConnector implements IClientConnected {
 		this.conLocate = true;
 		logger.info("conneted to server "+serverAddress+" port:" + port);
 		
-		DocumentFactory documentFactory = DocumentFactory.getInstance();
-	    Document requestDoc =  documentFactory.createDocument();
 	    
-	    createLoginRequest(requestDoc,userName,password);
-    	sentMessageToServer(GateWayMessageTypes.LOGIN, requestDoc);
+		ClientRequest clientRequest = createLoginRequest(userName,password);
+    	sentMessageToServer(clientRequest);
 	}
 	
 	/* (non-Javadoc)
@@ -105,18 +106,16 @@ public class ClientConnector implements IClientConnected {
 	 */
 	@Override
 	public void openRICMarket(String ric){
-		DocumentFactory documentFactory = DocumentFactory.getInstance();
-	    Document requestDoc =  documentFactory.createDocument();
-    	createFutureRequest(requestDoc,ric);
-    	sentMessageToServer(GateWayMessageTypes.FUTURE_REQUEST,requestDoc);
+    	ClientRequest request = createFutureRequest(ric);
+    	sentMessageToServer(request);
 	}
 	
-	private void createLoginRequest(Document doc,String userName,String password){
-		Element rmds = doc.addElement("rmds");
-		rmds.addElement(RFANodeconstant.LOCATE_NODE);
-		Element login = rmds.addElement("login");
-		login.addElement("userName").addText(userName);
-		login.addElement("password").addText(password);
+	private ClientRequest createLoginRequest(String userName,String password){
+		ClientRequest request = new ClientRequest();
+		request.setUserName(userName);
+		request.setPassword(password);
+		request.setMsgType(GateWayMessageTypes.LOGIN);
+		return request;
 	}
 	
 	class ClientIdleHandler extends IdleStateAwareChannelHandler implements ChannelHandler {
@@ -130,12 +129,11 @@ public class ClientConnector implements IClientConnected {
 		}
 	}
 	
-	private void createFutureRequest(Document doc,String ric){
-		Element rmds = doc.addElement("rmds");
-		rmds.addElement(RFANodeconstant.LOCATE_NODE);
-		Element request = rmds.addElement("request");
-		Element item = request.addElement("item");
-		item.addElement("name").addText(ric);
+	private ClientRequest createFutureRequest(String ric){
+		ClientRequest request = new ClientRequest();
+		request.setMsgType(GateWayMessageTypes.FUTURE_REQUEST);
+		request.setRIC(ric);
+		return request;
 	}
 	
 //	private void createEcho(){
@@ -146,18 +144,18 @@ public class ClientConnector implements IClientConnected {
 //    	sentMessageToServer(GateWayMessageTypes.REQUEST_EOCH,requestDoc);
 //	}
 	
-	private void sentMessageToServer(byte msgType,Document doc){
-		XmlMessageUtil.addLocateInfo(doc, msgType, RFAServerManager.sequenceNo.getAndIncrement(), 0);
+	private void sentMessageToServer( ClientRequest request){
 		byte[] content = null;
+		JSONObject jsonObject = JSONObject.fromObject(request);
 		try {
-			content = doc.asXML().getBytes("UTF-8");
+			content = jsonObject.toString().getBytes("UTF-8");
 		} catch (UnsupportedEncodingException e) {
 			logger.error("Not surport encoding",e);
 		}
 		ChannelBuffer buffer = ChannelBuffers.buffer(content.length);
 		buffer.writeBytes(content);
-		ChannelFuture future = Clientchannel.write(buffer);
-		logger.info("client downStream message is :"+doc.asXML());
+		clientchannel.write(buffer);
+		logger.info("client downStream message is :"+jsonObject.toString());
 	}
 	
 }

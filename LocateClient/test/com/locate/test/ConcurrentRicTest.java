@@ -2,23 +2,11 @@ package com.locate.test;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
-import org.dom4j.Document;
 import org.junit.Test;
 
 import com.locate.RFASample;
-import com.locate.common.GateWayMessageTypes;
-import com.locate.common.XmlMessageUtil;
-import com.locate.face.IBussiness;
-import com.locate.face.IClientConnected;
-import com.locate.gate.handler.ClientConnector;
-import com.reuters.rfa.omm.OMMMsg.MsgType;
 
 public class ConcurrentRicTest {
 	

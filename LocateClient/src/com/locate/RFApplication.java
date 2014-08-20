@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -17,7 +18,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.ScrollPaneLayout;
 import javax.swing.UIManager;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -25,25 +25,22 @@ import javax.swing.table.TableCellRenderer;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.xml.DOMConfigurator;
-import org.dom4j.Document;
-import org.dom4j.Element;
 import org.dyno.visual.swing.layouts.Constraints;
 import org.dyno.visual.swing.layouts.GroupLayout;
 import org.dyno.visual.swing.layouts.Leading;
 import org.jboss.netty.channel.SimpleChannelHandler;
 
+import com.locate.client.common.MsgType;
 import com.locate.client.gui.StatusBar;
 import com.locate.common.GateWayMessageTypes;
 import com.locate.common.GateWayMessageTypes.RFAMessageName;
-import com.locate.common.NetTimeUtil;
-import com.locate.common.RFANodeconstant;
-import com.locate.common.XmlMessageUtil;
+import com.locate.common.model.LocateUnionMessage;
+import com.locate.common.utils.NetTimeUtil;
 import com.locate.face.IBussiness;
-import com.locate.face.IClientConnected;
+import com.locate.face.IClientConnector;
 import com.locate.gate.handler.ClientConnector;
 import com.locate.gate.handler.ClientHandler;
 import com.locate.gate.model.CustomerFiled;
-import com.reuters.rfa.omm.OMMMsg.MsgType;
 
 /**
  * A swing window panel to monitor RFALocateGateWay Server
@@ -93,11 +90,11 @@ public class RFApplication extends JFrame {
 	private RedRenderer redRenderer =new RedRenderer();
 	private BlueRenderer blueRenderer =new BlueRenderer();
 	private Map<String,Integer> IdAtRowidMap = new HashMap<String,Integer>();
-	StringBuilder sb = new StringBuilder();
+	StringBuilder sBuilder = new StringBuilder();
 	public static long totalResponseNumber = 0;
 	public static long totalProcessTime = 0;
 	UpdateTableColore updateTablePriceThread = new UpdateTableColore();
-	private IClientConnected clientConnetor;
+	private IClientConnector clientConnetor;
 
 	private static final String PREFERRED_LOOK_AND_FEEL = "javax.swing.plaf.metal.MetalLookAndFeel";
 
@@ -279,27 +276,22 @@ public class RFApplication extends JFrame {
 		Map<Integer,CustomerFiled> data = new HashMap<Integer,CustomerFiled>();
 		String[] columns = { "id", "name", "value" };
 
-		public TableModel(Document document) {
-			Element rmds = document.getRootElement();
-			Element fields = rmds.element(RFANodeconstant.RESPONSE_RESPONSE_NODE)
-					.element(RFANodeconstant.RESPONSE_FIELDS_NODE);
-			List<Element> filedList = fields.elements();
+		public TableModel(LocateUnionMessage message) {
+			Set<String[]> palyLoadSet = message.getPayLoadSet();
 			Integer rowid=0;
-			for (Element filed : filedList) {
+			for (String[] filed : palyLoadSet) {
 					String id = "";
-					if(filed.element(RFANodeconstant.RESPONSE_FIELDS_FIELD_ID_NODE)!=null){
-						id = filed.element(RFANodeconstant.RESPONSE_FIELDS_FIELD_ID_NODE).getText();
+					if(filed[0]!=null){
+						id = filed[0];
 					}
 					String name = "";
 					
-					if(filed.element(RFANodeconstant.RESPONSE_FIELDS_FIELD_NAME_NODE)!=null){
-						name = filed.element(RFANodeconstant.RESPONSE_FIELDS_FIELD_NAME_NODE).getText();
+					if(filed[1]!=null){
+						name = filed[1];
 					}
-					
-					Element valueField = filed.element(RFANodeconstant.RESPONSE_FIELDS_FIELD_VALUE_NODE);
 					String value ="";
-					if(valueField!=null){
-						value = filed.element(RFANodeconstant.RESPONSE_FIELDS_FIELD_VALUE_NODE).getText();
+					if(filed[3]!=null){
+						value = filed[3];
 					}
 					CustomerFiled customerFiled = new CustomerFiled(id, name, value);
 					IdAtRowidMap.put(id, rowid);
@@ -486,45 +478,45 @@ public class RFApplication extends JFrame {
 		 */
 		@Override
 		public void handleException(Throwable e){
-			sb.append("NIO error "+e);
-			updateLog(sb.toString());
-			statusBar.setStatusFixed(sb.toString());
+			sBuilder.append("NIO error "+e);
+			updateLog(sBuilder.toString());
+			statusBar.setStatusFixed(sBuilder.toString());
 		}
 		
 		/* (non-Javadoc)
 		 * @see com.locate.client.gui.BussinessInterface#handleMessage(java.lang.String)
 		 */
 		@Override
-		public void handleMessage(String message){
-			Document document = XmlMessageUtil.convertDocument(message);
-			long startTime = XmlMessageUtil.getStartHandleTime(document);
-			long endTime = System.currentTimeMillis();
-			logger.info("original message -------"+message);
-			byte msgType = XmlMessageUtil.getMsgType(document);
-			sb.append("Received message type:" + RFAMessageName.getRFAMessageName(msgType)+"\n");
-			if (document == null) {
+		public void handleMessage(LocateUnionMessage message){
+			if (message == null) {
 				logger.warn("Received server's  message is null \n");
 				return;
 			}
-			
+			long startTime = message.getStartTime();
+			long endTime = System.currentTimeMillis();
+			logger.info("original message -------"+message);
+			byte msgType = message.getMsgType();
+			sBuilder.append("Received message type:" + RFAMessageName.getRFAMessageName(msgType)+"\n");
 			getUseTimeTextLabel().setText("From Locate Server to client use time:"+String.valueOf(NetTimeUtil.getCheckTime()-startTime)+" millseconds");
 			logger.info("The message From RFA to user use time"+(startTime-endTime)+"milliseconds");
 			switch(msgType){
 				//first the Locate send the snapshot of market price
 				case MsgType.REFRESH_RESP:
-					tableModel = new TableModel(document);
+					tableModel = new TableModel(message);
 					marketPriceTable.setModel(tableModel);
 					updateTablePriceThread.setMarketPriceTable(marketPriceTable);
 					break;
 				//Locate send the update market price.
 				case MsgType.UPDATE_RESP:
-					updateMarketPriceTable(tableModel,document);
+					updateMarketPriceTable(tableModel,message);
 					updateTablePriceThread.setUpdate(true);
 					break;
 				//Locate send the state info to client
 				case GateWayMessageTypes.RESPONSE_LOGIN:
+					String loginResult = message.getDataingState();
+					statusBar.setStatusFixed(loginResult);
 				case MsgType.STATUS_RESP:
-					String newStatus = XmlMessageUtil.getAllState(document);
+					String newStatus = message.getState();
 					statusBar.setStatusFixed(newStatus);
 					break;
 				//Locate send the undefined message.
@@ -533,34 +525,29 @@ public class RFApplication extends JFrame {
 			}
 			
 			// String content = response.asXML();
-			sb.append("Received server's  message : " + message+"\n");
-			updateLog(sb.toString());
+			sBuilder.append("Received server's  message : " + message+"\n");
+			updateLog(sBuilder.toString());
 		}
 		
-		private void updateMarketPriceTable(TableModel tableModel,Document document) {
-			Element rmds = document.getRootElement();
-			Element fields = rmds.element(RFANodeconstant.RESPONSE_RESPONSE_NODE)
-					.element(RFANodeconstant.RESPONSE_FIELDS_NODE);
-			List<Element> filedList = fields.elements();
+		private void updateMarketPriceTable(TableModel tableModel,LocateUnionMessage message) {
+			
+			Set<String[]> payLoadSet = message.getPayLoadSet();
+			
 			chanedRowList = new ArrayList<Integer>();
-			for (Element filed : filedList) {
+			for (String[] filed : payLoadSet) {
 				String id = "";
-				if(filed.element(RFANodeconstant.RESPONSE_FIELDS_FIELD_ID_NODE).getText()!=null){
-					id=filed.element(RFANodeconstant.RESPONSE_FIELDS_FIELD_ID_NODE).getText();
+				if(filed[0]!=null){
+					id=filed[0];
 				}
 				int rowIndex = IdAtRowidMap.get(id);
-				
 				chanedRowList.add(rowIndex);
 				String name = "";
-				if (filed.element(RFANodeconstant.RESPONSE_FIELDS_FIELD_NAME_NODE).getText() != null) {
-					name = filed.element(RFANodeconstant.RESPONSE_FIELDS_FIELD_NAME_NODE).getText();
+				if (filed[1] != null) {
+					name = filed[1];
 				}
-				Element valueField = filed.element(RFANodeconstant.RESPONSE_FIELDS_FIELD_VALUE_NODE);
 				String value = "";
-				if (valueField != null){
-					if(valueField.getText()!=null){
-						value = valueField.getText();
-					}
+				if (filed[3] != null){
+					value = filed[3];
 				}
 				CustomerFiled customerFiled = new CustomerFiled(id, name, value);
 				tableModel.update(customerFiled, rowIndex);
@@ -569,9 +556,9 @@ public class RFApplication extends JFrame {
 
 		@Override
 		public void handleDisconnected() {
-			sb.append("Locate Server disconnted!!! ");
-			
-			updateLog(sb.toString());
+			sBuilder.append("Locate Server disconnted!!! ");
+			updateLog(sBuilder.toString());
+			statusBar.setStatusFixed(sBuilder.toString());
 			System.out.println("Locate Server disconnted!!! ");			
 		}
 	}

@@ -1,4 +1,7 @@
-package com.locate.common;
+package com.locate.common.utils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -6,11 +9,13 @@ import org.dom4j.DocumentFactory;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 
+import com.locate.common.GateWayExceptionTypes;
 import com.locate.common.GateWayExceptionTypes.RFAExceptionEnum;
 import com.locate.common.GateWayExceptionTypes.RFAUserAuthentication;
-import com.locate.rmds.RFAServerManager;
-import com.reuters.rfa.omm.OMMState;
+import com.locate.common.RFANodeconstant;
+import com.locate.common.SystemConstant;
 
+@Deprecated
 public class XmlMessageUtil {
 	static final String LOGIN_SUCCESSFUL = "0";
 	static final String LOGIN_FAILED = "1";
@@ -107,8 +112,10 @@ public class XmlMessageUtil {
 	}
 
 	public static Document generateStatusResp(String state,byte streamState, byte dataState, byte msgType) {
-		String streamingState = OMMState.Stream.toString(streamState);
-		String dataingState = OMMState.Data.toString(dataState);
+		String streamingState = "";
+		String dataingState = "";
+//		String streamingState = OMMState.Stream.toString(streamState);
+//		String dataingState = OMMState.Data.toString(dataState);
 
 		DocumentFactory factory = DocumentFactory.getInstance();
 		Document responseMsg = factory.createDocument();
@@ -117,7 +124,7 @@ public class XmlMessageUtil {
 		locateElement.addElement(RFANodeconstant.ALL_STATE_NODE).addText(state);
 		locateElement.addElement(RFANodeconstant.STREAM_STATE_NODE).addText(streamingState);
 		locateElement.addElement(RFANodeconstant.DATA_STATE_NODE).addText(dataingState);
-		addLocateInfo(responseMsg, msgType, RFAServerManager.sequenceNo.getAndIncrement(), 0);
+		addLocateInfo(responseMsg, msgType, SystemConstant.sequenceNo.getAndIncrement(), 0);
 		return responseMsg;
 	}
 
@@ -156,6 +163,7 @@ public class XmlMessageUtil {
 	}
 
 	public static void addStartHandleTime(Document doc, long startTime) {
+		startTime = NetTimeUtil.getCheckTime();
 		Element rootElement = doc.getRootElement();
 		Element locateElement = rootElement.element(RFANodeconstant.LOCATE_NODE);
 		Element startTimeElement = locateElement.element(RFANodeconstant.START_HANDLE_TIME_NODE);
@@ -171,5 +179,16 @@ public class XmlMessageUtil {
 		Element locateElement = rootElement.element(RFANodeconstant.LOCATE_NODE);
 		String startHandleTime = locateElement.element(RFANodeconstant.START_HANDLE_TIME_NODE).getText();
 		return Long.parseLong(startHandleTime);
+	}
+	
+	public static List<String> pickupClientReqItem(Document req){
+		Element rmds = req.getRootElement();
+		Element requestElement = rmds.element(RFANodeconstant.SELECT_REQUEST_NODE);
+		List<Element> itemNodes = requestElement.elements(); 
+		List<String> itemNameList = new ArrayList<String>();
+		for(Element item: itemNodes){
+			itemNameList.add(item.element(RFANodeconstant.SELECT_SINGLE_NAME).getText());
+		}
+		return itemNameList;
 	}
 }

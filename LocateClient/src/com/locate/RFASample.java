@@ -1,18 +1,17 @@
 package com.locate;
 
-import org.dom4j.Document;
 import org.junit.Test;
 
+import com.locate.client.common.MsgType;
 import com.locate.common.GateWayMessageTypes;
-import com.locate.common.XmlMessageUtil;
+import com.locate.common.model.LocateUnionMessage;
 import com.locate.face.IBussiness;
-import com.locate.face.IClientConnected;
+import com.locate.face.IClientConnector;
 import com.locate.gate.handler.ClientConnector;
-import com.reuters.rfa.omm.OMMMsg.MsgType;
 
 public class RFASample {
 	//向服务器发送请求的客户端接口.
-	public IClientConnected clientConnetor;
+	public IClientConnector clientConnetor;
 	
 	//实例化
 	public RFASample(){
@@ -36,22 +35,21 @@ public class RFASample {
 		 * 可以用Dom4j直接转换成Dom形式.
 		 */
 		@Override
-		public void handleMessage(String message){
-			Document document = XmlMessageUtil.convertDocument(message);
-			byte msgType = XmlMessageUtil.getMsgType(document);
-			if (document == null) {
+		public void handleMessage(LocateUnionMessage message){
+			byte msgType = message.getMsgType();
+			if (message == null) {
 				System.out.println("Received server's  message is null \n");
 				return;
 			}
 			switch(msgType){
 				//首先服务器会发送过来一个snapshot的信息.里面包括该RIC对应的所有字段.
 				case MsgType.REFRESH_RESP:
-					System.out.println(document);
+					System.out.println(message);
 					break;
 				//然后服务器会发送很多更新的MarketPrice.该信息只包括需要更新的字段.
 				//如RIC: XAU= 只会发送BID,BID1,BID2,ASK,ASK1,ASK2等字段.
 				case MsgType.UPDATE_RESP:
-					System.out.println(document);
+					System.out.println(message);
 					break;
 				//如果服务器有通知服务器状态改变的信息,会使用此状态信息.
 				case GateWayMessageTypes.RESPONSE_LOGIN:

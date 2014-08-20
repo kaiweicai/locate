@@ -1,4 +1,7 @@
 package com.locate.face;
+
+import com.locate.common.model.LocateUnionMessage;
+
 /**
  * Client implements this Interface 
  * Handle the data which transport from Locate.
@@ -18,7 +21,7 @@ public interface IBussiness {
 	 * handle the message content.
 	 * @param message The JSON format data
 	 */
-	public void handleMessage(String message);
+	public void handleMessage(LocateUnionMessage message);
 
 	/**
 	 * Handle the network disconnected
