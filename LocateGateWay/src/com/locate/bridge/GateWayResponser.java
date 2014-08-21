@@ -68,7 +68,7 @@ public class GateWayResponser {
 		logger.info("downStream message is :"+response);
 	}
 
-	public static void brodcastStateResp(Document responseMsg) {
+	public static void brodcastStateResp(LocateUnionMessage responseMsg) {
 		if(!DataBaseCache.allChannelGroup.isEmpty()){
 			DataBaseCache.allChannelGroup.write(responseMsg);
 		}else{

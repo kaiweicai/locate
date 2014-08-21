@@ -1,7 +1,7 @@
 package com.locate.common;
 
 public class GateWayResponseTypes {
-	public static final int LOGIN_SUCCESSFUL = 0;
+	public static final int SUCCESS_RESULT = 0;
 	
 	public static int USER_NOT_LOGIN = 100;
 	public static int USER_NOT_EXIST = 101;
@@ -27,7 +27,7 @@ public class GateWayResponseTypes {
 		ChannelIdleTimeOut(CHANNEL_IDLE_TIMEOUT,
 				"No message write to client for a long time,May be the RFA server not work correctly."),
 		
-		LoginSuccess(LOGIN_SUCCESSFUL,"Validate user success."),
+		LoginSuccess(SUCCESS_RESULT,"Operate success."),
 		NotLogin(USER_NOT_LOGIN, "User didn't login"), 
 		PasswordIsWrong(USER_WRONG_PASSEORD, "User's password is wrong"), 
 		UserNotExist(USER_NOT_EXIST, "User not exist"),

@@ -22,9 +22,6 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 
-import org.dom4j.Document;
-import org.dom4j.DocumentFactory;
-import org.dom4j.Element;
 import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.buffer.ChannelBuffers;
 import org.jboss.netty.channel.Channel;
@@ -61,8 +58,8 @@ import org.springframework.stereotype.Service;
 import com.locate.bridge.GateForwardRFA;
 import com.locate.common.DataBaseCache;
 import com.locate.common.GateWayMessageTypes;
-import com.locate.common.RFANodeconstant;
 import com.locate.common.model.ClientInfo;
+import com.locate.common.model.ClientRequest;
 import com.locate.gate.coder.WebAdapterHandler;
 import com.locate.gate.server.WebSocketServerIndexPage;
 import com.locate.rmds.QSConsumerProxy;
@@ -237,28 +234,22 @@ public class HttpRequestHandler extends SimpleChannelUpstreamHandler {
 			httpChannelGroup.add(channel);
 		}
 		
+		ClientRequest request = new ClientRequest();
+		request.setUserName("ztcj");
+		request.setPassword("ztcj2013");
+		request.setMsgType(GateWayMessageTypes.LOGIN);
+		request.setClientIP("127.0.0.1");
 		
-		DocumentFactory documentFactory = DocumentFactory.getInstance();
-	    Document requestDoc =  documentFactory.createDocument();
-	    
-		Element rmds = requestDoc.addElement("rmds");
-		rmds.addElement(RFANodeconstant.LOCATE_NODE);
-		Element login = rmds.addElement("login");
-		login.addElement("userName").addText("ztcj");
-		login.addElement("password").addText("ztcj2013");
-		
-		ClientInfo clientInfo = new ClientInfo(requestDoc, "ztcj", channel.getId(), GateWayMessageTypes.LOGIN, "127.0.0.1");
+		ClientInfo clientInfo = new ClientInfo(request, "ztcj", channel.getId(),  "127.0.0.1");
 		gateForwardRFA.process(clientInfo);
 		
-		documentFactory = DocumentFactory.getInstance();
-	    requestDoc =  documentFactory.createDocument();
-	    rmds = requestDoc.addElement("rmds");
-		rmds.addElement(RFANodeconstant.LOCATE_NODE);
-		Element request = rmds.addElement("request");
-		Element item = request.addElement("item");
-		item.addElement("name").addText(ric);
+		request = new ClientRequest();
+		request.setRIC(ric);
+		request.setMsgType(GateWayMessageTypes.FUTURE_REQUEST);
+		request.setUserName("ztcj");
+		request.setClientIP("127.0.0.1");
 		
-		clientInfo = new ClientInfo(requestDoc, "ztcj", channel.getId(), GateWayMessageTypes.FUTURE_REQUEST, "127.0.0.1");
+		clientInfo = new ClientInfo(request, "ztcj", channel.getId(), "127.0.0.1");
 		gateForwardRFA.process(clientInfo);
 		
 //		DataBaseCache.webSocketGroup.write(new TextWebSocketFrame(ric.toUpperCase()));

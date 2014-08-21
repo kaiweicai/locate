@@ -72,6 +72,7 @@ public class QSConsumerProxy{
 	public String serviceName;
 	private boolean all = true;
 	protected static String _configFile = "config/rfaConfig.properties";
+	public static HashMap<Integer, FieldDictionary> DICTIONARIES = new HashMap<Integer, FieldDictionary>();
 	public static FieldDictionary dictionary;
 	DecimalFormat dataFormat = new DecimalFormat("0.00");
 	List<String> _loadedDictionaries;
@@ -157,7 +158,7 @@ public class QSConsumerProxy{
 		String fieldDictionaryFilename = SystemProperties.getProperties(SystemProperties.RFA_FIELD_FILE);
 		String enumDictionaryFilename = SystemProperties.getProperties(SystemProperties.RFA_ENUM_FILE);
 		try {
-			dictionary = GenericOMMParser.initializeDictionary(	fieldDictionaryFilename, enumDictionaryFilename);
+			dictionary = initializeDictionary(fieldDictionaryFilename, enumDictionaryFilename);
 			_loadedDictionaries.add("RWFFld");
 			_loadedDictionaries.add("RWFEnum");
 		} catch (DictionaryException ex) {
@@ -297,7 +298,7 @@ public class QSConsumerProxy{
 	
 	// This method is called by _loginClient upon receiving successful login
 	// response.
-	public void processLogin() {
+	public void loginSuccess() {
 		logger.info("QSConsumerDemo Login successful");
 		RFAServerManager.setConnectedDataSource(true);
 	}
@@ -547,5 +548,39 @@ public class QSConsumerProxy{
 
 	public void setDispath(boolean dispath) {
 		this.dispath = dispath;
+	}
+	
+	/**
+	 * This method should be called one before parsing and data.
+	 * 
+	 * @param fieldDictionaryFilename
+	 * @param enumDictionaryFilename
+	 * @throws DictionaryException
+	 *             if an error has occurred
+	 */
+	public static FieldDictionary initializeDictionary(String fieldDictionaryFilename, String enumDictionaryFilename)
+			throws DictionaryException {
+		FieldDictionary dictionary = FieldDictionary.create();
+		try {
+			FieldDictionary.readRDMFieldDictionary(dictionary, fieldDictionaryFilename);
+			logger.info("field dictionary read from RDMFieldDictionary file");
+
+			FieldDictionary.readEnumTypeDef(dictionary, enumDictionaryFilename);
+			logger.info("enum dictionary read from enumtype.def file");
+
+			initializeDictionary(dictionary);
+		} catch (DictionaryException e) {
+			throw new DictionaryException("ERROR: Check if files " + fieldDictionaryFilename + " and "
+					+ enumDictionaryFilename + " exist and are readable.", e);
+		}
+		return dictionary;
+	}
+
+	// This method can be used to initialize a downloaded dictionary
+	public synchronized static void initializeDictionary(FieldDictionary dict) {
+		int dictId = dict.getDictId();
+		if (dictId == 0)
+			dictId = 1; // dictId == 0 is the same as dictId 1
+		DICTIONARIES.put(new Integer(dictId), dict);
 	}
 }

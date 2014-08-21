@@ -63,7 +63,7 @@ public class ItemManager implements Client,IProcesser
     static Logger _logger = Logger.getLogger(ItemManager.class.getName());
     @Resource
     ItemGroupManager _itemGroupManager;
-    @Resource(name="locateGenericOMMParser")
+    @Resource(name="locateOMMParser")
     IOmmParser ommParser;
     public String clientRequestItemName;
 //    public String clientName;

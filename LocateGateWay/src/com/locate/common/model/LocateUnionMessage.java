@@ -182,13 +182,17 @@ public class LocateUnionMessage {
 		this.dataingState = dataingState;
 	}
 
+	
+	
 	@Override
 	public String toString() {
-		return "LocateUnionMessage [itemName=" + itemName + ", generatetime=" + generatetime + ", seqNumber="
-				+ seqNumber + ", locateSeqNumber=" + locateSeqNumber + ", header=" + Arrays.toString(header)
-				+ ", payLoadSet=" + payLoadSet + "]";
+		return "LocateUnionMessage [itemName=" + itemName + ", startTime=" + startTime + ", generatetime="
+				+ generatetime + ", msgType=" + msgType + ", seqNumber=" + seqNumber + ", locateSeqNumber="
+				+ locateSeqNumber + ", state=" + state + ", streamingState=" + streamingState + ", dataingState="
+				+ dataingState + ", resultCode=" + resultCode + ", resultDes=" + resultDes + ", header="
+				+ Arrays.toString(header) + ", payLoadSet=" + payLoadSet + "]";
 	}
-	
+
 	public static void main(String[] args) throws JAXBException, IOException {
 		JAXBContext context = JAXBContext.newInstance(LocateUnionMessage.class);
 		// 下面代码演示将对象转变为xml

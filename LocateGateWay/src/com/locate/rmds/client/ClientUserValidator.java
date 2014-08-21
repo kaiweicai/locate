@@ -26,13 +26,13 @@ public class ClientUserValidator {
 	public int authUserLogin(ClientRequest userRequest, String clientIP) {
 		String userName = userRequest.getUserName();
 		String password = userRequest.getPassword();
-		int resultCode = GateWayResponseTypes.LOGIN_SUCCESSFUL;
+		int resultCode = GateWayResponseTypes.SUCCESS_RESULT;
 		// Judge user is lawful
 		if (RFAUserManagement.hasUser(userName)) {
 			if (RFAUserManagement.validateUser(userName, password)) {
 				RFAUserManagement.setUserAddress(userName, clientIp);
 				DataBaseCache._userConnection.put(clientIP, userName);
-				resultCode=GateWayResponseTypes.LOGIN_SUCCESSFUL;
+				resultCode=GateWayResponseTypes.SUCCESS_RESULT;
 				logger.info("User " + userName + " passed authentication");
 			} else {
 				// User's password is wrong

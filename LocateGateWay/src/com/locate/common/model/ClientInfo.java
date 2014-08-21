@@ -8,7 +8,7 @@ public class ClientInfo {
 	private byte msgType;
 	private String clientIP;
 	
-	public ClientInfo(ClientRequest userRquest, int channelID,  String clientIP) {
+	public ClientInfo(ClientRequest userRquest, String userName, int channelID,  String clientIP) {
 		super();
 		this.clientRequest = userRquest;
 		this.userName = userName;

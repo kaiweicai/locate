@@ -14,7 +14,13 @@ import org.dom4j.Element;
 
 
 
+
+
+import org.springframework.stereotype.Component;
+
 import com.locate.common.RFANodeconstant;
+import com.locate.common.model.LocateUnionMessage;
+import com.locate.rmds.parser.face.IOmmParser;
 import com.locate.rmds.util.ExampleUtil;
 import com.locate.rmds.util.RFATypeConvert;
 import com.reuters.rfa.ansipage.Page;
@@ -46,6 +52,7 @@ import com.reuters.rfa.omm.OMMMapEntry;
 import com.reuters.rfa.omm.OMMMsg;
 import com.reuters.rfa.omm.OMMPriority;
 import com.reuters.rfa.omm.OMMSeries;
+import com.reuters.rfa.omm.OMMState;
 import com.reuters.rfa.omm.OMMTypes;
 import com.reuters.rfa.omm.OMMVector;
 import com.reuters.rfa.omm.OMMVectorEntry;
@@ -65,12 +72,13 @@ import com.reuters.rfa.utility.HexDump;
  * values. CURRENT_DICTIONARY requires only one FieldDictionary to be used at a
  * time. CURRENT_PAGE requires only one page to be parsed at a time.
  */
-public final class RFALoginOMMParser
+@Component
+public final class LoginOMMParser implements IOmmParser
 {
     private static HashMap<Integer, FieldDictionary> DICTIONARIES = new HashMap<Integer, FieldDictionary>();
     private static FieldDictionary CURRENT_DICTIONARY;
     private static Page CURRENT_PAGE;
-    static Logger _logger = Logger.getLogger(RFALoginOMMParser.class.getName());
+    static Logger _logger = Logger.getLogger(LoginOMMParser.class.getName());
 //    static Logger _logger;
     private static boolean INTERNAL_DEBUG = false;
     
@@ -86,36 +94,36 @@ public final class RFALoginOMMParser
      * @param enumDictionaryFilename
      * @throws DictionaryException if an error has occurred
      */
-    public static FieldDictionary initializeDictionary(String fieldDictionaryFilename,
-            String enumDictionaryFilename) throws DictionaryException
-    {
-        FieldDictionary dictionary = FieldDictionary.create();
-        try
-        {
-            FieldDictionary.readRDMFieldDictionary(dictionary, fieldDictionaryFilename);
-            _logger.info("field dictionary read from RDMFieldDictionary file");
-
-            FieldDictionary.readEnumTypeDef(dictionary, enumDictionaryFilename);
-            _logger.info("enum dictionary read from enumtype.def file");
-
-            initializeDictionary(dictionary);
-        }
-        catch (DictionaryException e)
-        {
-            throw new DictionaryException("ERROR: Check if files " + fieldDictionaryFilename
-                    + " and " + enumDictionaryFilename + " exist and are readable.", e);
-        }
-        return dictionary;
-    }
-
-    // This method can be used to initialize a downloaded dictionary
-    public synchronized static void initializeDictionary(FieldDictionary dict)
-    {
-        int dictId = dict.getDictId();
-        if (dictId == 0)
-            dictId = 1; // dictId == 0 is the same as dictId 1
-        DICTIONARIES.put(new Integer(dictId), dict);
-    }
+//    public static FieldDictionary initializeDictionary(String fieldDictionaryFilename,
+//            String enumDictionaryFilename) throws DictionaryException
+//    {
+//        FieldDictionary dictionary = FieldDictionary.create();
+//        try
+//        {
+//            FieldDictionary.readRDMFieldDictionary(dictionary, fieldDictionaryFilename);
+//            _logger.info("field dictionary read from RDMFieldDictionary file");
+//
+//            FieldDictionary.readEnumTypeDef(dictionary, enumDictionaryFilename);
+//            _logger.info("enum dictionary read from enumtype.def file");
+//
+//            initializeDictionary(dictionary);
+//        }
+//        catch (DictionaryException e)
+//        {
+//            throw new DictionaryException("ERROR: Check if files " + fieldDictionaryFilename
+//                    + " and " + enumDictionaryFilename + " exist and are readable.", e);
+//        }
+//        return dictionary;
+//    }
+//
+//    // This method can be used to initialize a downloaded dictionary
+//    public synchronized static void initializeDictionary(FieldDictionary dict)
+//    {
+//        int dictId = dict.getDictId();
+//        if (dictId == 0)
+//            dictId = 1; // dictId == 0 is the same as dictId 1
+//        DICTIONARIES.put(new Integer(dictId), dict);
+//    }
 
     public static FieldDictionary getDictionary(int dictId)
     {
@@ -127,29 +135,17 @@ public final class RFALoginOMMParser
     /**
      * parse msg and print it in a table-nested format to System.out
      */
-    public static final Document parse(OMMMsg msg,String itemName)
+    public final LocateUnionMessage parse(OMMMsg msg,String itemName)
     {
 //    	_logger.info("orignal OMMMsg is "+ msg);
     	if(itemName == null)
     		itemName = "";
+    	LocateUnionMessage message = new LocateUnionMessage(itemName);
     	StringBuffer logMsg = new StringBuffer();
-    	DocumentFactory factory = DocumentFactory.getInstance();
-    	Document responseMsg =  factory.createDocument();
-    	Element rmdsElement = responseMsg.addElement(RFANodeconstant.RESPONSE_ROOT_NODE);
-    	rmdsElement.addElement(RFANodeconstant.LOCATE_NODE);
-    	Element response = rmdsElement.addElement(RFANodeconstant.RESPONSE_RESPONSE_NODE);
-    	Element reqItem = response.addElement(RFANodeconstant.RESPONSE_ITEM_NODE);
-    	reqItem.addElement(RFANodeconstant.RESPONSE_ITEM_NAME_NODE).addText(itemName);
-    	Element fields = response.addElement(RFANodeconstant.RESPONSE_FIELDS_NODE);
     	
-    	parseMsg(msg, logMsg,fields);
+    	parseMsg(msg, logMsg ,message);
         _logger.info(logMsg.toString());
-//        _logger.info(responseMsg.asXML());
-//        if(fields.elements().size() > 0){
-        	return responseMsg;
-//        }else{
-//        	return null;
-//        }
+        return message;
     }
 
     private static final String hintString(OMMMsg msg)
@@ -236,12 +232,12 @@ public final class RFALoginOMMParser
      * parse msg and print it in a table-nested format to the provided
      * PrintStream
      */
-    public static final void parseMsg(OMMMsg msg, StringBuffer logMsg,Element fieldsElement)
+    public static final void parseMsg(OMMMsg msg, StringBuffer logMsg,LocateUnionMessage message)
     {
-        parseMsg(msg, logMsg, 0,fieldsElement);
+        parseMsg(msg, logMsg, 0,message);
     }
 
-	static final void parseMsg(OMMMsg msg, StringBuffer logMsg, int tabLevel, Element fieldsElement) {
+	static final void parseMsg(OMMMsg msg, StringBuffer logMsg, int tabLevel, LocateUnionMessage message) {
 		msg.getMsgType();
 		logMsg.append('\n');
 		dumpIndent(logMsg, tabLevel);
@@ -374,7 +370,7 @@ public final class RFALoginOMMParser
 			if (ai.has(OMMAttribInfo.HAS_ATTRIB)) {
 				dumpIndent(logMsg, tabLevel + 2);
 				logMsg.append("Attrib");
-				parseData(ai.getAttrib(), logMsg, tabLevel + 2, fieldsElement);
+				parseData(ai.getAttrib(), logMsg, tabLevel + 2, message);
 				logMsg.append("\n");
 			}
 		}
@@ -383,7 +379,7 @@ public final class RFALoginOMMParser
 		if (msg.getDataType() != OMMTypes.NO_DATA) {
 			
 			logMsg.append(" " + msg.getPayload().getEncodedLength() + " bytes");
-			parseData(msg.getPayload(), logMsg, tabLevel + 1, fieldsElement);
+			parseData(msg.getPayload(), logMsg, tabLevel + 1, message);
 			logMsg.append("\n ");
 		} else {
 			dumpIndent(logMsg, tabLevel + 2);
@@ -454,23 +450,23 @@ public final class RFALoginOMMParser
      * parse data and print it in a table-nested format to the System.out
      */
 
-    public static final void parse(OMMData data,Element field)
+    public static final void parse(OMMData data,LocateUnionMessage message)
     {
-        parseData(data, null, 0,field);
+        parseData(data, null, 0,message);
     }
 
-    private static final void parseAggregate(OMMData data, StringBuffer logMsg, int tabLevel,Element fields)
+    private static final void parseAggregate(OMMData data, StringBuffer logMsg, int tabLevel,LocateUnionMessage message)
     {
     	Element field ;
-        parseAggregateHeader(data, logMsg, tabLevel,fields);
+        parseAggregateHeader(data, logMsg, tabLevel,message);
         int fieldNum = 0;
         for (Iterator iter = ((OMMIterable)data).iterator(); iter.hasNext();)
         {
         	fieldNum++;
-        	field = fields.addElement("Field");
+//        	field = message.addElement("Field");
 //        	logMsg.append("\n");
             OMMEntry entry = (OMMEntry)iter.next();
-            parseEntry(entry, logMsg, tabLevel + 1,field);
+            parseEntry(entry, logMsg, tabLevel + 1,message);
             
         }
         _logger.info("test for cloud wei```````````````````````fieldNum is "+fieldNum);
@@ -481,12 +477,12 @@ public final class RFALoginOMMParser
      * PrintStream
      * data is OMMMessage Attribute
      */
-    public static final void parseData(OMMData data, StringBuffer logMsg, int tabLevel,Element fieldsElement)
+    public static final void parseData(OMMData data, StringBuffer logMsg, int tabLevel,LocateUnionMessage message)
     {
         if (data.isBlank())
         	logMsg.append("\n");
         else if (OMMTypes.isAggregate(data.getType()))
-            parseAggregate(data, logMsg, tabLevel + 1,fieldsElement);
+            parseAggregate(data, logMsg, tabLevel + 1,message);
         else if ((data.getType() == OMMTypes.RMTES_STRING)
                 && ((OMMDataBuffer)data).hasPartialUpdates())
         {
@@ -552,13 +548,13 @@ public final class RFALoginOMMParser
         }
         else if (data.getType() == OMMTypes.MSG)
         {
-            parseMsg((OMMMsg)data, logMsg, tabLevel + 1,fieldsElement);
+            parseMsg((OMMMsg)data, logMsg, tabLevel + 1,message);
         }
         else
         {
             try
             {
-            	fieldsElement.addElement(RFANodeconstant.RESPONSE_FIELDS_FIELD_VALUE_NODE).addText(data.toString());
+            	message.getPayLoadSet().add(new String[]{"","","",data.toString()});
             	logMsg.append(data.toString());
             }
             catch (Exception e)
@@ -569,7 +565,7 @@ public final class RFALoginOMMParser
         }
     }
 
-    private static final void parseAggregateHeader(OMMData data, StringBuffer logMsg, int tabLevel,Element fields )
+    private static final void parseAggregateHeader(OMMData data, StringBuffer logMsg, int tabLevel,LocateUnionMessage message )
     {
     	dumpIndent(logMsg, tabLevel);
         short dataType = data.getType();
@@ -591,7 +587,7 @@ public final class RFALoginOMMParser
                 {
                 	dumpIndent(logMsg, tabLevel+1);
                 	logMsg.append("SUMMARY");
-                    parseData(s.getSummaryData(), logMsg, tabLevel + 1,fields);
+                    parseData(s.getSummaryData(), logMsg, tabLevel + 1,message);
                 }
                 if (s.has(OMMSeries.HAS_DATA_DEFINITIONS))
                 {
@@ -614,7 +610,7 @@ public final class RFALoginOMMParser
                 {
                 	dumpIndent(logMsg, tabLevel);
                 	logMsg.append("SUMMARY");
-                    parseData(s.getSummaryData(), logMsg, tabLevel + 1,fields);
+                    parseData(s.getSummaryData(), logMsg, tabLevel + 1,message);
                 }
             }
                 break;
@@ -630,7 +626,7 @@ public final class RFALoginOMMParser
                 {
                 	dumpIndent(logMsg, tabLevel+1);
                 	logMsg.append("SUMMARY");
-                    parseData(s.getSummaryData(), logMsg, tabLevel + 1,fields);
+                    parseData(s.getSummaryData(), logMsg, tabLevel + 1,message);
                 }
             }
                 break;
@@ -660,7 +656,7 @@ public final class RFALoginOMMParser
     
     
 
-    private static final void parseEntry(OMMEntry entry, StringBuffer logMsg, int tabLevel,Element field)
+    private static final void parseEntry(OMMEntry entry, StringBuffer logMsg, int tabLevel,LocateUnionMessage message)
     {
     	
         try
@@ -680,7 +676,7 @@ public final class RFALoginOMMParser
                         
                         if (fiddef != null)
                         {
-                            dumpFieldEntryHeader(fe, fiddef, logMsg, tabLevel+1,field);
+                            dumpFieldEntryHeader(fe, fiddef, logMsg, tabLevel+1,message);
                             OMMData data = null;
                             if (fe.getDataType() == OMMTypes.UNKNOWN)
                                 data = fe.getData(fiddef.getOMMType());
@@ -689,19 +685,19 @@ public final class RFALoginOMMParser
                                 data = fe.getData();
 //                            DictionaryConverter.
 //                            logMsg.append(" data type="+OMMTypes.toString(data.getType())+" ");
-                            field.addElement(RFANodeconstant.RESPONSE_FIELDS_FIELD_TYPE_NODE).addText(RFATypeConvert.convertField(OMMTypes.toString(data.getType())));
-                        	if (data.getType() == OMMTypes.ENUM)
-                            {
-                            	String aa = CURRENT_DICTIONARY.expandedValueFor(fiddef.getFieldId(),
-                                		((OMMEnum)data).getValue());
-                            	dumpIndent(logMsg,tabLevel);
-                            	logMsg.append(aa);
-                            	field.addElement(RFANodeconstant.RESPONSE_FIELDS_FIELD_VALUE_NODE).addText(aa);
-//                            	logMsg.append(CURRENT_DICTIONARY.expandedValueFor(fiddef.getFieldId(),
-//                                		((OMMEnum)data).getValue()));
-                            }
-                            else
-                                parseData(data, logMsg, tabLevel,field);
+//                            message.addElement(RFANodeconstant.RESPONSE_FIELDS_FIELD_TYPE_NODE).addText(RFATypeConvert.convertField(OMMTypes.toString(data.getType())));
+//                        	if (data.getType() == OMMTypes.ENUM)
+//                            {
+//                            	String aa = CURRENT_DICTIONARY.expandedValueFor(fiddef.getFieldId(),
+//                                		((OMMEnum)data).getValue());
+//                            	dumpIndent(logMsg,tabLevel);
+//                            	logMsg.append(aa);
+//                            	message.addElement(RFANodeconstant.RESPONSE_FIELDS_FIELD_VALUE_NODE).addText(aa);
+////                            	logMsg.append(CURRENT_DICTIONARY.expandedValueFor(fiddef.getFieldId(),
+////                                		((OMMEnum)data).getValue()));
+//                            }
+//                            else
+                                parseData(data, logMsg, tabLevel,message);
                         }
                         else
                         {
@@ -712,7 +708,7 @@ public final class RFALoginOMMParser
                     }
                     else
                     {
-                        dumpFieldEntryHeader(fe, null, logMsg, tabLevel,field);
+                        dumpFieldEntryHeader(fe, null, logMsg, tabLevel,message);
                         if (fe.getDataType() == OMMTypes.UNKNOWN)
                         {
                             OMMDataBuffer data = (OMMDataBuffer)fe.getData();
@@ -723,35 +719,35 @@ public final class RFALoginOMMParser
                         // defined data already has type
                         {
                             OMMData data = fe.getData();
-                            parseData(data, logMsg, tabLevel,field);
+                            parseData(data, logMsg, tabLevel,message);
                         }
                     }
                 }
                     break;
                 case OMMTypes.ELEMENT_ENTRY:
-                    dumpElementEntryHeader((OMMElementEntry)entry, logMsg, tabLevel+1,field);
-                    parseData(entry.getData(), logMsg, tabLevel,field);
+                    dumpElementEntryHeader((OMMElementEntry)entry, logMsg, tabLevel+1,message);
+                    parseData(entry.getData(), logMsg, tabLevel,message);
                     break;
                 case OMMTypes.MAP_ENTRY:
-                    dumpMapEntryHeader((OMMMapEntry)entry, logMsg, tabLevel,field);
+                    dumpMapEntryHeader((OMMMapEntry)entry, logMsg, tabLevel,message);
                     if ((((OMMMapEntry)entry).getAction() != OMMMapEntry.Action.DELETE)
                             && entry.getDataType() != OMMTypes.NO_DATA)
-                        parseData(entry.getData(), logMsg, tabLevel,field);
+                        parseData(entry.getData(), logMsg, tabLevel,message);
                     break;
                 case OMMTypes.VECTOR_ENTRY:
                     dumpVectorEntryHeader((OMMVectorEntry)entry, logMsg, tabLevel);
                     if ((((OMMVectorEntry)entry).getAction() != OMMVectorEntry.Action.DELETE)
                             && (((OMMVectorEntry)entry).getAction() != OMMVectorEntry.Action.CLEAR))
-                        parseData(entry.getData(), logMsg, tabLevel,field);
+                        parseData(entry.getData(), logMsg, tabLevel,message);
                     break;
                 case OMMTypes.FILTER_ENTRY:
                     dumpFilterEntryHeader((OMMFilterEntry)entry, logMsg, tabLevel);
                     if (((OMMFilterEntry)entry).getAction() != OMMFilterEntry.Action.CLEAR)
-                        parseData(entry.getData(), logMsg, tabLevel,field);
+                        parseData(entry.getData(), logMsg, tabLevel,message);
                     break;
                 default:
                     dumpEntryHeader(entry, logMsg, tabLevel);
-                    parseData(entry.getData(), logMsg, tabLevel,field);
+                    parseData(entry.getData(), logMsg, tabLevel,message);
                     break;
             }
         }
@@ -772,10 +768,10 @@ public final class RFALoginOMMParser
     }
 
     private static final void dumpFieldEntryHeader(OMMFieldEntry entry, FidDef def, StringBuffer logMsg,
-            int tabLevel,Element field)
+            int tabLevel,LocateUnionMessage message)
     {
     	
-    	field.addElement(RFANodeconstant.RESPONSE_FIELDS_FIELD_ID_NODE).addText(String.valueOf(entry.getFieldId()));
+//    	message.addElement(RFANodeconstant.RESPONSE_FIELDS_FIELD_ID_NODE).addText(String.valueOf(entry.getFieldId()));
     	dumpIndent(logMsg,tabLevel);
         logMsg.append(OMMTypes.toString(entry.getType())+" "+entry.getFieldId());
         if (def == null)
@@ -784,7 +780,7 @@ public final class RFALoginOMMParser
         }
         else
         {
-        	field.addElement(RFANodeconstant.RESPONSE_FIELDS_FIELD_NAME_NODE).addText(def.getName());
+//        	message.addElement(RFANodeconstant.RESPONSE_FIELDS_FIELD_NAME_NODE).addText(def.getName());
         	dumpIndent(logMsg,tabLevel);
         	logMsg.append("/");
         	logMsg.append(def.getName()); 
@@ -795,10 +791,10 @@ public final class RFALoginOMMParser
     }
 
 	private static final void dumpElementEntryHeader(OMMElementEntry entry, StringBuffer logMsg, int tabLevel,
-			Element field) {
+			LocateUnionMessage message) {
 		dumpIndent(logMsg, tabLevel);
 		logMsg.append(OMMTypes.toString(entry.getType()) + " " + entry.getName() + ": ");
-		field.addAttribute(OMMTypes.toString(entry.getType()), entry.getName());
+//		message.addAttribute(OMMTypes.toString(entry.getType()), entry.getName());
 		if ((entry.getDataType() >= OMMTypes.BASE_FORMAT) || (entry.getDataType() == OMMTypes.ARRAY))
 			logMsg.append("\n  ");
 	}
@@ -824,7 +820,7 @@ public final class RFALoginOMMParser
 
     }
 
-    private static final void dumpMapEntryHeader(OMMMapEntry entry, StringBuffer logMsg, int tabLevel,Element field)
+    private static final void dumpMapEntryHeader(OMMMapEntry entry, StringBuffer logMsg, int tabLevel,LocateUnionMessage message)
     {
         
         logMsg.append(OMMTypes.toString(entry.getType()));
@@ -840,7 +836,7 @@ public final class RFALoginOMMParser
 
         
         logMsg.append("\nKey: ");
-        parseData(entry.getKey(), logMsg, 0,field);
+        parseData(entry.getKey(), logMsg, 0,message);
         
         logMsg.append("\n Value: ");
     }
@@ -901,5 +897,17 @@ public final class RFALoginOMMParser
             }
         }
     }
+    
+
+	public void handelLocateState(OMMMsg msg, LocateUnionMessage locateObject) {
+		byte streamState = msg.getState().getStreamState();
+		byte dataState = msg.getState().getDataState();
+		String state = msg.getState().toString();
+		String streamingState = OMMState.Stream.toString(streamState);
+		String dataingState = OMMState.Data.toString(dataState);
+		locateObject.setState(state);
+		locateObject.setStreamingState(streamingState);
+		locateObject.setDataingState(dataingState);
+	}
 
 }

@@ -51,33 +51,37 @@ public class GateWayServer {
 	public void init() {
 		// _logger.info("Server started...");
 		logger.info("gate way Server starting...");
-		ChannelFactory factory = new NioServerSocketChannelFactory(Executors.newCachedThreadPool(),
-				Executors.newCachedThreadPool());
-		ChannelPipelineFactory pipelineFactory = new ChannelPipelineFactory() {
-			@Override
-			public ChannelPipeline getPipeline() throws Exception {
-//				ChannelPipeline pipeline =Channels.pipeline(new GateWayDecoder(),new GateWayEncoder(),gateWayServerHandler);
-				ChannelPipeline pipeline = Channels.pipeline();
-				pipeline.addLast("fixLengthEncoder", new LengthFieldPrepender(2));
-				pipeline.addLast("encrytEncoder", new EncrytEncoder());
-				pipeline.addLast("fixLengthDecoder", new LengthFieldBasedFrameDecoder(64 * 1024, 0, 2, 0, 2));
-				pipeline.addLast("encrytDecoder", new EncrytDecoder());
-				pipeline.addLast("hander", gateWayServerHandler);
-				pipeline.addLast("adaptor", adapterHandler);
-				//如果服务器端一直都没有向该channel发送信息,需要提醒客户端.
-//				pipeline.addLast("timeout", new IdleStateHandler(new HashedWheelTimer(), 10, 10, 0));
-//				pipeline.addLast("hearbeat", new Heartbeat());
-				return pipeline;
-			}
-		};
-		ServerBootstrap bootstrap = new ServerBootstrap(factory);
-		bootstrap.setPipelineFactory(pipelineFactory);
-		bootstrap.setOption("tcpNodelay", true);
-		bootstrap.setOption("child.keepalive", true);
-		bootstrap.setOption("allIdleTime", "5");
-		int serverPort = Integer.parseInt(SystemProperties.getProperties(SystemProperties.SOCKET_PORT));
-		bootstrap.bind(new InetSocketAddress(serverPort));
-		logger.info("gate way Server started success!");
+		try{
+			ChannelFactory factory = new NioServerSocketChannelFactory(Executors.newCachedThreadPool(),
+					Executors.newCachedThreadPool());
+			ChannelPipelineFactory pipelineFactory = new ChannelPipelineFactory() {
+				@Override
+				public ChannelPipeline getPipeline() throws Exception {
+	//				ChannelPipeline pipeline =Channels.pipeline(new GateWayDecoder(),new GateWayEncoder(),gateWayServerHandler);
+					ChannelPipeline pipeline = Channels.pipeline();
+					pipeline.addLast("fixLengthEncoder", new LengthFieldPrepender(2));
+					pipeline.addLast("encrytEncoder", new EncrytEncoder());
+					pipeline.addLast("fixLengthDecoder", new LengthFieldBasedFrameDecoder(64 * 1024, 0, 2, 0, 2));
+					pipeline.addLast("encrytDecoder", new EncrytDecoder());
+					pipeline.addLast("hander", gateWayServerHandler);
+					pipeline.addLast("adaptor", adapterHandler);
+					//如果服务器端一直都没有向该channel发送信息,需要提醒客户端.
+	//				pipeline.addLast("timeout", new IdleStateHandler(new HashedWheelTimer(), 10, 10, 0));
+	//				pipeline.addLast("hearbeat", new Heartbeat());
+					return pipeline;
+				}
+			};
+			ServerBootstrap bootstrap = new ServerBootstrap(factory);
+			bootstrap.setPipelineFactory(pipelineFactory);
+			bootstrap.setOption("tcpNodelay", true);
+			bootstrap.setOption("child.keepalive", true);
+			bootstrap.setOption("allIdleTime", "5");
+			int serverPort = Integer.parseInt(SystemProperties.getProperties(SystemProperties.SOCKET_PORT));
+			bootstrap.bind(new InetSocketAddress(serverPort));
+			logger.info("gate way Server started success!");
+		}catch(Exception e){
+			logger.error("Create the Locate netty server error!"+e);
+		}
 	}
 
 	@Test

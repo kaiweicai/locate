@@ -76,7 +76,7 @@ public class GatewayServerHandler extends SimpleChannelHandler {
 	
 	@Override
 	public void exceptionCaught(ChannelHandlerContext ctx, ExceptionEvent e) throws Exception {
-		_logger.error("Unexpect Exception from downstream! please contact the developer!",e.getCause());
+		_logger.error("Unexpect Exception from downstream! please contact the developer!"+e.getCause());
 //		e.getChannel().close();
 	}
 
@@ -152,7 +152,7 @@ public class GatewayServerHandler extends SimpleChannelHandler {
 			byte msgType = request.getMsgType();
 			// Judge client whether logon
 			String userName = request.getUserName();
-
+			
 			String clientIP = ((InetSocketAddress) e.getRemoteAddress()).getAddress().getHostAddress();
 			_logger.info("Server received " + clientIP + " messages, Request message type:" + msgType);
 			
@@ -176,8 +176,10 @@ public class GatewayServerHandler extends SimpleChannelHandler {
 					}
 				}
 		    }
-		    
-			ClientInfo clientInfo = new ClientInfo(request, channel.getId(), clientIP);
+		    if(StringUtils.isBlank(userName)){
+				userName = DataBaseCache._userConnection.get(clientIP);
+			}
+			ClientInfo clientInfo = new ClientInfo(request,userName, channel.getId(), clientIP);
 		    //RFAClientHandler process message and send the request to RFA.
 	    	gateForwardRFA.process(clientInfo);
 		} catch (Throwable throwable) {

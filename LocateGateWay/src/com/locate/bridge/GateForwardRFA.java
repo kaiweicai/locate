@@ -44,7 +44,7 @@ public class GateForwardRFA {
 		long startTime = System.currentTimeMillis();
 		int channelID = clientInfo.getChannelID();
 		ClientRequest request =clientInfo.getClientRequest();
-		String clientName=clientInfo.getUserName();
+		String clientName = clientInfo.getUserName();
 		String clientIP = clientInfo.getClientIP();
 		byte _msgType=clientInfo.getMsgType();
 		ClientUserValidator clientUserLogin = new ClientUserValidator(clientIP);
@@ -56,7 +56,7 @@ public class GateForwardRFA {
 	    	String userName = DataBaseCache._userConnection.get(clientIP);
 	    	if(userName == null){
 	    		resultCode = GateWayResponseTypes.USER_NOT_LOGIN;
-	    		String resultDes = GateWayResponseTypes.RFAUserAuthentication.getDescription(resultCode);
+	    		String resultDes = GateWayResponseTypes.LocateResponseEnum.getResultDescription(resultCode);
 	    		LocateUnionMessage message = new LocateUnionMessage();
 	    		message.setResultCode(resultCode);
 	    		message.setResultDes(resultDes);
@@ -70,9 +70,7 @@ public class GateForwardRFA {
 		
 		switch( _msgType){
 		    case GateWayMessageTypes.LOGIN : 
-		    	responseMsgType = GateWayMessageTypes.RESPONSE_LOGIN;
 		    	resultCode = clientUserLogin.authUserLogin(request,clientIP);
-		    	
 		    	LocateUnionMessage message = new LocateUnionMessage();
 				String resultDes=GateWayResponseTypes.LocateResponseEnum.getResultDescription(resultCode);
 				message.setResultCode(resultCode);
@@ -134,9 +132,11 @@ public class GateForwardRFA {
 	    }
 		//resultCode大于零,表示处理存在错误需要向客户端发送错误信息.
 		if(resultCode>0){
-			responseData = XmlMessageUtil.createErrorDocument(resultCode,
-					LocateResponseEnum.getResultDescription(resultCode));
-			GateWayResponser.sentNotiFyResponseMsg(responseMsgType, responseData, channelID , resultCode);
+			LocateUnionMessage message = new LocateUnionMessage();
+			message.setResultCode(resultCode);
+			message.setResultDes(LocateResponseEnum.getResultDescription(resultCode));
+			message.setMsgType(responseMsgType);
+			GateWayResponser.sentNotiFyResponseMsg(message, channelID);
 		}
 		
 		return resultCode;

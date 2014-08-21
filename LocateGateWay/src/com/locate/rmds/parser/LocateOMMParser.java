@@ -12,6 +12,7 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import com.locate.common.model.LocateUnionMessage;
+import com.locate.rmds.QSConsumerProxy;
 import com.locate.rmds.gui.viewer.FieldValue;
 import com.locate.rmds.parser.face.IOmmParser;
 import com.locate.rmds.util.RFATypeConvert;
@@ -28,8 +29,10 @@ import com.reuters.rfa.omm.OMMException;
 import com.reuters.rfa.omm.OMMFieldEntry;
 import com.reuters.rfa.omm.OMMFieldList;
 import com.reuters.rfa.omm.OMMIterable;
+import com.reuters.rfa.omm.OMMMapEntry;
 import com.reuters.rfa.omm.OMMMsg;
 import com.reuters.rfa.omm.OMMState;
+import com.reuters.rfa.omm.OMMVectorEntry;
 import com.reuters.rfa.omm.OMMMsg.MsgType;
 import com.reuters.rfa.omm.OMMTypes;
 
@@ -50,47 +53,10 @@ import com.reuters.rfa.omm.OMMTypes;
  */
 @Component
 public final class LocateOMMParser implements IOmmParser {
-	private static boolean ripple = SystemProperties.getProperties(SystemProperties.RIPPLE).equalsIgnoreCase("true") ? true
-			: false;
-	private static HashMap<Integer, FieldDictionary> DICTIONARIES = new HashMap<Integer, FieldDictionary>();
-	private static FieldDictionary CURRENT_DICTIONARY;
+	private static HashMap<Integer, FieldDictionary> DICTIONARIES = QSConsumerProxy.DICTIONARIES;
+	private static FieldDictionary CURRENT_DICTIONARY = QSConsumerProxy.dictionary;
 	private static Page CURRENT_PAGE;
 	static Logger logger = Logger.getLogger(LocateOMMParser.class.getName());
-
-	/**
-	 * This method should be called one before parsing and data.
-	 * 
-	 * @param fieldDictionaryFilename
-	 * @param enumDictionaryFilename
-	 * @throws DictionaryException
-	 *             if an error has occurred
-	 */
-	public static FieldDictionary initializeDictionary(String fieldDictionaryFilename, String enumDictionaryFilename)
-			throws DictionaryException {
-		FieldDictionary dictionary = FieldDictionary.create();
-		try {
-			FieldDictionary.readRDMFieldDictionary(dictionary, fieldDictionaryFilename);
-			logger.info("field dictionary read from RDMFieldDictionary file");
-
-			FieldDictionary.readEnumTypeDef(dictionary, enumDictionaryFilename);
-			logger.info("enum dictionary read from enumtype.def file");
-
-			initializeDictionary(dictionary);
-		} catch (DictionaryException e) {
-			throw new DictionaryException("ERROR: Check if files " + fieldDictionaryFilename + " and "
-					+ enumDictionaryFilename + " exist and are readable.", e);
-		}
-		CURRENT_DICTIONARY = dictionary;
-		return dictionary;
-	}
-
-	// This method can be used to initialize a downloaded dictionary
-	public synchronized static void initializeDictionary(FieldDictionary dict) {
-		int dictId = dict.getDictId();
-		if (dictId == 0)
-			dictId = 1; // dictId == 0 is the same as dictId 1
-		DICTIONARIES.put(new Integer(dictId), dict);
-	}
 
 	public static FieldDictionary getDictionary(int dictId) {
 		if (dictId == 0)
@@ -213,42 +179,45 @@ public final class LocateOMMParser implements IOmmParser {
 	 * @param rippleMap
 	 */
 	private final void parseEntry(OMMEntry entry, LocateUnionMessage locateMessage, byte msgType) {
-		OMMFieldEntry fe = (OMMFieldEntry) entry;
-		String itemName = locateMessage.getItemName();
-		FidDef fiddef = CURRENT_DICTIONARY.getFidDef(fe.getFieldId());
-
-		Short rippleId = fiddef.getRippleFieldId();
-		// put the ripple values of this ommEntry into payLoadSet.
-		if (msgType == MsgType.UPDATE_RESP) {
-			if (ripple && rippleId != 0) {
-				// add the ripple data
-				FieldValue fieldValue = getValue(itemName, fiddef.getFieldId());
-				if (fieldValue == null) {
-					// Strange:在第一订阅该产品的map中无法找到该fieldId对应的fieldValue,不应该存在的逻辑
-					fieldValue = new FieldValue(null, fiddef);
-					fieldValue.update(fe);
-					logger.debug("The fieldValue which can not be found is:" + fieldValue);
-					ITEM_FIELD_MAP.get(itemName).put(fiddef.getFieldId(), fieldValue);
-				}
-				FidDef fieldDef = fiddef;
-				// 得到当前列的值
-				Object tmp = fieldValue.getStringValue();
-				// 如果当前列有引用(ripple )的列,那从缓存中取出保存的引用列的上次的值对象.
-				while ((fieldDef.getRippleFieldId() != 0)
-						&& ((fieldValue = getValue(itemName, fieldDef.getRippleFieldId())) != null)) {
-					short rippleFieldId = fieldValue.getFieldId();
-					FidDef rippleDef = CURRENT_DICTIONARY.getFidDef(fieldDef.getRippleFieldId());
-					tmp = fieldValue.setValue(tmp);
-					putRippleValueIntoMessage(fieldValue, rippleDef, locateMessage);
-					fieldDef = CURRENT_DICTIONARY.getFidDef(rippleFieldId);
-				}
-			}
-		}
-
 		// start to parse the entry and get the price value.
 		try {
 			switch (entry.getType()) {
 			case OMMTypes.FIELD_ENTRY: {
+
+				OMMFieldEntry fe = (OMMFieldEntry) entry;
+				String itemName = locateMessage.getItemName();
+				FidDef fiddef = CURRENT_DICTIONARY.getFidDef(fe.getFieldId());
+
+				Short rippleId = fiddef.getRippleFieldId();
+				// put the ripple values of this ommEntry into payLoadSet.
+				if (msgType == MsgType.UPDATE_RESP) {
+					boolean ripple = SystemProperties.getProperties(SystemProperties.RIPPLE).equalsIgnoreCase("true") ? true
+							: false;
+					if (ripple && rippleId != 0) {
+						// add the ripple data
+						FieldValue fieldValue = getValue(itemName, fiddef.getFieldId());
+						if (fieldValue == null) {
+							// Strange:在第一订阅该产品的map中无法找到该fieldId对应的fieldValue,不应该存在的逻辑
+							fieldValue = new FieldValue(null, fiddef);
+							fieldValue.update(fe);
+							logger.debug("The fieldValue which can not be found is:" + fieldValue);
+							ITEM_FIELD_MAP.get(itemName).put(fiddef.getFieldId(), fieldValue);
+						}
+						FidDef fieldDef = fiddef;
+						// 得到当前列的值
+						Object tmp = fieldValue.getStringValue();
+						// 如果当前列有引用(ripple )的列,那从缓存中取出保存的引用列的上次的值对象.
+						while ((fieldDef.getRippleFieldId() != 0)
+								&& ((fieldValue = getValue(itemName, fieldDef.getRippleFieldId())) != null)) {
+							short rippleFieldId = fieldValue.getFieldId();
+							FidDef rippleDef = CURRENT_DICTIONARY.getFidDef(fieldDef.getRippleFieldId());
+							tmp = fieldValue.setValue(tmp);
+							putRippleValueIntoMessage(fieldValue, rippleDef, locateMessage);
+							fieldDef = CURRENT_DICTIONARY.getFidDef(rippleFieldId);
+						}
+					}
+				}
+
 				if (CURRENT_DICTIONARY != null) {
 					if (fiddef != null) {
 						OMMData data = null;
@@ -267,7 +236,18 @@ public final class LocateOMMParser implements IOmmParser {
 				}
 			}
 				break;
+			case OMMTypes.MAP_ENTRY:
+				if ((((OMMMapEntry) entry).getAction() != OMMMapEntry.Action.DELETE)
+						&& entry.getDataType() != OMMTypes.NO_DATA)
+					parseData(entry.getData(), locateMessage, msgType);
+				break;
+			case OMMTypes.VECTOR_ENTRY:
+				if ((((OMMVectorEntry) entry).getAction() != OMMVectorEntry.Action.DELETE)
+						&& (((OMMVectorEntry) entry).getAction() != OMMVectorEntry.Action.CLEAR))
+					parseData(entry.getData(), locateMessage,msgType);
+				break;
 			}
+			
 		} catch (OMMException e) {
 			logger.error("ERROR Invalid data: " + e.getMessage());
 		}

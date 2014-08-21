@@ -6,13 +6,14 @@ import java.util.List;
 import org.dom4j.Document;
 
 import com.locate.common.DataBaseCache;
+import com.locate.common.model.ClientRequest;
 import com.locate.common.utils.XmlMessageUtil;
 import com.locate.rmds.handler.inter.IRequestHandler;
 import com.locate.rmds.processer.ItemManager;
 
 public abstract class BaseRequestHandler implements IRequestHandler {
 	@Override
-	public abstract int processRequest(Document req, String clientName, byte responseMsgType, int channelId);
+	public abstract int processRequest(ClientRequest req, String clientName, byte responseMsgType, int channelId);
 	
 	public List<String> pickupClientReqItem(Document req){
 		return XmlMessageUtil.pickupClientReqItem(req);
@@ -46,7 +47,7 @@ public abstract class BaseRequestHandler implements IRequestHandler {
 		List<String> clientRequestItem;
 		clientRequestItem = DataBaseCache._clientRequestItemName.get(clientName);
 		if(clientRequestItem == null){
-			clientRequestItem =  new ArrayList();
+			clientRequestItem =  new ArrayList<String>();
 		}
 		clientRequestItem.add(clientName+itemName);
 		DataBaseCache._clientRequestItemName.put(clientName, clientRequestItem);
