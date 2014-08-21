@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
@@ -262,10 +263,10 @@ public final class LocateOMMParser implements IOmmParser {
 	 */
 	private void putRippleValueIntoMessage(FieldValue fieldValue, FidDef rippleFieldDef,
 			LocateUnionMessage locateMessage) {
-		Set<String[]> payLoadSet = locateMessage.getPayLoadSet();
+		List<String[]> payLoadSet = locateMessage.getPayLoadSet();
 		String fieldType = RFATypeConvert.convertField(OMMTypes.toString(fieldValue.getOMMType()));
 		String filedId = String.valueOf(rippleFieldDef.getFieldId());
-		String[] rippleValue = new String[] { filedId, fieldType, rippleFieldDef.getName(), fieldValue.getStringValue() };
+		String[] rippleValue = new String[] { filedId,rippleFieldDef.getName(), fieldType, fieldValue.getStringValue() };
 		payLoadSet.add(rippleValue);
 	}
 

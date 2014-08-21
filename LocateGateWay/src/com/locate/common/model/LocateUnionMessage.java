@@ -3,9 +3,12 @@ package com.locate.common.model;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.xml.bind.JAXBContext;
@@ -50,7 +53,7 @@ public class LocateUnionMessage {
 	private String[] header = new String[]{"id","name","type","value"};
 	
 	@XmlElement(name="Field")
-	private Set<String[]> payLoadSet = new HashSet<String[]>();
+	private List<String[]> payLoadSet = new ArrayList<String[]>();
 	
 	public LocateUnionMessage() {
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -147,14 +150,14 @@ public class LocateUnionMessage {
 	}
 
 	@XmlTransient
-	public Set<String[]> getPayLoadSet() {
+	public List<String[]> getPayLoadSet() {
 		return payLoadSet;
 	}
 
-	public void setPayLoadSet(Set<String[]> payLoadSet) {
+	public void setPayLoadSet(List<String[]> payLoadSet) {
 		this.payLoadSet = payLoadSet;
 	}
-	
+
 	@XmlTransient
 	public String[] getHeader() {
 		return header;
@@ -199,7 +202,7 @@ public class LocateUnionMessage {
 		Marshaller m = context.createMarshaller();
 		LocateUnionMessage message = new LocateUnionMessage("XAU=");
 		
-		Set<String[]> payloadSet = new HashSet<String[]>();
+		List<String[]> payloadSet = new ArrayList<String[]>();
 		payloadSet.add(new String[]{"25","ASK","Double","6816.50"});
 		payloadSet.add(new String[]{"26","BID","Double","6820.44"});
 		message.setPayLoadSet(payloadSet);

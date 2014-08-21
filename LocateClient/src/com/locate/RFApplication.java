@@ -277,7 +277,7 @@ public class RFApplication extends JFrame {
 		String[] columns = { "id", "name", "value" };
 
 		public TableModel(LocateUnionMessage message) {
-			Set<String[]> palyLoadSet = message.getPayLoadSet();
+			List<String[]> palyLoadSet = message.getPayLoadSet();
 			Integer rowid=0;
 			for (String[] filed : palyLoadSet) {
 					String id = "";
@@ -531,7 +531,7 @@ public class RFApplication extends JFrame {
 		
 		private void updateMarketPriceTable(TableModel tableModel,LocateUnionMessage message) {
 			
-			Set<String[]> payLoadSet = message.getPayLoadSet();
+			List<String[]> payLoadSet = message.getPayLoadSet();
 			
 			chanedRowList = new ArrayList<Integer>();
 			for (String[] filed : payLoadSet) {
