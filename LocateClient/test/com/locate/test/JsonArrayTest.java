@@ -20,11 +20,16 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+import net.sf.json.JSONSerializer;
+import net.sf.json.JsonConfig;
+import net.sf.json.processors.PropertyNameProcessor;
 
 import org.dom4j.io.DocumentResult;
 
 import com.locate.common.SystemConstant;
+import com.locate.common.model.LocateUnionMessage;
 
 public class JsonArrayTest {
 	private List<String[]> payLoadSet = new ArrayList<String[]>();
@@ -34,21 +39,15 @@ public class JsonArrayTest {
 
 
 
-
-
 	public List<String[]> getPayLoadSet() {
 		return payLoadSet;
 	}
 
 
 
-
-
 	public void setPayLoadSet(List<String[]> payLoadSet) {
 		this.payLoadSet = payLoadSet;
 	}
-
-
 
 
 
@@ -60,8 +59,9 @@ public class JsonArrayTest {
 
 	public static void main(String[] args) throws JAXBException, IOException {
 		JsonArrayTest message = new JsonArrayTest();
-		
-		List<String[]> payloadSet = new LinkedList<String[]>();
+		JsonConfig config = new JsonConfig();
+//		Set<String[]> payloadSet = new HashSet<String[]>();
+		List<String[]> payloadSet = new ArrayList<String[]>();
 		List<String> payload = new LinkedList<String>();
 //		payload.add("25");
 //		payload.add("ASK");
@@ -87,9 +87,66 @@ public class JsonArrayTest {
 		
 		JSONObject jsonObject = JSONObject.fromObject(message);
 		String jsonString = jsonObject.toString();
-		JSONObject transJsonObject = JSONObject.fromObject(jsonString);
-		JsonArrayTest myMessage = (JsonArrayTest)JSONObject.toBean( transJsonObject, JsonArrayTest.class);
-		System.out.println(myMessage);
+		JSONObject transJsonObject = (JSONObject)JSONSerializer.toJSON(jsonString);
+		JSONArray payLoadSetArray = transJsonObject.getJSONArray("payLoadSet");
+		config.setRootClass(JsonArrayTest.class);
+		
+		
+		JsonArrayTest jsonArrayTest = (JsonArrayTest)JSONObject.toBean(transJsonObject, config);
+//		JsonArrayTest jsonArrayTest = new JsonArrayTest();
+		
+//		String[] object=jsonArrayTest.getPayLoadSet().get(1);
+//		System.out.println(object);
+//		for(Object s:jsonArrayTest.getPayLoadSet()){
+//			List<String> l =(ArrayList<String>)s;
+//			System.out.println(l.get(0));
+//			System.out.println(l.get(1));
+//			System.out.println(l.get(2));
+//			System.out.println(l.get(3));
+//		}
+		
+//		JsonArrayTest jsonArrayTest = new JsonArrayTest();
+		List<String[]> newPayloadSet = new ArrayList<String[]>();
+		for(Object ooo:jsonArrayTest.getPayLoadSet()){
+			String[] payLoadString = new String[4];
+			List<String> lll = (ArrayList<String>)ooo;
+			for(int j=0;j<lll.size();j++){
+				payLoadString[j]=lll.get(j);
+			}
+			newPayloadSet.add(payLoadString);
+		}
+		jsonArrayTest.setPayLoadSet(newPayloadSet);
+		System.out.println(newPayloadSet);
+//		jsonArrayTest.setPayLoadSet(newPayloadSet);
+//		for(int i =0;i<payLoadSetArray.size();i++){
+//			String[] payLoadString = new String[4];
+//			JSONArray priceEntry=payLoadSetArray.getJSONArray(i);
+//			for(int j=0;j<priceEntry.size();j++){
+//				payLoadString[j]=(String)priceEntry.get(j);
+//			}
+//			newPayloadSet.add(payLoadString);
+//		}
+		jsonArrayTest.setPayLoadSet(newPayloadSet);
+		System.out.println(jsonArrayTest);
+//		config.registerJavaPropertyNameProcessor(Set.class, propertyNameProcessor);
+//		JsonArrayTest myMessage = (JsonArrayTest)JSONObject.toBean( transJsonObject, JsonArrayTest.class);
+		System.out.println(jsonArrayTest);
+		System.out.println("--------------------------------");
+		for(String[] xx:jsonArrayTest.getPayLoadSet()){
+			for(String bbb:xx){
+				System.out.println(bbb);
+			}
+			System.out.println("^^^^^^^^^^^^^^^^^^^^^^^^");
+		}
 		System.out.println(jsonObject.toString());
 		}
+	
+//	 class payLoadSetProcessor implements PropertyNameProcessor{
+//		@Override
+//		public String processPropertyName(Class arg0, String arg1) {
+//			arg0 palyLoadeSet = new  arg0();
+//			return null;
+//		}
+//		 
+//	 }
 }

@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.Vector;
 
 import org.apache.log4j.Logger;
+import org.dom4j.Element;
 import org.springframework.stereotype.Component;
 
 import com.locate.common.model.LocateUnionMessage;
@@ -82,6 +83,7 @@ public final class LocateOMMParser implements IOmmParser {
 		String itemName = locateObject.getItemName();
 
 		byte msgType = msg.getMsgType();
+		locateObject.setMsgType(msgType);
 		
 		// 初始化,记录该RIC的所有FiledValue到Map中.REFRESH_RESP means snapshot message.
 		if (msgType == OMMMsg.MsgType.REFRESH_RESP && ITEM_FIELD_MAP.get(itemName) == null) {
@@ -151,9 +153,10 @@ public final class LocateOMMParser implements IOmmParser {
 
 	private final void parseAggregate(OMMData data, LocateUnionMessage locateMessage, byte msgType) {
 		parseAggregateHeader(data, locateMessage);
+		Map<Short,String[]> rippleMap = new HashMap<Short,String[]>();
 		for (Iterator<?> iter = ((OMMIterable) data).iterator(); iter.hasNext();) {
 			OMMEntry entry = (OMMEntry) iter.next();
-			parseEntry(entry, locateMessage, msgType);
+			parseEntry(entry, locateMessage, msgType ,rippleMap);
 		}
 	}
 
@@ -179,7 +182,7 @@ public final class LocateOMMParser implements IOmmParser {
 	 * @param msgType
 	 * @param rippleMap
 	 */
-	private final void parseEntry(OMMEntry entry, LocateUnionMessage locateMessage, byte msgType) {
+	private final void parseEntry(OMMEntry entry, LocateUnionMessage locateMessage, byte msgType ,Map<Short,String[]> rippleMap) {
 		// start to parse the entry and get the price value.
 		try {
 			switch (entry.getType()) {
@@ -213,7 +216,7 @@ public final class LocateOMMParser implements IOmmParser {
 							short rippleFieldId = fieldValue.getFieldId();
 							FidDef rippleDef = CURRENT_DICTIONARY.getFidDef(fieldDef.getRippleFieldId());
 							tmp = fieldValue.setValue(tmp);
-							putRippleValueIntoMessage(fieldValue, rippleDef, locateMessage);
+							putRippleValueIntoMessage(fieldValue, rippleDef, locateMessage ,rippleMap);
 							fieldDef = CURRENT_DICTIONARY.getFidDef(rippleFieldId);
 						}
 					}
@@ -230,7 +233,7 @@ public final class LocateOMMParser implements IOmmParser {
 						// 更新缓存,并存储数据对象.
 						FieldValue fieldValue = ITEM_FIELD_MAP.get(itemName).get(fe.getFieldId());
 						fieldValue.setValue(data.toString());
-						putRippleValueIntoMessage(fieldValue, fiddef, locateMessage);
+						putRippleValueIntoMessage(fieldValue, fiddef, locateMessage ,rippleMap);
 					}
 				} else {
 					logger.error("The CURRENT_DICTIONARY is null!");
@@ -256,18 +259,24 @@ public final class LocateOMMParser implements IOmmParser {
 
 	/**
 	 * Build the payload data and put it into the locate union message data set.
-	 * 
+	 * The exist value should be replace with the new filedValue.
 	 * @param fieldValue
 	 * @param rippleFieldDef
 	 * @param locateMessage
 	 */
 	private void putRippleValueIntoMessage(FieldValue fieldValue, FidDef rippleFieldDef,
-			LocateUnionMessage locateMessage) {
+			LocateUnionMessage locateMessage ,Map<Short, String[]> rippleMap) {
 		List<String[]> payLoadSet = locateMessage.getPayLoadSet();
 		String fieldType = RFATypeConvert.convertField(OMMTypes.toString(fieldValue.getOMMType()));
-		String filedId = String.valueOf(rippleFieldDef.getFieldId());
+		short rippleId=rippleFieldDef.getFieldId();
+		String filedId = String.valueOf(rippleId);
 		String[] rippleValue = new String[] { filedId,rippleFieldDef.getName(), fieldType, fieldValue.getStringValue() };
-		payLoadSet.add(rippleValue);
+		if(rippleMap.get(rippleId)!=null){
+			rippleMap.get(rippleId)[3]=fieldValue.getStringValue();
+		}else{
+			payLoadSet.add(rippleValue);
+			rippleMap.put(rippleId, rippleValue);
+		}
 	}
 
 	private static FieldValue getValue(String itemName, short filedId) {

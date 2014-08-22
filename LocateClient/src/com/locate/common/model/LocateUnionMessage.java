@@ -187,13 +187,23 @@ public class LocateUnionMessage {
 
 	
 	
+
 	@Override
 	public String toString() {
+		StringBuilder payLoad=new StringBuilder();
+		for(String[] entry:payLoadSet){
+			payLoad.append("[");
+			for(String s :entry){
+				payLoad.append(s).append(",");
+			}
+			payLoad.deleteCharAt(payLoad.length()-1);
+			payLoad.append("]");
+		}
 		return "LocateUnionMessage [itemName=" + itemName + ", startTime=" + startTime + ", generatetime="
 				+ generatetime + ", msgType=" + msgType + ", seqNumber=" + seqNumber + ", locateSeqNumber="
 				+ locateSeqNumber + ", state=" + state + ", streamingState=" + streamingState + ", dataingState="
 				+ dataingState + ", resultCode=" + resultCode + ", resultDes=" + resultDes + ", header="
-				+ Arrays.toString(header) + ", payLoadSet=" + payLoadSet + "]";
+				+ Arrays.toString(header) + ", payLoadSet=" + payLoad + "]";
 	}
 
 	public static void main(String[] args) throws JAXBException, IOException {

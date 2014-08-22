@@ -478,9 +478,9 @@ public class RFApplication extends JFrame {
 		 */
 		@Override
 		public void handleException(Throwable e){
-			sBuilder.append("NIO error "+e);
+			sBuilder.append("Client has been occure Exception. Please contact the developer! "+e);
 			updateLog(sBuilder.toString());
-			statusBar.setStatusFixed(sBuilder.toString());
+			statusBar.setStatusFixed("Client has been occure Exception. Please contact the developer!");
 		}
 		
 		/* (non-Javadoc)

@@ -12,6 +12,7 @@ import org.jboss.netty.channel.MessageEvent;
 import org.jboss.netty.channel.SimpleChannelHandler;
 
 import com.locate.common.model.LocateUnionMessage;
+import com.locate.common.utils.JsonUtil;
 import com.locate.face.IBussiness;
 
 public class ClientHandler extends SimpleChannelHandler {
@@ -32,8 +33,9 @@ public class ClientHandler extends SimpleChannelHandler {
 		ChannelBuffer channelBuffer = (ChannelBuffer) e.getMessage();
 		String msg = channelBuffer.toString(Charset.forName("UTF-8"));
 		JSONObject transJsonObject = JSONObject.fromObject(msg);
-		LocateUnionMessage myMessage = (LocateUnionMessage)JSONObject.toBean( transJsonObject, LocateUnionMessage.class);
-		bussinessHandler.handleMessage(myMessage);
+		LocateUnionMessage myUnionMessage = JsonUtil.translateJsonToUionMessage(transJsonObject);
+//		LocateUnionMessage myMessage = (LocateUnionMessage)JSONObject.toBean( transJsonObject, LocateUnionMessage.class);
+		bussinessHandler.handleMessage(myUnionMessage);
 		t1 = System.currentTimeMillis();
 	}
 	
