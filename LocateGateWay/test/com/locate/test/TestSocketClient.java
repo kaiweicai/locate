@@ -23,8 +23,7 @@ import org.jboss.netty.channel.SimpleChannelHandler;
 import org.jboss.netty.channel.socket.nio.NioClientSocketChannelFactory;
 import org.junit.Test;
 
-import com.locate.common.GateWayMessageTypes;
-import com.locate.common.GateWayMessageTypes.RFAMessageName;
+import com.locate.common.LocateMessageTypes;
 import com.locate.common.model.LocateUnionMessage;
 import com.locate.gate.coder.GateWayDecoder;
 import com.locate.gate.coder.GateWayEncoder;
@@ -63,7 +62,7 @@ public class TestSocketClient{
 			byte msgType = message.getMsgType();
 //			int length = message.getMsgLength();
 //			System.out.println("receive messages length:" + length);
-			System.out.println("Received message type:" + RFAMessageName.getRFAMessageName(msgType));
+			System.out.println("Received message type:" + msgType);
 
 //			Document document = message.getDocument();
 //			if (document == null) {
@@ -173,32 +172,32 @@ public class TestSocketClient{
 		DocumentFactory documentFactory = DocumentFactory.getInstance();
 	    Document requestDoc =  documentFactory.createDocument();
 		switch( msgType){
-		    case GateWayMessageTypes.ERROR : 
+		    case LocateMessageTypes.ERROR : 
 				System.out.println("收到包含错误信息的消息");
 		    	break;
-		    case GateWayMessageTypes.LOGINWRONGUSER :
+		    case LocateMessageTypes.LOGINWRONGUSER :
 		    	createWrongLoginRequest(requestDoc);
-			    sentMessageToServer(GateWayMessageTypes.LOGIN, requestDoc);
+			    sentMessageToServer(LocateMessageTypes.LOGIN, requestDoc);
 		    	break;
-		    case GateWayMessageTypes.LOGINWRONGPASSWORD :
+		    case LocateMessageTypes.LOGINWRONGPASSWORD :
 		    	createWrongPasswordRequest(requestDoc);
-			    sentMessageToServer(GateWayMessageTypes.LOGIN, requestDoc);
+			    sentMessageToServer(LocateMessageTypes.LOGIN, requestDoc);
 		    	break;
-		    case GateWayMessageTypes.LOGIN:
+		    case LocateMessageTypes.LOGIN:
 		    	createLoginRequest(requestDoc);
-		    	sentMessageToServer(GateWayMessageTypes.LOGIN, requestDoc);
+		    	sentMessageToServer(LocateMessageTypes.LOGIN, requestDoc);
 		    	break;
-		    case GateWayMessageTypes.CURRENCY_REQUEST : 
+		    case LocateMessageTypes.CURRENCY_REQUEST : 
 		    	createCurrencyRequest(requestDoc);
-		    	sentMessageToServer(GateWayMessageTypes.CURRENCY_REQUEST,requestDoc);
+		    	sentMessageToServer(LocateMessageTypes.CURRENCY_REQUEST,requestDoc);
 		    	break;
-		    case GateWayMessageTypes.FUTURE_REQUEST : 
+		    case LocateMessageTypes.FUTURE_REQUEST : 
 		    	createFutureRequest(requestDoc);
-		    	sentMessageToServer(GateWayMessageTypes.FUTURE_REQUEST,requestDoc);
+		    	sentMessageToServer(LocateMessageTypes.FUTURE_REQUEST,requestDoc);
 		    break;
-		    case GateWayMessageTypes.ONE_TIMES_REQUEST : 
+		    case LocateMessageTypes.ONE_TIMES_REQUEST : 
 		    	createOneTimesRequest(requestDoc);
-		    	sentMessageToServer(GateWayMessageTypes.ONE_TIMES_REQUEST,requestDoc);
+		    	sentMessageToServer(LocateMessageTypes.ONE_TIMES_REQUEST,requestDoc);
 //		    	requestDoc =  factory.createDocument();
 //		    	createNewsRequest(requestDoc);
 //		    	requestDoc = parseFile();
@@ -206,10 +205,10 @@ public class TestSocketClient{
 		    	
 		    	//Parse messageContext to xml document and pick up data to handle it
 		    	break;
-		    case GateWayMessageTypes.RESPONSE_STOCK:
+		    case LocateMessageTypes.RESPONSE_STOCK:
 		    	//Parse messageContext to xml document and pick up data to handle it
 		    	break;
-		    case GateWayMessageTypes.RESPONSE_STOCK_LINK:
+		    case LocateMessageTypes.RESPONSE_STOCK_LINK:
 		    	//Parse messageContext to xml document and pick up data to handle it
 	    }
 	}
@@ -223,8 +222,8 @@ public class TestSocketClient{
 //		testSendRequest(RFAMessageTypes.LOGINWRONGUSER);
 //		testSendRequest(RFAMessageTypes.LOGINWRONGPASSWORD);
 //		testSendRequest(RFAMessageTypes.FUTURE_REQUEST);
-		testSendRequest(GateWayMessageTypes.LOGIN);
-		testSendRequest(GateWayMessageTypes.FUTURE_REQUEST);
+		testSendRequest(LocateMessageTypes.LOGIN);
+		testSendRequest(LocateMessageTypes.FUTURE_REQUEST);
 		
 		
 		channel.getCloseFuture().awaitUninterruptibly();

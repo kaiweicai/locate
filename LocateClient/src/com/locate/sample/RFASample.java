@@ -1,9 +1,8 @@
-package com.locate;
+package com.locate.sample;
 
 import org.junit.Test;
 
-import com.locate.client.common.MsgType;
-import com.locate.common.GateWayMessageTypes;
+import com.locate.common.LocateMessageTypes;
 import com.locate.common.model.LocateUnionMessage;
 import com.locate.face.IBussiness;
 import com.locate.face.IClientConnector;
@@ -43,22 +42,22 @@ public class RFASample {
 			}
 			switch(msgType){
 				//首先服务器会发送过来一个snapshot的信息.里面包括该RIC对应的所有字段.
-				case MsgType.REFRESH_RESP:
+				case LocateMessageTypes.REFRESH_RESP:
 					System.out.println(message);
 					break;
 				//然后服务器会发送很多更新的MarketPrice.该信息只包括需要更新的字段.
 				//如RIC: XAU= 只会发送BID,BID1,BID2,ASK,ASK1,ASK2等字段.
-				case MsgType.UPDATE_RESP:
+				case LocateMessageTypes.UPDATE_RESP:
 					System.out.println(message);
 					break;
 				//如果服务器有通知服务器状态改变的信息,会使用此状态信息.
-				case GateWayMessageTypes.RESPONSE_LOGIN:
-				case MsgType.STATUS_RESP:
+				case LocateMessageTypes.RESPONSE_LOGIN:
+				case LocateMessageTypes.STATUS_RESP:
 					System.out.println("");
 					break;
 				//服务器发送了未知的消息,一般这里不用处理.扔掉该消息就好了.
 				default:
-					System.out.println("Not should to here! message type is "+MsgType.REFRESH_RESP);
+					System.out.println("Not should to here! message type is "+LocateMessageTypes.REFRESH_RESP);
 			}
 			
 			// String content = response.asXML();

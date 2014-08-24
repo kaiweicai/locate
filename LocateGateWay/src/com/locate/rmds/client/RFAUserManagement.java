@@ -15,7 +15,7 @@ import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 import org.junit.Test;
 
-import com.locate.common.GateWayMessageTypes;
+import com.locate.common.LocateMessageTypes;
 import com.locate.common.RFANodeconstant;
 import com.locate.rmds.user.RFAUser;
 import com.locate.rmds.user.RFAUserPermission;
@@ -66,13 +66,14 @@ public class RFAUserManagement {
 				}
 				if(NumberUtils.isNumber(limit)){
 					userPermisson.setLimit(NumberUtils.toInt(limit));
-				}else{
-					if(!userPermisson.getName().equalsIgnoreCase(GateWayMessageTypes.RFAMessageName.getRFAMessageName(GateWayMessageTypes.NEWS_REQUEST))){
-						_logger.error("User config has error.");
-						System.exit(0);
-					}
-					userPermisson.setFilter(limit.toUpperCase());
 				}
+//				else{
+//					if(!userPermisson.getName().equalsIgnoreCase(GateWayMessageTypes.RFAMessageName.getRFAMessageName(GateWayMessageTypes.NEWS_REQUEST))){
+//						_logger.error("User config has error.");
+//						System.exit(0);
+//					}
+//					userPermisson.setFilter(limit.toUpperCase());
+//				}
 				userPermSet.put(userPermisson.getName(),userPermisson);
 			}
 			userModel.setPermission(userPermSet);

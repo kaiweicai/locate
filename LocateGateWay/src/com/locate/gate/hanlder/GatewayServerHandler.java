@@ -28,7 +28,7 @@ import org.springframework.stereotype.Service;
 
 import com.locate.bridge.GateForwardRFA;
 import com.locate.common.DataBaseCache;
-import com.locate.common.GateWayMessageTypes;
+import com.locate.common.LocateMessageTypes;
 import com.locate.common.model.ClientInfo;
 import com.locate.common.model.ClientRequest;
 import com.locate.common.utils.XmlMessageUtil;
@@ -163,7 +163,7 @@ public class GatewayServerHandler extends SimpleChannelHandler {
 				DataBaseCache.allChannelGroup.add(channel);
 			}
 			//store the channel of customer in a map according by the RIC 
-		    if(msgType != GateWayMessageTypes.LOGIN){
+		    if(msgType != LocateMessageTypes.LOGIN){
 				for (String subcribeItemName : request.getRIC().split(",")) {
 					Map<String, ChannelGroup> subscribeChannelMap = DataBaseCache.itemNameChannelMap;
 					ChannelGroup subChannelGroup = subscribeChannelMap.get(subcribeItemName);

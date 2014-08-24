@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -30,10 +29,8 @@ import org.dyno.visual.swing.layouts.GroupLayout;
 import org.dyno.visual.swing.layouts.Leading;
 import org.jboss.netty.channel.SimpleChannelHandler;
 
-import com.locate.client.common.MsgType;
 import com.locate.client.gui.StatusBar;
-import com.locate.common.GateWayMessageTypes;
-import com.locate.common.GateWayMessageTypes.RFAMessageName;
+import com.locate.common.LocateMessageTypes;
 import com.locate.common.model.LocateUnionMessage;
 import com.locate.common.utils.NetTimeUtil;
 import com.locate.face.IBussiness;
@@ -496,32 +493,34 @@ public class RFApplication extends JFrame {
 			long endTime = System.currentTimeMillis();
 			logger.info("original message -------"+message);
 			byte msgType = message.getMsgType();
-			sBuilder.append("Received message type:" + RFAMessageName.getRFAMessageName(msgType)+"\n");
+			sBuilder.append("Received message type:" + LocateMessageTypes.toString(msgType)+"\n");
 			getUseTimeTextLabel().setText("From Locate Server to client use time:"+String.valueOf(NetTimeUtil.getCheckTime()-startTime)+" millseconds");
 			logger.info("The message From RFA to user use time"+(startTime-endTime)+"milliseconds");
 			switch(msgType){
 				//first the Locate send the snapshot of market price
-				case MsgType.REFRESH_RESP:
+				case LocateMessageTypes.REFRESH_RESP:
 					tableModel = new TableModel(message);
 					marketPriceTable.setModel(tableModel);
 					updateTablePriceThread.setMarketPriceTable(marketPriceTable);
 					break;
 				//Locate send the update market price.
-				case MsgType.UPDATE_RESP:
+				case LocateMessageTypes.UPDATE_RESP:
 					updateMarketPriceTable(tableModel,message);
 					updateTablePriceThread.setUpdate(true);
 					break;
 				//Locate send the state info to client
-				case GateWayMessageTypes.RESPONSE_LOGIN:
-					String loginResult = message.getDataingState();
-					statusBar.setStatusFixed(loginResult);
-				case MsgType.STATUS_RESP:
+				case LocateMessageTypes.ERROR:
+					String errorDescription = message.getResultDes();
+					statusBar.setStatusFixed(errorDescription);
+					break;
+				case LocateMessageTypes.STATUS_RESP:
 					String newStatus = message.getState();
 					statusBar.setStatusFixed(newStatus);
 					break;
 				//Locate send the undefined message.
 				default:
-					logger.error("Not should to here! message type is "+MsgType.REFRESH_RESP);
+					logger.error("Not should to here! message type is "+msgType);
+					statusBar.setStatusFixed("The Message can not be handle according with correct message type match.",Color.RED);
 			}
 			
 			// String content = response.asXML();

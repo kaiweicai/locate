@@ -6,15 +6,17 @@ import javax.annotation.Resource;
 
 import org.apache.log4j.Logger;
 import org.dom4j.Document;
+import org.jboss.netty.channel.MessageEvent;
 import org.springframework.stereotype.Service;
 
 import com.locate.common.DataBaseCache;
-import com.locate.common.GateWayResponseTypes;
-import com.locate.common.GateWayResponseTypes.LocateResponseEnum;
-import com.locate.common.GateWayMessageTypes;
+import com.locate.common.LocateResultCode;
+import com.locate.common.LocateResultCode.LocateResponseEnum;
+import com.locate.common.LocateMessageTypes;
 import com.locate.common.model.ClientInfo;
 import com.locate.common.model.ClientRequest;
 import com.locate.common.model.LocateUnionMessage;
+import com.locate.common.utils.MessageEncapsulator;
 import com.locate.common.utils.XmlMessageUtil;
 import com.locate.rmds.QSConsumerProxy;
 import com.locate.rmds.client.ClientUserValidator;
@@ -52,68 +54,63 @@ public class GateForwardRFA {
 		int resultCode =-1;
 		byte responseMsgType = -1;
 		
-		if(_msgType != GateWayMessageTypes.LOGIN){
+		if(_msgType != LocateMessageTypes.LOGIN){
 	    	String userName = DataBaseCache._userConnection.get(clientIP);
 	    	if(userName == null){
-	    		resultCode = GateWayResponseTypes.USER_NOT_LOGIN;
-	    		String resultDes = GateWayResponseTypes.LocateResponseEnum.getResultDescription(resultCode);
+	    		resultCode = LocateResultCode.USER_NOT_LOGIN;
 	    		LocateUnionMessage message = new LocateUnionMessage();
-	    		message.setResultCode(resultCode);
-	    		message.setResultDes(resultDes);
-	    		message.setMsgType(GateWayMessageTypes.RESPONSE_LOGIN);
-	    		
-				GateWayResponser.sentNotiFyResponseMsg(message, channelID);
+	    		byte msgType = LocateMessageTypes.STATUS_RESP;
+	    		MessageEncapsulator.encapLogionResponseMessage(message,resultCode, msgType);
+				GateWayResponser.sentResponseMsg(message, channelID);
 				_logger.error("Client didn't login system. sent error message to client");
 				return resultCode;
 	    	}
 	    }
 		
 		switch( _msgType){
-		    case GateWayMessageTypes.LOGIN : 
+		    case LocateMessageTypes.LOGIN : 
 		    	resultCode = clientUserLogin.authUserLogin(request,clientIP);
 		    	LocateUnionMessage message = new LocateUnionMessage();
-				String resultDes=GateWayResponseTypes.LocateResponseEnum.getResultDescription(resultCode);
-				message.setResultCode(resultCode);
-				message.setResultDes(resultDes);
-				message.setMsgType(GateWayMessageTypes.RESPONSE_LOGIN);
-				message.setStartTime(startTime);
+				byte msgType = LocateMessageTypes.STATUS_RESP;
+				MessageEncapsulator.encapLogionResponseMessage(message,resultCode, msgType);
 		    	GateWayResponser.sentResponseMsg( message, channelID);
 		    	return resultCode;
-		    case GateWayMessageTypes.UNREGISTER_REQUEST:
-		    	responseMsgType = GateWayMessageTypes.RESPONSE_UNREGISTER;
+		    case LocateMessageTypes.UNREGISTER_REQUEST:
+		    	responseMsgType = LocateMessageTypes.RESPONSE_UNREGISTER;
 		    	resultCode = requestHandler.processRequest(request,clientName,responseMsgType,channelID);
 		    	break;
-		    case GateWayMessageTypes.STOCK_REQUEST:
-		    	responseMsgType = GateWayMessageTypes.RESPONSE_STOCK;
+		    case LocateMessageTypes.STOCK_REQUEST:
+		    	responseMsgType = LocateMessageTypes.RESPONSE_STOCK;
 		    	resultCode = requestHandler.processRequest(request,clientName,responseMsgType,channelID);
 		    	break;
-		    case GateWayMessageTypes.STOCK_LINK_REQUEST:
-		    	resultCode = requestHandler.processOneTimesRequest(request,clientName,GateWayMessageTypes.RESPONSE_STOCK_LINK,channelID);
+		    case LocateMessageTypes.STOCK_LINK_REQUEST:
+		    	resultCode = requestHandler.processOneTimesRequest(request,clientName,LocateMessageTypes.RESPONSE_STOCK_LINK,channelID);
 		    	break;
 //
-		    case GateWayMessageTypes.CURRENCY_REQUEST:
-		    	responseMsgType = GateWayMessageTypes.RESPONSE_CURRENCY;
+		    case LocateMessageTypes.CURRENCY_REQUEST:
+		    	responseMsgType = LocateMessageTypes.RESPONSE_CURRENCY;
 		    	resultCode=requestHandler.processRequest(request,clientName,responseMsgType,channelID);
 		    	break;
 //		    case RFAMessageTypes.CURRENCY_LINK_REQUEST:
 //		    	processOneTimesRequest(request,clientName,RFAMessageTypes.RESPONSE_CURRENCY_LINK);
 //		    	break;
 //		    	
-		    case GateWayMessageTypes.OPTION_REQUEST:
-		    	requestHandler.processRequest(request,clientName,GateWayMessageTypes.RESPONSE_OPTION,channelID);
+		    case LocateMessageTypes.OPTION_REQUEST:
+		    	responseMsgType = LocateMessageTypes.RESPONSE_OPTION;
+		    	resultCode=requestHandler.processRequest(request,clientName,responseMsgType,channelID);
 		    	break;
 //		    case RFAMessageTypes.OPTION_LINK_REQUEST:
 //		    	processOneTimesRequest(request,clientName,RFAMessageTypes.RESPONSE_OPTION_LINK);
 //		    	break;
-		    case GateWayMessageTypes.FUTURE_REQUEST:
-		    	responseMsgType = GateWayMessageTypes.RESPONSE_FUTURE;
+		    case LocateMessageTypes.FUTURE_REQUEST:
+		    	responseMsgType = LocateMessageTypes.RESPONSE_FUTURE;
 		    	resultCode = requestHandler.processRequest(request,clientName,responseMsgType,channelID);
 		    	break;
 //		    case RFAMessageTypes.FUTURE_LINK_REQUEST:
 //		    	processOneTimesRequest(request,clientName,RFAMessageTypes.RESPONSE_FUTURE_LINK);
 //		    	break;
-		    case GateWayMessageTypes.INDEX_REQUEST:
-		    	resultCode = requestHandler.processRequest(request,clientName,GateWayMessageTypes.RESPONSE_INDEX,channelID);
+		    case LocateMessageTypes.INDEX_REQUEST:
+		    	resultCode = requestHandler.processRequest(request,clientName,LocateMessageTypes.RESPONSE_INDEX,channelID);
 		    	break;
 //		    case RFAMessageTypes.INDEX_LINK_REQUEST:
 //		    	processOneTimesRequest(request,clientName,RFAMessageTypes.RESPONSE_INDEX_LINK);
@@ -130,13 +127,13 @@ public class GateForwardRFA {
 //		    	processRequest(request,clientName,RFAMessageTypes.RESPONSE_ONE_TIMES);
 //		    	break;
 	    }
-		//resultCode大于零,表示处理存在错误需要向客户端发送错误信息.
-		if(resultCode>0){
+		//处理存在错误需要向客户端发送错误信息.
+		if(resultCode != LocateResultCode.SUCCESS_RESULT){
 			LocateUnionMessage message = new LocateUnionMessage();
 			message.setResultCode(resultCode);
 			message.setResultDes(LocateResponseEnum.getResultDescription(resultCode));
-			message.setMsgType(responseMsgType);
-			GateWayResponser.sentNotiFyResponseMsg(message, channelID);
+			message.setMsgType(LocateMessageTypes.ERROR);
+			GateWayResponser.sentResponseMsg(message, channelID);
 		}
 		
 		return resultCode;
@@ -219,15 +216,15 @@ public class GateForwardRFA {
 //		RFASocketServer._clientRequestNewsItemManager.put(itemName,instance);
 //	}
 	
-	private boolean checkRequestItem(byte msgType,String userName,List<String> itemNames){
-		String businessName = GateWayMessageTypes.RFAMessageName.getRFAMessageName(msgType).toUpperCase();
-		if(!RFAUserManagement.checkMaxBusinessValiable(userName,businessName,itemNames)){
+//	private boolean checkRequestItem(byte msgType,String userName,List<String> itemNames){
+//		String businessName = GateWayMessageTypes.RFAMessageName.getRFAMessageName(msgType).toUpperCase();
+//		if(!RFAUserManagement.checkMaxBusinessValiable(userName,businessName,itemNames)){
 //			RFAUserResponse.sentWrongMsgResponse(RFAExceptionTypes.USER_BUSINESS_NUMBER_OUT, channel);
-	        _logger.error("Client request's business number over.");
-	        return false;
-		}
-		return true;
-	}
+//	        _logger.error("Client request's business number over.");
+//	        return false;
+//		}
+//		return true;
+//	}
 
 	/**
 	 * 取消产品的订阅,并释放该产品所有资源

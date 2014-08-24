@@ -9,8 +9,8 @@ import org.dom4j.DocumentFactory;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 
-import com.locate.common.GateWayResponseTypes;
-import com.locate.common.GateWayResponseTypes.LocateResponseEnum;
+import com.locate.common.LocateResultCode;
+import com.locate.common.LocateResultCode.LocateResponseEnum;
 import com.locate.common.RFANodeconstant;
 import com.locate.common.SystemConstant;
 import com.reuters.rfa.omm.OMMState;
@@ -152,7 +152,7 @@ public class XmlMessageUtil {
 		rmds.addElement(RFANodeconstant.LOCATE_NODE);
 		Element response = rmds.addElement(RFANodeconstant.RESPONSE_RESPONSE_NODE);
 		Element error = response.addElement(RFANodeconstant.RESPONSE_ERROR_NODE);
-		int errorCode = GateWayResponseTypes.CHANNEL_IDLE_TIMEOUT;
+		int errorCode = LocateResultCode.CHANNEL_IDLE_TIMEOUT;
 		String descriptioin = LocateResponseEnum.getResultDescription(errorCode);
 		error.addElement(RFANodeconstant.RESPONSE_ERROR_CODE_NODE).addText(String.valueOf(errorCode));
 		error.addElement(RFANodeconstant.RESPONSE_ERROR_DESC_NODE).addText(String.valueOf(descriptioin));

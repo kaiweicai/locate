@@ -1,5 +1,6 @@
 package com.locate.common;
 
+@Deprecated
 public class GateWayExceptionTypes {
 	public static int USER_NOT_LOGIN = 100;
 	public static int USER_NOT_EXIST = 101;

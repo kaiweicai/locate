@@ -1,7 +1,13 @@
 package com.locate.common;
 
-public class GateWayResponseTypes {
-	public static final int SUCCESS_RESULT = 0;
+/**
+ * Locate gate way result code and descriptions
+ * @author CloudWei kaiweicai@163.com
+ * create time 2014年8月24日
+ * @copyRight by Author
+ */
+public class LocateResultCode {
+	public static final int SUCCESS_RESULT = 10;
 	
 	public static int USER_NOT_LOGIN = 100;
 	public static int USER_NOT_EXIST = 101;

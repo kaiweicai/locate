@@ -25,7 +25,7 @@ import org.jboss.netty.handler.timeout.IdleStateEvent;
 import org.junit.Test;
 import org.springframework.stereotype.Service;
 
-import com.locate.common.GateWayMessageTypes;
+import com.locate.common.LocateMessageTypes;
 import com.locate.common.utils.XmlMessageUtil;
 import com.locate.gate.coder.EncrytDecoder;
 import com.locate.gate.coder.EncrytEncoder;

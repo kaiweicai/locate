@@ -25,7 +25,7 @@ import org.jboss.netty.handler.timeout.IdleStateEvent;
 import org.junit.Test;
 import org.springframework.stereotype.Service;
 
-import com.locate.common.GateWayMessageTypes;
+import com.locate.common.LocateMessageTypes;
 import com.locate.common.SystemConstant;
 import com.locate.common.utils.XmlMessageUtil;
 import com.locate.gate.coder.EncrytDecoder;
@@ -115,7 +115,7 @@ public class GateWayServer {
 			if (i > 3) {
 				logger.warn("channel idle timeout, User remote ip is "+e.getChannel().getRemoteAddress());
 				Document reponseDoc = XmlMessageUtil.createHearBeat();
-				XmlMessageUtil.addLocateInfo(reponseDoc, GateWayMessageTypes.REQUEST_EOCH, SystemConstant.sequenceNo.getAndIncrement(), 0);
+				XmlMessageUtil.addLocateInfo(reponseDoc, LocateMessageTypes.REQUEST_EOCH, SystemConstant.sequenceNo.getAndIncrement(), 0);
 //			    LocateMessage message = new LocateMessage(GateWayMessageTypes.REQUEST_EOCH, reponseDoc, 0);
 //			    message.setSequenceNo(RFAServerManager.sequenceNo.getAndIncrement());
 				byte[] content = reponseDoc.asXML().getBytes("UTF-8");

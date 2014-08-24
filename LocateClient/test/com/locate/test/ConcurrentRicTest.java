@@ -6,7 +6,7 @@ import java.io.FileReader;
 
 import org.junit.Test;
 
-import com.locate.RFASample;
+import com.locate.sample.RFASample;
 
 public class ConcurrentRicTest {
 	

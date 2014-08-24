@@ -9,7 +9,7 @@ import org.dom4j.Document;
 import org.springframework.stereotype.Service;
 
 import com.locate.common.DataBaseCache;
-import com.locate.common.GateWayResponseTypes;
+import com.locate.common.LocateResultCode;
 import com.locate.common.model.ClientRequest;
 import com.locate.rmds.QSConsumerProxy;
 import com.locate.rmds.RFAServerManager;
@@ -22,11 +22,11 @@ public class FuthureRequestHandler extends BaseRequestHandler {
 	private QSConsumerProxy mainApp;
 	@Override
 	public int processRequest(ClientRequest req,String clientName,byte responseMsgType, int channelId ){
-		int errorCode = -1;
+		int resultCode = LocateResultCode.SUCCESS_RESULT;
 		String[] itemNames = req.getRIC().split(",");
 		if(!RFAServerManager.isConnectedDataSource()){
 			logger.warn("The RFA Datasource not connected.Can not register the intresting Product!");
-			return GateWayResponseTypes.RFA_SERVER_NOT_READY;
+			return LocateResultCode.RFA_SERVER_NOT_READY;
 		}
 		logger.info("Begin register client request "+clientName);
 		for(String itemName : itemNames){
@@ -37,7 +37,7 @@ public class FuthureRequestHandler extends BaseRequestHandler {
 //			regiestClientRequestItem(clientName,itemName);
 		}
 		logger.info("End register client request "+clientName);
-		return errorCode;
+		return resultCode;
 	}
 	
 	/**

@@ -57,7 +57,7 @@ import org.springframework.stereotype.Service;
 
 import com.locate.bridge.GateForwardRFA;
 import com.locate.common.DataBaseCache;
-import com.locate.common.GateWayMessageTypes;
+import com.locate.common.LocateMessageTypes;
 import com.locate.common.model.ClientInfo;
 import com.locate.common.model.ClientRequest;
 import com.locate.gate.coder.WebAdapterHandler;
@@ -237,7 +237,7 @@ public class HttpRequestHandler extends SimpleChannelUpstreamHandler {
 		ClientRequest request = new ClientRequest();
 		request.setUserName("ztcj");
 		request.setPassword("ztcj2013");
-		request.setMsgType(GateWayMessageTypes.LOGIN);
+		request.setMsgType(LocateMessageTypes.LOGIN);
 		request.setClientIP("127.0.0.1");
 		
 		ClientInfo clientInfo = new ClientInfo(request, "ztcj", channel.getId(),  "127.0.0.1");
@@ -245,7 +245,7 @@ public class HttpRequestHandler extends SimpleChannelUpstreamHandler {
 		
 		request = new ClientRequest();
 		request.setRIC(ric);
-		request.setMsgType(GateWayMessageTypes.FUTURE_REQUEST);
+		request.setMsgType(LocateMessageTypes.FUTURE_REQUEST);
 		request.setUserName("ztcj");
 		request.setClientIP("127.0.0.1");
 		

@@ -12,7 +12,7 @@ import org.dom4j.Element;
 
 import com.locate.LocateGateWayMain;
 import com.locate.bridge.GateWayResponser;
-import com.locate.common.GateWayMessageTypes;
+import com.locate.common.LocateMessageTypes;
 import com.locate.common.RFANodeconstant;
 import com.locate.common.SystemConstant;
 import com.locate.gate.server.GateWayServer;
@@ -324,7 +324,7 @@ public class NewsItemManager implements Client {
 		field.addElement(RFANodeconstant.RESPONSE_FIELDS_FIELD_TYPE_NODE).addText("String");
 		field.addElement(RFANodeconstant.RESPONSE_FIELDS_FIELD_VALUE_NODE).addText(content);
 		_logger.info("#############Sent news##############");
-		GateWayResponser.sentAllChannelNews(GateWayMessageTypes.RESPONSE_NEWS, news);
+		GateWayResponser.sentAllChannelNews(LocateMessageTypes.RESPONSE_NEWS, news);
 		newsXmlMap.remove(pnac);
 		long endTime = System.currentTimeMillis();
 //		_mainApp.updateResponseStat((endTime - startTime), news);

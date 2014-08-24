@@ -8,9 +8,6 @@ import net.sf.json.JSONObject;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.dom4j.Document;
-import org.dom4j.DocumentFactory;
-import org.dom4j.Element;
 import org.jboss.netty.bootstrap.ClientBootstrap;
 import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.buffer.ChannelBuffers;
@@ -29,14 +26,10 @@ import org.jboss.netty.handler.codec.frame.LengthFieldPrepender;
 import org.jboss.netty.handler.timeout.IdleState;
 import org.jboss.netty.handler.timeout.IdleStateAwareChannelHandler;
 import org.jboss.netty.handler.timeout.IdleStateEvent;
-import org.jboss.netty.util.internal.StringUtil;
 
-import com.locate.common.GateWayMessageTypes;
+import com.locate.common.LocateMessageTypes;
 import com.locate.common.LocateException;
-import com.locate.common.RFANodeconstant;
-import com.locate.common.SystemConstant;
 import com.locate.common.model.ClientRequest;
-import com.locate.common.utils.XmlMessageUtil;
 import com.locate.face.IBussiness;
 import com.locate.face.IClientConnector;
 import com.locate.gate.coder.EncrytDecoder;
@@ -121,7 +114,7 @@ public class ClientConnector implements IClientConnector {
 		ClientRequest request = new ClientRequest();
 		request.setUserName(userName);
 		request.setPassword(password);
-		request.setMsgType(GateWayMessageTypes.LOGIN);
+		request.setMsgType(LocateMessageTypes.LOGIN);
 		return request;
 	}
 	
@@ -138,7 +131,7 @@ public class ClientConnector implements IClientConnector {
 	
 	private ClientRequest createFutureRequest(String ric){
 		ClientRequest request = new ClientRequest();
-		request.setMsgType(GateWayMessageTypes.FUTURE_REQUEST);
+		request.setMsgType(LocateMessageTypes.FUTURE_REQUEST);
 		request.setRIC(ric);
 		return request;
 	}
@@ -152,6 +145,10 @@ public class ClientConnector implements IClientConnector {
 //	}
 	
 	private void sentMessageToServer( ClientRequest request){
+		if(clientchannel==null){
+			logger.error("The Server net connected not establish! Please connector the LOcate Server!");
+			return;
+		}
 		byte[] content = null;
 		JSONObject jsonObject = JSONObject.fromObject(request);
 		try {

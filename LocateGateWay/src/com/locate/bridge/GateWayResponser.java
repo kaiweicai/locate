@@ -58,15 +58,15 @@ public class GateWayResponser {
 		logger.info("downStream message is :"+locatMessage);
 	}
 
-	public static void sentNotiFyResponseMsg(LocateUnionMessage response, Integer channelId) {
-		Channel channel = DataBaseCache.allChannelGroup.find(channelId);
-		if (channel != null && channel.isConnected()) {
-			channel.write(response);
-		} else {
-			logger.error("The channel had been closed when write login response to client. Channel ID is " + channelId);
-		}
-		logger.info("downStream message is :"+response);
-	}
+//	public static void sentNotiFyResponseMsg(LocateUnionMessage response, Integer channelId) {
+//		Channel channel = DataBaseCache.allChannelGroup.find(channelId);
+//		if (channel != null && channel.isConnected()) {
+//			channel.write(response);
+//		} else {
+//			logger.error("The channel had been closed when write login response to client. Channel ID is " + channelId);
+//		}
+//		logger.info("downStream message is :"+response);
+//	}
 
 	public static void brodcastStateResp(LocateUnionMessage responseMsg) {
 		if(!DataBaseCache.allChannelGroup.isEmpty()){

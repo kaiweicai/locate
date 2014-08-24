@@ -71,6 +71,16 @@ public class StatusBar extends Panel {
 		this._statusText.setText(newStatus);
 		this._timer.stop();
 	}
+	
+	public void setStatusFixed(String newStatus,Color color) {
+		if(color==null){
+			color=Color.BLUE;
+		}
+		this._statusText.setForeground(color);
+		this._isFixed = true;
+		this._statusText.setText(newStatus);
+		this._timer.stop();
+	}
 
 	public void setStatusFade(String newStatus) {
 		setStatusFade(newStatus, 1);
