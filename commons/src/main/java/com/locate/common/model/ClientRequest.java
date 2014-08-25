@@ -1,6 +1,8 @@
 package com.locate.common.model;
 
 
+import org.dom4j.Document;
+
 import com.locate.common.SystemConstant;
 
 public class ClientRequest {
