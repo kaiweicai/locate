@@ -1,12 +1,13 @@
 package com.locate.common;
 
+import io.netty.channel.group.ChannelGroup;
+import io.netty.channel.group.DefaultChannelGroup;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
-import org.jboss.netty.channel.group.ChannelGroup;
-import org.jboss.netty.channel.group.DefaultChannelGroup;
 
 import com.locate.common.utils.NetTimeUtil;
 /*
@@ -33,9 +34,9 @@ public class DataBaseCache {
 	
 	//add by Cloud Wei
 	//管理channelId和channel的映射关系.
-	public static ChannelGroup allChannelGroup = new DefaultChannelGroup("allChannels");
+	public static ChannelGroup allChannelGroup = new DefaultChannelGroup("allChannels",null);
 	//存放所有web连接的channel.暂时没有太大作用.
-	public static ChannelGroup webSocketGroup = new DefaultChannelGroup();
+	public static ChannelGroup webSocketGroup = new DefaultChannelGroup(null);
 	//订阅的itemName与订阅该itemName的所有客户的对应关系.
 	public static Map<String ,ChannelGroup> itemNameChannelMap = new HashMap<String,ChannelGroup>();
 //	//增加web用户订阅的itemName与订阅该itemName的web客户的对应关系.
