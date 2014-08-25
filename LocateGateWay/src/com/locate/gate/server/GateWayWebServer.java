@@ -7,30 +7,13 @@ import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
 import org.apache.log4j.Logger;
-import org.dom4j.Document;
 import org.jboss.netty.bootstrap.ServerBootstrap;
-import org.jboss.netty.buffer.ChannelBuffer;
-import org.jboss.netty.buffer.ChannelBuffers;
 import org.jboss.netty.channel.ChannelFactory;
-import org.jboss.netty.channel.ChannelHandlerContext;
-import org.jboss.netty.channel.ChannelPipeline;
-import org.jboss.netty.channel.ChannelPipelineFactory;
-import org.jboss.netty.channel.Channels;
 import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
-import org.jboss.netty.handler.codec.frame.LengthFieldBasedFrameDecoder;
-import org.jboss.netty.handler.codec.frame.LengthFieldPrepender;
-import org.jboss.netty.handler.timeout.IdleState;
-import org.jboss.netty.handler.timeout.IdleStateAwareChannelHandler;
-import org.jboss.netty.handler.timeout.IdleStateEvent;
 import org.junit.Test;
 import org.springframework.stereotype.Service;
 
-import com.locate.common.LocateMessageTypes;
-import com.locate.common.utils.XmlMessageUtil;
-import com.locate.gate.coder.EncrytDecoder;
-import com.locate.gate.coder.EncrytEncoder;
-import com.locate.gate.hanlder.GatewayServerHandler;
-import com.locate.rmds.RFAServerManager;
+import com.locate.common.LocateException;
 import com.locate.rmds.util.SystemProperties;
 
 @Service
@@ -44,13 +27,18 @@ public class GateWayWebServer {
 	@PostConstruct
 	public void init() {
 		logger.info("gate way web Server starting...");
-		ChannelFactory factory = new NioServerSocketChannelFactory(Executors.newCachedThreadPool(),
-				Executors.newCachedThreadPool());
-		ServerBootstrap bootstrap = new ServerBootstrap(factory);
-		bootstrap.setPipelineFactory(httpServerPipelineFactory);
-		int serverPort = Integer.parseInt(SystemProperties.getProperties(SystemProperties.WEB_PORT));
-		bootstrap.bind(new InetSocketAddress(serverPort));
-		logger.info("gate way web Server started success!");
+		try {
+			ChannelFactory factory = new NioServerSocketChannelFactory(Executors.newCachedThreadPool(),
+					Executors.newCachedThreadPool());
+			ServerBootstrap bootstrap = new ServerBootstrap(factory);
+			bootstrap.setPipelineFactory(httpServerPipelineFactory);
+			int serverPort = Integer.parseInt(SystemProperties.getProperties(SystemProperties.WEB_PORT));
+			bootstrap.bind(new InetSocketAddress(serverPort));
+			logger.info("gate way web Server started success!");
+		} catch (Exception e) {
+			logger.error("Create the Locate netty web server error!", e);
+			throw new LocateException("Create the Locate netty server error!", e);
+		}
 	}
 
 	@Test

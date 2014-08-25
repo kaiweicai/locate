@@ -1,5 +1,7 @@
 package com.locate.rmds.processer;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Date;
 import java.util.Properties;
 
@@ -27,6 +29,17 @@ public class EmailNotifier implements INotifier {
 
 	@Override
 	public void notifyAdmin(String title,String content) {
+		InetAddress localAddress = null;
+		String hostName = "";
+		try {
+			localAddress = InetAddress.getLocalHost();
+			
+		} catch (UnknownHostException e1) {
+			logger.error("Can not get the localHost name.",e1);
+		}
+		hostName = localAddress.getHostName();
+		title = title +", Message from host " + hostName;
+		
 		String needNotify = SystemProperties.getProperties(SystemProperties.ADMIN_NEED_NOTIFY);
 		if (needNotify.equalsIgnoreCase("true")) {
 			String adminEmail = SystemProperties.getProperties(SystemProperties.ADMIN_USER_EMAIL);
@@ -56,5 +69,13 @@ public class EmailNotifier implements INotifier {
 				logger.error("EmailSender, MessagingException: " + e.getMessage());
 			}
 		}
+	}
+	
+	public static void main(String[] args) throws Throwable {
+		InetAddress localAddress = InetAddress.getLocalHost();
+		String hostAddress = localAddress.getHostAddress();
+		String hostName = localAddress.getHostName();
+		System.out.println(hostAddress);
+		System.out.println(hostName);
 	}
 }

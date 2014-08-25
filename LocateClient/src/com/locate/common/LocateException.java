@@ -8,4 +8,8 @@ public class LocateException extends RuntimeException {
 		super(errorInfo);
 	}
 	
+	public LocateException(String errorInfo,Exception e){
+		super(errorInfo,e);
+	}
+	
 }

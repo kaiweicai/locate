@@ -16,6 +16,7 @@ import com.locate.common.utils.XmlMessageUtil;
 import com.locate.rmds.QSConsumerProxy;
 import com.locate.rmds.parser.GenericOMMParser;
 import com.locate.rmds.processer.face.IProcesser;
+import com.locate.rmds.processer.face.iPriceKeeper;
 import com.locate.rmds.statistic.CycleStatistics;
 import com.locate.rmds.statistic.LogTool;
 import com.locate.rmds.statistic.OutputFormatter;

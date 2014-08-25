@@ -25,6 +25,7 @@ import org.jboss.netty.handler.timeout.IdleStateEvent;
 import org.junit.Test;
 import org.springframework.stereotype.Service;
 
+import com.locate.common.LocateException;
 import com.locate.common.LocateMessageTypes;
 import com.locate.common.SystemConstant;
 import com.locate.common.utils.XmlMessageUtil;
@@ -80,7 +81,8 @@ public class GateWayServer {
 			bootstrap.bind(new InetSocketAddress(serverPort));
 			logger.info("gate way Server started success!");
 		}catch(Exception e){
-			logger.error("Create the Locate netty server error!"+e);
+			logger.error("Create the Locate netty server error!",e);
+			throw new LocateException("Create the Locate netty server error!",e);
 		}
 	}
 

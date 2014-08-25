@@ -31,13 +31,13 @@ import org.jboss.netty.channel.SimpleChannelHandler;
 
 import com.locate.client.gui.StatusBar;
 import com.locate.common.LocateMessageTypes;
+import com.locate.common.model.CustomerFiled;
 import com.locate.common.model.LocateUnionMessage;
 import com.locate.common.utils.NetTimeUtil;
 import com.locate.face.IBussiness;
 import com.locate.face.IClientConnector;
 import com.locate.gate.handler.ClientConnector;
 import com.locate.gate.handler.ClientHandler;
-import com.locate.gate.model.CustomerFiled;
 
 /**
  * A swing window panel to monitor RFALocateGateWay Server

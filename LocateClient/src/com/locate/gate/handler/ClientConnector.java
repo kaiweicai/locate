@@ -146,8 +146,8 @@ public class ClientConnector implements IClientConnector {
 	
 	private void sentMessageToServer( ClientRequest request){
 		if(clientchannel==null){
-			logger.error("The Server net connected not establish! Please connector the LOcate Server!");
-			return;
+			logger.error("The connection of server not establish. Please connect first.");
+			throw new LocateException("The connection of server not establish. Please connect first.");
 		}
 		byte[] content = null;
 		JSONObject jsonObject = JSONObject.fromObject(request);

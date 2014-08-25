@@ -1,4 +1,4 @@
-package com.locate.gate.model;
+package com.locate.common.model;
 
 public class CustomerFiled {
 	
