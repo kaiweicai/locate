@@ -1,7 +1,5 @@
 package com.locate.rmds.handler.inter;
 
-import org.dom4j.Document;
-
 import com.locate.common.model.ClientRequest;
 
 public interface IRequestHandler {

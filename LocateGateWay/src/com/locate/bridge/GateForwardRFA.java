@@ -1,26 +1,21 @@
 package com.locate.bridge;
 
-import java.util.List;
-
 import javax.annotation.Resource;
 
 import org.apache.log4j.Logger;
-import org.dom4j.Document;
-import org.jboss.netty.channel.MessageEvent;
 import org.springframework.stereotype.Service;
 
 import com.locate.common.DataBaseCache;
+import com.locate.common.LocateMessageTypes;
 import com.locate.common.LocateResultCode;
 import com.locate.common.LocateResultCode.LocateResponseEnum;
-import com.locate.common.LocateMessageTypes;
-import com.locate.common.model.ClientInfo;
+import com.locate.common.RmdsDataCache;
+import com.locate.common.model.ClientRequest;
 import com.locate.common.model.ClientRequest;
 import com.locate.common.model.LocateUnionMessage;
 import com.locate.common.utils.MessageEncapsulator;
-import com.locate.common.utils.XmlMessageUtil;
 import com.locate.rmds.QSConsumerProxy;
 import com.locate.rmds.client.ClientUserValidator;
-import com.locate.rmds.client.RFAUserManagement;
 import com.locate.rmds.handler.inter.IRequestHandler;
 import com.locate.rmds.processer.ItemManager;
 import com.locate.rmds.processer.face.IProcesser;
@@ -42,7 +37,7 @@ public class GateForwardRFA {
 	@Resource
 	private ItemManager itemManager;
 	
-	public int process(ClientInfo clientInfo){
+	public int process(ClientRequest clientInfo){
 		long startTime = System.currentTimeMillis();
 		int channelID = clientInfo.getChannelID();
 		ClientRequest request =clientInfo.getClientRequest();
@@ -231,7 +226,7 @@ public class GateForwardRFA {
 	 * @param itemName
 	 */
 	public void closeHandler(String itemName) {
-		IProcesser itemHandler = DataBaseCache.RIC_ITEMMANAGER_Map.get(itemName);
+		IProcesser itemHandler = RmdsDataCache.RIC_ITEMMANAGER_Map.get(itemName);
 		//取消订阅该产品
 		if(itemHandler!=null){
 			itemHandler.closeRequest();

@@ -58,7 +58,7 @@ import org.springframework.stereotype.Service;
 import com.locate.bridge.GateForwardRFA;
 import com.locate.common.DataBaseCache;
 import com.locate.common.LocateMessageTypes;
-import com.locate.common.model.ClientInfo;
+import com.locate.common.model.ClientRequest;
 import com.locate.common.model.ClientRequest;
 import com.locate.gate.coder.WebAdapterHandler;
 import com.locate.gate.common.GateChannelCache;
@@ -241,7 +241,7 @@ public class HttpRequestHandler extends SimpleChannelUpstreamHandler {
 		request.setMsgType(LocateMessageTypes.LOGIN);
 		request.setClientIP("127.0.0.1");
 		
-		ClientInfo clientInfo = new ClientInfo(request, "ztcj", channel.getId(),  "127.0.0.1");
+		ClientRequest clientInfo = new ClientRequest(request, "ztcj", channel.getId(),  "127.0.0.1");
 		gateForwardRFA.process(clientInfo);
 		
 		request = new ClientRequest();
@@ -250,7 +250,7 @@ public class HttpRequestHandler extends SimpleChannelUpstreamHandler {
 		request.setUserName("ztcj");
 		request.setClientIP("127.0.0.1");
 		
-		clientInfo = new ClientInfo(request, "ztcj", channel.getId(), "127.0.0.1");
+		clientInfo = new ClientRequest(request, "ztcj", channel.getId(), "127.0.0.1");
 		gateForwardRFA.process(clientInfo);
 		
 //		DataBaseCache.webSocketGroup.write(new TextWebSocketFrame(ric.toUpperCase()));

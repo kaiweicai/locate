@@ -9,7 +9,7 @@ import org.dom4j.Document;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
-import com.locate.common.DataBaseCache;
+import com.locate.common.RmdsDataCache;
 import com.locate.common.SystemConstant;
 import com.locate.common.utils.JsonUtil;
 import com.locate.common.utils.XmlMessageUtil;
@@ -179,8 +179,8 @@ public class PersistentItemManager implements IProcesser
 	public void closeRequest() {
 		_itemGroupManager._handles.remove(itemHandle);
 		_mainApp.getOMMConsumer().unregisterClient(itemHandle);
-		DataBaseCache.RIC_ITEMMANAGER_Map.remove(clientRequestItemName);
-		DataBaseCache.CLIENT_ITEMMANAGER_MAP.remove(clientRequestItemName);
+		RmdsDataCache.RIC_ITEMMANAGER_Map.remove(clientRequestItemName);
+		RmdsDataCache.CLIENT_ITEMMANAGER_MAP.remove(clientRequestItemName);
 	}
 
     // This is a Client method. When an event for this client is dispatched,

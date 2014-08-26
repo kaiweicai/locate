@@ -80,7 +80,7 @@ public final class LocateOMMParser implements IOmmParser {
 	}
 
 	final void parseMsg(OMMMsg msg, LocateUnionMessage locateObject) {
-		String itemName = locateObject.getItemName();
+		String itemName = locateObject.getRic();
 
 		byte msgType = msg.getMsgType();
 		locateObject.setMsgType(msgType);
@@ -189,7 +189,7 @@ public final class LocateOMMParser implements IOmmParser {
 			case OMMTypes.FIELD_ENTRY: {
 
 				OMMFieldEntry fe = (OMMFieldEntry) entry;
-				String itemName = locateMessage.getItemName();
+				String itemName = locateMessage.getRic();
 				FidDef fiddef = CURRENT_DICTIONARY.getFidDef(fe.getFieldId());
 
 				Short rippleId = fiddef.getRippleFieldId();

@@ -44,7 +44,7 @@ public class GateWayResponser {
 	}
 
 	public static void sentMrketPriceToSubsribeChannel(LocateUnionMessage locateMessage) {
-		String itemName = locateMessage.getItemName();
+		String itemName = locateMessage.getRic();
 		ChannelGroup channelGroup = GateChannelCache.itemNameChannelMap.get(itemName);
 		channelGroup.write(locateMessage);
 		if(channelGroup.size()==0){
@@ -77,7 +77,7 @@ public class GateWayResponser {
 	}
 
 	public static void notifyAllCustomersStateChange(LocateUnionMessage locateMessage) {
-		String itemName = locateMessage.getItemName();
+		String itemName = locateMessage.getRic();
 		ChannelGroup channelGroup = GateChannelCache.itemNameChannelMap.get(itemName);
 		channelGroup.write(locateMessage);
 		if(channelGroup.size()==0){

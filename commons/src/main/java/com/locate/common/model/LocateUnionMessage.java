@@ -27,8 +27,8 @@ import com.locate.common.SystemConstant;
 
 @XmlRootElement(name="rmds")
 public class LocateUnionMessage {
-	@XmlAttribute(name="itemName")
-	private String itemName;//itemName将作为person的的一个属性
+	@XmlAttribute(name="RIC")
+	private String ric;//itemName将作为person的的一个属性
 	@XmlElement
 	private long startTime;
 	@XmlElement
@@ -65,7 +65,7 @@ public class LocateUnionMessage {
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		this.generatetime = dateFormat.format(new Date());
 		this.locateSeqNumber = SystemConstant.sequenceNo.getAndIncrement();
-		this.itemName = itemName;
+		this.ric = itemName;
 	}
 	
 	@XmlTransient
@@ -104,13 +104,17 @@ public class LocateUnionMessage {
 		this.startTime = startTime;
 	}
 	
+	/**
+	 * RIC name
+	 * @return
+	 */
 	@XmlTransient
-	public String getItemName() {
-		return itemName;
+	public String getRic() {
+		return ric;
 	}
 
-	public void setItemName(String itemName) {
-		this.itemName = itemName;
+	public void setRic(String ric) {
+		this.ric = ric;
 	}
 	
 	@XmlTransient
@@ -199,7 +203,7 @@ public class LocateUnionMessage {
 			payLoad.deleteCharAt(payLoad.length()-1);
 			payLoad.append("]");
 		}
-		return "LocateUnionMessage [itemName=" + itemName + ", startTime=" + startTime + ", generatetime="
+		return "LocateUnionMessage [itemName=" + ric + ", startTime=" + startTime + ", generatetime="
 				+ generatetime + ", msgType=" + msgType + ", seqNumber=" + seqNumber + ", locateSeqNumber="
 				+ locateSeqNumber + ", state=" + state + ", streamingState=" + streamingState + ", dataingState="
 				+ dataingState + ", resultCode=" + resultCode + ", resultDes=" + resultDes + ", header="

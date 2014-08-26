@@ -28,7 +28,7 @@ import org.springframework.stereotype.Service;
 import com.locate.bridge.GateForwardRFA;
 import com.locate.common.DataBaseCache;
 import com.locate.common.LocateMessageTypes;
-import com.locate.common.model.ClientInfo;
+import com.locate.common.model.ClientRequest;
 import com.locate.common.model.ClientRequest;
 import com.locate.gate.common.GateChannelCache;
 
@@ -177,7 +177,7 @@ public class GatewayServerHandler extends SimpleChannelHandler {
 		    if(StringUtils.isBlank(userName)){
 				userName = DataBaseCache._userConnection.get(clientIP);
 			}
-			ClientInfo clientInfo = new ClientInfo(request,userName, channel.getId(), clientIP);
+			ClientRequest clientInfo = new ClientRequest(request,userName, channel.getId(), clientIP);
 		    //RFAClientHandler process message and send the request to RFA.
 	    	gateForwardRFA.process(clientInfo);
 		} catch (Throwable throwable) {

@@ -8,6 +8,7 @@ import org.dom4j.Element;
 
 import com.locate.common.RFANodeconstant;
 
+@Deprecated
 public class RFACommon {
 
 //	public static String getIP(MessageEvent e) {

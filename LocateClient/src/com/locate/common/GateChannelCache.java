@@ -1,4 +1,4 @@
-package com.locate.gate.common;
+package com.locate.common;
 
 import java.util.HashMap;
 import java.util.Map;

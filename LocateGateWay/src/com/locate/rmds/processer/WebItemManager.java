@@ -40,7 +40,7 @@ import com.reuters.rfa.session.omm.OMMItemIntSpec;
 //							application uses this handles to identify the items
 // QSConsumerDemo _mainApp - main application class
 /**
- * 锟斤拷锟斤拷锟叫讹拷锟绞碉拷锟?一锟斤拷锟斤拷锟侥的诧拷品锟斤拷应一锟斤拷itemManager.
+ * 该类有多个实例.一个订阅的产品对应一个itemManager.
  * 
  * @author Cloud.Wei
  * 
@@ -79,7 +79,7 @@ public class WebItemManager implements Client {
 		// Preparing item request message
 		OMMPool pool = mainApp.getPool();
 		OMMMsg ommmsg = pool.acquireMsg();
-		// NONSTREAMING_REQ为只取一锟斤拷snapshort.
+		// NONSTREAMING_REQ为只取一个snapshort.
 		ommmsg.setMsgType(OMMMsg.MsgType.NONSTREAMING_REQ);
 		ommmsg.setMsgModelType(msgModelType);
 		// ommmsg.setIndicationFlags(OMMMsg.Indication.REFRESH);
@@ -119,7 +119,7 @@ public class WebItemManager implements Client {
 			// Preparing item request message
 			OMMPool pool = mainApp.getPool();
 			OMMMsg ommmsg = pool.acquireMsg();
-			// NONSTREAMING_REQ为只取一锟斤拷snapshort.
+			// NONSTREAMING_REQ为只取一个snapshort.
 			ommmsg.setMsgType(OMMMsg.MsgType.REQUEST);
 			ommmsg.setMsgModelType(msgModelType);
 			// ommmsg.setIndicationFlags(OMMMsg.Indication.REFRESH);
@@ -172,15 +172,15 @@ public class WebItemManager implements Client {
 		OMMItemEvent ommItemEvent = (OMMItemEvent) event;
 		OMMMsg respMsg = ommItemEvent.getMsg();
 		Document responseMsg = GenericOMMParser.parse(respMsg, clientRequestItemName);
-		// 锟斤拷锟斤拷息锟斤拷始锟斤拷锟斤拷时锟斤拷锟斤拷氲斤拷锟较拷锟?
+		// 将信息开始处理时间加入到消息中
 		XmlMessageUtil.addStartHandleTime(responseMsg, startTime);
-		// 锟斤拷锟斤拷锟阶刺拷锟较?锟斤拷锟斤拷锟街憋拷臃锟斤拷透锟斤拷锟斤拷烁貌锟狡凤拷锟斤拷锟斤拷锌突锟?
+		// 如果是状态消息.处理后直接发送给订阅了该产品的所有客户.
 		if (respMsg.getMsgType() == OMMMsg.MsgType.STATUS_RESP && (respMsg.has(OMMMsg.HAS_STATE))) {
 			byte streamState = respMsg.getState().getStreamState();
 			byte dataState = respMsg.getState().getDataState();
 			byte msgType = respMsg.getMsgType();
 			String state = respMsg.getState().toString();
-			responseMsg = XmlMessageUtil.generateStatusResp(state, streamState, dataState, msgType);
+			responseMsg = null;
 			XmlMessageUtil.addLocateInfo(responseMsg, msgType, SystemConstant.sequenceNo.getAndIncrement(), 0);
 			HttpWayResponser.sentMrketPriceToSubsribeChannel(responseMsg, clientRequestItemName);
 			logger.warn("RFA server has new state. streamState:" + streamState + " datasstate " + dataState);

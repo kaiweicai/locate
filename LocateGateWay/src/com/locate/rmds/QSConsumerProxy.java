@@ -16,6 +16,7 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 import com.locate.common.DataBaseCache;
+import com.locate.common.RmdsDataCache;
 import com.locate.common.SystemConstant;
 import com.locate.rmds.client.RFAUserManagement;
 import com.locate.rmds.dict.DirectoryClient;
@@ -325,7 +326,7 @@ public class QSConsumerProxy{
 
 	// This method utilizes ItemManager class to request items
 	public ItemManager itemRequests(String itemName, byte responseMsgType,int channelId) {
-		Map<String,ItemManager> subscribeItemManagerMap = DataBaseCache.RIC_ITEMMANAGER_Map;
+		Map<String,ItemManager> subscribeItemManagerMap = RmdsDataCache.RIC_ITEMMANAGER_Map;
 		boolean needRenewSubscribeItem=checkSubscribeStatus(itemName);
 		if(needRenewSubscribeItem){
 			//已经订阅过该产品,只需要发送一个一次订阅请求,返回一个snapshot即可.
@@ -376,7 +377,7 @@ public class QSConsumerProxy{
 	 * @return
 	 */
 	private boolean checkSubscribeStatus(String itemName) {
-		Map<String, ItemManager> subscribeItemManagerMap = DataBaseCache.RIC_ITEMMANAGER_Map;
+		Map<String, ItemManager> subscribeItemManagerMap = RmdsDataCache.RIC_ITEMMANAGER_Map;
 		ItemManager itemManager = subscribeItemManagerMap.get(itemName);
 		if(itemManager!=null){
 			Handle itemHandle = subscribeItemManagerMap.get(itemName).getItemHandle();

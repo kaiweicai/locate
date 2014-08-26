@@ -6,6 +6,7 @@ import java.util.List;
 import org.dom4j.Document;
 
 import com.locate.common.DataBaseCache;
+import com.locate.common.RmdsDataCache;
 import com.locate.common.model.ClientRequest;
 import com.locate.common.utils.XmlMessageUtil;
 import com.locate.rmds.handler.inter.IRequestHandler;
@@ -28,7 +29,7 @@ public abstract class BaseRequestHandler implements IRequestHandler {
 	 */
 	@Deprecated
 	public void regiestItemRequestManager(String itemName,ItemManager instance){
-		DataBaseCache.CLIENT_ITEMMANAGER_MAP.put(itemName,instance);
+		RmdsDataCache.CLIENT_ITEMMANAGER_MAP.put(itemName,instance);
 //		ItemManager itemRequestManager = RFASocketServer._clientRequestItemManager.get(itemName);
 //		if(itemRequestManagerList == null){
 //			itemRequestManagerList = new ArrayList();

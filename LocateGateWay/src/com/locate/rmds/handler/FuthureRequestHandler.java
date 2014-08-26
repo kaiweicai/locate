@@ -26,13 +26,13 @@ public class FuthureRequestHandler extends BaseRequestHandler {
 		String[] itemNames = req.getRIC().split(",");
 		if(!RFAServerManager.isConnectedDataSource()){
 			logger.warn("The RFA Datasource not connected.Can not register the intresting Product!");
-			return LocateResultCode.RFA_SERVER_NOT_READY;
+			resultCode = LocateResultCode.RFA_SERVER_NOT_READY;
 		}
 		logger.info("Begin register client request "+clientName);
 		for(String itemName : itemNames){
 			DataBaseCache._clientResponseType.put(itemName, responseMsgType);
 			logger.info("Register client request item "+itemName);
-			ItemManager clientInstance = mainApp.itemRequests(itemName, responseMsgType,channelId);
+			ItemManager itemManager = mainApp.itemRequests(itemName, responseMsgType,channelId);
 //			regiestItemRequestManager(itemName, clientInstance);
 //			regiestClientRequestItem(clientName,itemName);
 		}

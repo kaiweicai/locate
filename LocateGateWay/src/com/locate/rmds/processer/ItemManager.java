@@ -3,18 +3,13 @@ package com.locate.rmds.processer;
 import javax.annotation.Resource;
 
 import org.apache.log4j.Logger;
-import org.dom4j.Document;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import com.locate.bridge.GateWayResponser;
-import com.locate.common.DataBaseCache;
+import com.locate.common.RmdsDataCache;
 import com.locate.common.model.LocateUnionMessage;
-import com.locate.common.utils.XmlMessageUtil;
-import com.locate.gate.server.GateWayServer;
 import com.locate.rmds.QSConsumerProxy;
-import com.locate.rmds.RFAServerManager;
-import com.locate.rmds.parser.GenericOMMParser;
 import com.locate.rmds.parser.face.IOmmParser;
 import com.locate.rmds.processer.face.IProcesser;
 import com.locate.rmds.statistic.CycleStatistics;
@@ -198,8 +193,8 @@ public class ItemManager implements Client,IProcesser
 	public void closeRequest() {
 		_itemGroupManager._handles.remove(itemHandle);
 		_mainApp.getOMMConsumer().unregisterClient(itemHandle);
-		DataBaseCache.RIC_ITEMMANAGER_Map.remove(clientRequestItemName);
-		DataBaseCache.CLIENT_ITEMMANAGER_MAP.remove(clientRequestItemName);
+		RmdsDataCache.RIC_ITEMMANAGER_Map.remove(clientRequestItemName);
+		RmdsDataCache.CLIENT_ITEMMANAGER_MAP.remove(clientRequestItemName);
 	}
 
     // This is a Client method. When an event for this client is dispatched,

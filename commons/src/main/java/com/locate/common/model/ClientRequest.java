@@ -1,37 +1,49 @@
 package com.locate.common.model;
 
 
-import org.dom4j.Document;
-
-import com.locate.common.SystemConstant;
-
 public class ClientRequest {
-	private long locateSequenceNo;
-	private String RIC;
+	private ClientRequest clientRequest;
 	private String userName;
 	private String password;
+	private String RIC;
 	private int channelID;
 	private byte msgType;
 	private String clientIP;
 	
 	public ClientRequest(){
-		this.locateSequenceNo = SystemConstant.sequenceNo.incrementAndGet();
+		
 	}
 	
-	public ClientRequest(Document userRquest, String userName, int channelID, byte msgType, String clientIP) {
-		this.locateSequenceNo = SystemConstant.sequenceNo.incrementAndGet();
+	public ClientRequest(ClientRequest userRquest, String userName, int channelID,  String clientIP) {
+		super();
+		this.clientRequest = userRquest;
 		this.userName = userName;
 		this.channelID = channelID;
-		this.msgType = msgType;
+		this.msgType = userRquest.getMsgType();
 		this.clientIP = clientIP;
 	}
 	
-	public long getLocateSequenceNo() {
-		return locateSequenceNo;
+	public String getRIC() {
+		return RIC;
 	}
 
-	public void setLocateSequenceNo(long locateSequenceNo) {
-		this.locateSequenceNo = locateSequenceNo;
+	public void setRIC(String rIC) {
+		RIC = rIC;
+	}
+
+	public ClientRequest getClientRequest() {
+		return clientRequest;
+	}
+
+	public void setClientRequest(ClientRequest userRquest) {
+		this.clientRequest = userRquest;
+	}
+	
+	public String getUserName() {
+		return userName;
+	}
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
 	
 	public String getPassword() {
@@ -41,13 +53,7 @@ public class ClientRequest {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	
-	public String getUserName() {
-		return userName;
-	}
-	public void setUserName(String userName) {
-		this.userName = userName;
-	}
+
 	public int getChannelID() {
 		return channelID;
 	}
@@ -67,17 +73,9 @@ public class ClientRequest {
 		this.clientIP = clientIP;
 	}
 
-	public String getRIC() {
-		return RIC;
-	}
-
-	public void setRIC(String rIC) {
-		RIC = rIC;
-	}
-	
 	@Override
 	public String toString() {
-		return "ClientInfo [ userName=" + userName + ", channelID=" + channelID
+		return "ClientInfo [userRquest=" + clientRequest + ", userName=" + userName + ", channelID=" + channelID
 				+ ", msgType=" + msgType + ", clientIP=" + clientIP + "]";
 	}
 }
