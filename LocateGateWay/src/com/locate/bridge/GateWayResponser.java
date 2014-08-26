@@ -11,7 +11,7 @@ import com.locate.common.DataBaseCache;
 import com.locate.common.SystemConstant;
 import com.locate.common.model.LocateUnionMessage;
 import com.locate.common.utils.XmlMessageUtil;
-import com.locate.rmds.RFAServerManager;
+import com.locate.gate.common.GateChannelCache;
 
 /**
  * 
@@ -26,7 +26,7 @@ public class GateWayResponser {
 
 	public static void sentResponseMsg(LocateUnionMessage response, Integer channelId) {
 		// LocateMessage message = new LocateMessage(msgType, response, 0);
-		Channel channel = DataBaseCache.allChannelGroup.find(channelId);
+		Channel channel = GateChannelCache.allChannelGroup.find(channelId);
 		if (channel != null && channel.isConnected()) {
 			channel.write(response);
 		} else {
@@ -39,13 +39,13 @@ public class GateWayResponser {
 		// LocateMessage message = new LocateMessage(msgType, response, 0);
 		// message.setSequenceNo(RFAServerManager.sequenceNo.getAndIncrement());
 		XmlMessageUtil.addLocateInfo(response, msgType, SystemConstant.sequenceNo.getAndIncrement(), 0);
-		DataBaseCache.allChannelGroup.write(response);
+		GateChannelCache.allChannelGroup.write(response);
 		logger.info("downStream message is :"+response);
 	}
 
 	public static void sentMrketPriceToSubsribeChannel(LocateUnionMessage locateMessage) {
 		String itemName = locateMessage.getItemName();
-		ChannelGroup channelGroup = DataBaseCache.itemNameChannelMap.get(itemName);
+		ChannelGroup channelGroup = GateChannelCache.itemNameChannelMap.get(itemName);
 		channelGroup.write(locateMessage);
 		if(channelGroup.size()==0){
 			logger.error("channel has been clean,but the ric not be register! The itemName"+itemName);
@@ -54,7 +54,7 @@ public class GateWayResponser {
 	}
 
 	public static void sendSnapShotToChannel(LocateUnionMessage locatMessage, int channelId) {
-		DataBaseCache.allChannelGroup.find(channelId).write(locatMessage);
+		GateChannelCache.allChannelGroup.find(channelId).write(locatMessage);
 		logger.info("downStream message is :"+locatMessage);
 	}
 
@@ -69,8 +69,8 @@ public class GateWayResponser {
 //	}
 
 	public static void brodcastStateResp(LocateUnionMessage responseMsg) {
-		if(!DataBaseCache.allChannelGroup.isEmpty()){
-			DataBaseCache.allChannelGroup.write(responseMsg);
+		if(!GateChannelCache.allChannelGroup.isEmpty()){
+			GateChannelCache.allChannelGroup.write(responseMsg);
 		}else{
 			logger.info("None user loginin!");
 		}
@@ -78,7 +78,7 @@ public class GateWayResponser {
 
 	public static void notifyAllCustomersStateChange(LocateUnionMessage locateMessage) {
 		String itemName = locateMessage.getItemName();
-		ChannelGroup channelGroup = DataBaseCache.itemNameChannelMap.get(itemName);
+		ChannelGroup channelGroup = GateChannelCache.itemNameChannelMap.get(itemName);
 		channelGroup.write(locateMessage);
 		if(channelGroup.size()==0){
 			logger.error("channel has been clean,but the ric not be register! The itemName"+itemName);

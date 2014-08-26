@@ -14,7 +14,6 @@ import net.sf.json.JSONObject;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.dom4j.Document;
 import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.channel.Channel;
 import org.jboss.netty.channel.ChannelHandlerContext;
@@ -31,8 +30,7 @@ import com.locate.common.DataBaseCache;
 import com.locate.common.LocateMessageTypes;
 import com.locate.common.model.ClientInfo;
 import com.locate.common.model.ClientRequest;
-import com.locate.common.utils.XmlMessageUtil;
-import com.locate.rmds.handler.inter.IRequestHandler;
+import com.locate.gate.common.GateChannelCache;
 
 @Service
 public class GatewayServerHandler extends SimpleChannelHandler {
@@ -159,13 +157,13 @@ public class GatewayServerHandler extends SimpleChannelHandler {
 			Channel channel = e.getChannel();
 			
 			//将channelId和对应的channel放到map中,会写客户端的时候可以根据该id找到对应的channel.
-			if(!DataBaseCache.allChannelGroup.contains(channel)){
-				DataBaseCache.allChannelGroup.add(channel);
+			if(!GateChannelCache.allChannelGroup.contains(channel)){
+				GateChannelCache.allChannelGroup.add(channel);
 			}
 			//store the channel of customer in a map according by the RIC 
 		    if(msgType != LocateMessageTypes.LOGIN){
 				for (String subcribeItemName : request.getRIC().split(",")) {
-					Map<String, ChannelGroup> subscribeChannelMap = DataBaseCache.itemNameChannelMap;
+					Map<String, ChannelGroup> subscribeChannelMap = GateChannelCache.itemNameChannelMap;
 					ChannelGroup subChannelGroup = subscribeChannelMap.get(subcribeItemName);
 					if (subChannelGroup == null) {
 						subChannelGroup = new DefaultChannelGroup();
@@ -192,10 +190,10 @@ public class GatewayServerHandler extends SimpleChannelHandler {
 		_logger.info("channel has been closed.");
 		
 		Channel channel = ctx.getChannel();
-		DataBaseCache.allChannelGroup.remove(channel);
+		GateChannelCache.allChannelGroup.remove(channel);
 		List<String> unregisterList = new ArrayList<String>();
 		//遍历所有的channelgoup,发现有该channel的就remove掉.如果该channelGroup为空,
-		for(Entry<String,ChannelGroup> entry:DataBaseCache.itemNameChannelMap.entrySet()){
+		for(Entry<String,ChannelGroup> entry:GateChannelCache.itemNameChannelMap.entrySet()){
 			String itemName = entry.getKey();
 			ChannelGroup channelGroup = entry.getValue();
 			if(channelGroup.contains(channel)){
@@ -208,9 +206,9 @@ public class GatewayServerHandler extends SimpleChannelHandler {
 		}
 		//清空掉该itemname和ChannelGroup的对应关系.
 		for (String itemName : unregisterList) {
-			ChannelGroup itemChannelGroup = DataBaseCache.itemNameChannelMap.get(itemName);
+			ChannelGroup itemChannelGroup = GateChannelCache.itemNameChannelMap.get(itemName);
 			if (itemChannelGroup.isEmpty()) {
-				DataBaseCache.itemNameChannelMap.remove(itemName);
+				GateChannelCache.itemNameChannelMap.remove(itemName);
 			}
 		}
 	}

@@ -61,6 +61,7 @@ import com.locate.common.LocateMessageTypes;
 import com.locate.common.model.ClientInfo;
 import com.locate.common.model.ClientRequest;
 import com.locate.gate.coder.WebAdapterHandler;
+import com.locate.gate.common.GateChannelCache;
 import com.locate.gate.server.WebSocketServerIndexPage;
 import com.locate.rmds.QSConsumerProxy;
 import com.sun.istack.internal.logging.Logger;
@@ -195,10 +196,10 @@ public class HttpRequestHandler extends SimpleChannelUpstreamHandler {
 			logger.info("create the websocket shakehand success!");
 			ChannelPipeline pipeline = ctx.getPipeline();
 			pipeline.addLast("webAdpterHandler", webAdapterHandler);
-			DataBaseCache.webSocketGroup.add(ctx.getChannel());
+			GateChannelCache.webSocketGroup.add(ctx.getChannel());
 			//将channelId和对应的channel放到map中,会写客户端的时候可以根据该id找到对应的channel.
-			if(!DataBaseCache.allChannelGroup.contains(ctx.getChannel())){
-				DataBaseCache.allChannelGroup.add(ctx.getChannel());
+			if(!GateChannelCache.allChannelGroup.contains(ctx.getChannel())){
+				GateChannelCache.allChannelGroup.add(ctx.getChannel());
 			}
 		}
 		
@@ -225,10 +226,10 @@ public class HttpRequestHandler extends SimpleChannelUpstreamHandler {
 		String ric = ((TextWebSocketFrame) frame).getText();
 		logger.info(String.format("Channel %s received %s", ctx.getChannel().getId(), ric));
 		
-		ChannelGroup httpChannelGroup = DataBaseCache.itemNameChannelMap.get(ric);
+		ChannelGroup httpChannelGroup = GateChannelCache.itemNameChannelMap.get(ric);
 		if (httpChannelGroup == null) {
 			httpChannelGroup = new DefaultChannelGroup("httpChannelGroup");
-			DataBaseCache.itemNameChannelMap.put(ric, httpChannelGroup);
+			GateChannelCache.itemNameChannelMap.put(ric, httpChannelGroup);
 		}
 		if(!httpChannelGroup.contains(channel)){
 			httpChannelGroup.add(channel);
@@ -351,10 +352,10 @@ public class HttpRequestHandler extends SimpleChannelUpstreamHandler {
 		logger.info("channel has been closed.");
 		
 		Channel channel = ctx.getChannel();
-		DataBaseCache.allChannelGroup.remove(channel);
+		GateChannelCache.allChannelGroup.remove(channel);
 		List<String> unregisterList = new ArrayList<String>();
 		//遍历所有的channelgoup,发现有该channel的就remove掉.如果该channelGroup为空,
-		for(Entry<String,ChannelGroup> entry:DataBaseCache.itemNameChannelMap.entrySet()){
+		for(Entry<String,ChannelGroup> entry:GateChannelCache.itemNameChannelMap.entrySet()){
 			String itemName = entry.getKey();
 			ChannelGroup channelGroup = entry.getValue();
 			if(channelGroup.contains(channel)){
@@ -367,9 +368,9 @@ public class HttpRequestHandler extends SimpleChannelUpstreamHandler {
 		}
 		//清空掉该itemname和ChannelGroup的对应关系.
 		for (String itemName : unregisterList) {
-			ChannelGroup itemChannelGroup = DataBaseCache.itemNameChannelMap.get(itemName);
+			ChannelGroup itemChannelGroup = GateChannelCache.itemNameChannelMap.get(itemName);
 			if (itemChannelGroup.isEmpty()) {
-				DataBaseCache.itemNameChannelMap.remove(itemName);
+				GateChannelCache.itemNameChannelMap.remove(itemName);
 			}
 		}
 	}

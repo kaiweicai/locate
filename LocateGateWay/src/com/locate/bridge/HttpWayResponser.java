@@ -29,10 +29,10 @@ import org.jboss.netty.handler.codec.http.HttpRequest;
 import org.jboss.netty.handler.codec.http.HttpResponse;
 import org.jboss.netty.handler.codec.http.HttpResponseStatus;
 
-import com.locate.common.DataBaseCache;
 import com.locate.common.SystemConstant;
 import com.locate.common.utils.JsonUtil;
 import com.locate.common.utils.XmlMessageUtil;
+import com.locate.gate.common.GateChannelCache;
 
 /**
  * RFA 通过该程序将消息发送到gateway.
@@ -57,7 +57,7 @@ public class HttpWayResponser {
 		}
 		ChannelBuffer buffer = ChannelBuffers.buffer(content.length);
 		buffer.writeBytes(content);
-		Channel channel = DataBaseCache.allChannelGroup.find(channelId);
+		Channel channel = GateChannelCache.allChannelGroup.find(channelId);
 		if (channel != null && channel.isConnected()) {
 			channel.write(buffer);
 		} else {
@@ -78,7 +78,7 @@ public class HttpWayResponser {
 		}
 		ChannelBuffer buffer = ChannelBuffers.buffer(content.length);
 		buffer.writeBytes(content);
-		DataBaseCache.allChannelGroup.write(buffer);
+		GateChannelCache.allChannelGroup.write(buffer);
 		logger.info("downStream message is :"+content);
 	}
 
@@ -91,7 +91,7 @@ public class HttpWayResponser {
 		}
 		ChannelBuffer buffer = ChannelBuffers.buffer(content.length);
 		buffer.writeBytes(content);
-		ChannelGroup channelGroup=DataBaseCache.itemNameChannelMap.get(itemName);
+		ChannelGroup channelGroup=GateChannelCache.itemNameChannelMap.get(itemName);
 		channelGroup.write(buffer);
 		for(Iterator<Channel> channelIterator= channelGroup.iterator();channelIterator.hasNext() ;){
 			Channel channel= channelIterator.next();
@@ -202,7 +202,7 @@ public class HttpWayResponser {
 		}
 		ChannelBuffer buffer = ChannelBuffers.buffer(content.length);
 		buffer.writeBytes(content);
-		Channel channel = DataBaseCache.allChannelGroup.find(channelId);
+		Channel channel = GateChannelCache.allChannelGroup.find(channelId);
 		if (channel != null && channel.isConnected()) {
 			channel.write(buffer);
 		} else {
@@ -212,7 +212,7 @@ public class HttpWayResponser {
 	}
 
 	public static void brodcastStateResp(Document responseMsg) {
-		if(!DataBaseCache.allChannelGroup.isEmpty()){
+		if(!GateChannelCache.allChannelGroup.isEmpty()){
 			byte[] content = null;
 			try {
 				content = responseMsg.asXML().getBytes("UTF-8");
@@ -221,7 +221,7 @@ public class HttpWayResponser {
 			}
 			ChannelBuffer buffer = ChannelBuffers.buffer(content.length);
 			buffer.writeBytes(content);
-			DataBaseCache.allChannelGroup.write(buffer);
+			GateChannelCache.allChannelGroup.write(buffer);
 		}else{
 			logger.info("None user loginin!");
 		}
