@@ -9,9 +9,11 @@ import com.locate.common.SystemConstant;
 import com.locate.rmds.QSConsumerProxy;
 
 /**
- * @author CloudWei kaiweicai@163.com
- * create time 2014骞?链?2镞?
- * @copyRight by Author
+ * 
+ * @author cloudwei Locate 
+ * 主要启动程序. 一切从这里开始. 
+ * 负责启动RFA的主程序和Locate Gate Way 的主程序.
+ * 使用spring来管理类.
  */
 public class LocatePersistentMain {
 	static {

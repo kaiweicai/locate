@@ -70,12 +70,4 @@ public class EmailNotifier implements INotifier {
 			}
 		}
 	}
-	
-	public static void main(String[] args) throws Throwable {
-		InetAddress localAddress = InetAddress.getLocalHost();
-		String hostAddress = localAddress.getHostAddress();
-		String hostName = localAddress.getHostName();
-		System.out.println(hostAddress);
-		System.out.println(hostName);
-	}
 }
