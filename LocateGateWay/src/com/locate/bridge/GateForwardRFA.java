@@ -11,7 +11,6 @@ import com.locate.common.LocateResultCode;
 import com.locate.common.LocateResultCode.LocateResponseEnum;
 import com.locate.common.RmdsDataCache;
 import com.locate.common.model.ClientRequest;
-import com.locate.common.model.ClientRequest;
 import com.locate.common.model.LocateUnionMessage;
 import com.locate.common.utils.MessageEncapsulator;
 import com.locate.rmds.QSConsumerProxy;

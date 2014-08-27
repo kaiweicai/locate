@@ -29,10 +29,10 @@ import org.jboss.netty.handler.codec.http.HttpRequest;
 import org.jboss.netty.handler.codec.http.HttpResponse;
 import org.jboss.netty.handler.codec.http.HttpResponseStatus;
 
+import com.locate.common.GateChannelCache;
 import com.locate.common.SystemConstant;
 import com.locate.common.utils.JsonUtil;
 import com.locate.common.utils.XmlMessageUtil;
-import com.locate.gate.common.GateChannelCache;
 
 /**
  * RFA 通过该程序将消息发送到gateway.

@@ -1,8 +1,8 @@
 package com.locate.test;
 
+import com.locate.common.utils.SystemProperties;
 import com.locate.rmds.processer.EmailNotifier;
 import com.locate.rmds.processer.face.INotifier;
-import com.locate.rmds.util.SystemProperties;
 
 public class Test {
 	public static void main(String[] args) {
