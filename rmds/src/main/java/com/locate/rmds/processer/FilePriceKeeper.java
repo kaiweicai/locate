@@ -11,9 +11,9 @@ import net.sf.json.JSON;
 
 import org.apache.log4j.Logger;
 
-import com.locate.rmds.processer.face.iPriceKeeper;
+import com.locate.rmds.processer.face.IPriceKeeper;
 
-public class FilePriceKeeper implements iPriceKeeper {
+public class FilePriceKeeper implements IPriceKeeper {
 	Logger logger = Logger.getLogger(getClass());
 	private File keepFile;
 	private String ric;

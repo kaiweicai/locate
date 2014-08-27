@@ -4,7 +4,6 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.xml.DOMConfigurator;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
-import com.locate.LocateGateWayMain;
 import com.locate.common.SystemConstant;
 import com.locate.rmds.QSConsumerProxy;
 
@@ -19,8 +18,8 @@ public class LocatePersistentMain {
 	static {
 		DOMConfigurator.configureAndWatch("config/log4j.xml");
 	}
-	static Logger logger = Logger.getLogger(LocateGateWayMain.class);
-
+	static Logger logger = Logger.getLogger(LocatePersistentMain.class);
+	
 	public static void main(String[] args) {
 		logger.info("start LocateGateWay!");
 		SystemConstant.springContext = new FileSystemXmlApplicationContext("config/propholder.xml");

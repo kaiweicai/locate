@@ -3,6 +3,7 @@ package com.locate.rmds.processer;
 import javax.annotation.Resource;
 
 import net.sf.json.JSON;
+import net.sf.json.JSONObject;
 
 import org.apache.log4j.Logger;
 import org.dom4j.Document;
@@ -11,12 +12,14 @@ import org.springframework.stereotype.Service;
 
 import com.locate.common.RmdsDataCache;
 import com.locate.common.SystemConstant;
+import com.locate.common.model.LocateUnionMessage;
 import com.locate.common.utils.JsonUtil;
 import com.locate.common.utils.XmlMessageUtil;
 import com.locate.rmds.QSConsumerProxy;
 import com.locate.rmds.parser.GenericOMMParser;
+import com.locate.rmds.parser.face.IOmmParser;
 import com.locate.rmds.processer.face.IProcesser;
-import com.locate.rmds.processer.face.iPriceKeeper;
+import com.locate.rmds.processer.face.IPriceKeeper;
 import com.locate.rmds.statistic.CycleStatistics;
 import com.locate.rmds.statistic.LogTool;
 import com.locate.rmds.statistic.OutputFormatter;
@@ -49,28 +52,29 @@ import com.reuters.rfa.session.omm.OMMSolicitedItemEvent;
 //							application uses this handles to identify the items
 // QSConsumerDemo _mainApp - main application class
 /**
- * 锟斤拷锟斤拷锟叫讹拷锟绞碉拷锟?一锟斤拷锟斤拷锟侥的诧拷品锟斤拷应一锟斤拷itemManager.
+ * 该类有多个实例.一个订阅的产品对应一个itemManager.
+ * 
  * @author Cloud.Wei
  *
  */
-@Service("persistentItemManager")@Scope("prototype")
-public class PersistentItemManager implements IProcesser
-{
+@Service("persistentItemManager")
+@Scope("prototype")
+public class PersistentItemManager implements IProcesser {
 	Handle  itemHandle;
 	@Resource
 	QSConsumerProxy _mainApp;
     static Logger logger = Logger.getLogger(PersistentItemManager.class.getName());
     @Resource
     ItemGroupManager _itemGroupManager;
+    @Resource(name="locateOMMParser")
+    IOmmParser locateOmmParser;
     public String clientRequestItemName;
 //    public String clientName;
     public byte responseMessageType;
 
     private	String	_className = "ItemManager";
 
-	private Integer channelID = 0;
-
-	private Document initialDocument;
+	private IPriceKeeper priceKeeper;
 	
 	// requests
 	static private int _request_count;
@@ -101,15 +105,15 @@ public class PersistentItemManager implements IProcesser
     // display
     static LogTool _consoleLogger;
     static LogTool _statsFileLogger;
-    static OutputFormatter _outputFormatter;
+	static OutputFormatter outputFormatter;
     static StringBuilder _statsStringBuffer;
     static int _timeline;
     
 	static {
 		_statsStringBuffer = new StringBuilder(1024);
 		// output formatter
-        _outputFormatter = new OutputFormatter();
-        _outputFormatter.initializeDateFormat("yyyy-MM-dd HH:mm:ss", "UTC");
+		outputFormatter = new OutputFormatter();
+		outputFormatter.initializeDateFormat("yyyy-MM-dd HH:mm:ss", "UTC");
 		String _myName = "AdminClient";
 		_consoleLogger = new LogTool();
 		_consoleLogger.log2Screen();
@@ -170,6 +174,7 @@ public class PersistentItemManager implements IProcesser
 			_itemGroupManager.addItem(serviceName, itemName, itemHandle);
 		}
 		pool.releaseMsg(ommmsg);
+		priceKeeper = new FilePriceKeeper(pItemName);
 	}
     
 
@@ -185,41 +190,36 @@ public class PersistentItemManager implements IProcesser
 
     // This is a Client method. When an event for this client is dispatched,
     // this method gets called.
-    public void processEvent(Event event)
-    {
+	public void processEvent(Event event) {
     	long startTime = System.currentTimeMillis();
-    	switch (event.getType())
-        {
+		switch (event.getType()) {
             case Event.OMM_SOLICITED_ITEM_EVENT:
                 processOMMSolicitedItemEvent((OMMSolicitedItemEvent)event);
                 break;
         }
     	
     	// Completion event indicates that the stream was closed by RFA
-    	if (event.getType() == Event.COMPLETION_EVENT) 
-    	{
+		if (event.getType() == Event.COMPLETION_EVENT) {
     		logger.info("Receive a COMPLETION_EVENT, "+ event.getHandle());
     		logger.info("RIC IS "+this.clientRequestItemName +" has been finished");
-    		//@TODO 锟叫讹拷锟角凤拷通知锟斤拷锟斤拷锟街达拷突锟斤拷锟侥筹拷锟斤拷锟狡凤拷丫锟酵Ｖ癸拷锟斤拷锟?
+			// @TODO 判断是否通知所有现存客户端某个产品已经停止发布.
     		return;
     	}
 
     	// check for an event type; it should be item event.
         logger.info(_className+".processEvent: Received Item("+clientRequestItemName+") Event from server ");
-        if (event.getType() != Event.OMM_ITEM_EVENT) 
-        {
-        	//锟斤拷锟斤拷锟斤拷锟教ｏ拷锟斤拷锟?锟斤拷为RFA锟斤拷锟斤拷锟较拷锟斤拷锟斤拷要锟剿筹拷锟斤拷锟斤拷.锟街诧拷锟斤拷锟竭硷拷锟斤拷.锟斤拷锟斤拷去锟斤拷cleanup锟斤拷锟斤拷.
-            logger.error("ERROR: "+_className+" Received an unsupported Event type.");
+		if (event.getType() != Event.OMM_ITEM_EVENT) {
+			//收到一个不支持的消息,记录该消息,直接返回.
+			logger.error("ERROR:Received an unsupported Event type. event is "+event);
 //            _mainApp.cleanup();
             return;
         }
 
         OMMItemEvent ommItemEvent = (OMMItemEvent) event;
         OMMMsg respMsg = ommItemEvent.getMsg();
-        Document responseMsg = GenericOMMParser.parse(respMsg, clientRequestItemName);
-        //锟斤拷锟斤拷息锟斤拷始锟斤拷锟斤拷时锟斤拷锟斤拷氲斤拷锟较拷锟?
-		XmlMessageUtil.addStartHandleTime(responseMsg, startTime);
-        //锟斤拷锟斤拷锟阶刺拷锟较?锟斤拷录一锟斤拷锟斤拷锟斤拷锟斤拷志.
+        LocateUnionMessage message = locateOmmParser.parse(respMsg, clientRequestItemName);
+        
+		// 如果是状态消息.记录一个警告日志.
         if(respMsg.getMsgType()==OMMMsg.MsgType.STATUS_RESP && (respMsg.has(OMMMsg.HAS_STATE))){
         	byte streamState= respMsg.getState().getStreamState();
         	byte dataState = respMsg.getState().getDataState();
@@ -235,13 +235,15 @@ public class PersistentItemManager implements IProcesser
 			_itemGroupManager.applyGroup(itemHandle, group);
 		}
         
-		XmlMessageUtil.addLocateInfo(responseMsg, respMsg.getMsgType(), SystemConstant.sequenceNo.getAndIncrement(), 0);
-		//锟斤拷锟芥报锟斤拷锟斤拷息锟皆癸拷锟斤拷询.
-		iPriceKeeper priceKeeper = new FilePriceKeeper(this.clientRequestItemName);
-		JSON jsonObject = JsonUtil.getJSONFromXml(responseMsg.asXML()) ;
+		// XmlMessageUtil.addLocateInfo(responseMsg, respMsg.getMsgType(),
+		// RFAServerManager.sequenceNo.getAndIncrement(), 0);
+		// 保存报价信息以供查询.
+		// JSON jsonObject = JsonUtil.getJSONFromXml(responseMsg.asXML()) ;
+		JSON jsonObject = JSONObject.fromObject(message);
 		priceKeeper.persistentThePrice(jsonObject);
-//		GateWayResponser.sentMrketPriceToSubsribeChannel(responseMsg, clientRequestItemName);
-        if(responseMsg != null){
+		// GateWayResponser.sentMrketPriceToSubsribeChannel(responseMsg,
+		// clientRequestItemName);
+		if (message != null) {
         	long endTime = System.currentTimeMillis();
         	logger.info("publish Item "+clientRequestItemName+" use time "+(endTime-startTime)+" microseconds");
         }
@@ -266,12 +268,9 @@ public class PersistentItemManager implements IProcesser
      * @param event the event to process/handle.
      */
     @SuppressWarnings("deprecation")
-    void handleItemEvent(OMMSolicitedItemEvent event)
-    {
-        switch (event.getMsg().getMsgType())
-        {
-            case OMMMsg.MsgType.REQUEST:
-            {
+	void handleItemEvent(OMMSolicitedItemEvent event) {
+		switch (event.getMsg().getMsgType()) {
+		case OMMMsg.MsgType.REQUEST: {
             	++_request_count;
 //                processItemRequest(event);
                 return;
@@ -291,8 +290,7 @@ public class PersistentItemManager implements IProcesser
 
             case OMMMsg.MsgType.STREAMING_REQ:
             case OMMMsg.MsgType.NONSTREAMING_REQ:
-            case OMMMsg.MsgType.PRIORITY_REQ:
-            {
+		case OMMMsg.MsgType.PRIORITY_REQ: {
                 OMMMsg ommMsg = event.getMsg();
 
                 _consoleLogger.println("Received deprecated message type of "
@@ -309,8 +307,7 @@ public class PersistentItemManager implements IProcesser
      * Gathers, calculate, displays and writes the metrics. Called by
      * application thread periodically.
      */
-    public static void runMetricsForCurrentInterval()
-    {
+	public static void runMetricsForCurrentInterval() {
         // calculate cycle metrics
         _request_cycleStats.calculateDifference(_request_count);
         _refresh_cycleStats.calculateDifference(_refresh_count);
@@ -328,56 +325,43 @@ public class PersistentItemManager implements IProcesser
             _close_cycleStats.calculateDifference(_close_count);
 
             // update console metrics for this cycle
-            s = String.format("%03d: UpdRate: %,6d, CPU: %s, Mem: %6.2fMB%n", _timeline,
-                              _update_cycleStats.periodicRate,
-                              _resourceStats.getCurrentCPULoadAsPercentString(),
-                              _resourceStats.currentMemoryUsage);
+		s = String.format("%03d: UpdRate: %,6d, CPU: %s, Mem: %6.2fMB%n", _timeline, _update_cycleStats.periodicRate,
+				_resourceStats.getCurrentCPULoadAsPercentString(), _resourceStats.currentMemoryUsage);
 
             _consoleLogger.print(s);
 
             // request console metrics for this cycle
-            if (_request_cycleStats.periodicCount > 0)
-            {
+		if (_request_cycleStats.periodicCount > 0) {
                 _consoleLogger.print(String.format(
                         "- Received %,6d item requests (total: %,6d), sent %,6d images (total: %,6d)%n",
-                        _request_cycleStats.periodicCount,
-                        _request_count,
-                        _refresh_cycleStats.periodicCount,
+					_request_cycleStats.periodicCount, _request_count, _refresh_cycleStats.periodicCount,
                         _refresh_count));
             }
 
             // close console metrics for this cycle
-            if (_close_cycleStats.periodicCount > 0)
-            {
+		if (_close_cycleStats.periodicCount > 0) {
                 _consoleLogger.print(String.format("- Received %,6d closes%n", _close_cycleStats.periodicCount));
             }
 
             // post console metrics for this cycle
-            if (_post_received_cycleStats.periodicCount > 0)
-            {
+		if (_post_received_cycleStats.periodicCount > 0) {
                 _consoleLogger.print(String.format("- Posting: received %,6d, sent %,6d%n",
-                      _post_received_cycleStats.periodicCount,
-                      _post_resent_cycleStats.periodicCount));
+					_post_received_cycleStats.periodicCount, _post_resent_cycleStats.periodicCount));
             }
 
         // write periodic statistics to output stats file ( provStat.out )
 
         // "Update rate: %8d, CPU: %6.2f, Mem: %6.2fMB%n",
-        s = String.format("%s, %d, %d, %d, %d, %s, %.2f%n",
-                          _outputFormatter.getDateTimeAsString(),
-                          _request_cycleStats.periodicCount, 
-                          _refresh_cycleStats.periodicCount,
-                          _update_cycleStats.periodicCount, 
-                          _post_resent_cycleStats.periodicCount,
-                          _resourceStats.getCurrentCPULoadAsString(),
+		s = String.format("%s, %d, %d, %d, %d, %s, %.2f%n", outputFormatter.getDateTimeAsString(),
+				_request_cycleStats.periodicCount, _refresh_cycleStats.periodicCount, _update_cycleStats.periodicCount,
+				_post_resent_cycleStats.periodicCount, _resourceStats.getCurrentCPULoadAsString(),
                           _resourceStats.currentMemoryUsage);
 
         _statsStringBuffer.append(s);
 
         // flush to file for every 1k length;
         // this avoids file access for every line
-        if (_statsStringBuffer.length() >= 1024)
-        {
+		if (_statsStringBuffer.length() >= 1024) {
             _statsFileLogger.print(_statsStringBuffer.toString());
             _statsStringBuffer.setLength(0);
         }

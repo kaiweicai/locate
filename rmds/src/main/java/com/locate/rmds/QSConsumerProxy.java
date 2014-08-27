@@ -15,6 +15,7 @@ import javax.annotation.Resource;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
+import com.locate.common.LocateMessageTypes;
 import com.locate.common.RmdsDataCache;
 import com.locate.common.SystemConstant;
 import com.locate.common.utils.SystemProperties;
@@ -26,7 +27,9 @@ import com.locate.rmds.processer.ItemGroupManager;
 import com.locate.rmds.processer.ItemManager;
 import com.locate.rmds.processer.NewsItemManager;
 import com.locate.rmds.processer.OneTimeItemManager;
+import com.locate.rmds.processer.PersistentItemManager;
 import com.locate.rmds.processer.RFALoginClient;
+import com.locate.rmds.processer.face.IProcesser;
 import com.reuters.rfa.common.Client;
 import com.reuters.rfa.common.Context;
 import com.reuters.rfa.common.DeactivatedException;
@@ -402,6 +405,24 @@ public class QSConsumerProxy{
 		// newsItemManager.sendRequest("nASA0590H");
 	}
 
+	/**
+	 * 订阅指定的集中产品
+	 */
+	public void makeOrder() {
+		String ricArray = SystemProperties.getProperties(SystemProperties.RIC_ARRAY);
+		String[] rics = ricArray.split(",");
+		for (String ric : rics) {
+			itemRequests(ric);
+		}
+	}
+	
+	public void itemRequests(String ric) {
+		// Initialize item manager for item domains
+		IProcesser persistentItemManager = SystemConstant.springContext.getBean("persistentItemManager",PersistentItemManager.class);
+		// Send requests
+		persistentItemManager.sendRicRequest(ric, LocateMessageTypes.RESPONSE_FUTURE);
+	}
+	
 	public void run(){
 		startDispatch();
 	}

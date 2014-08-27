@@ -39,6 +39,8 @@ public class SystemProperties {
 	public static final String SMTP_MAIL_PASSWORD = "smtp.mail.password";
 	public static final String RIPPLE = "ripple";
 
+	public static final String RIC_ARRAY = "ric.array";
+	
 	public static void init(String propertiesFile) {
 		// InputStream inputStream = this.getClass().getResourceAsStream(propertiesFile);
 		Properties p = new Properties();
