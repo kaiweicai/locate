@@ -78,10 +78,5 @@
 			<artifactId>xom</artifactId>
 			<version>1.2.5</version>
 		</dependency>
-		<dependency>
-			<groupId>org.java.net.substance</groupId>
-			<artifactId>substance</artifactId>
-			<version>6.0</version>
-		</dependency>
 	</dependencies>
 </project>

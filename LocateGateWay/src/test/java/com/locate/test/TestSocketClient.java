@@ -25,8 +25,6 @@ import org.junit.Test;
 
 import com.locate.common.LocateMessageTypes;
 import com.locate.common.model.LocateUnionMessage;
-import com.locate.gate.coder.GateWayDecoder;
-import com.locate.gate.coder.GateWayEncoder;
 
 
 public class TestSocketClient{
@@ -155,8 +153,8 @@ public class TestSocketClient{
 			@Override
 			public ChannelPipeline getPipeline() throws Exception {
 				ChannelPipeline pipeline = Channels.pipeline();
-				pipeline.addLast("encoder", new GateWayEncoder());
-				pipeline.addLast("decoder", new GateWayDecoder());
+//				pipeline.addLast("encoder", new GateWayEncoder());
+//				pipeline.addLast("decoder", new GateWayDecoder());
 				pipeline.addLast("hanlder", new ClientHandler());
 				return pipeline;
 			}
