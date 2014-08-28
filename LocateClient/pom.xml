@@ -90,5 +90,10 @@
 			<artifactId>metawidget-grouplayout</artifactId>
 			<version>3.9</version>
 		</dependency>
+		<dependency>
+			<groupId>io.netty</groupId>
+			<artifactId>netty-all</artifactId>
+			<version>4.0.23.Final</version>
+		</dependency>
 	</dependencies>
 </project>
