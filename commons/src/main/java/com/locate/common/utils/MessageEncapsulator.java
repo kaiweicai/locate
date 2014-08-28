@@ -8,7 +8,6 @@ public class MessageEncapsulator {
 		message.setResultCode(resultCode);
 		String resultDes = LocateResultCode.LocateResponseEnum.getResultDescription(resultCode);
 		message.setResultDes(resultDes);
-		message.setState(resultDes);
 		message.setMsgType(msgType);
 		return message;
 	}

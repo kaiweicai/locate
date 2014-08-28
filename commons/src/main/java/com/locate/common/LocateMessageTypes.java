@@ -2,6 +2,7 @@ package com.locate.common;
 
 
 public class LocateMessageTypes {
+	public static final byte SERVER_STATE= 127;
 	public static final byte ERROR = -1;	 
 	
 	//Remote Server message type

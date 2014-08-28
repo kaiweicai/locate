@@ -2,6 +2,7 @@ package com.locate;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -18,16 +19,18 @@ import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.xml.DOMConfigurator;
-import org.dyno.visual.swing.layouts.Constraints;
-import org.dyno.visual.swing.layouts.GroupLayout;
-import org.dyno.visual.swing.layouts.Leading;
 import org.jboss.netty.channel.SimpleChannelHandler;
+import org.pushingpixels.substance.api.SubstanceLookAndFeel;
+import org.pushingpixels.substance.api.skin.AutumnSkin;
+import org.pushingpixels.substance.api.skin.SubstanceAutumnLookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceSaharaLookAndFeel;
 
 import com.locate.client.gui.StatusBar;
 import com.locate.common.LocateMessageTypes;
@@ -83,6 +86,7 @@ public class RFApplication extends JFrame {
 	private JTable marketPriceTable;
 	private TableModel tableModel;
 	private StatusBar statusBar;
+	private StatusBar serverBar;
 	private JLabel useTimeTextLabel;
 	private RedRenderer redRenderer =new RedRenderer();
 	private BlueRenderer blueRenderer =new BlueRenderer();
@@ -95,6 +99,9 @@ public class RFApplication extends JFrame {
 
 	private static final String PREFERRED_LOOK_AND_FEEL = "javax.swing.plaf.metal.MetalLookAndFeel";
 
+	
+	
+	
 	public RFApplication() {
 		DOMConfigurator.configureAndWatch("config/log4j.xml");
 		initComponents();
@@ -107,35 +114,33 @@ public class RFApplication extends JFrame {
 
 	private void initComponents() {
 		
-		GroupLayout mainGroupLayout = new GroupLayout();
-//		setLayout(mainGroupLayout);
 		JPanel panel = new JPanel();
-		panel.setLayout(mainGroupLayout);
+		panel.setLayout(null);
 		JScrollPane sp = new JScrollPane(panel);
 //		sp.setLayout(mainGroupLayout);
 		getContentPane().add(sp);
-		panel.add(getUserNameLabel(), new Constraints(new Leading(550, 100, 12, 12), new Leading(19, 12, 12)));
-		panel.add(getUserNameTextField(), new Constraints(new Leading(670, 100, 12, 12), new Leading(19, 12, 12)));
-		panel.add(getPasswordLabel(), new Constraints(new Leading(550, 100, 12, 12), new Leading(50, 12, 12)));
-		panel.add(getPasswordTextField(), new Constraints(new Leading(670, 12, 12), new Leading(50, 12, 12)));
-		panel.add(getServerAddressLabel(), new Constraints(new Leading(550, 100, 12, 12), new Leading(80, 12, 12)));
-		panel.add(getServerAddressTextField(), new Constraints(new Leading(670, 100, 12, 12), new Leading(80, 12, 12)));
-		panel.add(getPortLabel(), new Constraints(new Leading(550, 100, 12, 12), new Leading(120, 12, 12)));
-		panel.add(getPortTextField(), new Constraints(new Leading(670, 100, 12, 12), new Leading(120, 12, 12)));
+		int inputX = 550;
+		int inputY = 20;
+		panel.add(getCloseButton(new Rectangle(inputX+200, inputY, 100, 15)));
+		panel.add(getUserNameLabel(new Rectangle(inputX,inputY,100,12)));
+		panel.add(getUserNameTextField(new Rectangle(inputX+70,inputY,100,15)));
+		panel.add(getPasswordLabel(new Rectangle(inputX,inputY+=30, 100, 12)));
+		panel.add(getPasswordTextField(new Rectangle(inputX+70,inputY, 100, 15)));
+		panel.add(getServerAddressLabel(new Rectangle(inputX,inputY+=30, 100, 15)));
+		panel.add(getServerAddressTextField(new Rectangle(inputX+120,inputY, 100, 15)));
+		panel.add(getPortLabel(new Rectangle(inputX,inputY+=30, 100, 15)));
+		panel.add(getPortTextField(new Rectangle(inputX+120,inputY, 100, 15)));
 		
-		panel.add(getConnetedButton(), new Constraints(new Leading(550, 12, 12), new Leading(150, 12, 12)));
-		
-		panel.add(getRicLabel(), new Constraints(new Leading(550, 100, 12, 12), new Leading(190, 12, 12)));
-		panel.add(getRicTextField(), new Constraints(new Leading(670, 100, 12, 12), new Leading(190, 12, 12)));
-		panel.add(getOpenButton(), new Constraints(new Leading(550, 12, 12), new Leading(220, 12, 12)));
-		panel.add(getTableScrollPane(), new Constraints(new Leading(550, 12, 12), new Leading(280, 12, 12)));
-		panel.add(getUseTimeTextLabel(), new Constraints(new Leading(550, 12, 12), new Leading(720, 12, 12)));
-		
-		panel.add(getCloseButton(), new Constraints(new Leading(1063, 12, 12), new Leading(10, 12, 12)));
-		
-		panel.add(getJScrollPane0(), new Constraints(new Leading(30, 500, 10, 10), new Leading(51, 700, 10, 10)));
-		panel.add(getStatusBar(), new Constraints(new Leading(30, 500, 10, 10), new Leading(770, 50, 10, 10)));
-		setSize(1024, 600);
+		panel.add(getConnetedButton(new Rectangle(inputX,inputY+=30, 100, 15)));
+		panel.add(getRicLabel(new Rectangle(inputX,inputY+=30, 100, 15)));
+		panel.add(getRicTextField(new Rectangle(inputX+120,inputY, 100, 15)));
+		panel.add(getOpenButton(new Rectangle(inputX,inputY+=30, 100, 15)));
+		panel.add(getTableScrollPane(new Rectangle(inputX, inputY+=30, 360, 400)));
+		panel.add(getUseTimeTextLabel(new Rectangle(inputX, inputY+=150, 12, 12)));
+		panel.add(getJScrollPane0(new Rectangle(30, 10, 500, 560)));
+		panel.add(getStatusBar(new Rectangle(30, 570, 500, 50)));
+		panel.add(getServerBar(new Rectangle(30, 620, 500, 50)));
+		setSize(1024, 680);
 	}
 	
 	public void initialPriceModel(){
@@ -145,84 +150,94 @@ public class RFApplication extends JFrame {
 	 * add by cloud
 	 * @return
 	 */
-	private JLabel getUserNameLabel() {
+	private JLabel getUserNameLabel(Rectangle r) {
 		if (userNameLabel == null) {
 			userNameLabel = new JLabel();
 			userNameLabel.setText("Username:");
 		}
+		userNameLabel.setBounds(r);
 		return userNameLabel;
 	}
 	
-	private JTextField getUserNameTextField(){
+	private JTextField getUserNameTextField(Rectangle r){
 		if(userNameTextField == null){
 			userNameTextField = new JTextField("ztcj");
 		}
+		userNameTextField.setBounds(r);
 		return userNameTextField;
 	}
 	
-	private JLabel getPasswordLabel() {
+	private JLabel getPasswordLabel(Rectangle r) {
 		if (passwordLabel == null) {
 			passwordLabel = new JLabel();
 			passwordLabel.setText("password:");
 		}
+		passwordLabel.setBounds(r);
 		return passwordLabel;
 	}
 	
-	private JTextField getPasswordTextField(){
+	private JTextField getPasswordTextField(Rectangle r){
 		if(passwordTextField == null){
 			passwordTextField = new JTextField("ztcj2013");
 		}
+		passwordTextField.setBounds(r);
 		return passwordTextField;
 	}
 	
-	private JLabel getServerAddressLabel() {
+	private JLabel getServerAddressLabel(Rectangle r) {
 		if (serverAddressLabel == null) {
 			serverAddressLabel = new JLabel();
 			serverAddressLabel.setText("serverAddress:");
+			serverAddressLabel.setBounds(r);
 		}
 		return serverAddressLabel;
 	}
 	
-	private JTextField getServerAddressTextField(){
+	private JTextField getServerAddressTextField(Rectangle r){
 		if(serverAddressTextField == null){
 			serverAddressTextField = new JTextField("61.144.244.173");
 		}
+		serverAddressTextField.setBounds(r);
 		return serverAddressTextField;
 	}
 	
 	
-	private JLabel getPortLabel() {
+	private JLabel getPortLabel(Rectangle r) {
 		if (portLabel == null) {
 			portLabel = new JLabel();
 			portLabel.setText("Port:");
 		}
+		portLabel.setBounds(r);
 		return portLabel;
 	}
 	
-	private JTextField getPortTextField(){
+	private JTextField getPortTextField(Rectangle r){
 		if(portTextField == null){
 			portTextField = new JTextField("8888");
+			portTextField.setBounds(r);
 		}
 		return portTextField;
 	}
 	
-	private JLabel getRicLabel() {
+	private JLabel getRicLabel(Rectangle r) {
 		if (ricLabel == null) {
 			ricLabel = new JLabel();
 			ricLabel.setText("RIC:");
+			ricLabel.setBounds(r);
 		}
 		return ricLabel;
 	}
 	
-	public JTextField getRicTextField(){
+	public JTextField getRicTextField(Rectangle r){
 		if(ricTextField == null){
 			ricTextField = new JTextField();
 			ricTextField.setText("MCU3=LX");
+			ricTextField.setBounds(r);
 		}
 		return ricTextField;
 	}
 	
-	private JButton getOpenButton() {
+	private JButton getOpenButton(Rectangle r) {
 		if (openButton == null) {
 			openButton = new JButton();
 			openButton.setText("open");
@@ -233,24 +248,26 @@ public class RFApplication extends JFrame {
 					clientConnetor.openRICMarket(ric);
 				}
 			});
+			openButton.setBounds(r);
 		}
 		return openButton;
 	}
 
-	private JButton getCloseButton() {
+	private JButton getCloseButton(Rectangle r) {
 		if (closeButton == null) {
 			closeButton = new JButton();
-			closeButton.setText("close locate client");
+			closeButton.setText("close");
 			closeButton.addMouseListener(new MouseAdapter() {
 				public void mouseClicked(MouseEvent event) {
 					shutdownLocateGateWay();
 				}
 			});
+			closeButton.setBounds(r);
 		}
 		return closeButton;
 	}
 	
-	private JButton getConnetedButton() {
+	private JButton getConnetedButton(Rectangle r) {
 		if (connetedButton == null) {
 			connetedButton = new JButton();
 			connetedButton.setText("connet");
@@ -264,6 +281,7 @@ public class RFApplication extends JFrame {
 					clientConnetor.conneteLocateGateWay(serverAddress,port,userName,password);
 				}
 			});
+			connetedButton.setBounds(r);
 		}
 		return connetedButton;
 	}
@@ -382,38 +400,56 @@ public class RFApplication extends JFrame {
 	}
 
 	
-
-	private JScrollPane getTableScrollPane() {
+	/**
+	 * 得到报价窗口
+	 * @param r
+	 * @return
+	 */
+	private JScrollPane getTableScrollPane(Rectangle r) {
 		if (tableScrollPane == null) {
 			tableScrollPane = new JScrollPane();
 			tableScrollPane.setViewportView(getMarketPriceTable());
+			tableScrollPane.setBounds(r);
 		}
 		return tableScrollPane;
 	}
 	
-	private JScrollPane getJScrollPane0() {
+	private JScrollPane getJScrollPane0(Rectangle r) {
 		if (jScrollPane0 == null) {
 			jScrollPane0 = new JScrollPane();
 			jScrollPane0.setViewportView(getShowLog());
+			jScrollPane0.setBounds(r);
 		}
 		return jScrollPane0;
 	}
 	
-	private StatusBar getStatusBar() {
+	private StatusBar getStatusBar(Rectangle r) {
 		if (statusBar == null) {
 			statusBar = new StatusBar("", true);
 			statusBar.setFont(UIManager.getFont("Label.font"));
 			statusBar.setBackground(UIManager.getColor("Panel.background"));
+			statusBar.setBounds(r);
 		}
 		return statusBar;
 	}
 	
-	private JLabel getUseTimeTextLabel() {
+	private StatusBar getServerBar(Rectangle r) {
+		if (serverBar == null) {
+			serverBar = new StatusBar("", true);
+			serverBar.setFont(UIManager.getFont("Label.font"));
+			serverBar.setBackground(UIManager.getColor("Panel.background"));
+			serverBar.setBounds(r);
+		}
+		return serverBar;
+	}
+	
+	private JLabel getUseTimeTextLabel(Rectangle r) {
 		if (useTimeTextLabel == null) {
 			useTimeTextLabel = new JLabel();
 			useTimeTextLabel.setFont(UIManager.getFont("Label.font"));
 			useTimeTextLabel.setBackground(UIManager.getColor("Panel.background"));
 			useTimeTextLabel.setText("");
+			useTimeTextLabel.setBounds(r);
 		}
 		return useTimeTextLabel;
 	}
@@ -426,11 +462,10 @@ public class RFApplication extends JFrame {
 		}
 		return showLog;
 	}
+	
 	private static void installLnF() {
 		try {
 			String lnfClassname = PREFERRED_LOOK_AND_FEEL;
-//			if (lnfClassname == null)
-//				lnfClassname = UIManager.getCrossPlatformLookAndFeelClassName();
 			UIManager.setLookAndFeel(lnfClassname);
 		} catch (Exception e) {
 			System.err.println("Cannot install " + PREFERRED_LOOK_AND_FEEL + " on this platform:" + e.getMessage());
@@ -477,7 +512,7 @@ public class RFApplication extends JFrame {
 		public void handleException(Throwable e){
 			sBuilder.append("Client has been occure Exception. Please contact the developer! "+e);
 			updateLog(sBuilder.toString());
-			statusBar.setStatusFixed("Client has been occure Exception. Please contact the developer!");
+			serverBar.setStatusFixed("Client has been occure Exception. Please contact the developer!");
 		}
 		
 		/* (non-Javadoc)
@@ -494,7 +529,7 @@ public class RFApplication extends JFrame {
 			logger.info("original message -------"+message);
 			byte msgType = message.getMsgType();
 			sBuilder.append("Received message type:" + LocateMessageTypes.toString(msgType)+"\n");
-			getUseTimeTextLabel().setText("From Locate Server to client use time:"+String.valueOf(NetTimeUtil.getCheckTime()-startTime)+" millseconds");
+			useTimeTextLabel.setText("From Locate Server to client use time:"+String.valueOf(NetTimeUtil.getCheckTime()-startTime)+" millseconds");
 			logger.info("The message From RFA to user use time"+(startTime-endTime)+"milliseconds");
 			switch(msgType){
 				//first the Locate send the snapshot of market price
@@ -509,9 +544,9 @@ public class RFApplication extends JFrame {
 					updateTablePriceThread.setUpdate(true);
 					break;
 				//Locate send the state info to client
-				case LocateMessageTypes.ERROR:
+				case LocateMessageTypes.SERVER_STATE:
 					String errorDescription = message.getResultDes();
-					statusBar.setStatusFixed(errorDescription);
+					serverBar.setStatusFixed(errorDescription);
 					break;
 				case LocateMessageTypes.STATUS_RESP:
 					String newStatus = message.getState();
@@ -557,7 +592,7 @@ public class RFApplication extends JFrame {
 		public void handleDisconnected() {
 			sBuilder.append("Locate Server disconnted!!! ");
 			updateLog(sBuilder.toString());
-			statusBar.setStatusFixed(sBuilder.toString());
+			serverBar.setStatusFixed(sBuilder.toString());
 			System.out.println("Locate Server disconnted!!! ");			
 		}
 	}

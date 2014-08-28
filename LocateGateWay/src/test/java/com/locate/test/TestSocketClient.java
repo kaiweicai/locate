@@ -172,7 +172,7 @@ public class TestSocketClient{
 		DocumentFactory documentFactory = DocumentFactory.getInstance();
 	    Document requestDoc =  documentFactory.createDocument();
 		switch( msgType){
-		    case LocateMessageTypes.ERROR : 
+		    case LocateMessageTypes.SERVER_STATE : 
 				System.out.println("收到包含错误信息的消息");
 		    	break;
 		    case LocateMessageTypes.LOGINWRONGUSER :

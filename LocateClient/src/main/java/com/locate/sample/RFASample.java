@@ -96,7 +96,7 @@ public class RFASample {
 					}
 					break;
 				//向服务器发送请求后的返回信息.
-				case LocateMessageTypes.ERROR:
+				case LocateMessageTypes.SERVER_STATE:
 					String errorDescription = message.getResultDes();
 					System.out.println("向服务器放的请求出现了错误,请看下面的具体错误描述");
 					System.out.println(errorDescription);

@@ -122,13 +122,21 @@ public class GateForwardRFA {
 //		    	break;
 	    }
 		//处理存在错误需要向客户端发送错误信息.
-		if(resultCode != LocateResultCode.SUCCESS_RESULT){
+//		if(resultCode != LocateResultCode.SUCCESS_RESULT){
 			LocateUnionMessage message = new LocateUnionMessage();
 			message.setResultCode(resultCode);
 			message.setResultDes(LocateResponseEnum.getResultDescription(resultCode));
-			message.setMsgType(LocateMessageTypes.ERROR);
+			message.setMsgType(LocateMessageTypes.SERVER_STATE);
 			GateWayResponser.sentResponseMsg(message, channelID);
-		}
+//		}
+//		else{
+//			LocateUnionMessage message = new LocateUnionMessage();
+//			message.setResultCode(resultCode);
+//			String state = LocateResponseEnum.getResultDescription(resultCode);
+//			message.setResultDes(state);
+//			message.setMsgType(LocateMessageTypes.STATUS_RESP);
+//			GateWayResponser.sentResponseMsg(message, channelID);
+//		}
 		
 		return resultCode;
 	}
