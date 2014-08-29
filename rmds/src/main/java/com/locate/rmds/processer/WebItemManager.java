@@ -4,7 +4,6 @@ import javax.annotation.Resource;
 
 import org.apache.log4j.Logger;
 import org.dom4j.Document;
-import org.jboss.netty.handler.codec.http.HttpRequest;
 import org.springframework.stereotype.Service;
 
 import com.locate.bridge.HttpWayResponser;
@@ -61,49 +60,49 @@ public class WebItemManager implements Client {
 	private Integer channelID = 0;
 
 	static int _timeline;
-	@Deprecated
-	private HttpRequest request;
+//	@Deprecated
+//	private HttpRequest request;
 	
 	// creates streaming request messages for items and register them to RFA
-	public void sendOneTimeRequest(String pItemName, byte responseMsgType,HttpRequest request) {
-		this.request = request;
-		this.responseMessageType = responseMsgType;
-		logger.info(_className + ".webRequest: Sending item(" + pItemName + ") requests to server ");
-		String serviceName = mainApp.serviceName;
-		this.clientRequestItemName = pItemName;
-		String[] itemNames = { pItemName };
-		short msgModelType = RDMMsgTypes.MARKET_PRICE;
-
-		OMMItemIntSpec ommItemIntSpec = new OMMItemIntSpec();
-
-		// Preparing item request message
-		OMMPool pool = mainApp.getPool();
-		OMMMsg ommmsg = pool.acquireMsg();
-		// NONSTREAMING_REQ为只取一个snapshort.
-		ommmsg.setMsgType(OMMMsg.MsgType.NONSTREAMING_REQ);
-		ommmsg.setMsgModelType(msgModelType);
-		// ommmsg.setIndicationFlags(OMMMsg.Indication.REFRESH);
-		ommmsg.setPriority((byte) 1, 1);
-
-		// Setting OMMMsg with negotiated version info from login handle
-		if (mainApp.getLoginHandle() != null) {
-			ommmsg.setAssociatedMetaInfo(mainApp.getLoginHandle());
-		}
-
-		// register for each item
-		for (int i = 0; i < itemNames.length; i++) {
-			String itemName = itemNames[i];
-			// this.clientRequestItemName = itemName;
-			logger.info(_className + ": Subscribing one time to " + itemName);
-
-			ommmsg.setAttribInfo(serviceName, itemName, RDMInstrument.NameType.RIC);
-
-			// Set the message into interest spec
-			ommItemIntSpec.setMsg(ommmsg);
-			itemHandle = mainApp.getOMMConsumer().registerClient(mainApp.getEventQueue(), ommItemIntSpec, this, null);
-		}
-		pool.releaseMsg(ommmsg);
-	}
+//	public void sendOneTimeRequest(String pItemName, byte responseMsgType,HttpRequest request) {
+//		this.request = request;
+//		this.responseMessageType = responseMsgType;
+//		logger.info(_className + ".webRequest: Sending item(" + pItemName + ") requests to server ");
+//		String serviceName = mainApp.serviceName;
+//		this.clientRequestItemName = pItemName;
+//		String[] itemNames = { pItemName };
+//		short msgModelType = RDMMsgTypes.MARKET_PRICE;
+//
+//		OMMItemIntSpec ommItemIntSpec = new OMMItemIntSpec();
+//
+//		// Preparing item request message
+//		OMMPool pool = mainApp.getPool();
+//		OMMMsg ommmsg = pool.acquireMsg();
+//		// NONSTREAMING_REQ为只取一个snapshort.
+//		ommmsg.setMsgType(OMMMsg.MsgType.NONSTREAMING_REQ);
+//		ommmsg.setMsgModelType(msgModelType);
+//		// ommmsg.setIndicationFlags(OMMMsg.Indication.REFRESH);
+//		ommmsg.setPriority((byte) 1, 1);
+//
+//		// Setting OMMMsg with negotiated version info from login handle
+//		if (mainApp.getLoginHandle() != null) {
+//			ommmsg.setAssociatedMetaInfo(mainApp.getLoginHandle());
+//		}
+//
+//		// register for each item
+//		for (int i = 0; i < itemNames.length; i++) {
+//			String itemName = itemNames[i];
+//			// this.clientRequestItemName = itemName;
+//			logger.info(_className + ": Subscribing one time to " + itemName);
+//
+//			ommmsg.setAttribInfo(serviceName, itemName, RDMInstrument.NameType.RIC);
+//
+//			// Set the message into interest spec
+//			ommItemIntSpec.setMsg(ommmsg);
+//			itemHandle = mainApp.getOMMConsumer().registerClient(mainApp.getEventQueue(), ommItemIntSpec, this, null);
+//		}
+//		pool.releaseMsg(ommmsg);
+//	}
 	
 	// creates streaming request messages for items and register them to RFA
 		public void sendRICRequest(String pItemName, byte responseMsgType) {
@@ -195,7 +194,7 @@ public class WebItemManager implements Client {
 //			_itemGroupManager.applyGroup(itemHandle, group);
 		}
 
-		HttpWayResponser.writeWebSocket(respMsg.getMsgType(), responseMsg, clientRequestItemName, request);
+//		HttpWayResponser.writeWebSocket(respMsg.getMsgType(), responseMsg, clientRequestItemName, request);
 		if (responseMsg != null) {
 			long endTime = System.currentTimeMillis();
 			logger.info("publish Item " + clientRequestItemName + " use time " + (endTime - startTime)

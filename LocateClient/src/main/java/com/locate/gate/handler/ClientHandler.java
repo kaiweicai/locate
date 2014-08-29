@@ -1,14 +1,21 @@
 package com.locate.gate.handler;
 
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.codec.string.StringDecoder;
+import java.nio.charset.Charset;
+
 import net.sf.json.JSONObject;
+
+import org.jboss.netty.buffer.ChannelBuffer;
+import org.jboss.netty.channel.ChannelHandlerContext;
+import org.jboss.netty.channel.ChannelStateEvent;
+import org.jboss.netty.channel.ExceptionEvent;
+import org.jboss.netty.channel.MessageEvent;
+import org.jboss.netty.channel.SimpleChannelHandler;
 
 import com.locate.common.model.LocateUnionMessage;
 import com.locate.common.utils.JsonUtil;
 import com.locate.face.IBussiness;
 
-public class ClientHandler extends StringDecoder {
+public class ClientHandler extends SimpleChannelHandler {
 	private IBussiness bussinessHandler;
 	private long t0, t1;
 	public ClientHandler(IBussiness bussinessHandler) {
@@ -16,21 +23,24 @@ public class ClientHandler extends StringDecoder {
 	}
 
 	@Override
-	public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-		bussinessHandler.handleException(cause.getCause());
+	public void exceptionCaught(ChannelHandlerContext ctx, ExceptionEvent e) throws Exception {
+		bussinessHandler.handleException(e.getCause());
 	}
 
 	@Override
-	public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+	public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
+		super.messageReceived(ctx, e);
+		ChannelBuffer channelBuffer = (ChannelBuffer) e.getMessage();
+		String msg = channelBuffer.toString(Charset.forName("UTF-8"));
 		JSONObject transJsonObject = JSONObject.fromObject(msg);
 		LocateUnionMessage myUnionMessage = JsonUtil.translateJsonToUionMessage(transJsonObject);
+//		LocateUnionMessage myMessage = (LocateUnionMessage)JSONObject.toBean( transJsonObject, LocateUnionMessage.class);
 		bussinessHandler.handleMessage(myUnionMessage);
 		t1 = System.currentTimeMillis();
 	}
 	
 	@Override
-	public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+	public void channelDisconnected(ChannelHandlerContext ctx, ChannelStateEvent e) throws Exception {
 		bussinessHandler.handleDisconnected();
 	}
-	
 }

@@ -19,7 +19,6 @@ import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
@@ -27,10 +26,6 @@ import javax.swing.table.TableCellRenderer;
 import org.apache.log4j.Logger;
 import org.apache.log4j.xml.DOMConfigurator;
 import org.jboss.netty.channel.SimpleChannelHandler;
-import org.pushingpixels.substance.api.SubstanceLookAndFeel;
-import org.pushingpixels.substance.api.skin.AutumnSkin;
-import org.pushingpixels.substance.api.skin.SubstanceAutumnLookAndFeel;
-import org.pushingpixels.substance.api.skin.SubstanceSaharaLookAndFeel;
 
 import com.locate.client.gui.StatusBar;
 import com.locate.common.LocateMessageTypes;
