@@ -63,8 +63,7 @@ public class SystemProperties {
 			return System.getProperty(name);
 		} else {
 			if (StringUtils.isEmpty(systemProperties.get(name))) {
-				_logger.error("Can't find configuration for " + name, new Exception(
-						"Can't find configuration in config file."));
+				_logger.error("Can't find configuration for " + name);
 //				System.exit(-1);
 			}
 			return systemProperties.get(name);

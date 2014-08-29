@@ -14,10 +14,10 @@ import org.dom4j.io.SAXReader;
 import org.junit.Test;
 
 import com.locate.common.RFANodeconstant;
+import com.locate.common.utils.RFAUtils;
 import com.locate.common.utils.SystemProperties;
 import com.locate.rmds.user.RFAUser;
 import com.locate.rmds.user.RFAUserPermission;
-import com.locate.rmds.util.RFAUtils;
 
 public class RFAUserManagement {
 	

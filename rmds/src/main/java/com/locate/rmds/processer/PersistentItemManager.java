@@ -24,6 +24,7 @@ import com.locate.rmds.statistic.CycleStatistics;
 import com.locate.rmds.statistic.LogTool;
 import com.locate.rmds.statistic.OutputFormatter;
 import com.locate.rmds.statistic.ResourceStatistics;
+import com.reuters.rfa.common.Client;
 import com.reuters.rfa.common.Event;
 import com.reuters.rfa.common.Handle;
 import com.reuters.rfa.omm.OMMItemGroup;
@@ -59,7 +60,7 @@ import com.reuters.rfa.session.omm.OMMSolicitedItemEvent;
  */
 @Service("persistentItemManager")
 @Scope("prototype")
-public class PersistentItemManager implements IProcesser {
+public class PersistentItemManager implements Client,IProcesser {
 	Handle  itemHandle;
 	@Resource
 	QSConsumerProxy _mainApp;

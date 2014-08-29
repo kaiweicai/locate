@@ -4,6 +4,7 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.xml.DOMConfigurator;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
+import com.locate.common.ShutdownWorker;
 import com.locate.common.SystemConstant;
 import com.locate.rmds.QSConsumerProxy;
 
@@ -24,6 +25,9 @@ public class LocatePersistentMain {
 		logger.info("start LocateGateWay!");
 		SystemConstant.springContext = new FileSystemXmlApplicationContext("config/propholder.xml");
 		QSConsumerProxy proxy = SystemConstant.springContext.getBean("qSConsumerProxy", QSConsumerProxy.class);
+		ShutdownWorker shutdownWorker = new ShutdownWorker();
+		shutdownWorker.setName("shutdownWorker");
+		Runtime.getRuntime().addShutdownHook(shutdownWorker);
 		proxy.makeOrder();
 	}
 }

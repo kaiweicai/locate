@@ -2,18 +2,6 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>Persistent</artifactId>
-	<build>
-		<plugins>
-			<plugin>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.1</version>
-				<configuration>
-					<source />
-					<target />
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
 	<parent>
 		<groupId>com.locate</groupId>
 		<artifactId>pt</artifactId>
@@ -29,6 +17,11 @@
 			<groupId>com.locate</groupId>
 			<artifactId>rmds</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.0</version>
 		</dependency>
 	</dependencies>
 </project>

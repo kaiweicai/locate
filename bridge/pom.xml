@@ -1,9 +1,13 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<artifactId>rmds</artifactId>
-	<dependencies>
-		<dependency>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.locate</groupId>
+    <artifactId>pt</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+  </parent>
+  <artifactId>bridge</artifactId>
+  <dependencies>
+  	<dependency>
 			<groupId>com.locate</groupId>
 			<artifactId>commons</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
@@ -50,20 +54,5 @@
 			<artifactId>spring-context</artifactId>
 			<version>3.1.1.RELEASE</version>
 		</dependency>
-		<dependency>
-			<groupId>javax.mail</groupId>
-			<artifactId>javax.mail-api</artifactId>
-			<version>1.5.2</version>
-		</dependency>
-		<dependency>
-			<groupId>com.locate</groupId>
-			<artifactId>bridge</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-	</dependencies>
-	<parent>
-		<groupId>com.locate</groupId>
-		<artifactId>pt</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
-	</parent>
+  </dependencies>
 </project>

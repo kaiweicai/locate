@@ -13,10 +13,8 @@ import com.locate.common.RmdsDataCache;
 import com.locate.common.model.ClientRequest;
 import com.locate.common.model.LocateUnionMessage;
 import com.locate.common.utils.MessageEncapsulator;
-import com.locate.rmds.QSConsumerProxy;
 import com.locate.rmds.client.ClientUserValidator;
 import com.locate.rmds.handler.inter.IRequestHandler;
-import com.locate.rmds.processer.ItemManager;
 import com.locate.rmds.processer.face.IProcesser;
 
 /**
@@ -29,12 +27,10 @@ import com.locate.rmds.processer.face.IProcesser;
 public class GateForwardRFA {
 	
 	static Logger _logger = Logger.getLogger(GateForwardRFA.class.getName());
-	@Resource
-	QSConsumerProxy mainApp;
 	@Resource(name="futhureRequestHandler")
 	private IRequestHandler requestHandler;
 	@Resource
-	private ItemManager itemManager;
+	private IProcesser itemManager;
 	
 	public int process(ClientRequest clientInfo){
 		long startTime = System.currentTimeMillis();

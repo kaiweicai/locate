@@ -12,7 +12,9 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import com.locate.common.LocateMessageTypes;
@@ -56,7 +58,7 @@ import com.reuters.rfa.session.omm.OMMItemIntSpec;
 *  创建时间：2014.5.26   
 *  类说明  netty game  
 */  
-@Service
+@Component("qSConsumerProxy")
 public class QSConsumerProxy{
 	static Logger logger = Logger.getLogger(QSConsumerProxy.class.getName());
 
@@ -327,7 +329,7 @@ public class QSConsumerProxy{
 
 	// This method utilizes ItemManager class to request items
 	public ItemManager itemRequests(String itemName, byte responseMsgType,int channelId) {
-		Map<String,ItemManager> subscribeItemManagerMap = RmdsDataCache.RIC_ITEMMANAGER_Map;
+		Map<String,IProcesser> subscribeItemManagerMap = RmdsDataCache.RIC_ITEMMANAGER_Map;
 		boolean needRenewSubscribeItem=checkSubscribeStatus(itemName);
 		if(needRenewSubscribeItem){
 			//已经订阅过该产品,只需要发送一个一次订阅请求,返回一个snapshot即可.
@@ -378,10 +380,10 @@ public class QSConsumerProxy{
 	 * @return
 	 */
 	private boolean checkSubscribeStatus(String itemName) {
-		Map<String, ItemManager> subscribeItemManagerMap = RmdsDataCache.RIC_ITEMMANAGER_Map;
-		ItemManager itemManager = subscribeItemManagerMap.get(itemName);
+		Map<String, IProcesser> subscribeItemManagerMap = RmdsDataCache.RIC_ITEMMANAGER_Map;
+		ItemManager itemManager = (ItemManager)subscribeItemManagerMap.get(itemName);
 		if(itemManager!=null){
-			Handle itemHandle = subscribeItemManagerMap.get(itemName).getItemHandle();
+			Handle itemHandle = itemManager.getItemHandle();
 			if(itemHandle!=null&&!itemHandle.isActive()){
 				return false;
 			}
@@ -410,6 +412,10 @@ public class QSConsumerProxy{
 	 */
 	public void makeOrder() {
 		String ricArray = SystemProperties.getProperties(SystemProperties.RIC_ARRAY);
+		if(StringUtils.isBlank(ricArray)){
+			logger.warn("persistent Ric is not config correctly!");
+			return;
+		}
 		String[] rics = ricArray.split(",");
 		for (String ric : rics) {
 			itemRequests(ric);
