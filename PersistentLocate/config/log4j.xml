@@ -32,7 +32,7 @@
 		<level value="ERROR" />
 	</logger>
 	<logger name="org.springframework">
-		<level value="debug" />
+		<level value="ERROR" />
 	</logger>
 	<root>
     	<appender-ref ref="CONSOLE" />

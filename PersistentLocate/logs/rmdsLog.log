@@ -58856,3 +58856,1094 @@ Caused by: java.lang.ClassNotFoundException: com.reuters.rfa.common.Client
 [2014-08-28 11:22:53,907][DEBUG,factory.support.DefaultListableBeanFactory.doGetBean(245)] Returning cached instance of singleton bean 'org.springframework.context.annotation.ConfigurationClassPostProcessor$ImportAwareBeanPostProcessor#0'
 [2014-08-28 11:22:53,949][DEBUG,context.support.FileSystemXmlApplicationContext.initLifecycleProcessor(845)] Unable to locate LifecycleProcessor with name 'lifecycleProcessor': using default [org.springframework.context.support.DefaultLifecycleProcessor@5f0c24f7]
 [2014-08-28 11:22:53,950][DEBUG,factory.support.DefaultListableBeanFactory.doGetBean(245)] Returning cached instance of singleton bean 'lifecycleProcessor'
+[2014-08-31 14:33:44,875][INFO,locate.persistent.LocatePersistentMain.main(25)] start LocateGateWay!
+[2014-08-31 14:33:45,812][DEBUG,core.env.StandardEnvironment.<init>(114)] Initializing new StandardEnvironment
+[2014-08-31 14:33:45,828][DEBUG,core.env.StandardEnvironment.addLast(103)] Adding [systemProperties] PropertySource with lowest search precedence
+[2014-08-31 14:33:45,843][DEBUG,core.env.StandardEnvironment.addLast(103)] Adding [systemEnvironment] PropertySource with lowest search precedence
+[2014-08-31 14:33:45,843][DEBUG,core.env.StandardEnvironment.<init>(120)] Initialized StandardEnvironment with PropertySources [systemProperties,systemEnvironment]
+[2014-08-31 14:33:45,859][INFO,context.support.FileSystemXmlApplicationContext.prepareRefresh(495)] Refreshing org.springframework.context.support.FileSystemXmlApplicationContext@b40443: startup date [Sun Aug 31 14:33:45 CST 2014]; root of context hierarchy
+[2014-08-31 14:33:46,031][DEBUG,core.env.StandardEnvironment.<init>(114)] Initializing new StandardEnvironment
+[2014-08-31 14:33:46,031][DEBUG,core.env.StandardEnvironment.addLast(103)] Adding [systemProperties] PropertySource with lowest search precedence
+[2014-08-31 14:33:46,031][DEBUG,core.env.StandardEnvironment.addLast(103)] Adding [systemEnvironment] PropertySource with lowest search precedence
+[2014-08-31 14:33:46,031][DEBUG,core.env.StandardEnvironment.<init>(120)] Initialized StandardEnvironment with PropertySources [systemProperties,systemEnvironment]
+[2014-08-31 14:33:46,031][DEBUG,core.env.StandardEnvironment.<init>(114)] Initializing new StandardEnvironment
+[2014-08-31 14:33:46,031][DEBUG,core.env.StandardEnvironment.addLast(103)] Adding [systemProperties] PropertySource with lowest search precedence
+[2014-08-31 14:33:46,031][DEBUG,core.env.StandardEnvironment.addLast(103)] Adding [systemEnvironment] PropertySource with lowest search precedence
+[2014-08-31 14:33:46,031][DEBUG,core.env.StandardEnvironment.<init>(120)] Initialized StandardEnvironment with PropertySources [systemProperties,systemEnvironment]
+[2014-08-31 14:33:46,109][INFO,factory.xml.XmlBeanDefinitionReader.loadBeanDefinitions(315)] Loading XML bean definitions from file [D:\My Documents\git\locateGateWay\PersistentLocate\config\propholder.xml]
+[2014-08-31 14:33:46,125][DEBUG,factory.xml.DefaultDocumentLoader.loadDocument(72)] Using JAXP provider [org.apache.xerces.jaxp.DocumentBuilderFactoryImpl]
+[2014-08-31 14:33:46,531][DEBUG,factory.xml.PluggableSchemaResolver.getSchemaMappings(140)] Loading schema mappings from [META-INF/spring.schemas]
+[2014-08-31 14:33:46,546][DEBUG,factory.xml.PluggableSchemaResolver.getSchemaMappings(146)] Loaded schema mappings: {http://www.springframework.org/schema/util/spring-util.xsd=org/springframework/beans/factory/xml/spring-util-3.1.xsd, http://www.springframework.org/schema/beans/spring-beans-3.1.xsd=org/springframework/beans/factory/xml/spring-beans-3.1.xsd, http://www.springframework.org/schema/task/spring-task.xsd=org/springframework/scheduling/config/spring-task-3.1.xsd, http://www.springframework.org/schema/cache/spring-cache.xsd=org/springframework/cache/config/spring-cache-3.1.xsd, http://www.springframework.org/schema/aop/spring-aop-3.0.xsd=org/springframework/aop/config/spring-aop-3.0.xsd, http://www.springframework.org/schema/task/spring-task-3.1.xsd=org/springframework/scheduling/config/spring-task-3.1.xsd, http://www.springframework.org/schema/aop/spring-aop-2.0.xsd=org/springframework/aop/config/spring-aop-2.0.xsd, http://www.springframework.org/schema/tool/spring-tool-2.5.xsd=org/springframework/beans/factory/xml/spring-tool-2.5.xsd, http://www.springframework.org/schema/beans/spring-beans.xsd=org/springframework/beans/factory/xml/spring-beans-3.1.xsd, http://www.springframework.org/schema/jee/spring-jee-2.5.xsd=org/springframework/ejb/config/spring-jee-2.5.xsd, http://www.springframework.org/schema/tool/spring-tool-3.1.xsd=org/springframework/beans/factory/xml/spring-tool-3.1.xsd, http://www.springframework.org/schema/aop/spring-aop.xsd=org/springframework/aop/config/spring-aop-3.1.xsd, http://www.springframework.org/schema/jee/spring-jee-3.1.xsd=org/springframework/ejb/config/spring-jee-3.1.xsd, http://www.springframework.org/schema/beans/spring-beans-2.0.xsd=org/springframework/beans/factory/xml/spring-beans-2.0.xsd, http://www.springframework.org/schema/beans/spring-beans-3.0.xsd=org/springframework/beans/factory/xml/spring-beans-3.0.xsd, http://www.springframework.org/schema/task/spring-task-3.0.xsd=org/springframework/scheduling/config/spring-task-3.0.xsd, http://www.springframework.org/schema/context/spring-context-2.5.xsd=org/springframework/context/config/spring-context-2.5.xsd, http://www.springframework.org/schema/tool/spring-tool-3.0.xsd=org/springframework/beans/factory/xml/spring-tool-3.0.xsd, http://www.springframework.org/schema/tool/spring-tool-2.0.xsd=org/springframework/beans/factory/xml/spring-tool-2.0.xsd, http://www.springframework.org/schema/util/spring-util-2.5.xsd=org/springframework/beans/factory/xml/spring-util-2.5.xsd, http://www.springframework.org/schema/lang/spring-lang.xsd=org/springframework/scripting/config/spring-lang-3.1.xsd, http://www.springframework.org/schema/lang/spring-lang-2.5.xsd=org/springframework/scripting/config/spring-lang-2.5.xsd, http://www.springframework.org/schema/jee/spring-jee-3.0.xsd=org/springframework/ejb/config/spring-jee-3.0.xsd, http://www.springframework.org/schema/jee/spring-jee-2.0.xsd=org/springframework/ejb/config/spring-jee-2.0.xsd, http://www.springframework.org/schema/context/spring-context-3.1.xsd=org/springframework/context/config/spring-context-3.1.xsd, http://www.springframework.org/schema/util/spring-util-3.1.xsd=org/springframework/beans/factory/xml/spring-util-3.1.xsd, http://www.springframework.org/schema/lang/spring-lang-3.1.xsd=org/springframework/scripting/config/spring-lang-3.1.xsd, http://www.springframework.org/schema/cache/spring-cache-3.1.xsd=org/springframework/cache/config/spring-cache-3.1.xsd, http://www.springframework.org/schema/context/spring-context.xsd=org/springframework/context/config/spring-context-3.1.xsd, http://www.springframework.org/schema/jee/spring-jee.xsd=org/springframework/ejb/config/spring-jee-3.1.xsd, http://www.springframework.org/schema/aop/spring-aop-2.5.xsd=org/springframework/aop/config/spring-aop-2.5.xsd, http://www.springframework.org/schema/aop/spring-aop-3.1.xsd=org/springframework/aop/config/spring-aop-3.1.xsd, http://www.springframework.org/schema/context/spring-context-3.0.xsd=org/springframework/context/config/spring-context-3.0.xsd, http://www.springframework.org/schema/tool/spring-tool.xsd=org/springframework/beans/factory/xml/spring-tool-3.1.xsd, http://www.springframework.org/schema/util/spring-util-3.0.xsd=org/springframework/beans/factory/xml/spring-util-3.0.xsd, http://www.springframework.org/schema/lang/spring-lang-3.0.xsd=org/springframework/scripting/config/spring-lang-3.0.xsd, http://www.springframework.org/schema/util/spring-util-2.0.xsd=org/springframework/beans/factory/xml/spring-util-2.0.xsd, http://www.springframework.org/schema/lang/spring-lang-2.0.xsd=org/springframework/scripting/config/spring-lang-2.0.xsd, http://www.springframework.org/schema/beans/spring-beans-2.5.xsd=org/springframework/beans/factory/xml/spring-beans-2.5.xsd}
+[2014-08-31 14:33:46,562][DEBUG,factory.xml.PluggableSchemaResolver.resolveEntity(118)] Found XML schema [http://www.springframework.org/schema/beans/spring-beans-3.0.xsd] in classpath: org/springframework/beans/factory/xml/spring-beans-3.0.xsd
+[2014-08-31 14:33:46,703][DEBUG,factory.xml.PluggableSchemaResolver.resolveEntity(118)] Found XML schema [http://www.springframework.org/schema/context/spring-context-3.0.xsd] in classpath: org/springframework/context/config/spring-context-3.0.xsd
+[2014-08-31 14:33:46,734][DEBUG,factory.xml.PluggableSchemaResolver.resolveEntity(118)] Found XML schema [http://www.springframework.org/schema/tool/spring-tool-3.0.xsd] in classpath: org/springframework/beans/factory/xml/spring-tool-3.0.xsd
+[2014-08-31 14:33:46,750][DEBUG,factory.xml.DefaultBeanDefinitionDocumentReader.registerBeanDefinitions(108)] Loading bean definitions
+[2014-08-31 14:33:46,781][DEBUG,factory.xml.DefaultNamespaceHandlerResolver.getHandlerMappings(156)] Loaded NamespaceHandler mappings: {http://www.springframework.org/schema/p=org.springframework.beans.factory.xml.SimplePropertyNamespaceHandler, http://www.springframework.org/schema/util=org.springframework.beans.factory.xml.UtilNamespaceHandler, http://www.springframework.org/schema/jee=org.springframework.ejb.config.JeeNamespaceHandler, http://www.springframework.org/schema/aop=org.springframework.aop.config.AopNamespaceHandler, http://www.springframework.org/schema/cache=org.springframework.cache.config.CacheNamespaceHandler, http://www.springframework.org/schema/c=org.springframework.beans.factory.xml.SimpleConstructorNamespaceHandler, http://www.springframework.org/schema/task=org.springframework.scheduling.config.TaskNamespaceHandler, http://www.springframework.org/schema/lang=org.springframework.scripting.config.LangNamespaceHandler, http://www.springframework.org/schema/context=org.springframework.context.config.ContextNamespaceHandler}
+[2014-08-31 14:33:46,828][DEBUG,core.env.StandardEnvironment.<init>(114)] Initializing new StandardEnvironment
+[2014-08-31 14:33:46,828][DEBUG,core.env.StandardEnvironment.addLast(103)] Adding [systemProperties] PropertySource with lowest search precedence
+[2014-08-31 14:33:46,828][DEBUG,core.env.StandardEnvironment.addLast(103)] Adding [systemEnvironment] PropertySource with lowest search precedence
+[2014-08-31 14:33:46,828][DEBUG,core.env.StandardEnvironment.<init>(120)] Initialized StandardEnvironment with PropertySources [systemProperties,systemEnvironment]
+[2014-08-31 14:33:46,921][DEBUG,io.support.PathMatchingResourcePatternResolver.doFindMatchingFileSystemResources(550)] Looking for matching resources in directory tree [D:\My Documents\git\locateGateWay\PersistentLocate\target\classes\com\locate]
+[2014-08-31 14:33:46,937][DEBUG,io.support.PathMatchingResourcePatternResolver.doRetrieveMatchingFiles(612)] Searching directory [D:\My Documents\git\locateGateWay\PersistentLocate\target\classes\com\locate] for files matching pattern [D:/My Documents/git/locateGateWay/PersistentLocate/target/classes/com/locate/**/*.class]
+[2014-08-31 14:33:46,937][DEBUG,io.support.PathMatchingResourcePatternResolver.doRetrieveMatchingFiles(612)] Searching directory [D:\My Documents\git\locateGateWay\PersistentLocate\target\classes\com\locate\persistent] for files matching pattern [D:/My Documents/git/locateGateWay/PersistentLocate/target/classes/com/locate/**/*.class]
+[2014-08-31 14:33:46,953][DEBUG,io.support.PathMatchingResourcePatternResolver.doFindMatchingFileSystemResources(550)] Looking for matching resources in directory tree [D:\My Documents\git\locateGateWay\commons\target\classes\com\locate]
+[2014-08-31 14:33:46,953][DEBUG,io.support.PathMatchingResourcePatternResolver.doRetrieveMatchingFiles(612)] Searching directory [D:\My Documents\git\locateGateWay\commons\target\classes\com\locate] for files matching pattern [D:/My Documents/git/locateGateWay/commons/target/classes/com/locate/**/*.class]
+[2014-08-31 14:33:46,953][DEBUG,io.support.PathMatchingResourcePatternResolver.doRetrieveMatchingFiles(612)] Searching directory [D:\My Documents\git\locateGateWay\commons\target\classes\com\locate\common] for files matching pattern [D:/My Documents/git/locateGateWay/commons/target/classes/com/locate/**/*.class]
+[2014-08-31 14:33:46,968][DEBUG,io.support.PathMatchingResourcePatternResolver.doRetrieveMatchingFiles(612)] Searching directory [D:\My Documents\git\locateGateWay\commons\target\classes\com\locate\common\model] for files matching pattern [D:/My Documents/git/locateGateWay/commons/target/classes/com/locate/**/*.class]
+[2014-08-31 14:33:47,015][DEBUG,io.support.PathMatchingResourcePatternResolver.doRetrieveMatchingFiles(612)] Searching directory [D:\My Documents\git\locateGateWay\commons\target\classes\com\locate\common\utils] for files matching pattern [D:/My Documents/git/locateGateWay/commons/target/classes/com/locate/**/*.class]
+[2014-08-31 14:33:47,046][DEBUG,io.support.PathMatchingResourcePatternResolver.doRetrieveMatchingFiles(612)] Searching directory [D:\My Documents\git\locateGateWay\commons\target\classes\com\locate\rmds] for files matching pattern [D:/My Documents/git/locateGateWay/commons/target/classes/com/locate/**/*.class]
+[2014-08-31 14:33:47,062][DEBUG,io.support.PathMatchingResourcePatternResolver.doRetrieveMatchingFiles(612)] Searching directory [D:\My Documents\git\locateGateWay\commons\target\classes\com\locate\rmds\handler] for files matching pattern [D:/My Documents/git/locateGateWay/commons/target/classes/com/locate/**/*.class]
+[2014-08-31 14:33:47,062][DEBUG,io.support.PathMatchingResourcePatternResolver.doRetrieveMatchingFiles(612)] Searching directory [D:\My Documents\git\locateGateWay\commons\target\classes\com\locate\rmds\handler\inter] for files matching pattern [D:/My Documents/git/locateGateWay/commons/target/classes/com/locate/**/*.class]
+[2014-08-31 14:33:47,062][DEBUG,io.support.PathMatchingResourcePatternResolver.doRetrieveMatchingFiles(612)] Searching directory [D:\My Documents\git\locateGateWay\commons\target\classes\com\locate\rmds\processer] for files matching pattern [D:/My Documents/git/locateGateWay/commons/target/classes/com/locate/**/*.class]
+[2014-08-31 14:33:47,093][DEBUG,io.support.PathMatchingResourcePatternResolver.doRetrieveMatchingFiles(612)] Searching directory [D:\My Documents\git\locateGateWay\commons\target\classes\com\locate\rmds\processer\face] for files matching pattern [D:/My Documents/git/locateGateWay/commons/target/classes/com/locate/**/*.class]
+[2014-08-31 14:33:47,109][DEBUG,io.support.PathMatchingResourcePatternResolver.doFindMatchingFileSystemResources(550)] Looking for matching resources in directory tree [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate]
+[2014-08-31 14:33:47,109][DEBUG,io.support.PathMatchingResourcePatternResolver.doRetrieveMatchingFiles(612)] Searching directory [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate] for files matching pattern [D:/My Documents/git/locateGateWay/rmds/target/classes/com/locate/**/*.class]
+[2014-08-31 14:33:47,109][DEBUG,io.support.PathMatchingResourcePatternResolver.doRetrieveMatchingFiles(612)] Searching directory [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds] for files matching pattern [D:/My Documents/git/locateGateWay/rmds/target/classes/com/locate/**/*.class]
+[2014-08-31 14:33:47,140][DEBUG,io.support.PathMatchingResourcePatternResolver.doRetrieveMatchingFiles(612)] Searching directory [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\dict] for files matching pattern [D:/My Documents/git/locateGateWay/rmds/target/classes/com/locate/**/*.class]
+[2014-08-31 14:33:47,171][DEBUG,io.support.PathMatchingResourcePatternResolver.doRetrieveMatchingFiles(612)] Searching directory [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\gui] for files matching pattern [D:/My Documents/git/locateGateWay/rmds/target/classes/com/locate/**/*.class]
+[2014-08-31 14:33:47,171][DEBUG,io.support.PathMatchingResourcePatternResolver.doRetrieveMatchingFiles(612)] Searching directory [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\gui\viewer] for files matching pattern [D:/My Documents/git/locateGateWay/rmds/target/classes/com/locate/**/*.class]
+[2014-08-31 14:33:47,187][DEBUG,io.support.PathMatchingResourcePatternResolver.doRetrieveMatchingFiles(612)] Searching directory [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\handler] for files matching pattern [D:/My Documents/git/locateGateWay/rmds/target/classes/com/locate/**/*.class]
+[2014-08-31 14:33:47,218][DEBUG,io.support.PathMatchingResourcePatternResolver.doRetrieveMatchingFiles(612)] Searching directory [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\parser] for files matching pattern [D:/My Documents/git/locateGateWay/rmds/target/classes/com/locate/**/*.class]
+[2014-08-31 14:33:47,234][DEBUG,io.support.PathMatchingResourcePatternResolver.doRetrieveMatchingFiles(612)] Searching directory [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\parser\face] for files matching pattern [D:/My Documents/git/locateGateWay/rmds/target/classes/com/locate/**/*.class]
+[2014-08-31 14:33:47,250][DEBUG,io.support.PathMatchingResourcePatternResolver.doRetrieveMatchingFiles(612)] Searching directory [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\processer] for files matching pattern [D:/My Documents/git/locateGateWay/rmds/target/classes/com/locate/**/*.class]
+[2014-08-31 14:33:47,281][DEBUG,io.support.PathMatchingResourcePatternResolver.doRetrieveMatchingFiles(612)] Searching directory [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\statistic] for files matching pattern [D:/My Documents/git/locateGateWay/rmds/target/classes/com/locate/**/*.class]
+[2014-08-31 14:33:47,296][DEBUG,io.support.PathMatchingResourcePatternResolver.doRetrieveMatchingFiles(612)] Searching directory [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\util] for files matching pattern [D:/My Documents/git/locateGateWay/rmds/target/classes/com/locate/**/*.class]
+[2014-08-31 14:33:47,343][DEBUG,io.support.PathMatchingResourcePatternResolver.doFindMatchingFileSystemResources(550)] Looking for matching resources in directory tree [D:\My Documents\git\locateGateWay\bridge\target\classes\com\locate]
+[2014-08-31 14:33:47,343][DEBUG,io.support.PathMatchingResourcePatternResolver.doRetrieveMatchingFiles(612)] Searching directory [D:\My Documents\git\locateGateWay\bridge\target\classes\com\locate] for files matching pattern [D:/My Documents/git/locateGateWay/bridge/target/classes/com/locate/**/*.class]
+[2014-08-31 14:33:47,343][DEBUG,io.support.PathMatchingResourcePatternResolver.doRetrieveMatchingFiles(612)] Searching directory [D:\My Documents\git\locateGateWay\bridge\target\classes\com\locate\bridge] for files matching pattern [D:/My Documents/git/locateGateWay/bridge/target/classes/com/locate/**/*.class]
+[2014-08-31 14:33:47,375][DEBUG,io.support.PathMatchingResourcePatternResolver.doRetrieveMatchingFiles(612)] Searching directory [D:\My Documents\git\locateGateWay\bridge\target\classes\com\locate\rmds] for files matching pattern [D:/My Documents/git/locateGateWay/bridge/target/classes/com/locate/**/*.class]
+[2014-08-31 14:33:47,375][DEBUG,io.support.PathMatchingResourcePatternResolver.doRetrieveMatchingFiles(612)] Searching directory [D:\My Documents\git\locateGateWay\bridge\target\classes\com\locate\rmds\client] for files matching pattern [D:/My Documents/git/locateGateWay/bridge/target/classes/com/locate/**/*.class]
+[2014-08-31 14:33:47,375][DEBUG,io.support.PathMatchingResourcePatternResolver.doRetrieveMatchingFiles(612)] Searching directory [D:\My Documents\git\locateGateWay\bridge\target\classes\com\locate\rmds\user] for files matching pattern [D:/My Documents/git/locateGateWay/bridge/target/classes/com/locate/**/*.class]
+[2014-08-31 14:33:47,390][DEBUG,io.support.PathMatchingResourcePatternResolver.findPathMatchingResources(351)] Resolved location pattern [classpath*:com/locate/**/*.class] to resources [file [D:\My Documents\git\locateGateWay\PersistentLocate\target\classes\com\locate\persistent\LocatePersistentMain.class], file [D:\My Documents\git\locateGateWay\commons\target\classes\com\locate\common\CryptSecurity.class], file [D:\My Documents\git\locateGateWay\commons\target\classes\com\locate\common\DataBaseCache.class], file [D:\My Documents\git\locateGateWay\commons\target\classes\com\locate\common\GateChannelCache.class], file [D:\My Documents\git\locateGateWay\commons\target\classes\com\locate\common\GateWayExceptionTypes$NETTYExceptionEnum.class], file [D:\My Documents\git\locateGateWay\commons\target\classes\com\locate\common\GateWayExceptionTypes$RFAExceptionEnum.class], file [D:\My Documents\git\locateGateWay\commons\target\classes\com\locate\common\GateWayExceptionTypes$RFAUserAuthentication.class], file [D:\My Documents\git\locateGateWay\commons\target\classes\com\locate\common\GateWayExceptionTypes.class], file [D:\My Documents\git\locateGateWay\commons\target\classes\com\locate\common\LocateException.class], file [D:\My Documents\git\locateGateWay\commons\target\classes\com\locate\common\LocateMessageTypes.class], file [D:\My Documents\git\locateGateWay\commons\target\classes\com\locate\common\LocateResultCode$LocateResponseEnum.class], file [D:\My Documents\git\locateGateWay\commons\target\classes\com\locate\common\LocateResultCode.class], file [D:\My Documents\git\locateGateWay\commons\target\classes\com\locate\common\model\ClientRequest.class], file [D:\My Documents\git\locateGateWay\commons\target\classes\com\locate\common\model\CustomerFiled.class], file [D:\My Documents\git\locateGateWay\commons\target\classes\com\locate\common\model\LocateUnionMessage.class], file [D:\My Documents\git\locateGateWay\commons\target\classes\com\locate\common\RFANodeconstant.class], file [D:\My Documents\git\locateGateWay\commons\target\classes\com\locate\common\RmdsDataCache.class], file [D:\My Documents\git\locateGateWay\commons\target\classes\com\locate\common\ShutdownWorker.class], file [D:\My Documents\git\locateGateWay\commons\target\classes\com\locate\common\SystemConstant.class], file [D:\My Documents\git\locateGateWay\commons\target\classes\com\locate\common\utils\JsonUtil.class], file [D:\My Documents\git\locateGateWay\commons\target\classes\com\locate\common\utils\MessageEncapsulator.class], file [D:\My Documents\git\locateGateWay\commons\target\classes\com\locate\common\utils\NetTimeUtil.class], file [D:\My Documents\git\locateGateWay\commons\target\classes\com\locate\common\utils\RFAUtils.class], file [D:\My Documents\git\locateGateWay\commons\target\classes\com\locate\common\utils\SystemProperties.class], file [D:\My Documents\git\locateGateWay\commons\target\classes\com\locate\common\utils\XmlMessageUtil.class], file [D:\My Documents\git\locateGateWay\commons\target\classes\com\locate\rmds\handler\inter\IRequestHandler.class], file [D:\My Documents\git\locateGateWay\commons\target\classes\com\locate\rmds\processer\EmailNotifier.class], file [D:\My Documents\git\locateGateWay\commons\target\classes\com\locate\rmds\processer\face\INotifier.class], file [D:\My Documents\git\locateGateWay\commons\target\classes\com\locate\rmds\processer\face\IPriceKeeper.class], file [D:\My Documents\git\locateGateWay\commons\target\classes\com\locate\rmds\processer\face\IProcesser.class], file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\dict\DirectoryClient.class], file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\dict\RDMServiceInfo.class], file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\dict\ServiceInfo.class], file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\gui\viewer\FieldValue.class], file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\handler\BaseRequestHandler.class], file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\handler\FuthureRequestHandler.class], file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\parser\face\IOmmParser.class], file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\parser\GenericOMMParser.class], file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\parser\JsonOMMParser.class], file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\parser\LocateOMMParser.class], file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\parser\LoginOMMParser.class], file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\processer\FilePriceKeeper.class], file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\processer\ItemGroupManager$GroupEntry.class], file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\processer\ItemGroupManager$HandleEntry.class], file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\processer\ItemGroupManager.class], file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\processer\ItemManager.class], file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\processer\NewsContentManager.class], file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\processer\NewsItemManager.class], file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\processer\OneTimeItemManager.class], file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\processer\PersistentItemManager.class], file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\processer\RFALoginClient.class], file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\processer\WebItemManager.class], file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\QSConsumerProxy.class], file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\RFAServerManager.class], file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\statistic\CycleStatistics.class], file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\statistic\LogTool.class], file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\statistic\OutputFormatter.class], file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\statistic\ResourceStatistics.class], file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\statistic\StatisticThread.class], file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\util\CommandLine$Option.class], file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\util\CommandLine.class], file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\util\EventFieldUtils.class], file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\util\ExampleUtil.class], file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\util\MD5Encrypt.class], file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\util\MFEncoder$MessageType.class], file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\util\MFEncoder.class], file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\util\RFACommon.class], file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\util\RFATypeConvert.class], file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\util\Rounding.class], file [D:\My Documents\git\locateGateWay\bridge\target\classes\com\locate\bridge\GateForwardRFA.class], file [D:\My Documents\git\locateGateWay\bridge\target\classes\com\locate\bridge\GateWayResponser.class], file [D:\My Documents\git\locateGateWay\bridge\target\classes\com\locate\bridge\HttpWayResponser$1.class], file [D:\My Documents\git\locateGateWay\bridge\target\classes\com\locate\bridge\HttpWayResponser.class], file [D:\My Documents\git\locateGateWay\bridge\target\classes\com\locate\rmds\client\ClientUserValidator.class], file [D:\My Documents\git\locateGateWay\bridge\target\classes\com\locate\rmds\client\RFAUserManagement.class], file [D:\My Documents\git\locateGateWay\bridge\target\classes\com\locate\rmds\user\RFAUser.class], file [D:\My Documents\git\locateGateWay\bridge\target\classes\com\locate\rmds\user\RFAUserPermission.class]]
+[2014-08-31 14:33:47,718][DEBUG,context.annotation.ClassPathBeanDefinitionScanner.findCandidateComponents(244)] Identified candidate component class: file [D:\My Documents\git\locateGateWay\commons\target\classes\com\locate\rmds\processer\EmailNotifier.class]
+[2014-08-31 14:33:47,781][DEBUG,context.annotation.ClassPathBeanDefinitionScanner.findCandidateComponents(244)] Identified candidate component class: file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\handler\FuthureRequestHandler.class]
+[2014-08-31 14:33:47,859][DEBUG,context.annotation.ClassPathBeanDefinitionScanner.findCandidateComponents(244)] Identified candidate component class: file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\parser\LocateOMMParser.class]
+[2014-08-31 14:33:47,875][DEBUG,context.annotation.ClassPathBeanDefinitionScanner.findCandidateComponents(244)] Identified candidate component class: file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\parser\LoginOMMParser.class]
+[2014-08-31 14:33:47,921][DEBUG,context.annotation.ClassPathBeanDefinitionScanner.findCandidateComponents(244)] Identified candidate component class: file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\processer\ItemGroupManager.class]
+[2014-08-31 14:33:47,937][DEBUG,context.annotation.ClassPathBeanDefinitionScanner.findCandidateComponents(244)] Identified candidate component class: file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\processer\ItemManager.class]
+[2014-08-31 14:33:47,968][DEBUG,context.annotation.ClassPathBeanDefinitionScanner.findCandidateComponents(244)] Identified candidate component class: file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\processer\PersistentItemManager.class]
+[2014-08-31 14:33:47,984][DEBUG,context.annotation.ClassPathBeanDefinitionScanner.findCandidateComponents(244)] Identified candidate component class: file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\processer\RFALoginClient.class]
+[2014-08-31 14:33:48,000][DEBUG,context.annotation.ClassPathBeanDefinitionScanner.findCandidateComponents(244)] Identified candidate component class: file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\processer\WebItemManager.class]
+[2014-08-31 14:33:48,031][DEBUG,context.annotation.ClassPathBeanDefinitionScanner.findCandidateComponents(244)] Identified candidate component class: file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\QSConsumerProxy.class]
+[2014-08-31 14:33:48,046][DEBUG,context.annotation.ClassPathBeanDefinitionScanner.findCandidateComponents(244)] Identified candidate component class: file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\RFAServerManager.class]
+[2014-08-31 14:33:48,187][DEBUG,context.annotation.ClassPathBeanDefinitionScanner.findCandidateComponents(244)] Identified candidate component class: file [D:\My Documents\git\locateGateWay\bridge\target\classes\com\locate\bridge\GateForwardRFA.class]
+[2014-08-31 14:33:48,328][DEBUG,factory.xml.XmlBeanDefinitionReader.loadBeanDefinitions(216)] Loaded 16 bean definitions from location pattern [config/propholder.xml]
+[2014-08-31 14:33:48,328][DEBUG,context.support.FileSystemXmlApplicationContext.obtainFreshBeanFactory(525)] Bean factory for org.springframework.context.support.FileSystemXmlApplicationContext@b40443: org.springframework.beans.factory.support.DefaultListableBeanFactory@140ef69: defining beans [emailNotifier,futhureRequestHandler,locateOMMParser,loginOMMParser,itemGroupManager,itemManager,persistentItemManager,RFALoginClient,webItemManager,qSConsumerProxy,RFAServerManager,gateForwardRFA,org.springframework.context.annotation.internalConfigurationAnnotationProcessor,org.springframework.context.annotation.internalAutowiredAnnotationProcessor,org.springframework.context.annotation.internalRequiredAnnotationProcessor,org.springframework.context.annotation.internalCommonAnnotationProcessor]; root of factory hierarchy
+[2014-08-31 14:33:48,437][DEBUG,factory.support.DefaultListableBeanFactory.getSingleton(217)] Creating shared instance of singleton bean 'org.springframework.context.annotation.internalConfigurationAnnotationProcessor'
+[2014-08-31 14:33:48,437][DEBUG,factory.support.DefaultListableBeanFactory.createBean(430)] Creating instance of bean 'org.springframework.context.annotation.internalConfigurationAnnotationProcessor'
+[2014-08-31 14:33:48,625][DEBUG,factory.support.DefaultListableBeanFactory.doCreateBean(504)] Eagerly caching bean 'org.springframework.context.annotation.internalConfigurationAnnotationProcessor' to allow for resolving potential circular references
+[2014-08-31 14:33:48,625][DEBUG,factory.support.DefaultListableBeanFactory.createBean(458)] Finished creating instance of bean 'org.springframework.context.annotation.internalConfigurationAnnotationProcessor'
+[2014-08-31 14:33:48,750][DEBUG,factory.support.DefaultListableBeanFactory.getSingleton(217)] Creating shared instance of singleton bean 'org.springframework.context.annotation.internalAutowiredAnnotationProcessor'
+[2014-08-31 14:33:48,750][DEBUG,factory.support.DefaultListableBeanFactory.createBean(430)] Creating instance of bean 'org.springframework.context.annotation.internalAutowiredAnnotationProcessor'
+[2014-08-31 14:33:48,750][DEBUG,factory.support.DefaultListableBeanFactory.doCreateBean(504)] Eagerly caching bean 'org.springframework.context.annotation.internalAutowiredAnnotationProcessor' to allow for resolving potential circular references
+[2014-08-31 14:33:48,750][DEBUG,factory.support.DefaultListableBeanFactory.createBean(458)] Finished creating instance of bean 'org.springframework.context.annotation.internalAutowiredAnnotationProcessor'
+[2014-08-31 14:33:48,750][DEBUG,factory.support.DefaultListableBeanFactory.getSingleton(217)] Creating shared instance of singleton bean 'org.springframework.context.annotation.internalRequiredAnnotationProcessor'
+[2014-08-31 14:33:48,750][DEBUG,factory.support.DefaultListableBeanFactory.createBean(430)] Creating instance of bean 'org.springframework.context.annotation.internalRequiredAnnotationProcessor'
+[2014-08-31 14:33:48,750][DEBUG,factory.support.DefaultListableBeanFactory.doCreateBean(504)] Eagerly caching bean 'org.springframework.context.annotation.internalRequiredAnnotationProcessor' to allow for resolving potential circular references
+[2014-08-31 14:33:48,750][DEBUG,factory.support.DefaultListableBeanFactory.createBean(458)] Finished creating instance of bean 'org.springframework.context.annotation.internalRequiredAnnotationProcessor'
+[2014-08-31 14:33:48,750][DEBUG,factory.support.DefaultListableBeanFactory.getSingleton(217)] Creating shared instance of singleton bean 'org.springframework.context.annotation.internalCommonAnnotationProcessor'
+[2014-08-31 14:33:48,750][DEBUG,factory.support.DefaultListableBeanFactory.createBean(430)] Creating instance of bean 'org.springframework.context.annotation.internalCommonAnnotationProcessor'
+[2014-08-31 14:33:48,781][DEBUG,factory.support.DefaultListableBeanFactory.doCreateBean(504)] Eagerly caching bean 'org.springframework.context.annotation.internalCommonAnnotationProcessor' to allow for resolving potential circular references
+[2014-08-31 14:33:48,781][DEBUG,factory.support.DefaultListableBeanFactory.createBean(458)] Finished creating instance of bean 'org.springframework.context.annotation.internalCommonAnnotationProcessor'
+[2014-08-31 14:33:48,781][DEBUG,factory.support.DefaultListableBeanFactory.getSingleton(217)] Creating shared instance of singleton bean 'org.springframework.context.annotation.ConfigurationClassPostProcessor$ImportAwareBeanPostProcessor#0'
+[2014-08-31 14:33:48,781][DEBUG,factory.support.DefaultListableBeanFactory.createBean(430)] Creating instance of bean 'org.springframework.context.annotation.ConfigurationClassPostProcessor$ImportAwareBeanPostProcessor#0'
+[2014-08-31 14:33:48,781][DEBUG,factory.support.DefaultListableBeanFactory.doCreateBean(504)] Eagerly caching bean 'org.springframework.context.annotation.ConfigurationClassPostProcessor$ImportAwareBeanPostProcessor#0' to allow for resolving potential circular references
+[2014-08-31 14:33:48,781][DEBUG,factory.support.DefaultListableBeanFactory.createBean(458)] Finished creating instance of bean 'org.springframework.context.annotation.ConfigurationClassPostProcessor$ImportAwareBeanPostProcessor#0'
+[2014-08-31 14:33:48,796][DEBUG,context.support.FileSystemXmlApplicationContext.initMessageSource(794)] Unable to locate MessageSource with name 'messageSource': using default [org.springframework.context.support.DelegatingMessageSource@7d72df]
+[2014-08-31 14:33:48,812][DEBUG,context.support.FileSystemXmlApplicationContext.initApplicationEventMulticaster(818)] Unable to locate ApplicationEventMulticaster with name 'applicationEventMulticaster': using default [org.springframework.context.event.SimpleApplicationEventMulticaster@b9237a]
+[2014-08-31 14:33:48,812][INFO,factory.support.DefaultListableBeanFactory.preInstantiateSingletons(557)] Pre-instantiating singletons in org.springframework.beans.factory.support.DefaultListableBeanFactory@140ef69: defining beans [emailNotifier,futhureRequestHandler,locateOMMParser,loginOMMParser,itemGroupManager,itemManager,persistentItemManager,RFALoginClient,webItemManager,qSConsumerProxy,RFAServerManager,gateForwardRFA,org.springframework.context.annotation.internalConfigurationAnnotationProcessor,org.springframework.context.annotation.internalAutowiredAnnotationProcessor,org.springframework.context.annotation.internalRequiredAnnotationProcessor,org.springframework.context.annotation.internalCommonAnnotationProcessor,org.springframework.context.annotation.ConfigurationClassPostProcessor$ImportAwareBeanPostProcessor#0]; root of factory hierarchy
+[2014-08-31 14:33:48,812][DEBUG,factory.support.DefaultListableBeanFactory.getSingleton(217)] Creating shared instance of singleton bean 'emailNotifier'
+[2014-08-31 14:33:48,812][DEBUG,factory.support.DefaultListableBeanFactory.createBean(430)] Creating instance of bean 'emailNotifier'
+[2014-08-31 14:33:48,859][DEBUG,factory.support.DefaultListableBeanFactory.doCreateBean(504)] Eagerly caching bean 'emailNotifier' to allow for resolving potential circular references
+[2014-08-31 14:33:48,921][DEBUG,factory.support.DefaultListableBeanFactory.createBean(458)] Finished creating instance of bean 'emailNotifier'
+[2014-08-31 14:33:48,921][DEBUG,factory.support.DefaultListableBeanFactory.getSingleton(217)] Creating shared instance of singleton bean 'futhureRequestHandler'
+[2014-08-31 14:33:48,921][DEBUG,factory.support.DefaultListableBeanFactory.createBean(430)] Creating instance of bean 'futhureRequestHandler'
+[2014-08-31 14:33:48,953][DEBUG,factory.annotation.InjectionMetadata.<init>(60)] Found injected element on class [com.locate.rmds.handler.FuthureRequestHandler]: ResourceElement for private com.locate.rmds.QSConsumerProxy com.locate.rmds.handler.FuthureRequestHandler.mainApp
+[2014-08-31 14:33:48,953][DEBUG,factory.support.DefaultListableBeanFactory.doCreateBean(504)] Eagerly caching bean 'futhureRequestHandler' to allow for resolving potential circular references
+[2014-08-31 14:33:48,968][DEBUG,factory.annotation.InjectionMetadata.inject(85)] Processing injected method of bean 'futhureRequestHandler': ResourceElement for private com.locate.rmds.QSConsumerProxy com.locate.rmds.handler.FuthureRequestHandler.mainApp
+[2014-08-31 14:33:48,968][DEBUG,factory.support.DefaultListableBeanFactory.getSingleton(217)] Creating shared instance of singleton bean 'qSConsumerProxy'
+[2014-08-31 14:33:48,968][DEBUG,factory.support.DefaultListableBeanFactory.createBean(430)] Creating instance of bean 'qSConsumerProxy'
+[2014-08-31 14:33:49,015][DEBUG,context.annotation.CommonAnnotationBeanPostProcessor.buildLifecycleMetadata(202)] Found init method on class [com.locate.rmds.QSConsumerProxy]: public void com.locate.rmds.QSConsumerProxy.init()
+[2014-08-31 14:33:49,015][DEBUG,context.annotation.CommonAnnotationBeanPostProcessor.buildLifecycleMetadata(210)] Found destroy method on class [com.locate.rmds.QSConsumerProxy]: public void com.locate.rmds.QSConsumerProxy.cleanup()
+[2014-08-31 14:33:49,015][DEBUG,context.annotation.CommonAnnotationBeanPostProcessor.<init>(253)] Found init method on class [com.locate.rmds.QSConsumerProxy]: org.springframework.beans.factory.annotation.InitDestroyAnnotationBeanPostProcessor$LifecycleElement@316510
+[2014-08-31 14:33:49,015][DEBUG,context.annotation.CommonAnnotationBeanPostProcessor.<init>(261)] Found destroy method on class [com.locate.rmds.QSConsumerProxy]: org.springframework.beans.factory.annotation.InitDestroyAnnotationBeanPostProcessor$LifecycleElement@331156a4
+[2014-08-31 14:33:49,031][DEBUG,factory.annotation.InjectionMetadata.<init>(60)] Found injected element on class [com.locate.rmds.QSConsumerProxy]: ResourceElement for protected com.locate.rmds.processer.RFALoginClient com.locate.rmds.QSConsumerProxy._loginClient
+[2014-08-31 14:33:49,031][DEBUG,factory.annotation.InjectionMetadata.<init>(60)] Found injected element on class [com.locate.rmds.QSConsumerProxy]: ResourceElement for protected com.locate.rmds.processer.ItemGroupManager com.locate.rmds.QSConsumerProxy._itemGroupManager
+[2014-08-31 14:33:49,031][DEBUG,factory.support.DefaultListableBeanFactory.doCreateBean(504)] Eagerly caching bean 'qSConsumerProxy' to allow for resolving potential circular references
+[2014-08-31 14:33:49,046][DEBUG,factory.annotation.InjectionMetadata.inject(85)] Processing injected method of bean 'qSConsumerProxy': ResourceElement for protected com.locate.rmds.processer.RFALoginClient com.locate.rmds.QSConsumerProxy._loginClient
+[2014-08-31 14:33:49,046][DEBUG,factory.support.DefaultListableBeanFactory.getSingleton(217)] Creating shared instance of singleton bean 'RFALoginClient'
+[2014-08-31 14:33:49,046][DEBUG,factory.support.DefaultListableBeanFactory.createBean(430)] Creating instance of bean 'RFALoginClient'
+[2014-08-31 14:33:49,078][DEBUG,factory.annotation.InjectionMetadata.<init>(60)] Found injected element on class [com.locate.rmds.processer.RFALoginClient]: ResourceElement for com.locate.rmds.QSConsumerProxy com.locate.rmds.processer.RFALoginClient._mainApp
+[2014-08-31 14:33:49,078][DEBUG,factory.annotation.InjectionMetadata.<init>(60)] Found injected element on class [com.locate.rmds.processer.RFALoginClient]: ResourceElement for com.locate.rmds.processer.face.INotifier com.locate.rmds.processer.RFALoginClient.notifier
+[2014-08-31 14:33:49,078][DEBUG,factory.annotation.InjectionMetadata.<init>(60)] Found injected element on class [com.locate.rmds.processer.RFALoginClient]: ResourceElement for com.locate.rmds.parser.face.IOmmParser com.locate.rmds.processer.RFALoginClient.ommParser
+[2014-08-31 14:33:49,078][DEBUG,factory.support.DefaultListableBeanFactory.doCreateBean(504)] Eagerly caching bean 'RFALoginClient' to allow for resolving potential circular references
+[2014-08-31 14:33:49,078][DEBUG,factory.annotation.InjectionMetadata.inject(85)] Processing injected method of bean 'RFALoginClient': ResourceElement for com.locate.rmds.QSConsumerProxy com.locate.rmds.processer.RFALoginClient._mainApp
+[2014-08-31 14:33:49,078][DEBUG,factory.support.DefaultListableBeanFactory.doGetBean(241)] Returning eagerly cached instance of singleton bean 'qSConsumerProxy' that is not fully initialized yet - a consequence of a circular reference
+[2014-08-31 14:33:49,078][DEBUG,factory.annotation.InjectionMetadata.inject(85)] Processing injected method of bean 'RFALoginClient': ResourceElement for com.locate.rmds.processer.face.INotifier com.locate.rmds.processer.RFALoginClient.notifier
+[2014-08-31 14:33:49,078][DEBUG,factory.support.DefaultListableBeanFactory.doGetBean(245)] Returning cached instance of singleton bean 'emailNotifier'
+[2014-08-31 14:33:49,078][DEBUG,factory.annotation.InjectionMetadata.inject(85)] Processing injected method of bean 'RFALoginClient': ResourceElement for com.locate.rmds.parser.face.IOmmParser com.locate.rmds.processer.RFALoginClient.ommParser
+[2014-08-31 14:33:49,078][DEBUG,factory.support.DefaultListableBeanFactory.getSingleton(217)] Creating shared instance of singleton bean 'loginOMMParser'
+[2014-08-31 14:33:49,078][DEBUG,factory.support.DefaultListableBeanFactory.createBean(430)] Creating instance of bean 'loginOMMParser'
+[2014-08-31 14:33:49,093][DEBUG,factory.support.DefaultListableBeanFactory.doCreateBean(504)] Eagerly caching bean 'loginOMMParser' to allow for resolving potential circular references
+[2014-08-31 14:33:49,109][DEBUG,factory.support.DefaultListableBeanFactory.createBean(458)] Finished creating instance of bean 'loginOMMParser'
+[2014-08-31 14:33:49,109][DEBUG,factory.support.DefaultListableBeanFactory.createBean(458)] Finished creating instance of bean 'RFALoginClient'
+[2014-08-31 14:33:49,109][DEBUG,factory.annotation.InjectionMetadata.inject(85)] Processing injected method of bean 'qSConsumerProxy': ResourceElement for protected com.locate.rmds.processer.ItemGroupManager com.locate.rmds.QSConsumerProxy._itemGroupManager
+[2014-08-31 14:33:49,109][DEBUG,factory.support.DefaultListableBeanFactory.getSingleton(217)] Creating shared instance of singleton bean 'itemGroupManager'
+[2014-08-31 14:33:49,109][DEBUG,factory.support.DefaultListableBeanFactory.createBean(430)] Creating instance of bean 'itemGroupManager'
+[2014-08-31 14:33:49,109][DEBUG,factory.annotation.InjectionMetadata.<init>(60)] Found injected element on class [com.locate.rmds.processer.ItemGroupManager]: ResourceElement for com.locate.rmds.QSConsumerProxy com.locate.rmds.processer.ItemGroupManager._mainApp
+[2014-08-31 14:33:49,109][DEBUG,factory.support.DefaultListableBeanFactory.doCreateBean(504)] Eagerly caching bean 'itemGroupManager' to allow for resolving potential circular references
+[2014-08-31 14:33:49,125][DEBUG,factory.annotation.InjectionMetadata.inject(85)] Processing injected method of bean 'itemGroupManager': ResourceElement for com.locate.rmds.QSConsumerProxy com.locate.rmds.processer.ItemGroupManager._mainApp
+[2014-08-31 14:33:49,125][DEBUG,factory.support.DefaultListableBeanFactory.doGetBean(241)] Returning eagerly cached instance of singleton bean 'qSConsumerProxy' that is not fully initialized yet - a consequence of a circular reference
+[2014-08-31 14:33:49,125][DEBUG,factory.support.DefaultListableBeanFactory.createBean(458)] Finished creating instance of bean 'itemGroupManager'
+[2014-08-31 14:33:49,125][DEBUG,context.annotation.CommonAnnotationBeanPostProcessor.invokeInitMethods(297)] Invoking init method on bean 'qSConsumerProxy': public void com.locate.rmds.QSConsumerProxy.init()
+[2014-08-31 14:33:49,984][INFO,locate.rmds.QSConsumerProxy.initializeDictionary(592)] field dictionary read from RDMFieldDictionary file
+[2014-08-31 14:33:50,062][INFO,locate.rmds.QSConsumerProxy.initializeDictionary(595)] enum dictionary read from enumtype.def file
+[2014-08-31 14:33:51,046][INFO,rmds.client.RFAUserManagement.init(80)] Completed loading user config.
+[2014-08-31 14:33:51,453][INFO,rmds.processer.RFALoginClient.sendRequest(83)] Sending login request
+[2014-08-31 14:33:51,484][DEBUG,factory.support.DefaultListableBeanFactory.createBean(458)] Finished creating instance of bean 'qSConsumerProxy'
+[2014-08-31 14:33:51,484][DEBUG,factory.support.DefaultListableBeanFactory.createBean(458)] Finished creating instance of bean 'futhureRequestHandler'
+[2014-08-31 14:33:51,484][DEBUG,factory.support.DefaultListableBeanFactory.getSingleton(217)] Creating shared instance of singleton bean 'locateOMMParser'
+[2014-08-31 14:33:51,484][DEBUG,factory.support.DefaultListableBeanFactory.createBean(430)] Creating instance of bean 'locateOMMParser'
+[2014-08-31 14:33:51,484][DEBUG,factory.support.DefaultListableBeanFactory.doCreateBean(504)] Eagerly caching bean 'locateOMMParser' to allow for resolving potential circular references
+[2014-08-31 14:33:51,484][DEBUG,factory.support.DefaultListableBeanFactory.createBean(458)] Finished creating instance of bean 'locateOMMParser'
+[2014-08-31 14:33:51,484][DEBUG,factory.support.DefaultListableBeanFactory.doGetBean(245)] Returning cached instance of singleton bean 'loginOMMParser'
+[2014-08-31 14:33:51,484][DEBUG,factory.support.DefaultListableBeanFactory.doGetBean(245)] Returning cached instance of singleton bean 'itemGroupManager'
+[2014-08-31 14:33:51,484][DEBUG,factory.support.DefaultListableBeanFactory.doGetBean(245)] Returning cached instance of singleton bean 'RFALoginClient'
+[2014-08-31 14:33:51,484][DEBUG,factory.support.DefaultListableBeanFactory.getSingleton(217)] Creating shared instance of singleton bean 'webItemManager'
+[2014-08-31 14:33:51,484][DEBUG,factory.support.DefaultListableBeanFactory.createBean(430)] Creating instance of bean 'webItemManager'
+[2014-08-31 14:33:51,484][DEBUG,factory.annotation.InjectionMetadata.<init>(60)] Found injected element on class [com.locate.rmds.processer.WebItemManager]: ResourceElement for com.locate.rmds.QSConsumerProxy com.locate.rmds.processer.WebItemManager.mainApp
+[2014-08-31 14:33:51,484][DEBUG,factory.support.DefaultListableBeanFactory.doCreateBean(504)] Eagerly caching bean 'webItemManager' to allow for resolving potential circular references
+[2014-08-31 14:33:51,500][DEBUG,factory.annotation.InjectionMetadata.inject(85)] Processing injected method of bean 'webItemManager': ResourceElement for com.locate.rmds.QSConsumerProxy com.locate.rmds.processer.WebItemManager.mainApp
+[2014-08-31 14:33:51,500][DEBUG,factory.support.DefaultListableBeanFactory.doGetBean(245)] Returning cached instance of singleton bean 'qSConsumerProxy'
+[2014-08-31 14:33:51,500][DEBUG,factory.support.DefaultListableBeanFactory.createBean(458)] Finished creating instance of bean 'webItemManager'
+[2014-08-31 14:33:51,500][DEBUG,factory.support.DefaultListableBeanFactory.doGetBean(245)] Returning cached instance of singleton bean 'qSConsumerProxy'
+[2014-08-31 14:33:51,500][DEBUG,factory.support.DefaultListableBeanFactory.getSingleton(217)] Creating shared instance of singleton bean 'RFAServerManager'
+[2014-08-31 14:33:51,500][DEBUG,factory.support.DefaultListableBeanFactory.createBean(430)] Creating instance of bean 'RFAServerManager'
+[2014-08-31 14:33:51,500][DEBUG,context.annotation.CommonAnnotationBeanPostProcessor.buildLifecycleMetadata(202)] Found init method on class [com.locate.rmds.RFAServerManager]: public void com.locate.rmds.RFAServerManager.init()
+[2014-08-31 14:33:51,500][DEBUG,context.annotation.CommonAnnotationBeanPostProcessor.<init>(253)] Found init method on class [com.locate.rmds.RFAServerManager]: org.springframework.beans.factory.annotation.InitDestroyAnnotationBeanPostProcessor$LifecycleElement@316510
+[2014-08-31 14:33:51,500][DEBUG,factory.annotation.InjectionMetadata.<init>(60)] Found injected element on class [com.locate.rmds.RFAServerManager]: ResourceElement for private com.locate.rmds.QSConsumerProxy com.locate.rmds.RFAServerManager.demo
+[2014-08-31 14:33:51,500][DEBUG,factory.support.DefaultListableBeanFactory.doCreateBean(504)] Eagerly caching bean 'RFAServerManager' to allow for resolving potential circular references
+[2014-08-31 14:33:51,531][DEBUG,factory.annotation.InjectionMetadata.inject(85)] Processing injected method of bean 'RFAServerManager': ResourceElement for private com.locate.rmds.QSConsumerProxy com.locate.rmds.RFAServerManager.demo
+[2014-08-31 14:33:51,531][DEBUG,factory.support.DefaultListableBeanFactory.doGetBean(245)] Returning cached instance of singleton bean 'qSConsumerProxy'
+[2014-08-31 14:33:51,531][DEBUG,context.annotation.CommonAnnotationBeanPostProcessor.invokeInitMethods(297)] Invoking init method on bean 'RFAServerManager': public void com.locate.rmds.RFAServerManager.init()
+[2014-08-31 14:33:51,531][DEBUG,factory.support.DefaultListableBeanFactory.createBean(458)] Finished creating instance of bean 'RFAServerManager'
+[2014-08-31 14:33:51,531][DEBUG,factory.support.DefaultListableBeanFactory.getSingleton(217)] Creating shared instance of singleton bean 'gateForwardRFA'
+[2014-08-31 14:33:51,546][DEBUG,factory.support.DefaultListableBeanFactory.createBean(430)] Creating instance of bean 'gateForwardRFA'
+[2014-08-31 14:33:51,546][DEBUG,factory.annotation.InjectionMetadata.<init>(60)] Found injected element on class [com.locate.bridge.GateForwardRFA]: ResourceElement for private com.locate.rmds.handler.inter.IRequestHandler com.locate.bridge.GateForwardRFA.requestHandler
+[2014-08-31 14:33:51,546][DEBUG,factory.annotation.InjectionMetadata.<init>(60)] Found injected element on class [com.locate.bridge.GateForwardRFA]: ResourceElement for private com.locate.rmds.processer.face.IProcesser com.locate.bridge.GateForwardRFA.itemManager
+[2014-08-31 14:33:51,546][DEBUG,factory.support.DefaultListableBeanFactory.doCreateBean(504)] Eagerly caching bean 'gateForwardRFA' to allow for resolving potential circular references
+[2014-08-31 14:33:51,562][DEBUG,factory.annotation.InjectionMetadata.inject(85)] Processing injected method of bean 'gateForwardRFA': ResourceElement for private com.locate.rmds.handler.inter.IRequestHandler com.locate.bridge.GateForwardRFA.requestHandler
+[2014-08-31 14:33:51,562][DEBUG,factory.support.DefaultListableBeanFactory.doGetBean(245)] Returning cached instance of singleton bean 'futhureRequestHandler'
+[2014-08-31 14:33:51,562][DEBUG,factory.annotation.InjectionMetadata.inject(85)] Processing injected method of bean 'gateForwardRFA': ResourceElement for private com.locate.rmds.processer.face.IProcesser com.locate.bridge.GateForwardRFA.itemManager
+[2014-08-31 14:33:51,562][DEBUG,factory.support.DefaultListableBeanFactory.createBean(430)] Creating instance of bean 'itemManager'
+[2014-08-31 14:33:51,703][INFO,locate.bridge.GateWayResponser.brodcastStateResp(74)] None user loginin!
+[2014-08-31 14:33:51,703][ERROR,rmds.processer.RFALoginClient.processEvent(205)] Login not success.Please check!
+ Received Login Response - MsgType.REFRESH_RESP
+[2014-08-31 14:33:51,703][ERROR,locate.rmds.QSConsumerProxy.loginFailure(314)] Login has been denied / rejected / closed 
+[2014-08-31 14:33:51,718][INFO,rmds.parser.LoginOMMParser.parseAggregate(459)] test for cloud wei```````````````````````fieldNum is 9
+[2014-08-31 14:33:51,718][INFO,rmds.parser.LoginOMMParser.parse(134)] 
+
+MESSAGE
+	Msg Type: MsgType.REFRESH_RESP
+	Msg Model Type: LOGIN
+	Indication Flags: REFRESH_COMPLETE
+	Hint Flags: HAS_ATTRIB_INFO | HAS_ITEM_GROUP | HAS_RESP_TYPE_NUM | HAS_STATE
+	State: OPEN, SUSPECT, NONE,  "All connections pending"
+	Group: 0000
+	RespTypeNum: 0 (RespType.SOLICITED)
+	AttribInfo
+		Name: deve01
+		NameType: 1
+			(USER_NAME)
+		Attrib
+			ELEMENT_LIST
+					ELEMENT_ENTRY ApplicationId: 256
+					ELEMENT_ENTRY Position: 192.168.1.102/20020101-0005
+					ELEMENT_ENTRY AllowSuspectData: 1
+					ELEMENT_ENTRY SingleOpen: 1
+					ELEMENT_ENTRY SupportBatchRequests: 1
+					ELEMENT_ENTRY SupportOptimizedPauseResume: 1
+					ELEMENT_ENTRY SupportPauseResume: 1
+					ELEMENT_ENTRY SupportViewRequests: 1
+					ELEMENT_ENTRY SupportOMMPost: 1
+
+	 Payload: 
+		 None 
+[2014-08-31 14:33:51,750][DEBUG,factory.annotation.InjectionMetadata.<init>(60)] Found injected element on class [com.locate.rmds.processer.ItemManager]: ResourceElement for com.locate.rmds.QSConsumerProxy com.locate.rmds.processer.ItemManager._mainApp
+[2014-08-31 14:33:51,750][DEBUG,factory.annotation.InjectionMetadata.<init>(60)] Found injected element on class [com.locate.rmds.processer.ItemManager]: ResourceElement for com.locate.rmds.processer.ItemGroupManager com.locate.rmds.processer.ItemManager._itemGroupManager
+[2014-08-31 14:33:51,750][DEBUG,factory.annotation.InjectionMetadata.<init>(60)] Found injected element on class [com.locate.rmds.processer.ItemManager]: ResourceElement for com.locate.rmds.parser.face.IOmmParser com.locate.rmds.processer.ItemManager.ommParser
+[2014-08-31 14:33:51,765][DEBUG,factory.annotation.InjectionMetadata.inject(85)] Processing injected method of bean 'itemManager': ResourceElement for com.locate.rmds.QSConsumerProxy com.locate.rmds.processer.ItemManager._mainApp
+[2014-08-31 14:33:51,765][DEBUG,factory.support.DefaultListableBeanFactory.doGetBean(245)] Returning cached instance of singleton bean 'qSConsumerProxy'
+[2014-08-31 14:33:51,765][DEBUG,factory.annotation.InjectionMetadata.inject(85)] Processing injected method of bean 'itemManager': ResourceElement for com.locate.rmds.processer.ItemGroupManager com.locate.rmds.processer.ItemManager._itemGroupManager
+[2014-08-31 14:33:51,765][DEBUG,factory.support.DefaultListableBeanFactory.doGetBean(245)] Returning cached instance of singleton bean 'itemGroupManager'
+[2014-08-31 14:33:51,765][DEBUG,factory.annotation.InjectionMetadata.inject(85)] Processing injected method of bean 'itemManager': ResourceElement for com.locate.rmds.parser.face.IOmmParser com.locate.rmds.processer.ItemManager.ommParser
+[2014-08-31 14:33:51,765][DEBUG,factory.support.DefaultListableBeanFactory.doGetBean(245)] Returning cached instance of singleton bean 'locateOMMParser'
+[2014-08-31 14:33:51,765][DEBUG,factory.support.DefaultListableBeanFactory.createBean(458)] Finished creating instance of bean 'itemManager'
+[2014-08-31 14:33:51,765][DEBUG,factory.support.DefaultListableBeanFactory.createBean(458)] Finished creating instance of bean 'gateForwardRFA'
+[2014-08-31 14:33:51,765][DEBUG,factory.support.DefaultListableBeanFactory.doGetBean(245)] Returning cached instance of singleton bean 'org.springframework.context.annotation.internalConfigurationAnnotationProcessor'
+[2014-08-31 14:33:51,765][DEBUG,factory.support.DefaultListableBeanFactory.doGetBean(245)] Returning cached instance of singleton bean 'org.springframework.context.annotation.internalAutowiredAnnotationProcessor'
+[2014-08-31 14:33:51,765][DEBUG,factory.support.DefaultListableBeanFactory.doGetBean(245)] Returning cached instance of singleton bean 'org.springframework.context.annotation.internalRequiredAnnotationProcessor'
+[2014-08-31 14:33:51,765][DEBUG,factory.support.DefaultListableBeanFactory.doGetBean(245)] Returning cached instance of singleton bean 'org.springframework.context.annotation.internalCommonAnnotationProcessor'
+[2014-08-31 14:33:51,765][DEBUG,factory.support.DefaultListableBeanFactory.doGetBean(245)] Returning cached instance of singleton bean 'org.springframework.context.annotation.ConfigurationClassPostProcessor$ImportAwareBeanPostProcessor#0'
+[2014-08-31 14:33:51,796][DEBUG,context.support.FileSystemXmlApplicationContext.initLifecycleProcessor(845)] Unable to locate LifecycleProcessor with name 'lifecycleProcessor': using default [org.springframework.context.support.DefaultLifecycleProcessor@1303e3b]
+[2014-08-31 14:33:51,796][DEBUG,factory.support.DefaultListableBeanFactory.doGetBean(245)] Returning cached instance of singleton bean 'lifecycleProcessor'
+[2014-08-31 14:33:51,796][DEBUG,factory.support.DefaultListableBeanFactory.doGetBean(245)] Returning cached instance of singleton bean 'qSConsumerProxy'
+[2014-08-31 14:33:51,796][DEBUG,factory.support.DefaultListableBeanFactory.createBean(430)] Creating instance of bean 'persistentItemManager'
+[2014-08-31 14:33:51,796][DEBUG,factory.annotation.InjectionMetadata.<init>(60)] Found injected element on class [com.locate.rmds.processer.PersistentItemManager]: ResourceElement for com.locate.rmds.QSConsumerProxy com.locate.rmds.processer.PersistentItemManager._mainApp
+[2014-08-31 14:33:51,796][DEBUG,factory.annotation.InjectionMetadata.<init>(60)] Found injected element on class [com.locate.rmds.processer.PersistentItemManager]: ResourceElement for com.locate.rmds.processer.ItemGroupManager com.locate.rmds.processer.PersistentItemManager._itemGroupManager
+[2014-08-31 14:33:51,796][DEBUG,factory.annotation.InjectionMetadata.<init>(60)] Found injected element on class [com.locate.rmds.processer.PersistentItemManager]: ResourceElement for com.locate.rmds.parser.face.IOmmParser com.locate.rmds.processer.PersistentItemManager.locateOmmParser
+[2014-08-31 14:33:51,796][DEBUG,factory.annotation.InjectionMetadata.inject(85)] Processing injected method of bean 'persistentItemManager': ResourceElement for com.locate.rmds.QSConsumerProxy com.locate.rmds.processer.PersistentItemManager._mainApp
+[2014-08-31 14:33:51,796][DEBUG,factory.support.DefaultListableBeanFactory.doGetBean(245)] Returning cached instance of singleton bean 'qSConsumerProxy'
+[2014-08-31 14:33:51,812][DEBUG,factory.annotation.InjectionMetadata.inject(85)] Processing injected method of bean 'persistentItemManager': ResourceElement for com.locate.rmds.processer.ItemGroupManager com.locate.rmds.processer.PersistentItemManager._itemGroupManager
+[2014-08-31 14:33:51,812][DEBUG,factory.support.DefaultListableBeanFactory.doGetBean(245)] Returning cached instance of singleton bean 'itemGroupManager'
+[2014-08-31 14:33:51,812][DEBUG,factory.annotation.InjectionMetadata.inject(85)] Processing injected method of bean 'persistentItemManager': ResourceElement for com.locate.rmds.parser.face.IOmmParser com.locate.rmds.processer.PersistentItemManager.locateOmmParser
+[2014-08-31 14:33:51,812][DEBUG,factory.support.DefaultListableBeanFactory.doGetBean(245)] Returning cached instance of singleton bean 'locateOMMParser'
+[2014-08-31 14:33:51,812][DEBUG,factory.support.DefaultListableBeanFactory.createBean(458)] Finished creating instance of bean 'persistentItemManager'
+[2014-08-31 14:33:51,812][INFO,rmds.processer.PersistentItemManager.sendRicRequest(142)] ItemManager.sendRequest: Sending item(SIcv1) requests to server 
+[2014-08-31 14:33:51,812][INFO,rmds.processer.PersistentItemManager.sendRicRequest(168)] ItemManager: Subscribing to SIcv1
+[2014-08-31 14:33:51,828][DEBUG,factory.support.DefaultListableBeanFactory.createBean(430)] Creating instance of bean 'persistentItemManager'
+[2014-08-31 14:33:51,828][DEBUG,factory.annotation.InjectionMetadata.inject(85)] Processing injected method of bean 'persistentItemManager': ResourceElement for com.locate.rmds.QSConsumerProxy com.locate.rmds.processer.PersistentItemManager._mainApp
+[2014-08-31 14:33:51,828][DEBUG,factory.support.DefaultListableBeanFactory.doGetBean(245)] Returning cached instance of singleton bean 'qSConsumerProxy'
+[2014-08-31 14:33:51,828][DEBUG,factory.annotation.InjectionMetadata.inject(85)] Processing injected method of bean 'persistentItemManager': ResourceElement for com.locate.rmds.processer.ItemGroupManager com.locate.rmds.processer.PersistentItemManager._itemGroupManager
+[2014-08-31 14:33:51,828][DEBUG,factory.support.DefaultListableBeanFactory.doGetBean(245)] Returning cached instance of singleton bean 'itemGroupManager'
+[2014-08-31 14:33:51,828][DEBUG,factory.annotation.InjectionMetadata.inject(85)] Processing injected method of bean 'persistentItemManager': ResourceElement for com.locate.rmds.parser.face.IOmmParser com.locate.rmds.processer.PersistentItemManager.locateOmmParser
+[2014-08-31 14:33:51,828][DEBUG,factory.support.DefaultListableBeanFactory.doGetBean(245)] Returning cached instance of singleton bean 'locateOMMParser'
+[2014-08-31 14:33:51,828][DEBUG,factory.support.DefaultListableBeanFactory.createBean(458)] Finished creating instance of bean 'persistentItemManager'
+[2014-08-31 14:33:51,828][INFO,rmds.processer.PersistentItemManager.sendRicRequest(142)] ItemManager.sendRequest: Sending item(CMCU3) requests to server 
+[2014-08-31 14:33:51,828][INFO,rmds.processer.PersistentItemManager.sendRicRequest(168)] ItemManager: Subscribing to CMCU3
+[2014-08-31 14:33:51,828][DEBUG,factory.support.DefaultListableBeanFactory.createBean(430)] Creating instance of bean 'persistentItemManager'
+[2014-08-31 14:33:51,828][DEBUG,factory.annotation.InjectionMetadata.inject(85)] Processing injected method of bean 'persistentItemManager': ResourceElement for com.locate.rmds.QSConsumerProxy com.locate.rmds.processer.PersistentItemManager._mainApp
+[2014-08-31 14:33:51,828][DEBUG,factory.support.DefaultListableBeanFactory.doGetBean(245)] Returning cached instance of singleton bean 'qSConsumerProxy'
+[2014-08-31 14:33:51,828][DEBUG,factory.annotation.InjectionMetadata.inject(85)] Processing injected method of bean 'persistentItemManager': ResourceElement for com.locate.rmds.processer.ItemGroupManager com.locate.rmds.processer.PersistentItemManager._itemGroupManager
+[2014-08-31 14:33:51,828][DEBUG,factory.support.DefaultListableBeanFactory.doGetBean(245)] Returning cached instance of singleton bean 'itemGroupManager'
+[2014-08-31 14:33:51,828][DEBUG,factory.annotation.InjectionMetadata.inject(85)] Processing injected method of bean 'persistentItemManager': ResourceElement for com.locate.rmds.parser.face.IOmmParser com.locate.rmds.processer.PersistentItemManager.locateOmmParser
+[2014-08-31 14:33:51,828][DEBUG,factory.support.DefaultListableBeanFactory.doGetBean(245)] Returning cached instance of singleton bean 'locateOMMParser'
+[2014-08-31 14:33:51,828][DEBUG,factory.support.DefaultListableBeanFactory.createBean(458)] Finished creating instance of bean 'persistentItemManager'
+[2014-08-31 14:33:51,828][INFO,rmds.processer.PersistentItemManager.sendRicRequest(142)] ItemManager.sendRequest: Sending item(EUR=) requests to server 
+[2014-08-31 14:33:51,828][INFO,rmds.processer.PersistentItemManager.sendRicRequest(168)] ItemManager: Subscribing to EUR=
+[2014-08-31 14:33:51,828][DEBUG,factory.support.DefaultListableBeanFactory.createBean(430)] Creating instance of bean 'persistentItemManager'
+[2014-08-31 14:33:51,828][DEBUG,factory.annotation.InjectionMetadata.inject(85)] Processing injected method of bean 'persistentItemManager': ResourceElement for com.locate.rmds.QSConsumerProxy com.locate.rmds.processer.PersistentItemManager._mainApp
+[2014-08-31 14:33:51,828][DEBUG,factory.support.DefaultListableBeanFactory.doGetBean(245)] Returning cached instance of singleton bean 'qSConsumerProxy'
+[2014-08-31 14:33:51,828][DEBUG,factory.annotation.InjectionMetadata.inject(85)] Processing injected method of bean 'persistentItemManager': ResourceElement for com.locate.rmds.processer.ItemGroupManager com.locate.rmds.processer.PersistentItemManager._itemGroupManager
+[2014-08-31 14:33:51,828][DEBUG,factory.support.DefaultListableBeanFactory.doGetBean(245)] Returning cached instance of singleton bean 'itemGroupManager'
+[2014-08-31 14:33:51,828][DEBUG,factory.annotation.InjectionMetadata.inject(85)] Processing injected method of bean 'persistentItemManager': ResourceElement for com.locate.rmds.parser.face.IOmmParser com.locate.rmds.processer.PersistentItemManager.locateOmmParser
+[2014-08-31 14:33:51,828][INFO,rmds.processer.PersistentItemManager.processEvent(211)] ItemManager.processEvent: Received Item(SIcv1) Event from server 
+[2014-08-31 14:33:51,828][DEBUG,factory.support.DefaultListableBeanFactory.doGetBean(245)] Returning cached instance of singleton bean 'locateOMMParser'
+[2014-08-31 14:33:51,828][INFO,rmds.parser.LocateOMMParser.parse(75)] Parse object is:
+LocateUnionMessage [itemName=SIcv1, startTime=0, generatetime=2014-08-31 14:33:51, msgType=7, seqNumber=0, locateSeqNumber=2, state=null, streamingState=null, dataingState=null, resultCode=0, resultDes=null, header=[id, name, type, value], payLoadSet=]
+[2014-08-31 14:33:51,828][DEBUG,factory.support.DefaultListableBeanFactory.createBean(458)] Finished creating instance of bean 'persistentItemManager'
+[2014-08-31 14:33:51,828][WARN,rmds.processer.PersistentItemManager.processEvent(227)] RFA server has new state. streamState:1 datasstate 2
+[2014-08-31 14:33:51,828][INFO,rmds.processer.PersistentItemManager.sendRicRequest(142)] ItemManager.sendRequest: Sending item(=USD) requests to server 
+[2014-08-31 14:33:51,828][INFO,rmds.processer.PersistentItemManager.processEvent(211)] ItemManager.processEvent: Received Item(CMCU3) Event from server 
+[2014-08-31 14:33:51,828][INFO,rmds.processer.PersistentItemManager.sendRicRequest(168)] ItemManager: Subscribing to =USD
+[2014-08-31 14:33:51,828][INFO,rmds.parser.LocateOMMParser.parse(75)] Parse object is:
+LocateUnionMessage [itemName=CMCU3, startTime=0, generatetime=2014-08-31 14:33:51, msgType=7, seqNumber=0, locateSeqNumber=3, state=null, streamingState=null, dataingState=null, resultCode=0, resultDes=null, header=[id, name, type, value], payLoadSet=]
+[2014-08-31 14:33:51,828][WARN,rmds.processer.PersistentItemManager.processEvent(227)] RFA server has new state. streamState:1 datasstate 2
+[2014-08-31 14:33:51,843][INFO,rmds.processer.PersistentItemManager.processEvent(211)] ItemManager.processEvent: Received Item(EUR=) Event from server 
+[2014-08-31 14:33:51,843][INFO,rmds.parser.LocateOMMParser.parse(75)] Parse object is:
+LocateUnionMessage [itemName=EUR=, startTime=0, generatetime=2014-08-31 14:33:51, msgType=7, seqNumber=0, locateSeqNumber=4, state=null, streamingState=null, dataingState=null, resultCode=0, resultDes=null, header=[id, name, type, value], payLoadSet=]
+[2014-08-31 14:33:51,843][WARN,rmds.processer.PersistentItemManager.processEvent(227)] RFA server has new state. streamState:1 datasstate 2
+[2014-08-31 14:33:51,984][INFO,rmds.processer.PersistentItemManager.processEvent(211)] ItemManager.processEvent: Received Item(=USD) Event from server 
+[2014-08-31 14:33:51,984][INFO,rmds.parser.LocateOMMParser.parse(75)] Parse object is:
+LocateUnionMessage [itemName==USD, startTime=0, generatetime=2014-08-31 14:33:51, msgType=7, seqNumber=0, locateSeqNumber=5, state=null, streamingState=null, dataingState=null, resultCode=0, resultDes=null, header=[id, name, type, value], payLoadSet=]
+[2014-08-31 14:33:51,984][WARN,rmds.processer.PersistentItemManager.processEvent(227)] RFA server has new state. streamState:1 datasstate 2
+[2014-08-31 14:33:52,062][INFO,locate.bridge.GateWayResponser.brodcastStateResp(74)] None user loginin!
+[2014-08-31 14:33:52,062][INFO,rmds.processer.RFALoginClient.processEvent(189)] Received Login STATUS OK Response
+[2014-08-31 14:33:52,062][INFO,locate.rmds.QSConsumerProxy.loginSuccess(306)] QSConsumerDemo Login successful
+[2014-08-31 14:33:52,093][INFO,rmds.parser.LoginOMMParser.parseAggregate(459)] test for cloud wei```````````````````````fieldNum is 3
+[2014-08-31 14:33:52,093][INFO,rmds.parser.LoginOMMParser.parseAggregate(459)] test for cloud wei```````````````````````fieldNum is 2
+[2014-08-31 14:33:52,093][INFO,rmds.parser.LoginOMMParser.parseAggregate(459)] test for cloud wei```````````````````````fieldNum is 2
+[2014-08-31 14:33:52,093][INFO,rmds.parser.LoginOMMParser.parseAggregate(459)] test for cloud wei```````````````````````fieldNum is 1
+[2014-08-31 14:33:52,093][INFO,rmds.parser.LoginOMMParser.parseAggregate(459)] test for cloud wei```````````````````````fieldNum is 7
+[2014-08-31 14:33:52,093][INFO,rmds.parser.LoginOMMParser.parseAggregate(459)] test for cloud wei```````````````````````fieldNum is 2
+[2014-08-31 14:33:52,109][INFO,rmds.parser.LoginOMMParser.parseAggregate(459)] test for cloud wei```````````````````````fieldNum is 2
+[2014-08-31 14:33:52,109][INFO,rmds.parser.LoginOMMParser.parseAggregate(459)] test for cloud wei```````````````````````fieldNum is 1
+[2014-08-31 14:33:52,109][INFO,rmds.parser.LoginOMMParser.parse(134)] 
+
+MESSAGE
+	Msg Type: MsgType.REFRESH_RESP
+	Msg Model Type: DIRECTORY
+	Indication Flags: REFRESH_COMPLETE
+	Hint Flags: HAS_ATTRIB_INFO | HAS_ITEM_GROUP | HAS_RESP_TYPE_NUM | HAS_STATE
+	State: OPEN, OK, NONE,  ""
+	Group: 0000
+	RespTypeNum: 0 (RespType.SOLICITED)
+	AttribInfo
+		 Filter: 3
+			 (INFO | STATE)
+	 Payload:  256 bytes
+		MAP
+		flags: MAP_ENTRY (Action.ADD) : 
+ 
+ flags: 
+Key: IDN_SELECTFEED
+ Value: 
+				FILTER_LIST
+				flags: FILTER_ENTRY 1 (Action.SET) : 
+ 
+  flags: 
+						ELEMENT_LIST
+								ELEMENT_ENTRY Name: IDN_SELECTFEED
+								ELEMENT_ENTRY Capabilities: 
+  
+								ARRAY 
+ARRAY_ENTRY: 6 
+ARRAY_ENTRY: 10 
+ARRAY_ENTRY: 5
+								ELEMENT_ENTRY DictionariesProvided: 
+  
+								ARRAY 
+ARRAY_ENTRY: RWFFld 
+ARRAY_ENTRY: RWFEnum
+								ELEMENT_ENTRY DictionariesUsed: 
+  
+								ARRAY 
+ARRAY_ENTRY: RWFFld 
+ARRAY_ENTRY: RWFEnum
+								ELEMENT_ENTRY QoS: 
+  
+								ARRAY 
+ARRAY_ENTRY: (RT, TbT)
+								ELEMENT_ENTRY SupportsQoSRange: 0
+								ELEMENT_ENTRY ServiceID: 23FILTER_ENTRY 2 (Action.SET) : 
+ 
+  flags: 
+						ELEMENT_LIST
+								ELEMENT_ENTRY ServiceState: 1
+								ELEMENT_ENTRY AcceptingRequests: 1
+ 
+[2014-08-31 14:33:52,156][INFO,rmds.processer.PersistentItemManager.processEvent(211)] ItemManager.processEvent: Received Item(EUR=) Event from server 
+[2014-08-31 14:33:52,218][INFO,rmds.parser.LocateOMMParser.parse(75)] Parse object is:
+LocateUnionMessage [itemName=EUR=, startTime=0, generatetime=2014-08-31 14:33:52, msgType=6, seqNumber=1, locateSeqNumber=8, state=null, streamingState=null, dataingState=null, resultCode=0, resultDes=null, header=[id, name, type, value], payLoadSet=[1,PROD_PERM,Integer,213][2,RDNDISPLAY,Integer,153][3,DSPLY_NAME,String,ICBC         NYC][4,RDN_EXCHID,String,0][5,TIMACT,Unknown,23:58][6,TRDPRC_1,Double,][11,NETCHNG_1,Double,-0.0002][12,HIGH_1,Double,][13,LOW_1,Double,][15,CURRENCY,String,840][16,TRADE_DATE,Unknown,][17,ACTIV_DATE,Unknown,29 AUG 2014][18,TRDTIM_1,Unknown,][19,OPEN_PRC,Double,][21,HST_CLOSE,Double,1.3132][22,BID,Double,1.3130][23,BID_1,Double,1.3130][24,BID_2,Double,1.3130][25,ASK,Double,1.3135][26,ASK_1,Double,1.3135][27,ASK_2,Double,1.3135][28,NEWS,String,    ][29,NEWS_TIME,Unknown,][30,BIDSIZE,Double,][31,ASKSIZE,Double,][32,ACVOL_1,Double,0][53,TRD_UNITS,String,4][56,PCTCHNG,Double,-0.02][57,OPEN_BID,Double,][60,CLOSE_BID,Double,1.3132][61,CLOSE_ASK,Double,1.3133][68,MATUR_DATE,Unknown,][77,NUM_MOVES,Double,75030][78,OFFCL_CODE,String,ICBC        ][79,HSTCLSDATE,Unknown,29 AUG 2014][90,YRHIGH,Double,1.3992][91,YRLOW,Double,1.3133][104,BOND_TYPE,String,0][105,BCKGRNDPAG,String,    ][109,PUTCALLIND,String,0][114,BID_NET_CH,Double,-0.0002][115,BID_TICK_1,String,2][116,DAYS_MAT,Double,][134,MID_PRICE,Double,1.3133][135,MID_NET_CH,Double,][178,TRDVOL_1,Double,][196,HIGHTP_1,String,1][197,LOWTP_1,String,1][203,BID_HIGH_1,Double,][204,BID_LOW_1,Double,][205,YRBIDHIGH,Double,1.3992][206,YRBIDLOW,Double,1.3130][207,HST_CLSBID,Double,1.3132][208,HSTCLBDDAT,Unknown,29 AUG 2014][209,YRBDHI_IND,String,0][210,YRBDLO_IND,String,0][211,NUM_BIDS,Double,][259,RECORDTYPE,Integer,209][270,ACT_TP_1,String,27][271,ACT_TP_2,String,27][272,ACT_TP_3,String,26][275,SEC_ACT_1,Double,1.3135][276,SEC_ACT_2,Double,1.3135][277,SEC_ACT_3,Double,1.3135][280,SC_ACT_TP1,String,17][281,SC_ACT_TP2,String,17][282,SC_ACT_TP3,String,17][285,OPEN_TIME,Unknown,21:00][286,HIGH_TIME,Unknown,21:00][287,LOW_TIME,Unknown,21:00][288,SETTLEDATE,Unknown,][350,YRHIGHDAT,Unknown,08 MAY 2014][351,YRLOWDAT,Unknown,29 AUG 2014][356,RT_YIELD_1,Double,][361,YLD_NETCHG,Double,][364,OPEN_YLD,Double,][365,HIGH_YLD,Double,][366,LOW_YLD,Double,][367,HST_CLSYLD,Double,][372,IRGPRC,Double,-0.01][375,TIMCOR,Unknown,21:00][393,PRIMACT_1,Double,1.3130][394,PRIMACT_2,Double,1.3130][395,PRIMACT_3,Double,1.3130][436,BEST_BID1,Double,][437,BEST_BID2,Double,][438,BEST_BID3,Double,][439,BEST_BID4,Double,][440,BEST_BID5,Double,][441,BEST_ASK1,Double,][442,BEST_ASK2,Double,][443,BEST_ASK3,Double,][444,BEST_ASK4,Double,][445,BEST_ASK5,Double,][728,BCAST_REF,String,EUR-FRX   ][730,BEST_BSIZ1,Double,][731,BEST_BSIZ2,Double,][732,BEST_BSIZ3,Double,][733,BEST_BSIZ4,Double,][734,BEST_BSIZ5,Double,][735,BEST_ASIZ1,Double,][736,BEST_ASIZ2,Double,][737,BEST_ASIZ3,Double,][738,BEST_ASIZ4,Double,][739,BEST_ASIZ5,Double,][791,DEALT_VL1,Double,][792,DEALT_VL2,Double,][793,DEALT_VL3,Double,][800,LONGLINK1,String,][820,DVOL1_SC,String,0][821,DVOL2_SC,String,0][822,DVOL3_SC,String,0][825,CROSS_SC,String,0][826,DLG_CODE1,String,ICBC  ][827,DLG_CODE2,String,ICBC  ][828,DLG_CODE3,String,ICBC  ][831,CTBTR_1,String,ICBC        ][832,CTBTR_2,String,ICBC        ][833,CTBTR_3,String,ICBC        ][836,CTB_LOC1,String,NYC][837,CTB_LOC2,String,NYC][838,CTB_LOC3,String,NYC][841,CTB_PAGE1,String,    ][842,CTB_PAGE2,String,    ][843,CTB_PAGE3,String,    ][869,OFF_CD_IND,String,0][874,PREMIUM,Double,][875,VALUE_DT1,Unknown,29 AUG 2014][876,VALUE_DT2,Unknown,29 AUG 2014][877,VALUE_DT3,Unknown,29 AUG 2014][953,WTD_AVE1,Double,][957,SEC_HIGH,Double,][958,SEC_HI_TP,String,1][959,SEC_LOW,Double,][960,SEC_LO_TP,String,4][962,OPEN_TYPE,String,1][964,CLOSE_TYPE,String,1][967,BKGD_REF,String,Euro][968,CTBTR_BKGD,String,][975,ACT_FLAG1,String, ][976,ACT_FLAG2,String, ][977,ACT_FLAG3,String, ][980,SC_AFLAG1,String, ][981,SC_AFLAG2,String, ][982,SC_AFLAG3,String, ][985,SEC_VOL1,Double,][995,GEN_TEXT16,String,<EUR/BKGDINFO>  ][996,GEN_VAL1,Double,][997,GEN_VAL2,Double,][998,GEN_VAL3,Double,][999,GEN_VAL4,Double,1.3130][1000,GV1_TEXT,String,SPOT  ][1001,GV2_TEXT,String,EURUSD][1002,GV3_TEXT,String,      ][1003,GV4_TEXT,String,      ][1010,VALUE_TS1,Unknown,23:58:18][1011,VALUE_TS2,Unknown,23:53:15][1012,VALUE_TS3,Unknown,23:52:18][1021,SEQNUM,Double,][1028,GV1_DATE,Unknown,][1029,GEN_VAL5,Double,1.3178][1030,GEN_VAL6,Double,1.3196][1031,GEN_VAL7,Double,1.3130][1032,GEN_VAL8,Double,1.3199][1033,GEN_VAL9,Double,1.3133][1034,GEN_VAL10,Double,1.3180][1035,GV5_TEXT,String,OP_BID][1036,GV6_TEXT,String,BID_HI][1037,GV7_TEXT,String,BID_LO][1038,GV8_TEXT,String,ASK_HI][1039,GV9_TEXT,String,ASK_LO][1040,GV10_TEXT,String,OP_ASK][1041,GV1_FLAG,String, ][1042,GV2_FLAG,String, ][1043,GV3_FLAG,String, ][1044,GV4_FLAG,String, ][1051,GV2_DATE,Unknown,][1052,GN_TXT16_2,String,<EURVOL>        ][1055,OFF_CD_IN2,String,0][1056,OFFC_CODE2,String,            ][1057,NOMINAL,Double,][1061,GV1_TIME,Unknown,00:00][1062,GV2_TIME,Unknown,][1080,PREF_DISP,Integer,6205][1271,GN_TXT24_1,String,<0#EURF=>               ][1275,GN_TXT32_1,String,                                ][1276,GN_TXT32_2,String,                                ][1383,DSO_ID,Integer,51456][1384,CALL_PRC,Double,][1446,CONVEXITY,Double,][1496,WEIGHTING,Double,][1709,RDN_EXCHD2,String,500][2129,RIC_DESC,String,0][2133,CTBTR_ID1,String,0][2134,CTBTR_ID2,String,0][2135,CTBTR_ID3,String,0][2136,CTBLOC_ID1,String,0][2137,CTBLOC_ID2,String,0][2138,CTBLOC_ID3,String,0][2225,FWD1_PRICE,Double,][2226,FWD2_PRICE,Double,][2305,DELTA,Double,][2449,GV2A_RTIM1,Unknown,][2450,GV2A_RTIM2,Unknown,][2451,GV2A_RTIM3,Unknown,][2452,GV2B_RTIM1,Unknown,][2453,GV2B_RTIM2,Unknown,][2454,GV2B_RTIM3,Unknown,][3131,IRGFID,Double,][3132,IRGVAL,Double,][3263,PREV_DISP,Integer,60][3269,ASIA_CL_DT,Unknown,29 AUG 2014][3270,ASIA_CLOSE,Double,1.3169][3271,ASIA_HI_TM,Unknown,00:07][3272,ASIA_HIGH,Double,1.3186][3273,ASIA_LOW,Double,1.3161][3274,ASIA_LW_TM,Unknown,06:39][3275,ASIA_NETCH,Double,-0.0031][3276,ASIA_OP_TM,Unknown,21:00][3277,ASIA_OPEN,Double,1.3178][3278,EURO_CL_DT,Unknown,29 AUG 2014][3279,EURO_CLOSE,Double,1.3149][3280,EURO_HI_TM,Unknown,11:57][3281,EURO_HIGH,Double,1.3196][3282,EURO_LOW,Double,1.3143][3283,EURO_LW_TM,Unknown,15:28][3284,EURO_NETCH,Double,-0.0028][3285,EURO_OP_TM,Unknown,05:00][3286,EURO_OPEN,Double,1.3174][3287,US_CL_DT,Unknown,29 AUG 2014][3288,US_CLOSE,Double,1.3132][3289,US_HI_TM,Unknown,11:57][3290,US_HIGH,Double,1.3196][3291,US_LOW,Double,1.3133][3292,US_LW_TM,Unknown,20:58][3293,US_NETCH,Double,-0.0050][3294,US_OP_TM,Unknown,11:00][3295,US_OPEN,Double,1.3187][3296,ASK_SPREAD,Double,1.3159][3303,BID_SPREAD,Double,1.3141][3305,BPV,Double,][3322,EMAIL_ADRS,String,                                        ][3341,IND_NEWS,String,          ][3349,MID_1,Double,][3350,MID_2,Double,][3351,MID_3,Double,][3352,MID_SPREAD,Double,1.3130][3362,MONTH_HIGH,Double,1.3444][3363,MONTH_LOW,Double,1.3133][3378,PCTCHG_3M,Double,-3.67][3379,PCTCHG_6M,Double,-4.87][3380,PCTCHG_MTD,Double,-1.93][3381,PCTCHG_YTD,Double,-4.47][3382,PCTCHG_TRT,Double,][3383,PCTCHG_INC,Double,][3395,TERM,Double,][3407,WEB_ADRS,String,                                                                                ][3408,WEEK_HIGH,Double,][3409,WEEK_LOW,Double,][3421,YTD,Double,][3422,PROV_SYMB,String,                                ][3500,B_BID1_TIM,Unknown,][3501,B_BID2_TIM,Unknown,][3502,B_BID3_TIM,Unknown,][3503,B_BID4_TIM,Unknown,][3504,B_BID5_TIM,Unknown,][3505,B_ASK1_TIM,Unknown,][3506,B_ASK2_TIM,Unknown,][3507,B_ASK3_TIM,Unknown,][3508,B_ASK4_TIM,Unknown,][3509,B_ASK5_TIM,Unknown,][3512,ASK_HIGH_1,Double,][3513,ASK_HI_TME,Unknown,21:00][3514,ASK_LOW_1,Double,][3515,ASK_LO_TME,Unknown,21:00][3591,CCY_NAME,String,                              ][3617,FIX_DATE,Unknown,][3621,HIGH_2,Double,][3622,HIGH_3,Double,][3623,HIGH_4,Double,][3624,HIGH_5,Double,][3625,HIGH_TIME2,Unknown,][3626,HIGH_TIME3,Unknown,][3627,HIGH_TIME4,Unknown,][3628,HIGH_TIME5,Unknown,][3629,LOW_2,Double,][3630,LOW_3,Double,][3631,LOW_4,Double,][3632,LOW_5,Double,][3633,LOW_TIME2,Unknown,][3634,LOW_TIME3,Unknown,][3635,LOW_TIME4,Unknown,][3636,LOW_TIME5,Unknown,][3652,INST_DESC,String,                              ][3695,MTD,Double,][3740,REL_SPEEDG,String,][3754,SCALING,String,1       ][3791,START_DT,Unknown,02 SEP 2014][3832,WKHI_DT,Unknown,][3833,WKLO_DT,Unknown,][3834,MTHHI_DT,Unknown,01 AUG 2014][3835,MTHLO_DT,Unknown,29 AUG 2014][3853,TRDTIM_MS,Integer,][3854,SALTIM_MS,Integer,][3855,QUOTIM_MS,Integer,86298586][3856,TIMCOR_MS,Integer,][4233,CNTCT_ID,Double,][4236,PR_FREQ,String,0][4237,QUOTE_TYPE,String,0][4238,RCS_AS_CLA,String,   ][4305,NEWSTM_MS,Integer,][4737,P_C_IND1,String,0]]
+[2014-08-31 14:33:52,218][INFO,rmds.processer.ItemGroupManager.applyGroup(481)] ItemGroupManager: IDN_SELECTFEED:EUR= was assigned to group 0001001701643de1
+[2014-08-31 14:33:52,656][INFO,rmds.processer.PersistentItemManager.processEvent(249)] publish Item EUR= use time 500 microseconds
+[2014-08-31 14:33:52,656][INFO,rmds.processer.PersistentItemManager.processEvent(211)] ItemManager.processEvent: Received Item(SIcv1) Event from server 
+[2014-08-31 14:33:52,671][INFO,rmds.parser.LocateOMMParser.parse(75)] Parse object is:
+LocateUnionMessage [itemName=SIcv1, startTime=0, generatetime=2014-08-31 14:33:52, msgType=6, seqNumber=1, locateSeqNumber=9, state=null, streamingState=null, dataingState=null, resultCode=0, resultDes=null, header=[id, name, type, value], payLoadSet=[1,PROD_PERM,Integer,2450][2,RDNDISPLAY,Integer,77][3,DSPLY_NAME,String,SILVER 5000 DEC4][4,RDN_EXCHID,String,28][5,TIMACT,Unknown,21:42][6,TRDPRC_1,Double,19.510][7,TRDPRC_2,Double,19.510][8,TRDPRC_3,Double,19.520][9,TRDPRC_4,Double,19.515][10,TRDPRC_5,Double,19.515][11,NETCHNG_1,Double,-0.117][12,HIGH_1,Double,19.675][13,LOW_1,Double,19.475][14,PRCTCK_1,String,2][15,CURRENCY,String,840][16,TRADE_DATE,Unknown,29 AUG 2014][17,ACTIV_DATE,Unknown,29 AUG 2014][18,TRDTIM_1,Unknown,21:14][21,HST_CLOSE,Double,19.609][22,BID,Double,19.490][25,ASK,Double,19.525][28,NEWS,String,    ][29,NEWS_TIME,Unknown,][30,BIDSIZE,Double,1][31,ASKSIZE,Double,1][32,ACVOL_1,Double,30674][41,CONTR_MNTH,String,DEC4][44,TRDXID_1,String,0][47,OPEN1,Double,19.540][48,OPEN2,Double,][49,OPNRNGTP,String,1][50,CLOSE1,Double,19.609][51,CLOSE2,Double,][52,CLSRNGTP,String,0][53,TRD_UNITS,String,3][54,LOTSZUNITS,String,32][55,LOT_SIZE,Double,5000][56,PCTCHNG,Double,-0.60][60,CLOSE_BID,Double,][61,CLOSE_ASK,Double,][62,LOCHIGH,Double,48.540][63,LOCLOW,Double,15.800][64,OPINT_1,Double,123044][65,OPINTNC,Double,8584][67,EXPIR_DATE,Unknown,29 DEC 2014][70,SETTLE,Double,19.492][75,UPLIMIT,Double,][76,LOLIMIT,Double,][77,NUM_MOVES,Double,20569][78,OFFCL_CODE,String,0           ][79,HSTCLSDATE,Unknown,28 AUG 2014][99,LIMIT_IND,String,0][100,TURNOVER,Double,19.492][104,BOND_TYPE,String,0][105,BCKGRNDPAG,String,    ][110,YCHIGH_IND,String,0][111,YCLOW_IND,String,0][118,PRC_QL_CD,String,0][126,SESSION1HI,Double,][127,SESSION1LO,Double,][128,SESSION2HI,Double,][129,SESSION2LO,Double,][131,PRC_QL2,String,0][133,MKT_ST_IND,String,12][138,AM_CLOSE,Double,][139,PM_CLOSE,Double,][178,TRDVOL_1,Double,1][196,HIGHTP_1,String,0][197,LOWTP_1,String,0][198,LOT_SIZE_A,Double,5000][199,OPENEXID,String,0][259,RECORDTYPE,Integer,178][270,ACT_TP_1,String,4][271,ACT_TP_2,String,3][272,ACT_TP_3,String,3][273,ACT_TP_4,String,2][274,ACT_TP_5,String,2][275,SEC_ACT_1,Double,-0.117][280,SC_ACT_TP1,String,2][288,SETTLEDATE,Unknown,29 AUG 2014][293,BID_MMID1,String,][296,ASK_MMID1,String,][309,SESS1_FLAG,String,][310,SESS2_FLAG,String,][340,OPTION_XID,String,][355,VOL_FLAG,String,F][369,OPINT_DATE,Unknown,28 AUG 2014][372,IRGPRC,Double,][373,IRGVOL,Double,][374,IRGCOND,String,0][375,TIMCOR,Unknown,][379,SALTIM,Unknown,21:42:52][380,TNOVER_SC,String,0][383,HST_VOL,Double,58212][384,SESS_HIFLG,String,1][385,SESS_LOFLG,String,1][386,SSPRNG1,Double,][387,SSPRNG2,Double,][388,SSPRNGTP,String,4][389,RSMRNG1,Double,][390,RSMRNG2,Double,][391,RSMRNGTP,String,3][392,VOL_DATE,Unknown,28 AUG 2014][393,PRIMACT_1,Double,19.492][394,PRIMACT_2,Double,19.510][395,PRIMACT_3,Double,19.510][396,PRIMACT_4,Double,19.520][397,PRIMACT_5,Double,19.515][401,SESS1_VOL,Double,][402,SESS2_VOL,Double,][436,BEST_BID1,Double,][437,BEST_BID2,Double,][438,BEST_BID3,Double,][439,BEST_BID4,Double,][440,BEST_BID5,Double,][441,BEST_ASK1,Double,][442,BEST_ASK2,Double,][443,BEST_ASK3,Double,][444,BEST_ASK4,Double,][445,BEST_ASK5,Double,][728,BCAST_REF,String,GOL       ][730,BEST_BSIZ1,Double,][731,BEST_BSIZ2,Double,][732,BEST_BSIZ3,Double,][733,BEST_BSIZ4,Double,][734,BEST_BSIZ5,Double,][735,BEST_ASIZ1,Double,][736,BEST_ASIZ2,Double,][737,BEST_ASIZ3,Double,][738,BEST_ASIZ4,Double,][739,BEST_ASIZ5,Double,][758,HST_SESVOL,Double,][759,PRV_HIGH,Double,19.950][760,PRV_LOW,Double,19.470][763,SESS1_OPEN,Double,][764,SESS1_OTIM,Unknown,][767,SESS1_CLS,Double,][768,SESS1_CTIM,Unknown,][770,SESS2_OPEN,Double,][771,SESS2_OTIM,Unknown,][825,CROSS_SC,String,0][869,OFF_CD_IND,String,0][963,HST_CLOSE2,Double,][975,ACT_FLAG1,String,][976,ACT_FLAG2,String,][977,ACT_FLAG3,String,][978,ACT_FLAG4,String,][979,ACT_FLAG5,String,][996,GEN_VAL1,Double,][997,GEN_VAL2,Double,][998,GEN_VAL3,Double,][999,GEN_VAL4,Double,][1000,GV1_TEXT,String,][1001,GV2_TEXT,String,][1002,GV3_TEXT,String,][1003,GV4_TEXT,String,][1016,BS_FLAG,String,][1018,IRGXID,String,0][1021,SEQNUM,Double,9133035][1022,PRNTYP,String,][1023,PRNTBCK,Double,][1026,STOCK_RIC,String,][1029,GEN_VAL5,Double,][1030,GEN_VAL6,Double,][1031,GEN_VAL7,Double,][1032,GEN_VAL8,Double,][1033,GEN_VAL9,Double,][1034,GEN_VAL10,Double,][1035,GV5_TEXT,String,][1036,GV6_TEXT,String,][1037,GV7_TEXT,String,][1038,GV8_TEXT,String,][1039,GV9_TEXT,String,][1040,GV10_TEXT,String,][1042,GV2_FLAG,String,][1043,GV3_FLAG,String,][1044,GV4_FLAG,String,][1055,OFF_CD_IN2,String,0][1056,OFFC_CODE2,String,][1067,EXCHTIM,Unknown,][1078,CONV_FAC,Double,][1080,PREF_DISP,Integer,4086][1081,PREF_LINK,String,][1342,HSTCL2_DAT,Unknown,][1352,DSPLY_NMLL,String,][1379,VOL_X_PRC1,Double,][1383,DSO_ID,Integer,49][1420,STOCK_PRC,Double,][1465,ADJUST_CLS,Double,][1631,TRDTONEA_1,String,][1632,TRDTONEA_2,String,][1633,TRDTONEA_3,String,][1634,TRDTONEA_4,String,][1635,TRDTONEA_5,String,][1636,TRDTONEB_1,String,][1637,TRDTONEB_2,String,][1638,TRDTONEB_3,String,][1639,TRDTONEB_4,String,][1640,TRDTONEB_5,String,][1687,SPARE_NM1,Double,][1688,SPARE_NM2,Double,][1691,SPARE_VL1,Double,][1692,SPARE_VL2,Double,][1693,SPARE_DT1,Unknown,29 AUG 2014][1694,SPARE_DT2,Unknown,][1695,SPARE_TM1,Unknown,][1696,SPARE_TM2,Unknown,][1697,SPARE_TS1,Unknown,21:15][1698,SPARE_TS2,Unknown,][1699,SPARE_ET1,String,0][1700,SPARE_ET2,String,0][1709,RDN_EXCHD2,String,28][2130,INSTU_NAME,String,0][2725,LSTTRDDATE,Unknown,][2727,AM_RANGE,Double,][2728,PM_RANGE,Double,][3035,SETTLE1,Double,][3036,SETTLE2,Double,][3131,IRGFID,Double,][3132,IRGVAL,Double,][3258,FAIR_VALUE,Double,][3263,PREV_DISP,Integer,0][3264,PRC_QL3,String,0][3307,CASHINLIEU,Double,][3311,CLRD_VOL,Double,][3364,MPV,String,0][3365,MRGD_RIC,String,][3370,NUM_SHARES,String,][3372,OFF_CLOSE,Double,][3374,OPTION_XD2,String,][3422,PROV_SYMB,String,][3581,BOLL_DOWN,Double,][3582,BOLL_UP,Double,][3655,ISIN_CODE,String,][3678,MA5,Double,][3679,MA10,Double,][3680,MA30,Double,][3681,MA60,Double,][3682,MA90,Double,][3683,MA100,Double,][3684,MA200,Double,][3685,MA300,Double,][3694,MNEMONIC,String,SI                  ][3700,NETCHG_1W,Double,][3702,NETCHG_1M,Double,][3703,NETCHG_3M,Double,][3704,NETCHG_6M,Double,][3705,NETCHG_1Y,Double,][3747,RSI_7,Double,][3748,RSI_14,Double,][3749,RSI_30,Double,][3750,RTR_OPN_PR,Double,][3756,SEDOL,String,][4043,ACVOL_SC,String,0][4044,PRE_SETTLE,Double,][4045,FUT_URIC,String,][4058,EXCHCODE,String,][4234,NOTION_PRO,String,][4236,PR_FREQ,String,0][4238,RCS_AS_CLA,String,][4267,FUTURES,String,][4268,OPTIONS,String,][4300,STRIKES,String,][4305,NEWSTM_MS,Integer,]]
+[2014-08-31 14:33:52,671][INFO,rmds.processer.ItemGroupManager.applyGroup(481)] ItemGroupManager: IDN_SELECTFEED:SIcv1 was assigned to group 0001001701643de1
+[2014-08-31 14:33:52,687][INFO,rmds.processer.PersistentItemManager.processEvent(249)] publish Item SIcv1 use time 31 microseconds
+[2014-08-31 14:33:52,687][INFO,rmds.processer.PersistentItemManager.processEvent(211)] ItemManager.processEvent: Received Item(=USD) Event from server 
+[2014-08-31 14:33:52,703][INFO,rmds.parser.LocateOMMParser.parse(75)] Parse object is:
+LocateUnionMessage [itemName==USD, startTime=0, generatetime=2014-08-31 14:33:52, msgType=6, seqNumber=1, locateSeqNumber=10, state=null, streamingState=null, dataingState=null, resultCode=0, resultDes=null, header=[id, name, type, value], payLoadSet=[1,PROD_PERM,Integer,56][2,RDNDISPLAY,Integer,116][3,DSPLY_NAME,String,USD INDEX       ][4,RDN_EXCHID,String,36][6,TRDPRC_1,Double,82.732][7,TRDPRC_2,Double,82.734][8,TRDPRC_3,Double,82.736][9,TRDPRC_4,Double,82.735][10,TRDPRC_5,Double,82.737][11,NETCHNG_1,Double,0.255][12,HIGH_1,Double,82.748][13,LOW_1,Double,82.415][14,PRCTCK_1,String,2][15,CURRENCY,String,0][16,TRADE_DATE,Unknown,29 AUG 2014][18,TRDTIM_1,Unknown,23:00][19,OPEN_PRC,Double,82.478][21,HST_CLOSE,Double,82.477][22,BID,Double,82.716][25,ASK,Double,82.748][28,NEWS,String,    ][29,NEWS_TIME,Unknown,][32,ACVOL_1,Double,][34,EARNINGS,Double,][35,YIELD,Double,][36,PERATIO,Double,][38,DIVPAYDATE,Unknown,][39,EXDIVDATE,Unknown,][53,TRD_UNITS,String,2][56,PCTCHNG,Double,0.31][70,SETTLE,Double,][71,DIVIDEND,Double,][77,NUM_MOVES,Double,][78,OFFCL_CODE,String,            ][79,HSTCLSDATE,Unknown,28 AUG 2014][80,TOT_VOLUME,Double,][81,VOLUME_ADV,Double,][82,VOLUME_DEC,Double,][83,VOLUME_UNC,Double,][84,ISSUES_ADV,Double,][85,ISSUES_DEC,Double,][86,ISSUES_UNC,Double,][87,MOVES_ADV,Double,][88,MOVES_DEC,Double,][89,MOVES_UNC,Double,][90,YRHIGH,Double,82.666][91,YRLOW,Double,79.138][92,PRV_YRHIGH,Double,84.684][93,PRV_YRLOW,Double,79.107][94,LIFE_HIGH,Double,129.670][95,LIFE_LOW,Double,71.329][98,EPYHSTCLOS,Double,80.206][100,TURNOVER,Double,][101,NEW_LOWS,Double,][104,BOND_TYPE,String,0][105,BCKGRNDPAG,String,USDX][106,TOT_ISSUES,Double,][108,NEW_HIGHS,Double,][110,YCHIGH_IND,String,1][111,YCLOW_IND,String,0][118,PRC_QL_CD,String,0][131,PRC_QL2,String,0][178,TRDVOL_1,Double,][201,LF_HGH_DAT,Unknown,08 NOV 1985][202,LF_LOW_DAT,Unknown,16 MAR 2008][259,RECORDTYPE,Integer,214][270,ACT_TP_1,String,27][275,SEC_ACT_1,Double,82.748][280,SC_ACT_TP1,String,17][340,OPTION_XID,String,      ][350,YRHIGHDAT,Unknown,13 JAN 2012][351,YRLOWDAT,Unknown,24 FEB 2012][372,IRGPRC,Double,][373,IRGVOL,Double,][374,IRGCOND,String,0][375,TIMCOR,Unknown,][379,SALTIM,Unknown,][380,TNOVER_SC,String,0][381,PARITY99,Double,][382,PARITY100,Double,][393,PRIMACT_1,Double,][728,BCAST_REF,String,          ][800,LONGLINK1,String,0#.DXY][801,LONGLINK2,String,][850,AMT_OS,Double,][869,OFF_CD_IND,String,0][890,THEO_HIGH,Double,][891,THEO_LOW,Double,][892,THEO_YRHI,Double,][893,THEO_YRLO,Double,][894,THEO_LFHI,Double,][895,THEO_LFLO,Double,][896,THEO_LHDAT,Unknown,][897,THEO_LLDAT,Unknown,][975,ACT_FLAG1,String, ][976,ACT_FLAG2,String, ][977,ACT_FLAG3,String, ][978,ACT_FLAG4,String, ][979,ACT_FLAG5,String, ][996,GEN_VAL1,Double,][997,GEN_VAL2,Double,][998,GEN_VAL3,Double,][999,GEN_VAL4,Double,][1000,GV1_TEXT,String,      ][1001,GV2_TEXT,String,USDUSD][1002,GV3_TEXT,String,      ][1003,GV4_TEXT,String,      ][1006,NM_IND,String,0][1021,SEQNUM,Double,][1023,PRNTBCK,Double,][1025,QUOTIM,Unknown,][1028,GV1_DATE,Unknown,][1029,GEN_VAL5,Double,][1030,GEN_VAL6,Double,][1031,GEN_VAL7,Double,][1032,GEN_VAL8,Double,][1033,GEN_VAL9,Double,][1034,GEN_VAL10,Double,][1035,GV5_TEXT,String,      ][1036,GV6_TEXT,String,      ][1037,GV7_TEXT,String,      ][1038,GV8_TEXT,String,      ][1039,GV9_TEXT,String,      ][1040,GV10_TEXT,String,      ][1051,GV2_DATE,Unknown,][1055,OFF_CD_IN2,String,0][1056,OFFC_CODE2,String,            ][1067,EXCHTIM,Unknown,][1080,PREF_DISP,Integer,1019][1352,DSPLY_NMLL,String,                                ][1379,VOL_X_PRC1,Double,][1383,DSO_ID,Integer,16405][1401,BIG_VOL,Double,][1465,ADJUST_CLS,Double,][1501,STOCK_TYPE,String,   ][1709,RDN_EXCHD2,String,0][1787,CP_ADJ_FCT,Double,][1788,CP_ADJ_DAT,Unknown,][2127,YR_PCTCH,Double,][2128,EPYR_PCTCH,Double,][2131,INDEX_NAME,String,0][2139,ISSUES_NOQ,Double,][2142,AMT_ISSUE,Double,][2150,MKT_VALUE,Double,][2320,ALIAS,String,][2335,THEO_OPEN,Double,][2744,MKT_CAP,Double,][3131,IRGFID,Double,][3132,IRGVAL,Double,][3256,OPN_NETCH,Double,][3263,PREV_DISP,Integer,0][3264,PRC_QL3,String,0][3312,CNV_CURR,String,0][3320,DSPLY_NME2,String,                                ][3321,DY1,Double,][3329,FUND_TYPE,String,       ][3366,MSG_VER,String,    ][3370,NUM_SHARES,String,          ][3374,OPTION_XD2,String,                                ][3404,VWAP,Double,][3411,WK1,Double,][3412,WK4,Double,][3413,WK13,Double,][3414,WK26,Double,][3415,WK39,Double,][3416,YR1,Double,][3417,YR2,Double,][3418,YR3,Double,][3419,YR5,Double,][3420,YR10,Double,][3421,YTD,Double,][3422,PROV_SYMB,String,                                ][3573,ATNOVER_SC,String,0][3580,BID_ASK_DT,Unknown,][3606,DPS_DATE_2,Unknown,][3655,ISIN_CODE,String,               ][3670,LIFE_HIND,String,0][3671,LIFE_LIND,String,0][3694,MNEMONIC,String,                    ][3756,SEDOL,String,            ][3830,VWAP1,Double,][3831,VWAP2,Double,][3853,TRDTIM_MS,Integer,][3854,SALTIM_MS,Integer,][3855,QUOTIM_MS,Integer,][4043,ACVOL_SC,String,0][4058,EXCHCODE,String,                ][4215,PCT1M,Double,][4216,PCT1Y,Double,][4217,PCT3M,Double,][4218,VOL_BUY,Double,][4219,VOL_CALL,Double,][4223,EXCH_VAL,Double,][4224,VOL_SELL,Double,][4225,EXCH_VOL,Double,][4230,ANNDIVTYPE,String,                    ][4232,ANNEPSTYPE,String,                    ][4234,NOTION_PRO,String,   ][4236,PR_FREQ,String,0][4238,RCS_AS_CLA,String,   ][4267,FUTURES,String,][4268,OPTIONS,String,][4300,STRIKES,String,                                ][4305,NEWSTM_MS,Integer,][4306,BASE_VALUE,Double,][4410,CP_EFF_DAT,Unknown,]]
+[2014-08-31 14:33:52,703][INFO,rmds.processer.ItemGroupManager.applyGroup(481)] ItemGroupManager: IDN_SELECTFEED:=USD was assigned to group 0001001701643de1
+[2014-08-31 14:33:52,718][INFO,rmds.processer.PersistentItemManager.processEvent(249)] publish Item =USD use time 31 microseconds
+[2014-08-31 14:33:52,718][INFO,rmds.processer.PersistentItemManager.processEvent(211)] ItemManager.processEvent: Received Item(CMCU3) Event from server 
+[2014-08-31 14:33:52,718][INFO,rmds.parser.LocateOMMParser.parse(75)] Parse object is:
+LocateUnionMessage [itemName=CMCU3, startTime=0, generatetime=2014-08-31 14:33:52, msgType=6, seqNumber=1, locateSeqNumber=11, state=null, streamingState=null, dataingState=null, resultCode=0, resultDes=null, header=[id, name, type, value], payLoadSet=[1,PROD_PERM,Integer,5427][2,RDNDISPLAY,Integer,155][3,DSPLY_NAME,String,3M 24HR COPPER  ][4,RDN_EXCHID,String,99][6,TRDPRC_1,Double,6981.85][11,NETCHNG_1,Double,47.85][12,HIGH_1,Double,6997.00][13,LOW_1,Double,6922.25][15,CURRENCY,String,840][19,OPEN_PRC,Double,6926.50][21,HST_CLOSE,Double,6934.00][22,BID,Double,6982.00][25,ASK,Double,6984.00][28,NEWS,String,][29,NEWS_TIME,Unknown,][30,BIDSIZE,Double,][31,ASKSIZE,Double,][32,ACVOL_1,Double,13765][41,CONTR_MNTH,String,3MT ][44,TRDXID_1,String,0][50,CLOSE1,Double,6982.00][51,CLOSE2,Double,][52,CLSRNGTP,String,0][53,TRD_UNITS,String,2][54,LOTSZUNITS,String,28][56,PCTCHNG,Double,0.69][64,OPINT_1,Double,][65,OPINTNC,Double,][66,STRIKE_PRC,Double,][67,EXPIR_DATE,Unknown,28 NOV 2014][69,COUPN_RATE,Double,][70,SETTLE,Double,][75,UPLIMIT,Double,][76,LOLIMIT,Double,][78,OFFCL_CODE,String,000000000000][79,HSTCLSDATE,Unknown,28 AUG 2014][90,YRHIGH,Double,][91,YRLOW,Double,][104,BOND_TYPE,String,50][105,BCKGRNDPAG,String,****][109,PUTCALLIND,String,1][110,YCHIGH_IND,String,0][111,YCLOW_IND,String,0][118,PRC_QL_CD,String,46][131,PRC_QL2,String,0][133,MKT_ST_IND,String,0][178,TRDVOL_1,Double,10][196,HIGHTP_1,String,0][197,LOWTP_1,String,0][198,LOT_SIZE_A,Double,25][259,RECORDTYPE,Integer,162][266,BID_TIME,Unknown,15:55][267,ASK_TIME,Unknown,15:55][270,ACT_TP_1,String,0][271,ACT_TP_2,String,0][272,ACT_TP_3,String,0][273,ACT_TP_4,String,0][274,ACT_TP_5,String,0][275,SEC_ACT_1,Double,][276,SEC_ACT_2,Double,][277,SEC_ACT_3,Double,][278,SEC_ACT_4,Double,][279,SEC_ACT_5,Double,][280,SC_ACT_TP1,String,0][281,SC_ACT_TP2,String,0][282,SC_ACT_TP3,String,0][283,SC_ACT_TP4,String,0][284,SC_ACT_TP5,String,0][285,OPEN_TIME,Unknown,00:00][286,HIGH_TIME,Unknown,13:20][287,LOW_TIME,Unknown,00:00][288,SETTLEDATE,Unknown,][293,BID_MMID1,String,RING][296,ASK_MMID1,String,RING][345,BID_TONE,String, ][346,ASK_TONE,String, ][347,CLOSE_TONE,String,][348,STOP_HIGH,String,][349,STOP_LOW,String,][350,YRHIGHDAT,Unknown,][351,YRLOWDAT,Unknown,][369,OPINT_DATE,Unknown,][372,IRGPRC,Double,6735.00][373,IRGVOL,Double,][374,IRGCOND,String,1][375,TIMCOR,Unknown,][376,INSPRC,Double,][377,INSVOL,Double,][378,INSCOND,String,0][379,SALTIM,Unknown,16:05][384,SESS_HIFLG,String,0][385,SESS_LOFLG,String,0][393,PRIMACT_1,Double,6981.85][394,PRIMACT_2,Double,6981.85][395,PRIMACT_3,Double,6981.85][396,PRIMACT_4,Double,6981.90][397,PRIMACT_5,Double,6982.15][412,EXERCISED,Double,][431,ORDER_BID,Double,6933.00][432,ORDER_ASK,Double,6934.00][436,BEST_BID1,Double,][437,BEST_BID2,Double,][438,BEST_BID3,Double,][439,BEST_BID4,Double,][440,BEST_BID5,Double,][441,BEST_ASK1,Double,][442,BEST_ASK2,Double,][443,BEST_ASK3,Double,][444,BEST_ASK4,Double,][445,BEST_ASK5,Double,][728,BCAST_REF,String,MTAL      ][730,BEST_BSIZ1,Double,][731,BEST_BSIZ2,Double,][732,BEST_BSIZ3,Double,][733,BEST_BSIZ4,Double,][734,BEST_BSIZ5,Double,][735,BEST_ASIZ1,Double,][736,BEST_ASIZ2,Double,][737,BEST_ASIZ3,Double,][738,BEST_ASIZ4,Double,][739,BEST_ASIZ5,Double,][759,PRV_HIGH,Double,][760,PRV_LOW,Double,][791,DEALT_VL1,Double,10][798,LEG1_TYPE,String,0][800,LONGLINK1,String,][801,LONGLINK2,String,][802,LONGLINK3,String,][816,LEG1_STR,Double,][818,LEG1_EXP,Unknown,][819,LEG2_EXP,Unknown,][820,DVOL1_SC,String,0][825,CROSS_SC,String,0][831,CTBTR_1,String,][832,CTBTR_2,String,][833,CTBTR_3,String,][836,CTB_LOC1,String,][837,CTB_LOC2,String,][838,CTB_LOC3,String,][841,CTB_PAGE1,String,][842,CTB_PAGE2,String,][843,CTB_PAGE3,String,][859,DATE_RANGE,String,][869,OFF_CD_IND,String,0][875,VALUE_DT1,Unknown,29 AUG 2014][955,QTE_CNT1,Double,][956,QTE_CNT2,Double,][957,SEC_HIGH,Double,][958,SEC_HI_TP,String,0][959,SEC_LOW,Double,][960,SEC_LO_TP,String,0][961,OPEN_PRC2,Double,][962,OPEN_TYPE,String,0][963,HST_CLOSE2,Double,6934.00][964,CLOSE_TYPE,String,0][975,ACT_FLAG1,String,B][976,ACT_FLAG2,String,B][977,ACT_FLAG3,String,B][978,ACT_FLAG4,String,B][979,ACT_FLAG5,String,B][980,SC_AFLAG1,String,][981,SC_AFLAG2,String,][982,SC_AFLAG3,String,][983,SC_AFLAG4,String,][984,SC_AFLAG5,String,][985,SEC_VOL1,Double,][990,VOL_TP1,String,3][995,GEN_TEXT16,String,][996,GEN_VAL1,Double,6970.00][997,GEN_VAL2,Double,6971.00][998,GEN_VAL3,Double,6968.00][999,GEN_VAL4,Double,6970.00][1000,GV1_TEXT,String,OffBD ][1001,GV2_TEXT,String,OffAK ][1002,GV3_TEXT,String,UoffBD][1003,GV4_TEXT,String,UoffAK][1004,QCNT1_IND,String,0][1005,QCNT2_IND,String,0][1010,VALUE_TS1,Unknown,19:14:54][1016,BS_FLAG,String,][1017,AS_FLAG,String,][1018,IRGXID,String,0][1019,IRGBUY,String,][1020,IRGSELL,String,][1021,SEQNUM,Double,][1022,PRNTYP,String,][1023,PRNTBCK,Double,][1026,STOCK_RIC,String,][1028,GV1_DATE,Unknown,29 AUG 2014][1029,GEN_VAL5,Double,6957.25][1030,GEN_VAL6,Double,6983.00][1031,GEN_VAL7,Double,][1032,GEN_VAL8,Double,6963.92][1033,GEN_VAL9,Double,6951.50][1034,GEN_VAL10,Double,][1035,GV5_TEXT,String,D2    ][1036,GV6_TEXT,String,][1037,GV7_TEXT,String,][1038,GV8_TEXT,String,][1039,GV9_TEXT,String,      ][1040,GV10_TEXT,String,      ][1041,GV1_FLAG,String,F][1042,GV2_FLAG,String,][1043,GV3_FLAG,String,][1044,GV4_FLAG,String,][1045,GV5_FLAG,String,][1046,GV6_FLAG,String,][1047,GV7_FLAG,String,][1048,GV8_FLAG,String,][1049,GV9_FLAG,String,][1050,GV10_FLAG,String,][1051,GV2_DATE,Unknown,][1055,OFF_CD_IN2,String,0][1056,OFFC_CODE2,String,][1065,O_BID_TONE,String, ][1066,O_ASK_TONE,String, ][1067,EXCHTIM,Unknown,16:20][1075,YRHI_IND,String,0][1076,YRLO_IND,String,0][1078,CONV_FAC,Double,][1080,PREF_DISP,Integer,4010][1352,DSPLY_NMLL,String,][1379,VOL_X_PRC1,Double,][1383,DSO_ID,Integer,14592][1643,PUT_CALL,String,0][1709,RDN_EXCHD2,String,99][2130,INSTU_NAME,String,0][2738,GV3_TIME,Unknown,][2739,GV4_TIME,Unknown,][3131,IRGFID,Double,][3132,IRGVAL,Double,][3263,PREV_DISP,Integer,0][3264,PRC_QL3,String,0][3364,MPV,String,0][3372,OFF_CLOSE,Double,][3436,ASK_IV,String,][3437,BID_IV,String,][3438,CLOSE_IV,String,][3439,30D_A_IV_C,String,][3440,30D_A_IV_P,String,][3441,30D_ATM_IV,String,][3442,60D_A_IV_C,String,][3443,60D_A_IV_P,String,][3444,60D_ATM_IV,String,][3445,90D_A_IV_C,String,][3446,90D_A_IV_P,String,][3447,90D_ATM_IV,String,][3581,BOLL_DOWN,Double,][3582,BOLL_UP,Double,][3655,ISIN_CODE,String,][3674,LST_TRD_IV,String,][3678,MA5,Double,][3679,MA10,Double,][3680,MA30,Double,][3681,MA60,Double,][3682,MA90,Double,][3683,MA100,Double,][3684,MA200,Double,][3685,MA300,Double,][3694,MNEMONIC,String,CAUSD               ][3700,NETCHG_1W,Double,][3702,NETCHG_1M,Double,][3703,NETCHG_3M,Double,][3704,NETCHG_6M,Double,][3705,NETCHG_1Y,Double,][3747,RSI_7,Double,][3748,RSI_14,Double,][3749,RSI_30,Double,][3750,RTR_OPN_PR,Double,][3756,SEDOL,String,][4043,ACVOL_SC,String,0][4737,P_C_IND1,String,0]]
+[2014-08-31 14:33:52,718][INFO,rmds.processer.ItemGroupManager.applyGroup(481)] ItemGroupManager: IDN_SELECTFEED:CMCU3 was assigned to group 0001001701643de1
+[2014-08-31 14:33:52,734][INFO,rmds.processer.PersistentItemManager.processEvent(249)] publish Item CMCU3 use time 16 microseconds
+[2014-08-31 14:38:58,968][INFO,locate.persistent.LocatePersistentMain.main(25)] start LocateGateWay!
+[2014-08-31 14:38:59,156][DEBUG,core.env.StandardEnvironment.<init>(114)] Initializing new StandardEnvironment
+[2014-08-31 14:38:59,171][DEBUG,core.env.StandardEnvironment.addLast(103)] Adding [systemProperties] PropertySource with lowest search precedence
+[2014-08-31 14:38:59,171][DEBUG,core.env.StandardEnvironment.addLast(103)] Adding [systemEnvironment] PropertySource with lowest search precedence
+[2014-08-31 14:38:59,171][DEBUG,core.env.StandardEnvironment.<init>(120)] Initialized StandardEnvironment with PropertySources [systemProperties,systemEnvironment]
+[2014-08-31 14:38:59,187][INFO,context.support.FileSystemXmlApplicationContext.prepareRefresh(495)] Refreshing org.springframework.context.support.FileSystemXmlApplicationContext@12f5047: startup date [Sun Aug 31 14:38:59 CST 2014]; root of context hierarchy
+[2014-08-31 14:38:59,250][DEBUG,core.env.StandardEnvironment.<init>(114)] Initializing new StandardEnvironment
+[2014-08-31 14:38:59,250][DEBUG,core.env.StandardEnvironment.addLast(103)] Adding [systemProperties] PropertySource with lowest search precedence
+[2014-08-31 14:38:59,250][DEBUG,core.env.StandardEnvironment.addLast(103)] Adding [systemEnvironment] PropertySource with lowest search precedence
+[2014-08-31 14:38:59,250][DEBUG,core.env.StandardEnvironment.<init>(120)] Initialized StandardEnvironment with PropertySources [systemProperties,systemEnvironment]
+[2014-08-31 14:38:59,250][DEBUG,core.env.StandardEnvironment.<init>(114)] Initializing new StandardEnvironment
+[2014-08-31 14:38:59,250][DEBUG,core.env.StandardEnvironment.addLast(103)] Adding [systemProperties] PropertySource with lowest search precedence
+[2014-08-31 14:38:59,250][DEBUG,core.env.StandardEnvironment.addLast(103)] Adding [systemEnvironment] PropertySource with lowest search precedence
+[2014-08-31 14:38:59,250][DEBUG,core.env.StandardEnvironment.<init>(120)] Initialized StandardEnvironment with PropertySources [systemProperties,systemEnvironment]
+[2014-08-31 14:38:59,265][INFO,factory.xml.XmlBeanDefinitionReader.loadBeanDefinitions(315)] Loading XML bean definitions from file [D:\My Documents\git\locateGateWay\PersistentLocate\config\propholder.xml]
+[2014-08-31 14:38:59,265][DEBUG,factory.xml.DefaultDocumentLoader.loadDocument(72)] Using JAXP provider [org.apache.xerces.jaxp.DocumentBuilderFactoryImpl]
+[2014-08-31 14:38:59,453][DEBUG,factory.xml.PluggableSchemaResolver.getSchemaMappings(140)] Loading schema mappings from [META-INF/spring.schemas]
+[2014-08-31 14:38:59,468][DEBUG,factory.xml.PluggableSchemaResolver.getSchemaMappings(146)] Loaded schema mappings: {http://www.springframework.org/schema/util/spring-util.xsd=org/springframework/beans/factory/xml/spring-util-3.1.xsd, http://www.springframework.org/schema/beans/spring-beans-3.1.xsd=org/springframework/beans/factory/xml/spring-beans-3.1.xsd, http://www.springframework.org/schema/task/spring-task.xsd=org/springframework/scheduling/config/spring-task-3.1.xsd, http://www.springframework.org/schema/cache/spring-cache.xsd=org/springframework/cache/config/spring-cache-3.1.xsd, http://www.springframework.org/schema/aop/spring-aop-3.0.xsd=org/springframework/aop/config/spring-aop-3.0.xsd, http://www.springframework.org/schema/task/spring-task-3.1.xsd=org/springframework/scheduling/config/spring-task-3.1.xsd, http://www.springframework.org/schema/aop/spring-aop-2.0.xsd=org/springframework/aop/config/spring-aop-2.0.xsd, http://www.springframework.org/schema/tool/spring-tool-2.5.xsd=org/springframework/beans/factory/xml/spring-tool-2.5.xsd, http://www.springframework.org/schema/beans/spring-beans.xsd=org/springframework/beans/factory/xml/spring-beans-3.1.xsd, http://www.springframework.org/schema/jee/spring-jee-2.5.xsd=org/springframework/ejb/config/spring-jee-2.5.xsd, http://www.springframework.org/schema/tool/spring-tool-3.1.xsd=org/springframework/beans/factory/xml/spring-tool-3.1.xsd, http://www.springframework.org/schema/aop/spring-aop.xsd=org/springframework/aop/config/spring-aop-3.1.xsd, http://www.springframework.org/schema/jee/spring-jee-3.1.xsd=org/springframework/ejb/config/spring-jee-3.1.xsd, http://www.springframework.org/schema/beans/spring-beans-2.0.xsd=org/springframework/beans/factory/xml/spring-beans-2.0.xsd, http://www.springframework.org/schema/beans/spring-beans-3.0.xsd=org/springframework/beans/factory/xml/spring-beans-3.0.xsd, http://www.springframework.org/schema/task/spring-task-3.0.xsd=org/springframework/scheduling/config/spring-task-3.0.xsd, http://www.springframework.org/schema/context/spring-context-2.5.xsd=org/springframework/context/config/spring-context-2.5.xsd, http://www.springframework.org/schema/tool/spring-tool-3.0.xsd=org/springframework/beans/factory/xml/spring-tool-3.0.xsd, http://www.springframework.org/schema/tool/spring-tool-2.0.xsd=org/springframework/beans/factory/xml/spring-tool-2.0.xsd, http://www.springframework.org/schema/util/spring-util-2.5.xsd=org/springframework/beans/factory/xml/spring-util-2.5.xsd, http://www.springframework.org/schema/lang/spring-lang.xsd=org/springframework/scripting/config/spring-lang-3.1.xsd, http://www.springframework.org/schema/lang/spring-lang-2.5.xsd=org/springframework/scripting/config/spring-lang-2.5.xsd, http://www.springframework.org/schema/jee/spring-jee-3.0.xsd=org/springframework/ejb/config/spring-jee-3.0.xsd, http://www.springframework.org/schema/jee/spring-jee-2.0.xsd=org/springframework/ejb/config/spring-jee-2.0.xsd, http://www.springframework.org/schema/context/spring-context-3.1.xsd=org/springframework/context/config/spring-context-3.1.xsd, http://www.springframework.org/schema/util/spring-util-3.1.xsd=org/springframework/beans/factory/xml/spring-util-3.1.xsd, http://www.springframework.org/schema/lang/spring-lang-3.1.xsd=org/springframework/scripting/config/spring-lang-3.1.xsd, http://www.springframework.org/schema/cache/spring-cache-3.1.xsd=org/springframework/cache/config/spring-cache-3.1.xsd, http://www.springframework.org/schema/context/spring-context.xsd=org/springframework/context/config/spring-context-3.1.xsd, http://www.springframework.org/schema/jee/spring-jee.xsd=org/springframework/ejb/config/spring-jee-3.1.xsd, http://www.springframework.org/schema/aop/spring-aop-2.5.xsd=org/springframework/aop/config/spring-aop-2.5.xsd, http://www.springframework.org/schema/aop/spring-aop-3.1.xsd=org/springframework/aop/config/spring-aop-3.1.xsd, http://www.springframework.org/schema/context/spring-context-3.0.xsd=org/springframework/context/config/spring-context-3.0.xsd, http://www.springframework.org/schema/tool/spring-tool.xsd=org/springframework/beans/factory/xml/spring-tool-3.1.xsd, http://www.springframework.org/schema/util/spring-util-3.0.xsd=org/springframework/beans/factory/xml/spring-util-3.0.xsd, http://www.springframework.org/schema/lang/spring-lang-3.0.xsd=org/springframework/scripting/config/spring-lang-3.0.xsd, http://www.springframework.org/schema/util/spring-util-2.0.xsd=org/springframework/beans/factory/xml/spring-util-2.0.xsd, http://www.springframework.org/schema/lang/spring-lang-2.0.xsd=org/springframework/scripting/config/spring-lang-2.0.xsd, http://www.springframework.org/schema/beans/spring-beans-2.5.xsd=org/springframework/beans/factory/xml/spring-beans-2.5.xsd}
+[2014-08-31 14:38:59,468][DEBUG,factory.xml.PluggableSchemaResolver.resolveEntity(118)] Found XML schema [http://www.springframework.org/schema/beans/spring-beans-3.0.xsd] in classpath: org/springframework/beans/factory/xml/spring-beans-3.0.xsd
+[2014-08-31 14:38:59,531][DEBUG,factory.xml.PluggableSchemaResolver.resolveEntity(118)] Found XML schema [http://www.springframework.org/schema/context/spring-context-3.0.xsd] in classpath: org/springframework/context/config/spring-context-3.0.xsd
+[2014-08-31 14:38:59,546][DEBUG,factory.xml.PluggableSchemaResolver.resolveEntity(118)] Found XML schema [http://www.springframework.org/schema/tool/spring-tool-3.0.xsd] in classpath: org/springframework/beans/factory/xml/spring-tool-3.0.xsd
+[2014-08-31 14:38:59,546][DEBUG,factory.xml.DefaultBeanDefinitionDocumentReader.registerBeanDefinitions(108)] Loading bean definitions
+[2014-08-31 14:38:59,562][DEBUG,factory.xml.DefaultNamespaceHandlerResolver.getHandlerMappings(156)] Loaded NamespaceHandler mappings: {http://www.springframework.org/schema/p=org.springframework.beans.factory.xml.SimplePropertyNamespaceHandler, http://www.springframework.org/schema/util=org.springframework.beans.factory.xml.UtilNamespaceHandler, http://www.springframework.org/schema/jee=org.springframework.ejb.config.JeeNamespaceHandler, http://www.springframework.org/schema/aop=org.springframework.aop.config.AopNamespaceHandler, http://www.springframework.org/schema/cache=org.springframework.cache.config.CacheNamespaceHandler, http://www.springframework.org/schema/c=org.springframework.beans.factory.xml.SimpleConstructorNamespaceHandler, http://www.springframework.org/schema/task=org.springframework.scheduling.config.TaskNamespaceHandler, http://www.springframework.org/schema/lang=org.springframework.scripting.config.LangNamespaceHandler, http://www.springframework.org/schema/context=org.springframework.context.config.ContextNamespaceHandler}
+[2014-08-31 14:38:59,593][DEBUG,core.env.StandardEnvironment.<init>(114)] Initializing new StandardEnvironment
+[2014-08-31 14:38:59,593][DEBUG,core.env.StandardEnvironment.addLast(103)] Adding [systemProperties] PropertySource with lowest search precedence
+[2014-08-31 14:38:59,593][DEBUG,core.env.StandardEnvironment.addLast(103)] Adding [systemEnvironment] PropertySource with lowest search precedence
+[2014-08-31 14:38:59,593][DEBUG,core.env.StandardEnvironment.<init>(120)] Initialized StandardEnvironment with PropertySources [systemProperties,systemEnvironment]
+[2014-08-31 14:38:59,625][DEBUG,io.support.PathMatchingResourcePatternResolver.doFindMatchingFileSystemResources(550)] Looking for matching resources in directory tree [D:\My Documents\git\locateGateWay\PersistentLocate\target\classes\com\locate]
+[2014-08-31 14:38:59,625][DEBUG,io.support.PathMatchingResourcePatternResolver.doRetrieveMatchingFiles(612)] Searching directory [D:\My Documents\git\locateGateWay\PersistentLocate\target\classes\com\locate] for files matching pattern [D:/My Documents/git/locateGateWay/PersistentLocate/target/classes/com/locate/**/*.class]
+[2014-08-31 14:38:59,625][DEBUG,io.support.PathMatchingResourcePatternResolver.doRetrieveMatchingFiles(612)] Searching directory [D:\My Documents\git\locateGateWay\PersistentLocate\target\classes\com\locate\persistent] for files matching pattern [D:/My Documents/git/locateGateWay/PersistentLocate/target/classes/com/locate/**/*.class]
+[2014-08-31 14:38:59,625][DEBUG,io.support.PathMatchingResourcePatternResolver.doFindMatchingFileSystemResources(550)] Looking for matching resources in directory tree [D:\My Documents\git\locateGateWay\commons\target\classes\com\locate]
+[2014-08-31 14:38:59,625][DEBUG,io.support.PathMatchingResourcePatternResolver.doRetrieveMatchingFiles(612)] Searching directory [D:\My Documents\git\locateGateWay\commons\target\classes\com\locate] for files matching pattern [D:/My Documents/git/locateGateWay/commons/target/classes/com/locate/**/*.class]
+[2014-08-31 14:38:59,625][DEBUG,io.support.PathMatchingResourcePatternResolver.doRetrieveMatchingFiles(612)] Searching directory [D:\My Documents\git\locateGateWay\commons\target\classes\com\locate\common] for files matching pattern [D:/My Documents/git/locateGateWay/commons/target/classes/com/locate/**/*.class]
+[2014-08-31 14:38:59,640][DEBUG,io.support.PathMatchingResourcePatternResolver.doRetrieveMatchingFiles(612)] Searching directory [D:\My Documents\git\locateGateWay\commons\target\classes\com\locate\common\model] for files matching pattern [D:/My Documents/git/locateGateWay/commons/target/classes/com/locate/**/*.class]
+[2014-08-31 14:38:59,640][DEBUG,io.support.PathMatchingResourcePatternResolver.doRetrieveMatchingFiles(612)] Searching directory [D:\My Documents\git\locateGateWay\commons\target\classes\com\locate\common\utils] for files matching pattern [D:/My Documents/git/locateGateWay/commons/target/classes/com/locate/**/*.class]
+[2014-08-31 14:38:59,640][DEBUG,io.support.PathMatchingResourcePatternResolver.doRetrieveMatchingFiles(612)] Searching directory [D:\My Documents\git\locateGateWay\commons\target\classes\com\locate\rmds] for files matching pattern [D:/My Documents/git/locateGateWay/commons/target/classes/com/locate/**/*.class]
+[2014-08-31 14:38:59,640][DEBUG,io.support.PathMatchingResourcePatternResolver.doRetrieveMatchingFiles(612)] Searching directory [D:\My Documents\git\locateGateWay\commons\target\classes\com\locate\rmds\handler] for files matching pattern [D:/My Documents/git/locateGateWay/commons/target/classes/com/locate/**/*.class]
+[2014-08-31 14:38:59,640][DEBUG,io.support.PathMatchingResourcePatternResolver.doRetrieveMatchingFiles(612)] Searching directory [D:\My Documents\git\locateGateWay\commons\target\classes\com\locate\rmds\handler\inter] for files matching pattern [D:/My Documents/git/locateGateWay/commons/target/classes/com/locate/**/*.class]
+[2014-08-31 14:38:59,640][DEBUG,io.support.PathMatchingResourcePatternResolver.doRetrieveMatchingFiles(612)] Searching directory [D:\My Documents\git\locateGateWay\commons\target\classes\com\locate\rmds\processer] for files matching pattern [D:/My Documents/git/locateGateWay/commons/target/classes/com/locate/**/*.class]
+[2014-08-31 14:38:59,640][DEBUG,io.support.PathMatchingResourcePatternResolver.doRetrieveMatchingFiles(612)] Searching directory [D:\My Documents\git\locateGateWay\commons\target\classes\com\locate\rmds\processer\face] for files matching pattern [D:/My Documents/git/locateGateWay/commons/target/classes/com/locate/**/*.class]
+[2014-08-31 14:38:59,640][DEBUG,io.support.PathMatchingResourcePatternResolver.doFindMatchingFileSystemResources(550)] Looking for matching resources in directory tree [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate]
+[2014-08-31 14:38:59,640][DEBUG,io.support.PathMatchingResourcePatternResolver.doRetrieveMatchingFiles(612)] Searching directory [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate] for files matching pattern [D:/My Documents/git/locateGateWay/rmds/target/classes/com/locate/**/*.class]
+[2014-08-31 14:38:59,640][DEBUG,io.support.PathMatchingResourcePatternResolver.doRetrieveMatchingFiles(612)] Searching directory [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds] for files matching pattern [D:/My Documents/git/locateGateWay/rmds/target/classes/com/locate/**/*.class]
+[2014-08-31 14:38:59,656][DEBUG,io.support.PathMatchingResourcePatternResolver.doRetrieveMatchingFiles(612)] Searching directory [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\dict] for files matching pattern [D:/My Documents/git/locateGateWay/rmds/target/classes/com/locate/**/*.class]
+[2014-08-31 14:38:59,656][DEBUG,io.support.PathMatchingResourcePatternResolver.doRetrieveMatchingFiles(612)] Searching directory [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\gui] for files matching pattern [D:/My Documents/git/locateGateWay/rmds/target/classes/com/locate/**/*.class]
+[2014-08-31 14:38:59,656][DEBUG,io.support.PathMatchingResourcePatternResolver.doRetrieveMatchingFiles(612)] Searching directory [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\gui\viewer] for files matching pattern [D:/My Documents/git/locateGateWay/rmds/target/classes/com/locate/**/*.class]
+[2014-08-31 14:38:59,656][DEBUG,io.support.PathMatchingResourcePatternResolver.doRetrieveMatchingFiles(612)] Searching directory [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\handler] for files matching pattern [D:/My Documents/git/locateGateWay/rmds/target/classes/com/locate/**/*.class]
+[2014-08-31 14:38:59,656][DEBUG,io.support.PathMatchingResourcePatternResolver.doRetrieveMatchingFiles(612)] Searching directory [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\parser] for files matching pattern [D:/My Documents/git/locateGateWay/rmds/target/classes/com/locate/**/*.class]
+[2014-08-31 14:38:59,656][DEBUG,io.support.PathMatchingResourcePatternResolver.doRetrieveMatchingFiles(612)] Searching directory [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\parser\face] for files matching pattern [D:/My Documents/git/locateGateWay/rmds/target/classes/com/locate/**/*.class]
+[2014-08-31 14:38:59,656][DEBUG,io.support.PathMatchingResourcePatternResolver.doRetrieveMatchingFiles(612)] Searching directory [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\processer] for files matching pattern [D:/My Documents/git/locateGateWay/rmds/target/classes/com/locate/**/*.class]
+[2014-08-31 14:38:59,656][DEBUG,io.support.PathMatchingResourcePatternResolver.doRetrieveMatchingFiles(612)] Searching directory [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\statistic] for files matching pattern [D:/My Documents/git/locateGateWay/rmds/target/classes/com/locate/**/*.class]
+[2014-08-31 14:38:59,656][DEBUG,io.support.PathMatchingResourcePatternResolver.doRetrieveMatchingFiles(612)] Searching directory [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\util] for files matching pattern [D:/My Documents/git/locateGateWay/rmds/target/classes/com/locate/**/*.class]
+[2014-08-31 14:38:59,671][DEBUG,io.support.PathMatchingResourcePatternResolver.doFindMatchingFileSystemResources(550)] Looking for matching resources in directory tree [D:\My Documents\git\locateGateWay\bridge\target\classes\com\locate]
+[2014-08-31 14:38:59,671][DEBUG,io.support.PathMatchingResourcePatternResolver.doRetrieveMatchingFiles(612)] Searching directory [D:\My Documents\git\locateGateWay\bridge\target\classes\com\locate] for files matching pattern [D:/My Documents/git/locateGateWay/bridge/target/classes/com/locate/**/*.class]
+[2014-08-31 14:38:59,671][DEBUG,io.support.PathMatchingResourcePatternResolver.doRetrieveMatchingFiles(612)] Searching directory [D:\My Documents\git\locateGateWay\bridge\target\classes\com\locate\bridge] for files matching pattern [D:/My Documents/git/locateGateWay/bridge/target/classes/com/locate/**/*.class]
+[2014-08-31 14:38:59,671][DEBUG,io.support.PathMatchingResourcePatternResolver.doRetrieveMatchingFiles(612)] Searching directory [D:\My Documents\git\locateGateWay\bridge\target\classes\com\locate\rmds] for files matching pattern [D:/My Documents/git/locateGateWay/bridge/target/classes/com/locate/**/*.class]
+[2014-08-31 14:38:59,671][DEBUG,io.support.PathMatchingResourcePatternResolver.doRetrieveMatchingFiles(612)] Searching directory [D:\My Documents\git\locateGateWay\bridge\target\classes\com\locate\rmds\client] for files matching pattern [D:/My Documents/git/locateGateWay/bridge/target/classes/com/locate/**/*.class]
+[2014-08-31 14:38:59,671][DEBUG,io.support.PathMatchingResourcePatternResolver.doRetrieveMatchingFiles(612)] Searching directory [D:\My Documents\git\locateGateWay\bridge\target\classes\com\locate\rmds\user] for files matching pattern [D:/My Documents/git/locateGateWay/bridge/target/classes/com/locate/**/*.class]
+[2014-08-31 14:38:59,671][DEBUG,io.support.PathMatchingResourcePatternResolver.findPathMatchingResources(351)] Resolved location pattern [classpath*:com/locate/**/*.class] to resources [file [D:\My Documents\git\locateGateWay\PersistentLocate\target\classes\com\locate\persistent\LocatePersistentMain.class], file [D:\My Documents\git\locateGateWay\commons\target\classes\com\locate\common\CryptSecurity.class], file [D:\My Documents\git\locateGateWay\commons\target\classes\com\locate\common\DataBaseCache.class], file [D:\My Documents\git\locateGateWay\commons\target\classes\com\locate\common\GateChannelCache.class], file [D:\My Documents\git\locateGateWay\commons\target\classes\com\locate\common\GateWayExceptionTypes$NETTYExceptionEnum.class], file [D:\My Documents\git\locateGateWay\commons\target\classes\com\locate\common\GateWayExceptionTypes$RFAExceptionEnum.class], file [D:\My Documents\git\locateGateWay\commons\target\classes\com\locate\common\GateWayExceptionTypes$RFAUserAuthentication.class], file [D:\My Documents\git\locateGateWay\commons\target\classes\com\locate\common\GateWayExceptionTypes.class], file [D:\My Documents\git\locateGateWay\commons\target\classes\com\locate\common\LocateException.class], file [D:\My Documents\git\locateGateWay\commons\target\classes\com\locate\common\LocateMessageTypes.class], file [D:\My Documents\git\locateGateWay\commons\target\classes\com\locate\common\LocateResultCode$LocateResponseEnum.class], file [D:\My Documents\git\locateGateWay\commons\target\classes\com\locate\common\LocateResultCode.class], file [D:\My Documents\git\locateGateWay\commons\target\classes\com\locate\common\model\ClientRequest.class], file [D:\My Documents\git\locateGateWay\commons\target\classes\com\locate\common\model\CustomerFiled.class], file [D:\My Documents\git\locateGateWay\commons\target\classes\com\locate\common\model\LocateUnionMessage.class], file [D:\My Documents\git\locateGateWay\commons\target\classes\com\locate\common\RFANodeconstant.class], file [D:\My Documents\git\locateGateWay\commons\target\classes\com\locate\common\RmdsDataCache.class], file [D:\My Documents\git\locateGateWay\commons\target\classes\com\locate\common\ShutdownWorker.class], file [D:\My Documents\git\locateGateWay\commons\target\classes\com\locate\common\SystemConstant.class], file [D:\My Documents\git\locateGateWay\commons\target\classes\com\locate\common\utils\JsonUtil.class], file [D:\My Documents\git\locateGateWay\commons\target\classes\com\locate\common\utils\MessageEncapsulator.class], file [D:\My Documents\git\locateGateWay\commons\target\classes\com\locate\common\utils\NetTimeUtil.class], file [D:\My Documents\git\locateGateWay\commons\target\classes\com\locate\common\utils\RFAUtils.class], file [D:\My Documents\git\locateGateWay\commons\target\classes\com\locate\common\utils\SystemProperties.class], file [D:\My Documents\git\locateGateWay\commons\target\classes\com\locate\common\utils\XmlMessageUtil.class], file [D:\My Documents\git\locateGateWay\commons\target\classes\com\locate\rmds\handler\inter\IRequestHandler.class], file [D:\My Documents\git\locateGateWay\commons\target\classes\com\locate\rmds\processer\EmailNotifier.class], file [D:\My Documents\git\locateGateWay\commons\target\classes\com\locate\rmds\processer\face\INotifier.class], file [D:\My Documents\git\locateGateWay\commons\target\classes\com\locate\rmds\processer\face\IPriceKeeper.class], file [D:\My Documents\git\locateGateWay\commons\target\classes\com\locate\rmds\processer\face\IProcesser.class], file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\dict\DirectoryClient.class], file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\dict\RDMServiceInfo.class], file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\dict\ServiceInfo.class], file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\gui\viewer\FieldValue.class], file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\handler\BaseRequestHandler.class], file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\handler\FuthureRequestHandler.class], file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\parser\face\IOmmParser.class], file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\parser\GenericOMMParser.class], file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\parser\JsonOMMParser.class], file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\parser\LocateOMMParser.class], file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\parser\LoginOMMParser.class], file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\processer\FilePriceKeeper.class], file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\processer\ItemGroupManager$GroupEntry.class], file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\processer\ItemGroupManager$HandleEntry.class], file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\processer\ItemGroupManager.class], file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\processer\ItemManager.class], file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\processer\NewsContentManager.class], file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\processer\NewsItemManager.class], file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\processer\OneTimeItemManager.class], file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\processer\PersistentItemManager.class], file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\processer\RFALoginClient.class], file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\processer\WebItemManager.class], file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\QSConsumerProxy.class], file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\RFAServerManager.class], file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\statistic\CycleStatistics.class], file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\statistic\LogTool.class], file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\statistic\OutputFormatter.class], file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\statistic\ResourceStatistics.class], file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\statistic\StatisticThread.class], file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\util\CommandLine$Option.class], file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\util\CommandLine.class], file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\util\EventFieldUtils.class], file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\util\ExampleUtil.class], file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\util\MD5Encrypt.class], file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\util\MFEncoder$MessageType.class], file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\util\MFEncoder.class], file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\util\RFACommon.class], file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\util\RFATypeConvert.class], file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\util\Rounding.class], file [D:\My Documents\git\locateGateWay\bridge\target\classes\com\locate\bridge\GateForwardRFA.class], file [D:\My Documents\git\locateGateWay\bridge\target\classes\com\locate\bridge\GateWayResponser.class], file [D:\My Documents\git\locateGateWay\bridge\target\classes\com\locate\bridge\HttpWayResponser$1.class], file [D:\My Documents\git\locateGateWay\bridge\target\classes\com\locate\bridge\HttpWayResponser.class], file [D:\My Documents\git\locateGateWay\bridge\target\classes\com\locate\rmds\client\ClientUserValidator.class], file [D:\My Documents\git\locateGateWay\bridge\target\classes\com\locate\rmds\client\RFAUserManagement.class], file [D:\My Documents\git\locateGateWay\bridge\target\classes\com\locate\rmds\user\RFAUser.class], file [D:\My Documents\git\locateGateWay\bridge\target\classes\com\locate\rmds\user\RFAUserPermission.class]]
+[2014-08-31 14:38:59,718][DEBUG,context.annotation.ClassPathBeanDefinitionScanner.findCandidateComponents(244)] Identified candidate component class: file [D:\My Documents\git\locateGateWay\commons\target\classes\com\locate\rmds\processer\EmailNotifier.class]
+[2014-08-31 14:38:59,734][DEBUG,context.annotation.ClassPathBeanDefinitionScanner.findCandidateComponents(244)] Identified candidate component class: file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\handler\FuthureRequestHandler.class]
+[2014-08-31 14:38:59,734][DEBUG,context.annotation.ClassPathBeanDefinitionScanner.findCandidateComponents(244)] Identified candidate component class: file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\parser\LocateOMMParser.class]
+[2014-08-31 14:38:59,734][DEBUG,context.annotation.ClassPathBeanDefinitionScanner.findCandidateComponents(244)] Identified candidate component class: file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\parser\LoginOMMParser.class]
+[2014-08-31 14:38:59,734][DEBUG,context.annotation.ClassPathBeanDefinitionScanner.findCandidateComponents(244)] Identified candidate component class: file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\processer\ItemGroupManager.class]
+[2014-08-31 14:38:59,734][DEBUG,context.annotation.ClassPathBeanDefinitionScanner.findCandidateComponents(244)] Identified candidate component class: file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\processer\ItemManager.class]
+[2014-08-31 14:38:59,750][DEBUG,context.annotation.ClassPathBeanDefinitionScanner.findCandidateComponents(244)] Identified candidate component class: file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\processer\PersistentItemManager.class]
+[2014-08-31 14:38:59,750][DEBUG,context.annotation.ClassPathBeanDefinitionScanner.findCandidateComponents(244)] Identified candidate component class: file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\processer\RFALoginClient.class]
+[2014-08-31 14:38:59,750][DEBUG,context.annotation.ClassPathBeanDefinitionScanner.findCandidateComponents(244)] Identified candidate component class: file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\processer\WebItemManager.class]
+[2014-08-31 14:38:59,750][DEBUG,context.annotation.ClassPathBeanDefinitionScanner.findCandidateComponents(244)] Identified candidate component class: file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\QSConsumerProxy.class]
+[2014-08-31 14:38:59,750][DEBUG,context.annotation.ClassPathBeanDefinitionScanner.findCandidateComponents(244)] Identified candidate component class: file [D:\My Documents\git\locateGateWay\rmds\target\classes\com\locate\rmds\RFAServerManager.class]
+[2014-08-31 14:38:59,750][DEBUG,context.annotation.ClassPathBeanDefinitionScanner.findCandidateComponents(244)] Identified candidate component class: file [D:\My Documents\git\locateGateWay\bridge\target\classes\com\locate\bridge\GateForwardRFA.class]
+[2014-08-31 14:38:59,781][DEBUG,factory.xml.XmlBeanDefinitionReader.loadBeanDefinitions(216)] Loaded 16 bean definitions from location pattern [config/propholder.xml]
+[2014-08-31 14:38:59,781][DEBUG,context.support.FileSystemXmlApplicationContext.obtainFreshBeanFactory(525)] Bean factory for org.springframework.context.support.FileSystemXmlApplicationContext@12f5047: org.springframework.beans.factory.support.DefaultListableBeanFactory@1935089: defining beans [emailNotifier,futhureRequestHandler,locateOMMParser,loginOMMParser,itemGroupManager,itemManager,persistentItemManager,RFALoginClient,webItemManager,qSConsumerProxy,RFAServerManager,gateForwardRFA,org.springframework.context.annotation.internalConfigurationAnnotationProcessor,org.springframework.context.annotation.internalAutowiredAnnotationProcessor,org.springframework.context.annotation.internalRequiredAnnotationProcessor,org.springframework.context.annotation.internalCommonAnnotationProcessor]; root of factory hierarchy
+[2014-08-31 14:38:59,812][DEBUG,factory.support.DefaultListableBeanFactory.getSingleton(217)] Creating shared instance of singleton bean 'org.springframework.context.annotation.internalConfigurationAnnotationProcessor'
+[2014-08-31 14:38:59,812][DEBUG,factory.support.DefaultListableBeanFactory.createBean(430)] Creating instance of bean 'org.springframework.context.annotation.internalConfigurationAnnotationProcessor'
+[2014-08-31 14:38:59,843][DEBUG,factory.support.DefaultListableBeanFactory.doCreateBean(504)] Eagerly caching bean 'org.springframework.context.annotation.internalConfigurationAnnotationProcessor' to allow for resolving potential circular references
+[2014-08-31 14:38:59,843][DEBUG,factory.support.DefaultListableBeanFactory.createBean(458)] Finished creating instance of bean 'org.springframework.context.annotation.internalConfigurationAnnotationProcessor'
+[2014-08-31 14:38:59,890][DEBUG,factory.support.DefaultListableBeanFactory.getSingleton(217)] Creating shared instance of singleton bean 'org.springframework.context.annotation.internalAutowiredAnnotationProcessor'
+[2014-08-31 14:38:59,890][DEBUG,factory.support.DefaultListableBeanFactory.createBean(430)] Creating instance of bean 'org.springframework.context.annotation.internalAutowiredAnnotationProcessor'
+[2014-08-31 14:38:59,890][DEBUG,factory.support.DefaultListableBeanFactory.doCreateBean(504)] Eagerly caching bean 'org.springframework.context.annotation.internalAutowiredAnnotationProcessor' to allow for resolving potential circular references
+[2014-08-31 14:38:59,890][DEBUG,factory.support.DefaultListableBeanFactory.createBean(458)] Finished creating instance of bean 'org.springframework.context.annotation.internalAutowiredAnnotationProcessor'
+[2014-08-31 14:38:59,906][DEBUG,factory.support.DefaultListableBeanFactory.getSingleton(217)] Creating shared instance of singleton bean 'org.springframework.context.annotation.internalRequiredAnnotationProcessor'
+[2014-08-31 14:38:59,906][DEBUG,factory.support.DefaultListableBeanFactory.createBean(430)] Creating instance of bean 'org.springframework.context.annotation.internalRequiredAnnotationProcessor'
+[2014-08-31 14:38:59,906][DEBUG,factory.support.DefaultListableBeanFactory.doCreateBean(504)] Eagerly caching bean 'org.springframework.context.annotation.internalRequiredAnnotationProcessor' to allow for resolving potential circular references
+[2014-08-31 14:38:59,906][DEBUG,factory.support.DefaultListableBeanFactory.createBean(458)] Finished creating instance of bean 'org.springframework.context.annotation.internalRequiredAnnotationProcessor'
+[2014-08-31 14:38:59,906][DEBUG,factory.support.DefaultListableBeanFactory.getSingleton(217)] Creating shared instance of singleton bean 'org.springframework.context.annotation.internalCommonAnnotationProcessor'
+[2014-08-31 14:38:59,906][DEBUG,factory.support.DefaultListableBeanFactory.createBean(430)] Creating instance of bean 'org.springframework.context.annotation.internalCommonAnnotationProcessor'
+[2014-08-31 14:38:59,906][DEBUG,factory.support.DefaultListableBeanFactory.doCreateBean(504)] Eagerly caching bean 'org.springframework.context.annotation.internalCommonAnnotationProcessor' to allow for resolving potential circular references
+[2014-08-31 14:38:59,906][DEBUG,factory.support.DefaultListableBeanFactory.createBean(458)] Finished creating instance of bean 'org.springframework.context.annotation.internalCommonAnnotationProcessor'
+[2014-08-31 14:38:59,906][DEBUG,factory.support.DefaultListableBeanFactory.getSingleton(217)] Creating shared instance of singleton bean 'org.springframework.context.annotation.ConfigurationClassPostProcessor$ImportAwareBeanPostProcessor#0'
+[2014-08-31 14:38:59,906][DEBUG,factory.support.DefaultListableBeanFactory.createBean(430)] Creating instance of bean 'org.springframework.context.annotation.ConfigurationClassPostProcessor$ImportAwareBeanPostProcessor#0'
+[2014-08-31 14:38:59,906][DEBUG,factory.support.DefaultListableBeanFactory.doCreateBean(504)] Eagerly caching bean 'org.springframework.context.annotation.ConfigurationClassPostProcessor$ImportAwareBeanPostProcessor#0' to allow for resolving potential circular references
+[2014-08-31 14:38:59,906][DEBUG,factory.support.DefaultListableBeanFactory.createBean(458)] Finished creating instance of bean 'org.springframework.context.annotation.ConfigurationClassPostProcessor$ImportAwareBeanPostProcessor#0'
+[2014-08-31 14:38:59,937][DEBUG,context.support.FileSystemXmlApplicationContext.initMessageSource(794)] Unable to locate MessageSource with name 'messageSource': using default [org.springframework.context.support.DelegatingMessageSource@1e3888a]
+[2014-08-31 14:38:59,937][DEBUG,context.support.FileSystemXmlApplicationContext.initApplicationEventMulticaster(818)] Unable to locate ApplicationEventMulticaster with name 'applicationEventMulticaster': using default [org.springframework.context.event.SimpleApplicationEventMulticaster@edfada]
+[2014-08-31 14:38:59,937][INFO,factory.support.DefaultListableBeanFactory.preInstantiateSingletons(557)] Pre-instantiating singletons in org.springframework.beans.factory.support.DefaultListableBeanFactory@1935089: defining beans [emailNotifier,futhureRequestHandler,locateOMMParser,loginOMMParser,itemGroupManager,itemManager,persistentItemManager,RFALoginClient,webItemManager,qSConsumerProxy,RFAServerManager,gateForwardRFA,org.springframework.context.annotation.internalConfigurationAnnotationProcessor,org.springframework.context.annotation.internalAutowiredAnnotationProcessor,org.springframework.context.annotation.internalRequiredAnnotationProcessor,org.springframework.context.annotation.internalCommonAnnotationProcessor,org.springframework.context.annotation.ConfigurationClassPostProcessor$ImportAwareBeanPostProcessor#0]; root of factory hierarchy
+[2014-08-31 14:38:59,937][DEBUG,factory.support.DefaultListableBeanFactory.getSingleton(217)] Creating shared instance of singleton bean 'emailNotifier'
+[2014-08-31 14:38:59,937][DEBUG,factory.support.DefaultListableBeanFactory.createBean(430)] Creating instance of bean 'emailNotifier'
+[2014-08-31 14:38:59,953][DEBUG,factory.support.DefaultListableBeanFactory.doCreateBean(504)] Eagerly caching bean 'emailNotifier' to allow for resolving potential circular references
+[2014-08-31 14:38:59,953][DEBUG,factory.support.DefaultListableBeanFactory.createBean(458)] Finished creating instance of bean 'emailNotifier'
+[2014-08-31 14:38:59,953][DEBUG,factory.support.DefaultListableBeanFactory.getSingleton(217)] Creating shared instance of singleton bean 'futhureRequestHandler'
+[2014-08-31 14:38:59,953][DEBUG,factory.support.DefaultListableBeanFactory.createBean(430)] Creating instance of bean 'futhureRequestHandler'
+[2014-08-31 14:38:59,968][DEBUG,factory.annotation.InjectionMetadata.<init>(60)] Found injected element on class [com.locate.rmds.handler.FuthureRequestHandler]: ResourceElement for private com.locate.rmds.QSConsumerProxy com.locate.rmds.handler.FuthureRequestHandler.mainApp
+[2014-08-31 14:38:59,968][DEBUG,factory.support.DefaultListableBeanFactory.doCreateBean(504)] Eagerly caching bean 'futhureRequestHandler' to allow for resolving potential circular references
+[2014-08-31 14:38:59,984][DEBUG,factory.annotation.InjectionMetadata.inject(85)] Processing injected method of bean 'futhureRequestHandler': ResourceElement for private com.locate.rmds.QSConsumerProxy com.locate.rmds.handler.FuthureRequestHandler.mainApp
+[2014-08-31 14:38:59,984][DEBUG,factory.support.DefaultListableBeanFactory.getSingleton(217)] Creating shared instance of singleton bean 'qSConsumerProxy'
+[2014-08-31 14:38:59,984][DEBUG,factory.support.DefaultListableBeanFactory.createBean(430)] Creating instance of bean 'qSConsumerProxy'
+[2014-08-31 14:39:00,000][DEBUG,context.annotation.CommonAnnotationBeanPostProcessor.buildLifecycleMetadata(202)] Found init method on class [com.locate.rmds.QSConsumerProxy]: public void com.locate.rmds.QSConsumerProxy.init()
+[2014-08-31 14:39:00,000][DEBUG,context.annotation.CommonAnnotationBeanPostProcessor.buildLifecycleMetadata(210)] Found destroy method on class [com.locate.rmds.QSConsumerProxy]: public void com.locate.rmds.QSConsumerProxy.cleanup()
+[2014-08-31 14:39:00,000][DEBUG,context.annotation.CommonAnnotationBeanPostProcessor.<init>(253)] Found init method on class [com.locate.rmds.QSConsumerProxy]: org.springframework.beans.factory.annotation.InitDestroyAnnotationBeanPostProcessor$LifecycleElement@316510
+[2014-08-31 14:39:00,000][DEBUG,context.annotation.CommonAnnotationBeanPostProcessor.<init>(261)] Found destroy method on class [com.locate.rmds.QSConsumerProxy]: org.springframework.beans.factory.annotation.InitDestroyAnnotationBeanPostProcessor$LifecycleElement@331156a4
+[2014-08-31 14:39:00,000][DEBUG,factory.annotation.InjectionMetadata.<init>(60)] Found injected element on class [com.locate.rmds.QSConsumerProxy]: ResourceElement for protected com.locate.rmds.processer.RFALoginClient com.locate.rmds.QSConsumerProxy._loginClient
+[2014-08-31 14:39:00,000][DEBUG,factory.annotation.InjectionMetadata.<init>(60)] Found injected element on class [com.locate.rmds.QSConsumerProxy]: ResourceElement for protected com.locate.rmds.processer.ItemGroupManager com.locate.rmds.QSConsumerProxy._itemGroupManager
+[2014-08-31 14:39:00,000][DEBUG,factory.support.DefaultListableBeanFactory.doCreateBean(504)] Eagerly caching bean 'qSConsumerProxy' to allow for resolving potential circular references
+[2014-08-31 14:39:00,015][DEBUG,factory.annotation.InjectionMetadata.inject(85)] Processing injected method of bean 'qSConsumerProxy': ResourceElement for protected com.locate.rmds.processer.RFALoginClient com.locate.rmds.QSConsumerProxy._loginClient
+[2014-08-31 14:39:00,015][DEBUG,factory.support.DefaultListableBeanFactory.getSingleton(217)] Creating shared instance of singleton bean 'RFALoginClient'
+[2014-08-31 14:39:00,015][DEBUG,factory.support.DefaultListableBeanFactory.createBean(430)] Creating instance of bean 'RFALoginClient'
+[2014-08-31 14:39:00,015][DEBUG,factory.annotation.InjectionMetadata.<init>(60)] Found injected element on class [com.locate.rmds.processer.RFALoginClient]: ResourceElement for com.locate.rmds.QSConsumerProxy com.locate.rmds.processer.RFALoginClient._mainApp
+[2014-08-31 14:39:00,015][DEBUG,factory.annotation.InjectionMetadata.<init>(60)] Found injected element on class [com.locate.rmds.processer.RFALoginClient]: ResourceElement for com.locate.rmds.processer.face.INotifier com.locate.rmds.processer.RFALoginClient.notifier
+[2014-08-31 14:39:00,015][DEBUG,factory.annotation.InjectionMetadata.<init>(60)] Found injected element on class [com.locate.rmds.processer.RFALoginClient]: ResourceElement for com.locate.rmds.parser.face.IOmmParser com.locate.rmds.processer.RFALoginClient.ommParser
+[2014-08-31 14:39:00,015][DEBUG,factory.support.DefaultListableBeanFactory.doCreateBean(504)] Eagerly caching bean 'RFALoginClient' to allow for resolving potential circular references
+[2014-08-31 14:39:00,031][DEBUG,factory.annotation.InjectionMetadata.inject(85)] Processing injected method of bean 'RFALoginClient': ResourceElement for com.locate.rmds.QSConsumerProxy com.locate.rmds.processer.RFALoginClient._mainApp
+[2014-08-31 14:39:00,031][DEBUG,factory.support.DefaultListableBeanFactory.doGetBean(241)] Returning eagerly cached instance of singleton bean 'qSConsumerProxy' that is not fully initialized yet - a consequence of a circular reference
+[2014-08-31 14:39:00,031][DEBUG,factory.annotation.InjectionMetadata.inject(85)] Processing injected method of bean 'RFALoginClient': ResourceElement for com.locate.rmds.processer.face.INotifier com.locate.rmds.processer.RFALoginClient.notifier
+[2014-08-31 14:39:00,031][DEBUG,factory.support.DefaultListableBeanFactory.doGetBean(245)] Returning cached instance of singleton bean 'emailNotifier'
+[2014-08-31 14:39:00,031][DEBUG,factory.annotation.InjectionMetadata.inject(85)] Processing injected method of bean 'RFALoginClient': ResourceElement for com.locate.rmds.parser.face.IOmmParser com.locate.rmds.processer.RFALoginClient.ommParser
+[2014-08-31 14:39:00,031][DEBUG,factory.support.DefaultListableBeanFactory.getSingleton(217)] Creating shared instance of singleton bean 'loginOMMParser'
+[2014-08-31 14:39:00,031][DEBUG,factory.support.DefaultListableBeanFactory.createBean(430)] Creating instance of bean 'loginOMMParser'
+[2014-08-31 14:39:00,031][DEBUG,factory.support.DefaultListableBeanFactory.doCreateBean(504)] Eagerly caching bean 'loginOMMParser' to allow for resolving potential circular references
+[2014-08-31 14:39:00,046][DEBUG,factory.support.DefaultListableBeanFactory.createBean(458)] Finished creating instance of bean 'loginOMMParser'
+[2014-08-31 14:39:00,046][DEBUG,factory.support.DefaultListableBeanFactory.createBean(458)] Finished creating instance of bean 'RFALoginClient'
+[2014-08-31 14:39:00,046][DEBUG,factory.annotation.InjectionMetadata.inject(85)] Processing injected method of bean 'qSConsumerProxy': ResourceElement for protected com.locate.rmds.processer.ItemGroupManager com.locate.rmds.QSConsumerProxy._itemGroupManager
+[2014-08-31 14:39:00,046][DEBUG,factory.support.DefaultListableBeanFactory.getSingleton(217)] Creating shared instance of singleton bean 'itemGroupManager'
+[2014-08-31 14:39:00,046][DEBUG,factory.support.DefaultListableBeanFactory.createBean(430)] Creating instance of bean 'itemGroupManager'
+[2014-08-31 14:39:00,046][DEBUG,factory.annotation.InjectionMetadata.<init>(60)] Found injected element on class [com.locate.rmds.processer.ItemGroupManager]: ResourceElement for com.locate.rmds.QSConsumerProxy com.locate.rmds.processer.ItemGroupManager._mainApp
+[2014-08-31 14:39:00,046][DEBUG,factory.support.DefaultListableBeanFactory.doCreateBean(504)] Eagerly caching bean 'itemGroupManager' to allow for resolving potential circular references
+[2014-08-31 14:39:00,046][DEBUG,factory.annotation.InjectionMetadata.inject(85)] Processing injected method of bean 'itemGroupManager': ResourceElement for com.locate.rmds.QSConsumerProxy com.locate.rmds.processer.ItemGroupManager._mainApp
+[2014-08-31 14:39:00,046][DEBUG,factory.support.DefaultListableBeanFactory.doGetBean(241)] Returning eagerly cached instance of singleton bean 'qSConsumerProxy' that is not fully initialized yet - a consequence of a circular reference
+[2014-08-31 14:39:00,046][DEBUG,factory.support.DefaultListableBeanFactory.createBean(458)] Finished creating instance of bean 'itemGroupManager'
+[2014-08-31 14:39:00,046][DEBUG,context.annotation.CommonAnnotationBeanPostProcessor.invokeInitMethods(297)] Invoking init method on bean 'qSConsumerProxy': public void com.locate.rmds.QSConsumerProxy.init()
+[2014-08-31 14:39:00,375][INFO,locate.rmds.QSConsumerProxy.initializeDictionary(592)] field dictionary read from RDMFieldDictionary file
+[2014-08-31 14:39:00,421][INFO,locate.rmds.QSConsumerProxy.initializeDictionary(595)] enum dictionary read from enumtype.def file
+[2014-08-31 14:39:00,703][INFO,rmds.client.RFAUserManagement.init(80)] Completed loading user config.
+[2014-08-31 14:39:02,656][INFO,rmds.processer.RFALoginClient.sendRequest(83)] Sending login request
+[2014-08-31 14:39:02,687][DEBUG,factory.support.DefaultListableBeanFactory.createBean(458)] Finished creating instance of bean 'qSConsumerProxy'
+[2014-08-31 14:39:02,687][DEBUG,factory.support.DefaultListableBeanFactory.createBean(458)] Finished creating instance of bean 'futhureRequestHandler'
+[2014-08-31 14:39:02,687][DEBUG,factory.support.DefaultListableBeanFactory.getSingleton(217)] Creating shared instance of singleton bean 'locateOMMParser'
+[2014-08-31 14:39:02,687][DEBUG,factory.support.DefaultListableBeanFactory.createBean(430)] Creating instance of bean 'locateOMMParser'
+[2014-08-31 14:39:02,687][DEBUG,factory.support.DefaultListableBeanFactory.doCreateBean(504)] Eagerly caching bean 'locateOMMParser' to allow for resolving potential circular references
+[2014-08-31 14:39:02,687][DEBUG,factory.support.DefaultListableBeanFactory.createBean(458)] Finished creating instance of bean 'locateOMMParser'
+[2014-08-31 14:39:02,687][DEBUG,factory.support.DefaultListableBeanFactory.doGetBean(245)] Returning cached instance of singleton bean 'loginOMMParser'
+[2014-08-31 14:39:02,687][DEBUG,factory.support.DefaultListableBeanFactory.doGetBean(245)] Returning cached instance of singleton bean 'itemGroupManager'
+[2014-08-31 14:39:02,687][DEBUG,factory.support.DefaultListableBeanFactory.doGetBean(245)] Returning cached instance of singleton bean 'RFALoginClient'
+[2014-08-31 14:39:02,687][DEBUG,factory.support.DefaultListableBeanFactory.getSingleton(217)] Creating shared instance of singleton bean 'webItemManager'
+[2014-08-31 14:39:02,687][DEBUG,factory.support.DefaultListableBeanFactory.createBean(430)] Creating instance of bean 'webItemManager'
+[2014-08-31 14:39:02,687][DEBUG,factory.annotation.InjectionMetadata.<init>(60)] Found injected element on class [com.locate.rmds.processer.WebItemManager]: ResourceElement for com.locate.rmds.QSConsumerProxy com.locate.rmds.processer.WebItemManager.mainApp
+[2014-08-31 14:39:02,687][DEBUG,factory.support.DefaultListableBeanFactory.doCreateBean(504)] Eagerly caching bean 'webItemManager' to allow for resolving potential circular references
+[2014-08-31 14:39:02,703][DEBUG,factory.annotation.InjectionMetadata.inject(85)] Processing injected method of bean 'webItemManager': ResourceElement for com.locate.rmds.QSConsumerProxy com.locate.rmds.processer.WebItemManager.mainApp
+[2014-08-31 14:39:02,703][DEBUG,factory.support.DefaultListableBeanFactory.doGetBean(245)] Returning cached instance of singleton bean 'qSConsumerProxy'
+[2014-08-31 14:39:02,703][DEBUG,factory.support.DefaultListableBeanFactory.createBean(458)] Finished creating instance of bean 'webItemManager'
+[2014-08-31 14:39:02,703][DEBUG,factory.support.DefaultListableBeanFactory.doGetBean(245)] Returning cached instance of singleton bean 'qSConsumerProxy'
+[2014-08-31 14:39:02,703][DEBUG,factory.support.DefaultListableBeanFactory.getSingleton(217)] Creating shared instance of singleton bean 'RFAServerManager'
+[2014-08-31 14:39:02,703][DEBUG,factory.support.DefaultListableBeanFactory.createBean(430)] Creating instance of bean 'RFAServerManager'
+[2014-08-31 14:39:02,703][DEBUG,context.annotation.CommonAnnotationBeanPostProcessor.buildLifecycleMetadata(202)] Found init method on class [com.locate.rmds.RFAServerManager]: public void com.locate.rmds.RFAServerManager.init()
+[2014-08-31 14:39:02,703][DEBUG,context.annotation.CommonAnnotationBeanPostProcessor.<init>(253)] Found init method on class [com.locate.rmds.RFAServerManager]: org.springframework.beans.factory.annotation.InitDestroyAnnotationBeanPostProcessor$LifecycleElement@316510
+[2014-08-31 14:39:02,703][DEBUG,factory.annotation.InjectionMetadata.<init>(60)] Found injected element on class [com.locate.rmds.RFAServerManager]: ResourceElement for private com.locate.rmds.QSConsumerProxy com.locate.rmds.RFAServerManager.demo
+[2014-08-31 14:39:02,703][DEBUG,factory.support.DefaultListableBeanFactory.doCreateBean(504)] Eagerly caching bean 'RFAServerManager' to allow for resolving potential circular references
+[2014-08-31 14:39:02,718][DEBUG,factory.annotation.InjectionMetadata.inject(85)] Processing injected method of bean 'RFAServerManager': ResourceElement for private com.locate.rmds.QSConsumerProxy com.locate.rmds.RFAServerManager.demo
+[2014-08-31 14:39:02,718][DEBUG,factory.support.DefaultListableBeanFactory.doGetBean(245)] Returning cached instance of singleton bean 'qSConsumerProxy'
+[2014-08-31 14:39:02,718][DEBUG,context.annotation.CommonAnnotationBeanPostProcessor.invokeInitMethods(297)] Invoking init method on bean 'RFAServerManager': public void com.locate.rmds.RFAServerManager.init()
+[2014-08-31 14:39:02,718][DEBUG,factory.support.DefaultListableBeanFactory.createBean(458)] Finished creating instance of bean 'RFAServerManager'
+[2014-08-31 14:39:02,718][DEBUG,factory.support.DefaultListableBeanFactory.getSingleton(217)] Creating shared instance of singleton bean 'gateForwardRFA'
+[2014-08-31 14:39:02,734][DEBUG,factory.support.DefaultListableBeanFactory.createBean(430)] Creating instance of bean 'gateForwardRFA'
+[2014-08-31 14:39:02,734][DEBUG,factory.annotation.InjectionMetadata.<init>(60)] Found injected element on class [com.locate.bridge.GateForwardRFA]: ResourceElement for private com.locate.rmds.handler.inter.IRequestHandler com.locate.bridge.GateForwardRFA.requestHandler
+[2014-08-31 14:39:02,734][DEBUG,factory.annotation.InjectionMetadata.<init>(60)] Found injected element on class [com.locate.bridge.GateForwardRFA]: ResourceElement for private com.locate.rmds.processer.face.IProcesser com.locate.bridge.GateForwardRFA.itemManager
+[2014-08-31 14:39:02,734][DEBUG,factory.support.DefaultListableBeanFactory.doCreateBean(504)] Eagerly caching bean 'gateForwardRFA' to allow for resolving potential circular references
+[2014-08-31 14:39:02,734][DEBUG,factory.annotation.InjectionMetadata.inject(85)] Processing injected method of bean 'gateForwardRFA': ResourceElement for private com.locate.rmds.handler.inter.IRequestHandler com.locate.bridge.GateForwardRFA.requestHandler
+[2014-08-31 14:39:02,734][DEBUG,factory.support.DefaultListableBeanFactory.doGetBean(245)] Returning cached instance of singleton bean 'futhureRequestHandler'
+[2014-08-31 14:39:02,734][DEBUG,factory.annotation.InjectionMetadata.inject(85)] Processing injected method of bean 'gateForwardRFA': ResourceElement for private com.locate.rmds.processer.face.IProcesser com.locate.bridge.GateForwardRFA.itemManager
+[2014-08-31 14:39:02,734][DEBUG,factory.support.DefaultListableBeanFactory.createBean(430)] Creating instance of bean 'itemManager'
+[2014-08-31 14:39:02,750][INFO,locate.bridge.GateWayResponser.brodcastStateResp(74)] None user loginin!
+[2014-08-31 14:39:02,750][ERROR,rmds.processer.RFALoginClient.processEvent(205)] Login not success.Please check!
+ Received Login Response - MsgType.REFRESH_RESP
+[2014-08-31 14:39:02,750][ERROR,locate.rmds.QSConsumerProxy.loginFailure(314)] Login has been denied / rejected / closed 
+[2014-08-31 14:39:02,750][DEBUG,factory.annotation.InjectionMetadata.<init>(60)] Found injected element on class [com.locate.rmds.processer.ItemManager]: ResourceElement for com.locate.rmds.QSConsumerProxy com.locate.rmds.processer.ItemManager._mainApp
+[2014-08-31 14:39:02,750][DEBUG,factory.annotation.InjectionMetadata.<init>(60)] Found injected element on class [com.locate.rmds.processer.ItemManager]: ResourceElement for com.locate.rmds.processer.ItemGroupManager com.locate.rmds.processer.ItemManager._itemGroupManager
+[2014-08-31 14:39:02,750][DEBUG,factory.annotation.InjectionMetadata.<init>(60)] Found injected element on class [com.locate.rmds.processer.ItemManager]: ResourceElement for com.locate.rmds.parser.face.IOmmParser com.locate.rmds.processer.ItemManager.ommParser
+[2014-08-31 14:39:02,750][DEBUG,factory.annotation.InjectionMetadata.inject(85)] Processing injected method of bean 'itemManager': ResourceElement for com.locate.rmds.QSConsumerProxy com.locate.rmds.processer.ItemManager._mainApp
+[2014-08-31 14:39:02,750][DEBUG,factory.support.DefaultListableBeanFactory.doGetBean(245)] Returning cached instance of singleton bean 'qSConsumerProxy'
+[2014-08-31 14:39:02,750][DEBUG,factory.annotation.InjectionMetadata.inject(85)] Processing injected method of bean 'itemManager': ResourceElement for com.locate.rmds.processer.ItemGroupManager com.locate.rmds.processer.ItemManager._itemGroupManager
+[2014-08-31 14:39:02,750][DEBUG,factory.support.DefaultListableBeanFactory.doGetBean(245)] Returning cached instance of singleton bean 'itemGroupManager'
+[2014-08-31 14:39:02,765][DEBUG,factory.annotation.InjectionMetadata.inject(85)] Processing injected method of bean 'itemManager': ResourceElement for com.locate.rmds.parser.face.IOmmParser com.locate.rmds.processer.ItemManager.ommParser
+[2014-08-31 14:39:02,765][DEBUG,factory.support.DefaultListableBeanFactory.doGetBean(245)] Returning cached instance of singleton bean 'locateOMMParser'
+[2014-08-31 14:39:02,765][INFO,rmds.parser.LoginOMMParser.parseAggregate(459)] test for cloud wei```````````````````````fieldNum is 9
+[2014-08-31 14:39:02,765][DEBUG,factory.support.DefaultListableBeanFactory.createBean(458)] Finished creating instance of bean 'itemManager'
+[2014-08-31 14:39:02,765][DEBUG,factory.support.DefaultListableBeanFactory.createBean(458)] Finished creating instance of bean 'gateForwardRFA'
+[2014-08-31 14:39:02,765][DEBUG,factory.support.DefaultListableBeanFactory.doGetBean(245)] Returning cached instance of singleton bean 'org.springframework.context.annotation.internalConfigurationAnnotationProcessor'
+[2014-08-31 14:39:02,765][DEBUG,factory.support.DefaultListableBeanFactory.doGetBean(245)] Returning cached instance of singleton bean 'org.springframework.context.annotation.internalAutowiredAnnotationProcessor'
+[2014-08-31 14:39:02,765][DEBUG,factory.support.DefaultListableBeanFactory.doGetBean(245)] Returning cached instance of singleton bean 'org.springframework.context.annotation.internalRequiredAnnotationProcessor'
+[2014-08-31 14:39:02,765][DEBUG,factory.support.DefaultListableBeanFactory.doGetBean(245)] Returning cached instance of singleton bean 'org.springframework.context.annotation.internalCommonAnnotationProcessor'
+[2014-08-31 14:39:02,765][DEBUG,factory.support.DefaultListableBeanFactory.doGetBean(245)] Returning cached instance of singleton bean 'org.springframework.context.annotation.ConfigurationClassPostProcessor$ImportAwareBeanPostProcessor#0'
+[2014-08-31 14:39:02,765][INFO,rmds.parser.LoginOMMParser.parse(134)] 
+
+MESSAGE
+	Msg Type: MsgType.REFRESH_RESP
+	Msg Model Type: LOGIN
+	Indication Flags: REFRESH_COMPLETE
+	Hint Flags: HAS_ATTRIB_INFO | HAS_ITEM_GROUP | HAS_RESP_TYPE_NUM | HAS_STATE
+	State: OPEN, SUSPECT, NONE,  "All connections pending"
+	Group: 0000
+	RespTypeNum: 0 (RespType.SOLICITED)
+	AttribInfo
+		Name: deve01
+		NameType: 1
+			(USER_NAME)
+		Attrib
+			ELEMENT_LIST
+					ELEMENT_ENTRY ApplicationId: 256
+					ELEMENT_ENTRY Position: 192.168.1.102/20020101-0005
+					ELEMENT_ENTRY AllowSuspectData: 1
+					ELEMENT_ENTRY SingleOpen: 1
+					ELEMENT_ENTRY SupportBatchRequests: 1
+					ELEMENT_ENTRY SupportOptimizedPauseResume: 1
+					ELEMENT_ENTRY SupportPauseResume: 1
+					ELEMENT_ENTRY SupportViewRequests: 1
+					ELEMENT_ENTRY SupportOMMPost: 1
+
+	 Payload: 
+		 None 
+[2014-08-31 14:39:02,765][DEBUG,context.support.FileSystemXmlApplicationContext.initLifecycleProcessor(845)] Unable to locate LifecycleProcessor with name 'lifecycleProcessor': using default [org.springframework.context.support.DefaultLifecycleProcessor@16eaccc]
+[2014-08-31 14:39:02,765][DEBUG,factory.support.DefaultListableBeanFactory.doGetBean(245)] Returning cached instance of singleton bean 'lifecycleProcessor'
+[2014-08-31 14:39:02,765][DEBUG,factory.support.DefaultListableBeanFactory.doGetBean(245)] Returning cached instance of singleton bean 'qSConsumerProxy'
+[2014-08-31 14:39:02,765][ERROR,common.utils.SystemProperties.getProperties(66)] Can't find configuration for ric.array
+[2014-08-31 14:39:02,765][WARN,locate.rmds.QSConsumerProxy.makeOrder(416)] persistent Ric is not config correctly!
+[2014-08-31 14:39:02,843][INFO,locate.bridge.GateWayResponser.brodcastStateResp(74)] None user loginin!
+[2014-08-31 14:39:02,843][INFO,rmds.processer.RFALoginClient.processEvent(189)] Received Login STATUS OK Response
+[2014-08-31 14:39:02,843][INFO,locate.rmds.QSConsumerProxy.loginSuccess(306)] QSConsumerDemo Login successful
+[2014-08-31 14:39:02,875][INFO,rmds.parser.LoginOMMParser.parseAggregate(459)] test for cloud wei```````````````````````fieldNum is 3
+[2014-08-31 14:39:02,875][INFO,rmds.parser.LoginOMMParser.parseAggregate(459)] test for cloud wei```````````````````````fieldNum is 2
+[2014-08-31 14:39:02,875][INFO,rmds.parser.LoginOMMParser.parseAggregate(459)] test for cloud wei```````````````````````fieldNum is 2
+[2014-08-31 14:39:02,875][INFO,rmds.parser.LoginOMMParser.parseAggregate(459)] test for cloud wei```````````````````````fieldNum is 1
+[2014-08-31 14:39:02,875][INFO,rmds.parser.LoginOMMParser.parseAggregate(459)] test for cloud wei```````````````````````fieldNum is 7
+[2014-08-31 14:39:02,875][INFO,rmds.parser.LoginOMMParser.parseAggregate(459)] test for cloud wei```````````````````````fieldNum is 2
+[2014-08-31 14:39:02,875][INFO,rmds.parser.LoginOMMParser.parseAggregate(459)] test for cloud wei```````````````````````fieldNum is 2
+[2014-08-31 14:39:02,875][INFO,rmds.parser.LoginOMMParser.parseAggregate(459)] test for cloud wei```````````````````````fieldNum is 1
+[2014-08-31 14:39:02,875][INFO,rmds.parser.LoginOMMParser.parse(134)] 
+
+MESSAGE
+	Msg Type: MsgType.REFRESH_RESP
+	Msg Model Type: DIRECTORY
+	Indication Flags: REFRESH_COMPLETE
+	Hint Flags: HAS_ATTRIB_INFO | HAS_ITEM_GROUP | HAS_RESP_TYPE_NUM | HAS_STATE
+	State: OPEN, OK, NONE,  ""
+	Group: 0000
+	RespTypeNum: 0 (RespType.SOLICITED)
+	AttribInfo
+		 Filter: 3
+			 (INFO | STATE)
+	 Payload:  256 bytes
+		MAP
+		flags: MAP_ENTRY (Action.ADD) : 
+ 
+ flags: 
+Key: IDN_SELECTFEED
+ Value: 
+				FILTER_LIST
+				flags: FILTER_ENTRY 1 (Action.SET) : 
+ 
+  flags: 
+						ELEMENT_LIST
+								ELEMENT_ENTRY Name: IDN_SELECTFEED
+								ELEMENT_ENTRY Capabilities: 
+  
+								ARRAY 
+ARRAY_ENTRY: 6 
+ARRAY_ENTRY: 10 
+ARRAY_ENTRY: 5
+								ELEMENT_ENTRY DictionariesProvided: 
+  
+								ARRAY 
+ARRAY_ENTRY: RWFFld 
+ARRAY_ENTRY: RWFEnum
+								ELEMENT_ENTRY DictionariesUsed: 
+  
+								ARRAY 
+ARRAY_ENTRY: RWFFld 
+ARRAY_ENTRY: RWFEnum
+								ELEMENT_ENTRY QoS: 
+  
+								ARRAY 
+ARRAY_ENTRY: (RT, TbT)
+								ELEMENT_ENTRY SupportsQoSRange: 0
+								ELEMENT_ENTRY ServiceID: 23FILTER_ENTRY 2 (Action.SET) : 
+ 
+  flags: 
+						ELEMENT_LIST
+								ELEMENT_ENTRY ServiceState: 1
+								ELEMENT_ENTRY AcceptingRequests: 1
+ 
+[2014-08-31 14:39:38,281][INFO,locate.persistent.LocatePersistentMain.main(25)] start LocateGateWay!
+[2014-08-31 14:39:39,500][INFO,locate.rmds.QSConsumerProxy.initializeDictionary(592)] field dictionary read from RDMFieldDictionary file
+[2014-08-31 14:39:39,515][INFO,locate.rmds.QSConsumerProxy.initializeDictionary(595)] enum dictionary read from enumtype.def file
+[2014-08-31 14:39:39,781][INFO,rmds.client.RFAUserManagement.init(80)] Completed loading user config.
+[2014-08-31 14:39:41,687][INFO,rmds.processer.RFALoginClient.sendRequest(83)] Sending login request
+[2014-08-31 14:39:41,812][INFO,locate.bridge.GateWayResponser.brodcastStateResp(74)] None user loginin!
+[2014-08-31 14:39:41,812][ERROR,rmds.processer.RFALoginClient.processEvent(205)] Login not success.Please check!
+ Received Login Response - MsgType.REFRESH_RESP
+[2014-08-31 14:39:41,812][ERROR,locate.rmds.QSConsumerProxy.loginFailure(314)] Login has been denied / rejected / closed 
+[2014-08-31 14:39:41,812][ERROR,common.utils.SystemProperties.getProperties(66)] Can't find configuration for ric.array
+[2014-08-31 14:39:41,812][WARN,locate.rmds.QSConsumerProxy.makeOrder(416)] persistent Ric is not config correctly!
+[2014-08-31 14:39:41,828][INFO,rmds.parser.LoginOMMParser.parseAggregate(459)] test for cloud wei```````````````````````fieldNum is 9
+[2014-08-31 14:39:41,828][INFO,rmds.parser.LoginOMMParser.parse(134)] 
+
+MESSAGE
+	Msg Type: MsgType.REFRESH_RESP
+	Msg Model Type: LOGIN
+	Indication Flags: REFRESH_COMPLETE
+	Hint Flags: HAS_ATTRIB_INFO | HAS_ITEM_GROUP | HAS_RESP_TYPE_NUM | HAS_STATE
+	State: OPEN, SUSPECT, NONE,  "All connections pending"
+	Group: 0000
+	RespTypeNum: 0 (RespType.SOLICITED)
+	AttribInfo
+		Name: deve01
+		NameType: 1
+			(USER_NAME)
+		Attrib
+			ELEMENT_LIST
+					ELEMENT_ENTRY ApplicationId: 256
+					ELEMENT_ENTRY Position: 192.168.1.102/20020101-0005
+					ELEMENT_ENTRY AllowSuspectData: 1
+					ELEMENT_ENTRY SingleOpen: 1
+					ELEMENT_ENTRY SupportBatchRequests: 1
+					ELEMENT_ENTRY SupportOptimizedPauseResume: 1
+					ELEMENT_ENTRY SupportPauseResume: 1
+					ELEMENT_ENTRY SupportViewRequests: 1
+					ELEMENT_ENTRY SupportOMMPost: 1
+
+	 Payload: 
+		 None 
+[2014-08-31 14:39:41,906][INFO,locate.bridge.GateWayResponser.brodcastStateResp(74)] None user loginin!
+[2014-08-31 14:39:41,906][INFO,rmds.processer.RFALoginClient.processEvent(189)] Received Login STATUS OK Response
+[2014-08-31 14:39:41,906][INFO,locate.rmds.QSConsumerProxy.loginSuccess(306)] QSConsumerDemo Login successful
+[2014-08-31 14:39:41,937][INFO,rmds.parser.LoginOMMParser.parseAggregate(459)] test for cloud wei```````````````````````fieldNum is 3
+[2014-08-31 14:39:41,937][INFO,rmds.parser.LoginOMMParser.parseAggregate(459)] test for cloud wei```````````````````````fieldNum is 2
+[2014-08-31 14:39:41,937][INFO,rmds.parser.LoginOMMParser.parseAggregate(459)] test for cloud wei```````````````````````fieldNum is 2
+[2014-08-31 14:39:41,937][INFO,rmds.parser.LoginOMMParser.parseAggregate(459)] test for cloud wei```````````````````````fieldNum is 1
+[2014-08-31 14:39:41,937][INFO,rmds.parser.LoginOMMParser.parseAggregate(459)] test for cloud wei```````````````````````fieldNum is 7
+[2014-08-31 14:39:41,937][INFO,rmds.parser.LoginOMMParser.parseAggregate(459)] test for cloud wei```````````````````````fieldNum is 2
+[2014-08-31 14:39:41,937][INFO,rmds.parser.LoginOMMParser.parseAggregate(459)] test for cloud wei```````````````````````fieldNum is 2
+[2014-08-31 14:39:41,937][INFO,rmds.parser.LoginOMMParser.parseAggregate(459)] test for cloud wei```````````````````````fieldNum is 1
+[2014-08-31 14:39:41,937][INFO,rmds.parser.LoginOMMParser.parse(134)] 
+
+MESSAGE
+	Msg Type: MsgType.REFRESH_RESP
+	Msg Model Type: DIRECTORY
+	Indication Flags: REFRESH_COMPLETE
+	Hint Flags: HAS_ATTRIB_INFO | HAS_ITEM_GROUP | HAS_RESP_TYPE_NUM | HAS_STATE
+	State: OPEN, OK, NONE,  ""
+	Group: 0000
+	RespTypeNum: 0 (RespType.SOLICITED)
+	AttribInfo
+		 Filter: 3
+			 (INFO | STATE)
+	 Payload:  256 bytes
+		MAP
+		flags: MAP_ENTRY (Action.ADD) : 
+ 
+ flags: 
+Key: IDN_SELECTFEED
+ Value: 
+				FILTER_LIST
+				flags: FILTER_ENTRY 1 (Action.SET) : 
+ 
+  flags: 
+						ELEMENT_LIST
+								ELEMENT_ENTRY Name: IDN_SELECTFEED
+								ELEMENT_ENTRY Capabilities: 
+  
+								ARRAY 
+ARRAY_ENTRY: 6 
+ARRAY_ENTRY: 10 
+ARRAY_ENTRY: 5
+								ELEMENT_ENTRY DictionariesProvided: 
+  
+								ARRAY 
+ARRAY_ENTRY: RWFFld 
+ARRAY_ENTRY: RWFEnum
+								ELEMENT_ENTRY DictionariesUsed: 
+  
+								ARRAY 
+ARRAY_ENTRY: RWFFld 
+ARRAY_ENTRY: RWFEnum
+								ELEMENT_ENTRY QoS: 
+  
+								ARRAY 
+ARRAY_ENTRY: (RT, TbT)
+								ELEMENT_ENTRY SupportsQoSRange: 0
+								ELEMENT_ENTRY ServiceID: 23FILTER_ENTRY 2 (Action.SET) : 
+ 
+  flags: 
+						ELEMENT_LIST
+								ELEMENT_ENTRY ServiceState: 1
+								ELEMENT_ENTRY AcceptingRequests: 1
+ 
+[2014-08-31 14:44:59,031][INFO,rmds.parser.LoginOMMParser.parseAggregate(459)] test for cloud wei```````````````````````fieldNum is 3
+[2014-08-31 14:44:59,031][INFO,rmds.parser.LoginOMMParser.parseAggregate(459)] test for cloud wei```````````````````````fieldNum is 1
+[2014-08-31 14:44:59,031][INFO,rmds.parser.LoginOMMParser.parseAggregate(459)] test for cloud wei```````````````````````fieldNum is 1
+[2014-08-31 14:44:59,031][INFO,rmds.parser.LoginOMMParser.parse(134)] 
+
+MESSAGE
+	Msg Type: MsgType.UPDATE_RESP
+	Msg Model Type: DIRECTORY
+	Indication Flags: 
+	Hint Flags: HAS_RESP_TYPE_NUM
+	RespTypeNum: 0
+	 Payload:  100 bytes
+		MAP
+		flags: MAP_ENTRY (Action.UPDATE) : 
+ 
+ flags: 
+Key: IDN_SELECTFEED
+ Value: 
+				FILTER_LIST
+				flags: FILTER_ENTRY 2 (Action.SET) : 
+ 
+  flags: 
+						ELEMENT_LIST
+								ELEMENT_ENTRY ServiceState: 0
+								ELEMENT_ENTRY AcceptingRequests: 0
+								ELEMENT_ENTRY Status: OPEN, SUSPECT, NO_RESOURCES,  "Ã¤Â¿Ã§ÂⓇÃⓇâÂ"
+ 
+[2014-08-31 14:44:59,031][INFO,locate.bridge.GateWayResponser.brodcastStateResp(74)] None user loginin!
+[2014-08-31 14:44:59,031][ERROR,rmds.processer.RFALoginClient.processEvent(196)] The server has been suspect!
+ Received Login Response - MsgType.STATUS_RESP
+[2014-08-31 14:44:59,031][ERROR,locate.rmds.QSConsumerProxy.loginFailure(314)] Login has been denied / rejected / closed 
+[2014-08-31 15:25:02,515][INFO,locate.persistent.LocatePersistentMain.main(25)] start LocateGateWay!
+[2014-08-31 15:25:03,718][INFO,locate.rmds.QSConsumerProxy.initializeDictionary(592)] field dictionary read from RDMFieldDictionary file
+[2014-08-31 15:25:03,750][INFO,locate.rmds.QSConsumerProxy.initializeDictionary(595)] enum dictionary read from enumtype.def file
+[2014-08-31 15:25:04,000][INFO,rmds.client.RFAUserManagement.init(80)] Completed loading user config.
+[2014-08-31 15:25:05,890][INFO,rmds.processer.RFALoginClient.sendRequest(83)] Sending login request
+[2014-08-31 15:25:06,031][INFO,locate.bridge.GateWayResponser.brodcastStateResp(74)] None user loginin!
+[2014-08-31 15:25:06,031][ERROR,rmds.processer.RFALoginClient.processEvent(205)] Login not success.Please check!
+ Received Login Response - MsgType.REFRESH_RESP
+[2014-08-31 15:25:06,031][ERROR,locate.rmds.QSConsumerProxy.loginFailure(314)] Login has been denied / rejected / closed 
+[2014-08-31 15:25:06,031][ERROR,common.utils.SystemProperties.getProperties(66)] Can't find configuration for ric.array
+[2014-08-31 15:25:06,031][ERROR,locate.rmds.QSConsumerProxy.makeOrder(416)] persistent Ric is not config!
+[2014-08-31 15:25:06,046][INFO,rmds.parser.LoginOMMParser.parseAggregate(459)] test for cloud wei```````````````````````fieldNum is 9
+[2014-08-31 15:25:06,046][INFO,rmds.parser.LoginOMMParser.parse(134)] 
+
+MESSAGE
+	Msg Type: MsgType.REFRESH_RESP
+	Msg Model Type: LOGIN
+	Indication Flags: REFRESH_COMPLETE
+	Hint Flags: HAS_ATTRIB_INFO | HAS_ITEM_GROUP | HAS_RESP_TYPE_NUM | HAS_STATE
+	State: OPEN, SUSPECT, NONE,  "All connections pending"
+	Group: 0000
+	RespTypeNum: 0 (RespType.SOLICITED)
+	AttribInfo
+		Name: deve01
+		NameType: 1
+			(USER_NAME)
+		Attrib
+			ELEMENT_LIST
+					ELEMENT_ENTRY ApplicationId: 256
+					ELEMENT_ENTRY Position: 127.0.0.1/20020101-0005
+					ELEMENT_ENTRY AllowSuspectData: 1
+					ELEMENT_ENTRY SingleOpen: 1
+					ELEMENT_ENTRY SupportBatchRequests: 1
+					ELEMENT_ENTRY SupportOptimizedPauseResume: 1
+					ELEMENT_ENTRY SupportPauseResume: 1
+					ELEMENT_ENTRY SupportViewRequests: 1
+					ELEMENT_ENTRY SupportOMMPost: 1
+
+	 Payload: 
+		 None 
+[2014-08-31 15:25:51,156][INFO,locate.bridge.GateWayResponser.brodcastStateResp(74)] None user loginin!
+[2014-08-31 15:25:51,156][INFO,rmds.processer.RFALoginClient.processEvent(189)] Received Login STATUS OK Response
+[2014-08-31 15:25:51,156][INFO,locate.rmds.QSConsumerProxy.loginSuccess(306)] QSConsumerDemo Login successful
+[2014-08-31 15:25:51,187][INFO,rmds.parser.LoginOMMParser.parseAggregate(459)] test for cloud wei```````````````````````fieldNum is 3
+[2014-08-31 15:25:51,187][INFO,rmds.parser.LoginOMMParser.parseAggregate(459)] test for cloud wei```````````````````````fieldNum is 2
+[2014-08-31 15:25:51,187][INFO,rmds.parser.LoginOMMParser.parseAggregate(459)] test for cloud wei```````````````````````fieldNum is 2
+[2014-08-31 15:25:51,187][INFO,rmds.parser.LoginOMMParser.parseAggregate(459)] test for cloud wei```````````````````````fieldNum is 1
+[2014-08-31 15:25:51,187][INFO,rmds.parser.LoginOMMParser.parseAggregate(459)] test for cloud wei```````````````````````fieldNum is 7
+[2014-08-31 15:25:51,187][INFO,rmds.parser.LoginOMMParser.parseAggregate(459)] test for cloud wei```````````````````````fieldNum is 2
+[2014-08-31 15:25:51,187][INFO,rmds.parser.LoginOMMParser.parseAggregate(459)] test for cloud wei```````````````````````fieldNum is 2
+[2014-08-31 15:25:51,187][INFO,rmds.parser.LoginOMMParser.parseAggregate(459)] test for cloud wei```````````````````````fieldNum is 1
+[2014-08-31 15:25:51,187][INFO,rmds.parser.LoginOMMParser.parse(134)] 
+
+MESSAGE
+	Msg Type: MsgType.REFRESH_RESP
+	Msg Model Type: DIRECTORY
+	Indication Flags: REFRESH_COMPLETE
+	Hint Flags: HAS_ATTRIB_INFO | HAS_ITEM_GROUP | HAS_RESP_TYPE_NUM | HAS_STATE
+	State: OPEN, OK, NONE,  ""
+	Group: 0000
+	RespTypeNum: 0 (RespType.SOLICITED)
+	AttribInfo
+		 Filter: 3
+			 (INFO | STATE)
+	 Payload:  256 bytes
+		MAP
+		flags: MAP_ENTRY (Action.ADD) : 
+ 
+ flags: 
+Key: IDN_SELECTFEED
+ Value: 
+				FILTER_LIST
+				flags: FILTER_ENTRY 1 (Action.SET) : 
+ 
+  flags: 
+						ELEMENT_LIST
+								ELEMENT_ENTRY Name: IDN_SELECTFEED
+								ELEMENT_ENTRY Capabilities: 
+  
+								ARRAY 
+ARRAY_ENTRY: 6 
+ARRAY_ENTRY: 10 
+ARRAY_ENTRY: 5
+								ELEMENT_ENTRY DictionariesProvided: 
+  
+								ARRAY 
+ARRAY_ENTRY: RWFFld 
+ARRAY_ENTRY: RWFEnum
+								ELEMENT_ENTRY DictionariesUsed: 
+  
+								ARRAY 
+ARRAY_ENTRY: RWFFld 
+ARRAY_ENTRY: RWFEnum
+								ELEMENT_ENTRY QoS: 
+  
+								ARRAY 
+ARRAY_ENTRY: (RT, TbT)
+								ELEMENT_ENTRY SupportsQoSRange: 0
+								ELEMENT_ENTRY ServiceID: 23FILTER_ENTRY 2 (Action.SET) : 
+ 
+  flags: 
+						ELEMENT_LIST
+								ELEMENT_ENTRY ServiceState: 1
+								ELEMENT_ENTRY AcceptingRequests: 1
+ 
+[2014-08-31 17:18:16,828][INFO,locate.persistent.LocatePersistentMain.main(25)] start LocateGateWay!
+[2014-08-31 17:18:18,578][INFO,locate.rmds.QSConsumerProxy.initializeDictionary(592)] field dictionary read from RDMFieldDictionary file
+[2014-08-31 17:18:18,625][INFO,locate.rmds.QSConsumerProxy.initializeDictionary(595)] enum dictionary read from enumtype.def file
+[2014-08-31 17:18:18,968][INFO,rmds.client.RFAUserManagement.init(80)] Completed loading user config.
+[2014-08-31 17:18:20,906][INFO,rmds.processer.RFALoginClient.sendRequest(83)] Sending login request
+[2014-08-31 17:18:21,046][INFO,locate.bridge.GateWayResponser.brodcastStateResp(74)] None user loginin!
+[2014-08-31 17:18:21,046][ERROR,rmds.processer.RFALoginClient.processEvent(205)] Login not success.Please check!
+ Received Login Response - MsgType.REFRESH_RESP
+[2014-08-31 17:18:21,046][ERROR,locate.rmds.QSConsumerProxy.loginFailure(314)] Login has been denied / rejected / closed 
+[2014-08-31 17:18:21,093][INFO,rmds.parser.LoginOMMParser.parseAggregate(459)] test for cloud wei```````````````````````fieldNum is 9
+[2014-08-31 17:18:21,093][INFO,rmds.parser.LoginOMMParser.parse(134)] 
+
+MESSAGE
+	Msg Type: MsgType.REFRESH_RESP
+	Msg Model Type: LOGIN
+	Indication Flags: REFRESH_COMPLETE
+	Hint Flags: HAS_ATTRIB_INFO | HAS_ITEM_GROUP | HAS_RESP_TYPE_NUM | HAS_STATE
+	State: OPEN, SUSPECT, NONE,  "All connections pending"
+	Group: 0000
+	RespTypeNum: 0 (RespType.SOLICITED)
+	AttribInfo
+		Name: deve01
+		NameType: 1
+			(USER_NAME)
+		Attrib
+			ELEMENT_LIST
+					ELEMENT_ENTRY ApplicationId: 256
+					ELEMENT_ENTRY Position: 192.168.1.102/20020101-0005
+					ELEMENT_ENTRY AllowSuspectData: 1
+					ELEMENT_ENTRY SingleOpen: 1
+					ELEMENT_ENTRY SupportBatchRequests: 1
+					ELEMENT_ENTRY SupportOptimizedPauseResume: 1
+					ELEMENT_ENTRY SupportPauseResume: 1
+					ELEMENT_ENTRY SupportViewRequests: 1
+					ELEMENT_ENTRY SupportOMMPost: 1
+
+	 Payload: 
+		 None 
+[2014-08-31 17:18:21,156][ERROR,common.utils.SystemProperties.getProperties(66)] Can't find configuration for ric.array
+[2014-08-31 17:18:21,156][ERROR,locate.rmds.QSConsumerProxy.makeOrder(416)] persistent Ric is not config!
+[2014-08-31 17:18:21,187][INFO,locate.bridge.GateWayResponser.brodcastStateResp(74)] None user loginin!
+[2014-08-31 17:18:21,187][INFO,rmds.processer.RFALoginClient.processEvent(189)] Received Login STATUS OK Response
+[2014-08-31 17:18:21,187][INFO,locate.rmds.QSConsumerProxy.loginSuccess(306)] QSConsumerDemo Login successful
+[2014-08-31 17:18:21,203][INFO,rmds.parser.LoginOMMParser.parseAggregate(459)] test for cloud wei```````````````````````fieldNum is 3
+[2014-08-31 17:18:21,218][INFO,rmds.parser.LoginOMMParser.parseAggregate(459)] test for cloud wei```````````````````````fieldNum is 2
+[2014-08-31 17:18:21,218][INFO,rmds.parser.LoginOMMParser.parseAggregate(459)] test for cloud wei```````````````````````fieldNum is 2
+[2014-08-31 17:18:21,218][INFO,rmds.parser.LoginOMMParser.parseAggregate(459)] test for cloud wei```````````````````````fieldNum is 1
+[2014-08-31 17:18:21,218][INFO,rmds.parser.LoginOMMParser.parseAggregate(459)] test for cloud wei```````````````````````fieldNum is 7
+[2014-08-31 17:18:21,218][INFO,rmds.parser.LoginOMMParser.parseAggregate(459)] test for cloud wei```````````````````````fieldNum is 2
+[2014-08-31 17:18:21,218][INFO,rmds.parser.LoginOMMParser.parseAggregate(459)] test for cloud wei```````````````````````fieldNum is 2
+[2014-08-31 17:18:21,218][INFO,rmds.parser.LoginOMMParser.parseAggregate(459)] test for cloud wei```````````````````````fieldNum is 1
+[2014-08-31 17:18:21,218][INFO,rmds.parser.LoginOMMParser.parse(134)] 
+
+MESSAGE
+	Msg Type: MsgType.REFRESH_RESP
+	Msg Model Type: DIRECTORY
+	Indication Flags: REFRESH_COMPLETE
+	Hint Flags: HAS_ATTRIB_INFO | HAS_ITEM_GROUP | HAS_RESP_TYPE_NUM | HAS_STATE
+	State: OPEN, OK, NONE,  ""
+	Group: 0000
+	RespTypeNum: 0 (RespType.SOLICITED)
+	AttribInfo
+		 Filter: 3
+			 (INFO | STATE)
+	 Payload:  256 bytes
+		MAP
+		flags: MAP_ENTRY (Action.ADD) : 
+ 
+ flags: 
+Key: IDN_SELECTFEED
+ Value: 
+				FILTER_LIST
+				flags: FILTER_ENTRY 1 (Action.SET) : 
+ 
+  flags: 
+						ELEMENT_LIST
+								ELEMENT_ENTRY Name: IDN_SELECTFEED
+								ELEMENT_ENTRY Capabilities: 
+  
+								ARRAY 
+ARRAY_ENTRY: 6 
+ARRAY_ENTRY: 10 
+ARRAY_ENTRY: 5
+								ELEMENT_ENTRY DictionariesProvided: 
+  
+								ARRAY 
+ARRAY_ENTRY: RWFFld 
+ARRAY_ENTRY: RWFEnum
+								ELEMENT_ENTRY DictionariesUsed: 
+  
+								ARRAY 
+ARRAY_ENTRY: RWFFld 
+ARRAY_ENTRY: RWFEnum
+								ELEMENT_ENTRY QoS: 
+  
+								ARRAY 
+ARRAY_ENTRY: (RT, TbT)
+								ELEMENT_ENTRY SupportsQoSRange: 0
+								ELEMENT_ENTRY ServiceID: 23FILTER_ENTRY 2 (Action.SET) : 
+ 
+  flags: 
+						ELEMENT_LIST
+								ELEMENT_ENTRY ServiceState: 1
+								ELEMENT_ENTRY AcceptingRequests: 1
+ 
+[2014-08-31 17:18:32,171][INFO,rmds.parser.LoginOMMParser.parseAggregate(459)] test for cloud wei```````````````````````fieldNum is 3
+[2014-08-31 17:18:32,171][INFO,rmds.parser.LoginOMMParser.parseAggregate(459)] test for cloud wei```````````````````````fieldNum is 1
+[2014-08-31 17:18:32,171][INFO,rmds.parser.LoginOMMParser.parseAggregate(459)] test for cloud wei```````````````````````fieldNum is 1
+[2014-08-31 17:18:32,171][INFO,rmds.parser.LoginOMMParser.parse(134)] 
+
+MESSAGE
+	Msg Type: MsgType.UPDATE_RESP
+	Msg Model Type: DIRECTORY
+	Indication Flags: 
+	Hint Flags: HAS_RESP_TYPE_NUM
+	RespTypeNum: 0
+	 Payload:  100 bytes
+		MAP
+		flags: MAP_ENTRY (Action.UPDATE) : 
+ 
+ flags: 
+Key: IDN_SELECTFEED
+ Value: 
+				FILTER_LIST
+				flags: FILTER_ENTRY 2 (Action.SET) : 
+ 
+  flags: 
+						ELEMENT_LIST
+								ELEMENT_ENTRY ServiceState: 0
+								ELEMENT_ENTRY AcceptingRequests: 0
+								ELEMENT_ENTRY Status: OPEN, SUSPECT, NO_RESOURCES,  "Ã¤Â¿Ã§ÂⓇÃⓇâÂ"
+ 
+[2014-08-31 17:18:32,171][INFO,locate.bridge.GateWayResponser.brodcastStateResp(74)] None user loginin!
+[2014-08-31 17:18:32,187][ERROR,rmds.processer.RFALoginClient.processEvent(196)] The server has been suspect!
+ Received Login Response - MsgType.STATUS_RESP
+[2014-08-31 17:18:32,187][ERROR,locate.rmds.QSConsumerProxy.loginFailure(314)] Login has been denied / rejected / closed 
+[2014-08-31 17:18:32,406][ERROR,rmds.processer.EmailNotifier.notifyAdmin(71)] EmailSender, MessagingException: smtp
+[2014-08-31 17:18:32,406][INFO,rmds.parser.LoginOMMParser.parseAggregate(459)] test for cloud wei```````````````````````fieldNum is 12
+[2014-08-31 17:18:32,406][INFO,rmds.parser.LoginOMMParser.parse(134)] 
+
+MESSAGE
+	Msg Type: MsgType.STATUS_RESP
+	Msg Model Type: LOGIN
+	Indication Flags: 
+	Hint Flags: HAS_ATTRIB_INFO | HAS_STATE
+	State: OPEN, SUSPECT, NONE,  "Connection to 183.62.139.89:14002 failed in connection myNamespace::mySession; Ã¤Â¿Ã§ÂⓇÃⓇâÂ"
+	AttribInfo
+		Name: deve01
+		NameType: 1
+			(USER_NAME)
+		Attrib
+			ELEMENT_LIST
+					ELEMENT_ENTRY ApplicationId: 256
+					ELEMENT_ENTRY ApplicationName: P2PS
+					ELEMENT_ENTRY Position: 192.168.1.102/20020101-0005
+					ELEMENT_ENTRY ProvidePermissionExpressions: 1
+					ELEMENT_ENTRY ProvidePermissionProfile: 0
+					ELEMENT_ENTRY AllowSuspectData: 1
+					ELEMENT_ENTRY SingleOpen: 1
+					ELEMENT_ENTRY SupportBatchRequests: 1
+					ELEMENT_ENTRY SupportOptimizedPauseResume: 1
+					ELEMENT_ENTRY SupportPauseResume: 1
+					ELEMENT_ENTRY SupportViewRequests: 1
+					ELEMENT_ENTRY SupportOMMPost: 1
+
+	 Payload: 
+		 None 
+[2014-08-31 17:26:32,437][INFO,locate.bridge.GateWayResponser.brodcastStateResp(74)] None user loginin!
+[2014-08-31 17:26:32,437][INFO,rmds.processer.RFALoginClient.processEvent(189)] Received Login STATUS OK Response
+[2014-08-31 17:26:32,437][INFO,locate.rmds.QSConsumerProxy.loginSuccess(306)] QSConsumerDemo Login successful
+[2014-08-31 17:26:32,437][INFO,locate.bridge.GateWayResponser.brodcastStateResp(74)] None user loginin!
+[2014-08-31 17:26:32,437][ERROR,rmds.processer.RFALoginClient.processEvent(196)] The server has been suspect!
+ Received Login Response - MsgType.STATUS_RESP
+[2014-08-31 17:26:32,437][ERROR,locate.rmds.QSConsumerProxy.loginFailure(314)] Login has been denied / rejected / closed 
+[2014-08-31 17:30:18,031][ERROR,rmds.processer.EmailNotifier.notifyAdmin(71)] EmailSender, MessagingException: smtp

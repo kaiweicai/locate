@@ -13,7 +13,6 @@ import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
@@ -30,10 +29,6 @@ public class EmailNotifier implements INotifier {
 
 	@Override
 	public void notifyAdmin(String title, String content) {
-		String needNotify = SystemProperties.getProperties(SystemProperties.ADMIN_NEED_NOTIFY);
-		if (StringUtils.isBlank(needNotify) || !needNotify.equalsIgnoreCase("true")) {
-			return;
-		}
 		InetAddress localAddress = null;
 		String hostName = "";
 		try {
@@ -72,43 +67,4 @@ public class EmailNotifier implements INotifier {
 		}
 	}
 
-	@Override
-	public void notifyAdminIgnoreConfig(String title, String content) {
-		InetAddress localAddress = null;
-		String hostName = "";
-		try {
-			localAddress = InetAddress.getLocalHost();
-		} catch (UnknownHostException e1) {
-			logger.error("Can not get the localHost name.", e1);
-		}
-		hostName = localAddress.getHostName();
-		title = title + ", Message from host " + hostName;
-
-		String adminEmail = SystemProperties.getProperties(SystemProperties.ADMIN_USER_EMAIL);
-		String mailSmtpHost = SystemProperties.getProperties(SystemProperties.SMTP_ADMIN_USER_EMAIL);
-		String smtpMailUserName = SystemProperties.getProperties(SystemProperties.SMTP_MAIL_USER_NAME);
-		String smtpMailPassword = SystemProperties.getProperties(SystemProperties.SMTP_MAIL_PASSWORD);
-		Properties properties = new Properties();
-		properties.put("mail.smtp.host", mailSmtpHost);// 指定SMTP服务器
-		properties.put("mail.smtp.auth", "true");// 指定是否需要SMTP验证
-		// title = new String(title.getBytes("iso-8859-1"));
-		Session emailSession = Session.getDefaultInstance(properties);
-		Message emailMessage = new MimeMessage(emailSession);
-		try {
-			emailMessage.addRecipient(Message.RecipientType.TO, new InternetAddress(adminEmail));
-			emailMessage.setFrom(new InternetAddress(adminEmail));
-			emailMessage.setSubject(title);
-			content = content + "\n happen time " + new Date();
-			emailMessage.setText(content);
-			emailMessage.saveChanges();
-			Transport transport = emailSession.getTransport("smtp");
-			transport.connect(mailSmtpHost, smtpMailUserName, smtpMailPassword);
-			transport.sendMessage(emailMessage, emailMessage.getAllRecipients());
-			transport.close();
-		} catch (AddressException e) {
-			logger.error("EmailSender, AddressException: " + e.getMessage());
-		} catch (MessagingException e) {
-			logger.error("EmailSender, MessagingException: " + e.getMessage());
-		}
-	}
 }

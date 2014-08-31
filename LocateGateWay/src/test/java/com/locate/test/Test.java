@@ -1,5 +1,7 @@
 package com.locate.test;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.locate.common.utils.SystemProperties;
 import com.locate.rmds.processer.EmailNotifier;
 import com.locate.rmds.processer.face.INotifier;
@@ -13,9 +15,10 @@ public class Test {
 			INotifier notifier = new EmailNotifier();
 			SystemProperties.init("config/rfaConfig.properties");
 			String needNotify = SystemProperties.getProperties(SystemProperties.ADMIN_NEED_NOTIFY);
-			if (needNotify.equalsIgnoreCase("true")) {
-				notifier.notifyAdmin("test","test");
+			if (StringUtils.isBlank(needNotify) || !needNotify.equalsIgnoreCase("true")) {
+				return;
 			}
+			notifier.notifyAdmin("test","test");
 		}
 	}
 }

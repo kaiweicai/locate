@@ -8,11 +8,4 @@ public interface INotifier {
 	 */
 	public void notifyAdmin(String title,String content);
 
-	/**
-	 * notify user the important message. 
-	 * send the message even the configure file set the false;
-	 * @param title
-	 * @param content
-	 */
-	void notifyAdminIgnoreConfig(String title, String content);
 }

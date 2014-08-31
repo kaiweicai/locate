@@ -413,7 +413,7 @@ public class QSConsumerProxy{
 	public void makeOrder() {
 		String ricArray = SystemProperties.getProperties(SystemProperties.RIC_ARRAY);
 		if(StringUtils.isBlank(ricArray)){
-			logger.warn("persistent Ric is not config correctly!");
+			logger.error("persistent Ric is not config!");
 			return;
 		}
 		String[] rics = ricArray.split(",");

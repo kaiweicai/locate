@@ -9,11 +9,13 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import com.locate.bridge.GateWayResponser;
 import com.locate.common.model.LocateUnionMessage;
+import com.locate.common.utils.SystemProperties;
 import com.locate.rmds.QSConsumerProxy;
 import com.locate.rmds.dict.RDMServiceInfo;
 import com.locate.rmds.dict.ServiceInfo;
@@ -196,10 +198,12 @@ public class RFALoginClient implements Client {
 			logger.error("The server has been suspect!\n Received Login Response - "
 					+ OMMMsg.MsgType.toString(respMsg.getMsgType()));
 			_mainApp.loginFailure();
-			notifier.notifyAdmin(
-					"The server has been suspect\n",
-					"The server has been suspect. The server state is "
-							+ (respMsg.has(OMMMsg.HAS_STATE) ? respMsg.getState() : "has no stat"));
+			String needNotify = SystemProperties.getProperties(SystemProperties.ADMIN_NEED_NOTIFY);
+			if (StringUtils.isBlank(needNotify) || !needNotify.equalsIgnoreCase("true")) {
+				String title="The server has been suspect";
+				String content="The server has been suspect. The server state is"+ (respMsg.has(OMMMsg.HAS_STATE) ? respMsg.getState() : "has no stat");
+				notifier.notifyAdmin(title,content);
+			}
 			ommParser.parse(respMsg, "RFALogin");
 		} else {
 			logger.error("Login not success.Please check!\n Received Login Response - "
