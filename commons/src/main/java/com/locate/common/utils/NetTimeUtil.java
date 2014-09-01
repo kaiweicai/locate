@@ -9,7 +9,7 @@ import java.util.Date;
 
 import org.apache.log4j.Logger;
 
-import com.locate.common.DataBaseCache;
+import com.locate.common.datacache.DataBaseCache;
 
 public class NetTimeUtil {
 	static Logger logger = Logger.getLogger(NetTimeUtil.class);

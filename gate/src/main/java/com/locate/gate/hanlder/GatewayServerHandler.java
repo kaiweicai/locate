@@ -26,9 +26,9 @@ import org.jboss.netty.channel.group.DefaultChannelGroup;
 import org.springframework.stereotype.Service;
 
 import com.locate.bridge.GateForwardRFA;
-import com.locate.common.DataBaseCache;
-import com.locate.common.GateChannelCache;
 import com.locate.common.LocateMessageTypes;
+import com.locate.common.datacache.DataBaseCache;
+import com.locate.common.datacache.GateChannelCache;
 import com.locate.common.model.ClientRequest;
 
 @Service

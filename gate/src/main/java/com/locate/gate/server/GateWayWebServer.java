@@ -10,7 +10,6 @@ import org.apache.log4j.Logger;
 import org.jboss.netty.bootstrap.ServerBootstrap;
 import org.jboss.netty.channel.ChannelFactory;
 import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
-import org.junit.Test;
 import org.springframework.stereotype.Service;
 
 import com.locate.common.LocateException;
@@ -41,11 +40,11 @@ public class GateWayWebServer {
 		}
 	}
 
-	@Test
-	public void testServer(){
-		GateWayWebServer server= new GateWayWebServer();
-		server.init();
-	}
+//	@Test
+//	public void testServer(){
+//		GateWayWebServer server= new GateWayWebServer();
+//		server.init();
+//	}
 	
 	public static void main(String[] args){
 		GateWayWebServer server= new GateWayWebServer();

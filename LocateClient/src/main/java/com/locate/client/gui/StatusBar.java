@@ -4,13 +4,13 @@ package com.locate.client.gui;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Label;
 import java.awt.Panel;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 import javax.swing.Timer;
 
 public class StatusBar extends Panel {
@@ -31,7 +31,7 @@ public class StatusBar extends Panel {
 	public StatusBar(String status, boolean initialStatusFixed) {
 		this._timer = new Timer(1000, new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				StatusBar.this.fade();
+				fade();
 			}
 		});
 		this._timer.setRepeats(true);

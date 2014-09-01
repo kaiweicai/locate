@@ -2,8 +2,8 @@ package com.locate.rmds.client;
 
 import org.apache.log4j.Logger;
 
-import com.locate.common.DataBaseCache;
 import com.locate.common.LocateResultCode;
+import com.locate.common.datacache.DataBaseCache;
 import com.locate.common.model.ClientRequest;
 
 public class ClientUserValidator {

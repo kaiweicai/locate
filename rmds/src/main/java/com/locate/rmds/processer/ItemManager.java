@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import com.locate.bridge.GateWayResponser;
-import com.locate.common.RmdsDataCache;
+import com.locate.common.datacache.RmdsDataCache;
 import com.locate.common.model.LocateUnionMessage;
 import com.locate.rmds.QSConsumerProxy;
 import com.locate.rmds.parser.face.IOmmParser;

@@ -6,8 +6,8 @@ import javax.xml.bind.Marshaller;
 
 import net.sf.json.JSONObject;
 
+import org.apache.log4j.Logger;
 import org.dom4j.io.DocumentResult;
-import org.junit.Test;
 
 import com.locate.common.LocateMessageTypes;
 import com.locate.common.model.LocateUnionMessage;
@@ -22,17 +22,24 @@ import com.locate.gate.handler.ClientConnector;
  * @copyRight by Author
  */
 public class RFASample {
+	private Logger logger = Logger.getLogger(getClass());
 	public static final String XAU_RIC = "XAU=";
 	public static final String XAG_RIC = "XAG=";
 	//客户端接口声明.
 	public IClientConnector clientConnetor;
 	public IBussiness bussinessHandler;
+	private JAXBContext context;
 	//实例化
 	public RFASample(){
 		//BussinessInterface该接口是接受服务器数据.客户需要实现该接口进行具体业务处理数据.
 		bussinessHandler = new BussinessHandler();
 		//ClientConnectedInterface向服务器发送请求的接口.这个接口客户无需实现.只要调用这个ClientConnector这个类里面的方法就好了.
 		clientConnetor = new ClientConnector(bussinessHandler);
+		try {
+			context = JAXBContext.newInstance(LocateUnionMessage.class);
+		} catch (JAXBException e) {
+			logger.error("Json initial JAXBContext error!",e);
+		}
 	}
 	
 	class BussinessHandler implements IBussiness{
@@ -81,10 +88,8 @@ public class RFASample {
 						JSONObject jsonObject = JSONObject.fromObject(message);
 						String jsonResult = jsonObject.toString();
 						System.out.println(RIC);
-						System.out.println("handel the ag message "+jsonResult);
-						JAXBContext context;
+						System.out.println("handel the XAG JSON format!"+jsonResult);
 						try {
-							context = JAXBContext.newInstance(LocateUnionMessage.class);
 							// 下面代码演示将对象转变为xml
 							Marshaller marshaller = context.createMarshaller();
 							DocumentResult node = new DocumentResult();
@@ -132,10 +137,5 @@ public class RFASample {
 		//向服务器发送RIC请求.BussinessHandler的handleMessage方法就可以接收到服务器返回的市场价格了.
 		sample.clientConnetor.openRICMarket(XAU_RIC);
 		sample.clientConnetor.openRICMarket(XAG_RIC);
-	}
-	
-	@Test
-	public void cuncrrentTest(){
-		
 	}
 }

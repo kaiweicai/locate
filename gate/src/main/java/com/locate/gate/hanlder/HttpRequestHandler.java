@@ -22,6 +22,7 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 
+import org.apache.log4j.Logger;
 import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.buffer.ChannelBuffers;
 import org.jboss.netty.channel.Channel;
@@ -56,12 +57,11 @@ import org.jboss.netty.util.CharsetUtil;
 import org.springframework.stereotype.Service;
 
 import com.locate.bridge.GateForwardRFA;
-import com.locate.common.GateChannelCache;
 import com.locate.common.LocateMessageTypes;
+import com.locate.common.datacache.GateChannelCache;
 import com.locate.common.model.ClientRequest;
 import com.locate.gate.coder.WebAdapterHandler;
 import com.locate.gate.server.WebSocketServerIndexPage;
-import com.sun.istack.internal.logging.Logger;
 
 @Service
 public class HttpRequestHandler extends SimpleChannelUpstreamHandler {

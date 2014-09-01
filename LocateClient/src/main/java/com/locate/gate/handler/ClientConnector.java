@@ -82,8 +82,8 @@ public class ClientConnector implements IClientConnector {
 		bootstrap.setOption("tcpNodelay", true);
 		bootstrap.setOption("child.keepalive", true);
 		logger.info("start to conneted to server");
-		ChannelFuture future = bootstrap.connect(new InetSocketAddress(serverAddress,port));
 		try{
+			ChannelFuture future = bootstrap.connect(new InetSocketAddress(serverAddress,port));
 			clientchannel = future.getChannel();
 			future.awaitUninterruptibly();
 		}catch(Exception e){

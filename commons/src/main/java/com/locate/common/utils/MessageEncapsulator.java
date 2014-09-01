@@ -11,4 +11,14 @@ public class MessageEncapsulator {
 		message.setMsgType(msgType);
 		return message;
 	}
+	
+	public static LocateUnionMessage encapStateResponseMessage(String streamingState,String dataingState,String state,byte msgType,long startTime){
+		LocateUnionMessage message = new LocateUnionMessage();
+		message.setStreamingState(streamingState);
+		message.setDataingState(dataingState);
+		message.setState(state);
+		message.setMsgType(msgType);
+		message.setStartTime(startTime);
+		return message;
+	}
 }

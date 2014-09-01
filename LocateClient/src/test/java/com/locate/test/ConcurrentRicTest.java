@@ -22,12 +22,12 @@ public class ConcurrentRicTest {
 		BufferedReader br = new BufferedReader(fr);
 		String ric = null;
 		System.out.println("start to order all the product!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-		for(int i=0;i<1000;i++){
+		for(int i=0;i<1;i++){
 			ric=br.readLine();
 			sample.clientConnetor.openRICMarket(ric);
 		}
 		br.close();
 		System.out.println("end to send the order--------------------------------------");
-		Thread.sleep(600000);
+		Thread.sleep(1000);
 	}
 }

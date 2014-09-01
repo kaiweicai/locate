@@ -18,8 +18,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import com.locate.common.LocateMessageTypes;
-import com.locate.common.RmdsDataCache;
 import com.locate.common.SystemConstant;
+import com.locate.common.datacache.RmdsDataCache;
 import com.locate.common.utils.SystemProperties;
 import com.locate.rmds.client.RFAUserManagement;
 import com.locate.rmds.dict.DirectoryClient;

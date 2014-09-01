@@ -22,7 +22,6 @@ import org.jboss.netty.handler.codec.frame.LengthFieldPrepender;
 import org.jboss.netty.handler.timeout.IdleState;
 import org.jboss.netty.handler.timeout.IdleStateAwareChannelHandler;
 import org.jboss.netty.handler.timeout.IdleStateEvent;
-import org.junit.Test;
 import org.springframework.stereotype.Service;
 
 import com.locate.common.LocateException;
@@ -86,11 +85,11 @@ public class GateWayServer {
 		}
 	}
 
-	@Test
-	public void testServer(){
-		GateWayServer server= new GateWayServer();
-		server.init();
-	}
+//	@Test
+//	public void testServer(){
+//		GateWayServer server= new GateWayServer();
+//		server.init();
+//	}
 	
 	public static void main(String[] args){
 		GateWayServer server= new GateWayServer();

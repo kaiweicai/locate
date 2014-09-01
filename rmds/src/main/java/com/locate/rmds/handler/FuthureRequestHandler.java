@@ -5,8 +5,8 @@ import javax.annotation.Resource;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
-import com.locate.common.DataBaseCache;
 import com.locate.common.LocateResultCode;
+import com.locate.common.datacache.DataBaseCache;
 import com.locate.common.model.ClientRequest;
 import com.locate.rmds.QSConsumerProxy;
 import com.locate.rmds.RFAServerManager;

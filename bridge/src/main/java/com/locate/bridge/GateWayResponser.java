@@ -7,8 +7,8 @@ import org.dom4j.Document;
 import org.jboss.netty.channel.Channel;
 import org.jboss.netty.channel.group.ChannelGroup;
 
-import com.locate.common.GateChannelCache;
 import com.locate.common.SystemConstant;
+import com.locate.common.datacache.GateChannelCache;
 import com.locate.common.model.LocateUnionMessage;
 import com.locate.common.utils.XmlMessageUtil;
 

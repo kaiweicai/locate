@@ -5,8 +5,8 @@ import java.util.List;
 
 import org.dom4j.Document;
 
-import com.locate.common.DataBaseCache;
-import com.locate.common.RmdsDataCache;
+import com.locate.common.datacache.DataBaseCache;
+import com.locate.common.datacache.RmdsDataCache;
 import com.locate.common.model.ClientRequest;
 import com.locate.common.utils.XmlMessageUtil;
 import com.locate.rmds.handler.inter.IRequestHandler;

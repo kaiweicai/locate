@@ -1,4 +1,4 @@
-package com.locate.common;
+package com.locate.common.datacache;
 
 import java.util.HashMap;
 import java.util.List;

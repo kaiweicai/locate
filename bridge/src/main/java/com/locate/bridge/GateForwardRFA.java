@@ -5,11 +5,11 @@ import javax.annotation.Resource;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
-import com.locate.common.DataBaseCache;
 import com.locate.common.LocateMessageTypes;
 import com.locate.common.LocateResultCode;
 import com.locate.common.LocateResultCode.LocateResponseEnum;
-import com.locate.common.RmdsDataCache;
+import com.locate.common.datacache.DataBaseCache;
+import com.locate.common.datacache.RmdsDataCache;
 import com.locate.common.model.ClientRequest;
 import com.locate.common.model.LocateUnionMessage;
 import com.locate.common.utils.MessageEncapsulator;

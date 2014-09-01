@@ -10,8 +10,8 @@ import org.dom4j.Document;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
-import com.locate.common.RmdsDataCache;
 import com.locate.common.SystemConstant;
+import com.locate.common.datacache.RmdsDataCache;
 import com.locate.common.model.LocateUnionMessage;
 import com.locate.common.utils.JsonUtil;
 import com.locate.common.utils.XmlMessageUtil;
