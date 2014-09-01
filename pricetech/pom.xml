@@ -33,6 +33,9 @@
 			</plugin>
 		</plugins>
 	</build>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
@@ -68,4 +71,13 @@
 			</exclusions>
 		</dependency>
 	</dependencies>
+	<modules>
+		<module>../commons</module>
+		<module>../bridge</module>
+		<module>../LocateClient</module>
+		<module>../LocateGateWay</module>
+		<module>../PersistentLocate</module>
+		<module>../gate</module>
+		<module>../rmds</module>
+	</modules>
 </project>
