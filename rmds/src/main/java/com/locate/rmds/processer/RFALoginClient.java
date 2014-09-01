@@ -61,6 +61,7 @@ import com.reuters.rfa.session.omm.OMMItemIntSpec;
 
 @Component
 public class RFALoginClient implements Client {
+	private static boolean checkRFAServerUp = false;
 	Handle _loginHandle;
 	@Resource
 	QSConsumerProxy _mainApp;
@@ -136,6 +137,7 @@ public class RFALoginClient implements Client {
 	// This is a Client method. When an event for this client is dispatched,
 	// this method gets called.
 	public void processEvent(Event event) {
+		String needNotify = SystemProperties.getProperties(SystemProperties.ADMIN_NEED_NOTIFY);
 		long startTime = System.currentTimeMillis();
 		// Completion event indicates that the stream was closed by RFA
 		if (event.getType() == Event.COMPLETION_EVENT) {
@@ -192,17 +194,24 @@ public class RFALoginClient implements Client {
 			// RFALoginOMMParser.parse(respMsg, "RFALogin");
 			_mainApp.loginSuccess();
 			_mainApp.registerDirectory(this);
+			if (checkRFAServerUp) {
+				if (StringUtils.isBlank(needNotify) || !needNotify.equalsIgnoreCase("true")) {
+					this.notifier.notifyAdmin("Server Info: RFA server is up!",
+							"RFA Server has been recovery from the disaster!");
+					checkRFAServerUp = false;
+				}
+			}
 		} else if (respMsg.getMsgType() == OMMMsg.MsgType.STATUS_RESP && respMsg.has(OMMMsg.HAS_STATE)
 				&& (respMsg.getState().getStreamState() == OMMState.Stream.OPEN)
 				&& respMsg.getState().getDataState() == OMMState.Data.SUSPECT) {
 			logger.error("The server has been suspect!\n Received Login Response - "
 					+ OMMMsg.MsgType.toString(respMsg.getMsgType()));
 			_mainApp.loginFailure();
-			String needNotify = SystemProperties.getProperties(SystemProperties.ADMIN_NEED_NOTIFY);
 			if (StringUtils.isBlank(needNotify) || !needNotify.equalsIgnoreCase("true")) {
-				String title="The server has been suspect";
+				String title="Server Info:The RFA server has been suspect";
 				String content="The server has been suspect. The server state is"+ (respMsg.has(OMMMsg.HAS_STATE) ? respMsg.getState() : "has no stat");
 				notifier.notifyAdmin(title,content);
+				checkRFAServerUp = true;
 			}
 			ommParser.parse(respMsg, "RFALogin");
 		} else {
