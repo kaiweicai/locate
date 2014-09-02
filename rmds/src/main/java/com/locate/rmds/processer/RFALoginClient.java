@@ -72,8 +72,8 @@ public class RFALoginClient implements Client {
 	IOmmParser ommParser;
 	public static byte STREAM_STATE = 0;
 	public static byte DATA_STATE = 0;
-	static Logger logger = Logger.getLogger(RFALoginClient.class.getName());
 	public static String STATE = "";
+	static Logger logger = Logger.getLogger(RFALoginClient.class.getName());
 	// static Logger _logger;
 	Map<String, ServiceInfo> _services = new HashMap<String, ServiceInfo>();
 	private HashMap<Handle, Integer> _dictHandles = new HashMap<Handle, Integer>();
@@ -90,9 +90,9 @@ public class RFALoginClient implements Client {
 
 	// Encodes request message for login
 	private OMMMsg encodeLoginReqMsg() {
-		String username = "deve01";
-		String application = "256";
-		String position = "1.1.1.1/net";
+		String username = SystemProperties.getProperties(SystemProperties.RFA_USER_NAME);
+		String application = SystemProperties.getProperties(SystemProperties.RFA_APPLICATION);
+		String position = SystemProperties.getProperties(SystemProperties.RFA_POSITION);
 		try {
 			position = InetAddress.getLocalHost().getHostAddress() + "/" + InetAddress.getLocalHost().getHostName();
 		} catch (Exception e) {
@@ -173,9 +173,9 @@ public class RFALoginClient implements Client {
 
 		// RFA Server status response, forward status to customer.
 		if (respMsg.has(OMMMsg.HAS_STATE)) {
-			RFALoginClient.STREAM_STATE = respMsg.getState().getStreamState();
-			RFALoginClient.DATA_STATE = respMsg.getState().getDataState();
-			RFALoginClient.STATE = respMsg.getState().toString();
+			STREAM_STATE = respMsg.getState().getStreamState();
+			DATA_STATE = respMsg.getState().getDataState();
+			STATE = respMsg.getState().toString();
 			byte msgType = respMsg.getMsgType();
 			String streamingState = OMMState.Stream.toString(STREAM_STATE);
 			String dataingState = OMMState.Data.toString(DATA_STATE);

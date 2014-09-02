@@ -31,6 +31,9 @@ public class SystemProperties {
 	public static final String RFA_CONNETION_TYPE = "rfa.connetion.type";
 	public static final String RFA_CONNETION_SERVER_LIST = "rfa.connetion.serverList";
 	public static final String RFA_CONNETION_PORTNUMBER = "rfa.connetion.portNumber";
+	public static final String RFA_USER_NAME = "rfa.user.name";
+	public static final String RFA_APPLICATION = "rfa.application";
+	public static final String RFA_POSITION = "rfa.position";
 	
 	public static final String ADMIN_NEED_NOTIFY = "admin.need.notify";
 	public static final String ADMIN_USER_EMAIL = "admin.user.email";
