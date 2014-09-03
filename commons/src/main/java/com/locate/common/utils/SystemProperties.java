@@ -67,7 +67,19 @@ public class SystemProperties {
 		} else {
 			if (StringUtils.isEmpty(systemProperties.get(name))) {
 				_logger.error("Can't find configuration for " + name);
-//				System.exit(-1);
+				return "";
+			}
+			return systemProperties.get(name);
+		}
+	}
+	
+	public static String getProperties(String name,String defaultValue) {
+		if (StringUtils.isNotEmpty(System.getProperty(name))) {
+			return System.getProperty(name);
+		} else {
+			if (StringUtils.isEmpty(systemProperties.get(name))) {
+				_logger.error("Can't find configuration for " + name);
+				return defaultValue;
 			}
 			return systemProperties.get(name);
 		}

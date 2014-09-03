@@ -11,7 +11,6 @@ import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
-import org.junit.Test;
 
 import com.locate.common.RFANodeconstant;
 import com.locate.common.utils.RFAUtils;
@@ -28,7 +27,7 @@ public class RFAUserManagement {
 	
 	public static void init(){
 		SAXReader reader=new SAXReader();
-		String userFile = SystemProperties.getProperties(SystemProperties.RFA_USER_FILE);
+		String userFile = SystemProperties.getProperties(SystemProperties.RFA_USER_FILE,"");
 		Document userData = null;
 		try {
 			userData = reader.read(userFile);
@@ -198,11 +197,5 @@ public class RFAUserManagement {
 			return true;
 		}
 		
-	}
-	
-	@Test
-	public void testInit(){
-		SystemProperties.init("config/rfaConfig.properties");
-		init();
 	}
 }

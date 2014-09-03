@@ -12,7 +12,6 @@ public class EmailNotifierTest {
 	public void test() {
 		INotifier notifier = new EmailNotifier();
 		SystemProperties.init("src/main/resources/rfaConfig.properties");
-		notifier.notifyAdmin("testEmail", "testEmail");
+//		notifier.notifyAdmin("testEmail", "testEmail");
 	}
-
 }

@@ -5,6 +5,8 @@ import java.awt.Component;
 import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.net.ConnectException;
+import java.nio.channels.ClosedChannelException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -13,6 +15,7 @@ import java.util.Map;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -23,11 +26,13 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.log4j.xml.DOMConfigurator;
 import org.jboss.netty.channel.SimpleChannelHandler;
 
 import com.locate.client.gui.StatusBar;
+import com.locate.common.LocateException;
 import com.locate.common.LocateMessageTypes;
 import com.locate.common.model.CustomerFiled;
 import com.locate.common.model.LocateUnionMessage;
@@ -60,7 +65,7 @@ public class RFApplication extends JFrame {
 	public static JLabel avgTimes;
 	private JButton closeButton;
 	private DefaultTableCellRenderer cellRanderer; 
-	private List<Integer> chanedRowList;
+	private List<Integer> chanedRowList = new ArrayList<Integer>();
 	
 	public static boolean stop = false;
 
@@ -237,10 +242,14 @@ public class RFApplication extends JFrame {
 			openButton = new JButton();
 			openButton.setText("open");
 			openButton.addMouseListener(new MouseAdapter() {
-
 				public void mouseClicked(MouseEvent event) {
-					String ric = ricTextField.getText();
-					clientConnetor.openRICMarket(ric);
+					try{
+						String ric = ricTextField.getText();
+						clientConnetor.openRICMarket(ric);
+					}catch(LocateException le){
+						serverBar.setStatusFixed("Send the RIC to server error!");
+						JOptionPane.showMessageDialog(null, "请先登录到服务器", "未登录", JOptionPane.ERROR_MESSAGE);
+					}
 				}
 			});
 			openButton.setBounds(r);
@@ -505,7 +514,15 @@ public class RFApplication extends JFrame {
 		 */
 		@Override
 		public void handleException(Throwable e){
+			if(e instanceof ConnectException||e instanceof ClosedChannelException){
+				sBuilder.append("Connection refused! please check the server info!");
+				logger.error("Connection refused! please check the server info!",e);
+				updateLog(sBuilder.toString());
+				serverBar.setStatusFixed("Connection refused! please check the server info!");
+				return;
+			}
 			sBuilder.append("Client has been occure Exception. Please contact the developer! "+e);
+			logger.error("Client has been occure Exception. Please contact the developer!",e);
 			updateLog(sBuilder.toString());
 			serverBar.setStatusFixed("Client has been occure Exception. Please contact the developer!");
 		}
@@ -541,12 +558,18 @@ public class RFApplication extends JFrame {
 				//Locate send the state info to client
 				case LocateMessageTypes.SERVER_STATE:
 					String errorDescription = message.getResultDes();
-					serverBar.setStatusFixed(errorDescription);
-					break;
-				case LocateMessageTypes.STATUS_RESP:
+					if(StringUtils.isNotBlank(errorDescription)){
+						serverBar.setStatusFixed(errorDescription);
+					}
 					String newStatus = message.getState();
-					statusBar.setStatusFixed(newStatus);
+					if(StringUtils.isNotBlank(newStatus)){
+						statusBar.setStatusFixed(newStatus);
+					}
 					break;
+//				case LocateMessageTypes.STATUS_RESP:
+//					String newStatus = message.getState();
+//					statusBar.setStatusFixed(newStatus);
+//					break;
 				//Locate send the undefined message.
 				default:
 					logger.error("Not should to here! message type is "+msgType);
@@ -561,15 +584,15 @@ public class RFApplication extends JFrame {
 		private void updateMarketPriceTable(TableModel tableModel,LocateUnionMessage message) {
 			
 			List<String[]> payLoadSet = message.getPayLoadSet();
-			
-			chanedRowList = new ArrayList<Integer>();
 			for (String[] filed : payLoadSet) {
 				String id = "";
 				if(filed[0]!=null){
 					id=filed[0];
 				}
 				int rowIndex = IdAtRowidMap.get(id);
-				chanedRowList.add(rowIndex);
+				if(!chanedRowList.contains(rowIndex)){
+					chanedRowList.add(rowIndex);
+				}
 				String name = "";
 				if (filed[1] != null) {
 					name = filed[1];
@@ -602,6 +625,20 @@ public class RFApplication extends JFrame {
 			JLabel jl = new JLabel();
 			if(chanedRowList.contains(row)){
 				jl.setForeground(Color.RED);
+			}
+			jl.setBackground(Color.WHITE);
+			jl.setOpaque(true);
+			jl.setText(value.toString());
+			return jl;
+		}
+	}
+	
+	class BlueRenderer implements TableCellRenderer {
+		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
+				boolean hasFocus, int row, int column) {
+			JLabel jl = new JLabel();
+			if(chanedRowList.contains(row)){
+				jl.setForeground(Color.blue);
 			}
 			jl.setBackground(Color.WHITE);
 			jl.setOpaque(true);
@@ -660,22 +697,7 @@ public class RFApplication extends JFrame {
 		}
 	}
 	
-	class BlueRenderer implements TableCellRenderer {
-		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
-				boolean hasFocus, int row, int column) {
-			JLabel jl = new JLabel();
-			if(chanedRowList.contains(row)){
-				jl.setForeground(Color.blue);
-			}
-			jl.setBackground(Color.WHITE);
-			jl.setOpaque(true);
-			jl.setText(value.toString());
-			return jl;
-		}
-	}
-	
 	public class RemoveMoreData extends Thread {
-
 		public void run() {
 			int currentRow = 0;
 			while (!stop) {

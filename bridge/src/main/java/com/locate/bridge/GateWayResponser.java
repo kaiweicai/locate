@@ -33,7 +33,7 @@ public class GateWayResponser {
 		}
 		logger.info("downStream message is :"+response);
 	}
-
+	
 	public static void sentAllChannelNews(byte msgType, Document response) {
 		// LocateMessage message = new LocateMessage(msgType, response, 0);
 		// message.setSequenceNo(RFAServerManager.sequenceNo.getAndIncrement());
@@ -84,5 +84,4 @@ public class GateWayResponser {
 		}
 		logger.info("send message is :" + locateMessage + " to order group" + channelGroup.getName());
 	}
-
 }

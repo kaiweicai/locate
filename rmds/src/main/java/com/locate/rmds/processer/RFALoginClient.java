@@ -14,6 +14,7 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import com.locate.bridge.GateWayResponser;
+import com.locate.common.LocateMessageTypes;
 import com.locate.common.model.LocateUnionMessage;
 import com.locate.common.utils.MessageEncapsulator;
 import com.locate.common.utils.SystemProperties;
@@ -73,6 +74,7 @@ public class RFALoginClient implements Client {
 	public static byte STREAM_STATE = 0;
 	public static byte DATA_STATE = 0;
 	public static String STATE = "";
+	public static LocateUnionMessage rfaStateMessage;
 	static Logger logger = Logger.getLogger(RFALoginClient.class.getName());
 	// static Logger _logger;
 	Map<String, ServiceInfo> _services = new HashMap<String, ServiceInfo>();
@@ -176,11 +178,11 @@ public class RFALoginClient implements Client {
 			STREAM_STATE = respMsg.getState().getStreamState();
 			DATA_STATE = respMsg.getState().getDataState();
 			STATE = respMsg.getState().toString();
-			byte msgType = respMsg.getMsgType();
+			byte msgType = LocateMessageTypes.SERVER_STATE;
 			String streamingState = OMMState.Stream.toString(STREAM_STATE);
 			String dataingState = OMMState.Data.toString(DATA_STATE);
-			LocateUnionMessage message = MessageEncapsulator.encapStateResponseMessage(streamingState, dataingState, STATE, msgType, startTime);
-			GateWayResponser.brodcastStateResp(message);
+			rfaStateMessage = MessageEncapsulator.encapStateResponseMessage(streamingState, dataingState, STATE, msgType, startTime);
+			GateWayResponser.brodcastStateResp(rfaStateMessage);
 		}
 		// The login is successful, RFA forwards the message from the network
 		if ((respMsg.getMsgType() == OMMMsg.MsgType.STATUS_RESP) && (respMsg.has(OMMMsg.HAS_STATE))

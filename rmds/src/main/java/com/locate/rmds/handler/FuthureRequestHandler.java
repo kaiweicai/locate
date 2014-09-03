@@ -5,12 +5,14 @@ import javax.annotation.Resource;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
+import com.locate.bridge.GateWayResponser;
 import com.locate.common.LocateResultCode;
 import com.locate.common.datacache.DataBaseCache;
 import com.locate.common.model.ClientRequest;
 import com.locate.rmds.QSConsumerProxy;
 import com.locate.rmds.RFAServerManager;
 import com.locate.rmds.processer.ItemManager;
+import com.locate.rmds.processer.RFALoginClient;
 
 @Service
 public class FuthureRequestHandler extends BaseRequestHandler {
@@ -33,6 +35,8 @@ public class FuthureRequestHandler extends BaseRequestHandler {
 //			regiestItemRequestManager(itemName, clientInstance);
 //			regiestClientRequestItem(clientName,itemName);
 		}
+		//用户开始订阅产品,发送回用户一个RFA的服务器状态信息.
+		GateWayResponser.sentResponseMsg(RFALoginClient.rfaStateMessage,channelId);
 		logger.info("End register client request "+clientName);
 		return resultCode;
 	}

@@ -39,7 +39,7 @@ public class ClientUserValidator {
 		/**
 		 * I think this authenticate is NOT work. 
 		 */
-		String resultDes=LocateResultCode.LocateResponseEnum.getResultDescription(resultCode);
+		String resultDes=LocateResultCode.getResultDescription(resultCode);
 		logger.info("User authenticate result for " + resultDes);
 		return resultCode;
 	}

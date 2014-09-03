@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 
 import com.locate.common.LocateMessageTypes;
 import com.locate.common.LocateResultCode;
-import com.locate.common.LocateResultCode.LocateResponseEnum;
 import com.locate.common.datacache.DataBaseCache;
 import com.locate.common.datacache.RmdsDataCache;
 import com.locate.common.model.ClientRequest;
@@ -33,7 +32,7 @@ public class GateForwardRFA {
 	private IProcesser itemManager;
 	
 	public int process(ClientRequest clientInfo){
-		long startTime = System.currentTimeMillis();
+//		long startTime = System.currentTimeMillis();
 		int channelID = clientInfo.getChannelID();
 		ClientRequest request =clientInfo.getClientRequest();
 		String clientName = clientInfo.getUserName();
@@ -43,13 +42,13 @@ public class GateForwardRFA {
 		
 		int resultCode =-1;
 		byte responseMsgType = -1;
-		
+		//check the user has session!
 		if(_msgType != LocateMessageTypes.LOGIN){
 	    	String userName = DataBaseCache._userConnection.get(clientIP);
 	    	if(userName == null){
 	    		resultCode = LocateResultCode.USER_NOT_LOGIN;
 	    		LocateUnionMessage message = new LocateUnionMessage();
-	    		byte msgType = LocateMessageTypes.STATUS_RESP;
+	    		byte msgType = LocateMessageTypes.SERVER_STATE;
 	    		MessageEncapsulator.encapLogionResponseMessage(message,resultCode, msgType);
 				GateWayResponser.sentResponseMsg(message, channelID);
 				_logger.error("Client didn't login system. sent error message to client");
@@ -61,7 +60,7 @@ public class GateForwardRFA {
 		    case LocateMessageTypes.LOGIN : 
 		    	resultCode = clientUserLogin.authUserLogin(request,clientIP);
 		    	LocateUnionMessage message = new LocateUnionMessage();
-				byte msgType = LocateMessageTypes.STATUS_RESP;
+				byte msgType = LocateMessageTypes.SERVER_STATE;
 				MessageEncapsulator.encapLogionResponseMessage(message,resultCode, msgType);
 		    	GateWayResponser.sentResponseMsg( message, channelID);
 		    	return resultCode;
@@ -117,11 +116,11 @@ public class GateForwardRFA {
 //		    	processRequest(request,clientName,RFAMessageTypes.RESPONSE_ONE_TIMES);
 //		    	break;
 	    }
-		//处理存在错误需要向客户端发送错误信息.
+		//向客户返回登陆后的状态.
 //		if(resultCode != LocateResultCode.SUCCESS_RESULT){
 			LocateUnionMessage message = new LocateUnionMessage();
 			message.setResultCode(resultCode);
-			message.setResultDes(LocateResponseEnum.getResultDescription(resultCode));
+			message.setResultDes(LocateResultCode.getResultDescription(resultCode));
 			message.setMsgType(LocateMessageTypes.SERVER_STATE);
 			GateWayResponser.sentResponseMsg(message, channelID);
 //		}

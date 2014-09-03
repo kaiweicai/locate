@@ -104,13 +104,15 @@ public class RFASample {
 				case LocateMessageTypes.SERVER_STATE:
 					String errorDescription = message.getResultDes();
 					System.out.println("向服务器放的请求出现了错误,请看下面的具体错误描述");
+					String state = message.getState();
+					System.out.println(state);
 					System.out.println(errorDescription);
 					break;
 				//如果服务器有通知服务器状态改变的信息,会使用此状态信息.
-				case LocateMessageTypes.STATUS_RESP:
-					String state = message.getState();
-					System.out.println(state);
-					break;
+//				case LocateMessageTypes.SERVER_STATE:
+//					String state = message.getState();
+//					System.out.println(state);
+//					break;
 				//服务器发送了未知的消息,一般这里不用处理.扔掉该消息就好了.
 				default:
 					System.out.println("Not should to here! message type is "+LocateMessageTypes.REFRESH_RESP);
