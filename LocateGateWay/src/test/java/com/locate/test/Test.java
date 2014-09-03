@@ -18,7 +18,7 @@ public class Test {
 			if (StringUtils.isBlank(needNotify) || !needNotify.equalsIgnoreCase("true")) {
 				return;
 			}
-			notifier.notifyAdmin("test","test");
+//			notifier.notifyAdmin("test","test");
 		}
 	}
 }

@@ -67,6 +67,7 @@
 							</resources>
 						</configuration>
 					</execution>
+					
 				</executions>
 			</plugin>
 		</plugins>

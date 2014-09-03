@@ -10,6 +10,6 @@ public class NotifierTest {
 	public void testSendEmail(){
 		SystemProperties.init("config/rfaConfig.properties");
 		EmailNotifier emailNotifier = new EmailNotifier();
-		emailNotifier.notifyAdmin("test","test email");
+//		emailNotifier.notifyAdmin("test","test email");
 	}
 }
