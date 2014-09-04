@@ -341,7 +341,7 @@ public class QSConsumerProxy{
 //			ItemManager subscibeItemManager =  subscribeItemManagerMap.get(itemName);
 //			subscibeItemManager.sendInitialDocument(channelId);
 			return null;
-		}else{
+		}else{//fist subscribe this RIC.
 			//一个产品对应一个itemManager对象
 			itemManager=SystemConstant.springContext.getBean("itemManager",ItemManager.class);
 			subscribeItemManagerMap.put(itemName, itemManager);

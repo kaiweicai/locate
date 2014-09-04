@@ -18,6 +18,7 @@ import com.locate.common.utils.SystemProperties;
 public class FilterManager {
 	private static Logger logger = Logger.getLogger(FilterManager.class);
 	private static String filterConfigFileName = SystemProperties.getProperties(SystemProperties.FILTER_CONFIG_NAME);
+	//List<Integer> is the filter.
 	public static Map<String, List<Integer>> filterMap = new HashMap<String, List<Integer>>();
 	public static String filterIsAffect = SystemProperties.getProperties(SystemProperties.FILTER_AFFECT,"false");
 	public static void loadFilter() {
