@@ -6,20 +6,16 @@ import net.sf.json.JSON;
 import net.sf.json.JSONObject;
 
 import org.apache.log4j.Logger;
-import org.dom4j.Document;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import com.locate.common.SystemConstant;
 import com.locate.common.datacache.RmdsDataCache;
 import com.locate.common.model.LocateUnionMessage;
-import com.locate.common.utils.JsonUtil;
-import com.locate.common.utils.XmlMessageUtil;
 import com.locate.rmds.QSConsumerProxy;
-import com.locate.rmds.parser.GenericOMMParser;
 import com.locate.rmds.parser.face.IOmmParser;
-import com.locate.rmds.processer.face.IProcesser;
 import com.locate.rmds.processer.face.IPriceKeeper;
+import com.locate.rmds.processer.face.IProcesser;
 import com.locate.rmds.statistic.CycleStatistics;
 import com.locate.rmds.statistic.LogTool;
 import com.locate.rmds.statistic.OutputFormatter;
@@ -110,34 +106,9 @@ public class PersistentItemManager implements Client,IProcesser {
     static StringBuilder _statsStringBuffer;
     static int _timeline;
     
-	static {
-		_statsStringBuffer = new StringBuilder(1024);
-		// output formatter
-		outputFormatter = new OutputFormatter();
-		outputFormatter.initializeDateFormat("yyyy-MM-dd HH:mm:ss", "UTC");
-		String _myName = "AdminClient";
-		_consoleLogger = new LogTool();
-		_consoleLogger.log2Screen();
-		_consoleLogger.setName(_myName);
-		// stats output file and statistics file logger
-		_statsFileLogger = new LogTool();
-		_consoleLogger.tagErrPrintln(_statsFileLogger.getStatusText());
-
-		_statsFileLogger.println("UTC, " + "Requests Received, " + "Images Sent, " + "Updates sent, "
-				+ "Posts Reflected, " + "CPU usage (%), " + "Memory usage (MB)");
-
-		// metrics
-		_resourceStats = new ResourceStatistics();
-
-		_request_cycleStats = new CycleStatistics("request");
-		_refresh_cycleStats = new CycleStatistics("refresh");
-		_update_cycleStats = new CycleStatistics("updates");
-		_close_cycleStats = new CycleStatistics("close");
-		_post_received_cycleStats = new CycleStatistics("postReceived");
-		_post_resent_cycleStats = new CycleStatistics("postResent");
-	}
-    
 	public void sendRicRequest(String pItemName, byte responseMsgType) {
+		priceKeeper = SystemConstant.springContext.getBean("filePriceKeeper",FilePriceKeeper.class);
+		priceKeeper.init(pItemName);
 		this.responseMessageType = responseMsgType;
 		logger.info(_className + ".sendRequest: Sending item(" + pItemName + ") requests to server ");
 		String serviceName = _mainApp.serviceName;
@@ -175,7 +146,6 @@ public class PersistentItemManager implements Client,IProcesser {
 			_itemGroupManager.addItem(serviceName, itemName, itemHandle);
 		}
 		pool.releaseMsg(ommmsg);
-		priceKeeper = new FilePriceKeeper(pItemName);
 	}
     
 
@@ -241,6 +211,7 @@ public class PersistentItemManager implements Client,IProcesser {
 		// 保存报价信息以供查询.
 		// JSON jsonObject = JsonUtil.getJSONFromXml(responseMsg.asXML()) ;
 		JSON jsonObject = JSONObject.fromObject(message);
+		System.out.println("-------------------------------------------------"+priceKeeper);
 		priceKeeper.persistentThePrice(jsonObject);
 		// GateWayResponser.sentMrketPriceToSubsribeChannel(responseMsg,
 		// clientRequestItemName);

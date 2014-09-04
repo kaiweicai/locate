@@ -6,6 +6,8 @@ import javax.annotation.Resource;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
+import com.locate.common.SystemConstant;
+import com.locate.rmds.engine.filter.FilterManager;
 import com.locate.rmds.statistic.StatisticThread;
 
 @Service
@@ -21,6 +23,9 @@ public class RFAServerManager extends Thread {
 	private static boolean connectedDataSource;
 	@PostConstruct
 	public void init() {
+		if(FilterManager.filterIsAffect.endsWith(SystemConstant.BOOLEAN_TRUE)){
+			FilterManager.loadFilter();
+		}
 		// Startup and initialization
 //		demo.init();
 		// Login

@@ -4,4 +4,6 @@ import net.sf.json.JSON;
 
 public interface IPriceKeeper {
 	public void persistentThePrice(JSON jsonObjectt);
+
+	public void init(String pItemName);
 }
