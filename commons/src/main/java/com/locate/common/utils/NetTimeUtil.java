@@ -28,25 +28,8 @@ public class NetTimeUtil {
 		return time;
 	}
 	
-	public static long getCheckTime(){
-		logger.info("checkTime is "+DataBaseCache.checkTime);
-		return DataBaseCache.checkTime+System.currentTimeMillis();
-	}
-	
-	public static void main(String[] args) throws Exception {
-		long startTime = System.currentTimeMillis();
-		// 取得资源对象
-		URL url = new URL("http://www.bjtime.cn");
-		// 生成连接对象
-		URLConnection uc = url.openConnection();
-		// 发出连接
-		uc.connect();
-		long time = uc.getDate();
-		System.out.println("long time:" + time);
-		Date date = new Date(time);
-		System.out.println("date:" + date.toString());
-		System.out.println(new SimpleDateFormat("yyyy-MM-dd hh-mm-ss").format(date));
-		long endTime = System.currentTimeMillis();
-		System.out.println("user time ="+(endTime-startTime));
+	public static long getCurrentNetTime(){
+		logger.info("checkTime is "+DataBaseCache.NET_SUB_LOCAL_TIME);
+		return DataBaseCache.NET_SUB_LOCAL_TIME+System.currentTimeMillis();
 	}
 }

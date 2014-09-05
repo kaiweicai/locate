@@ -25,6 +25,8 @@ import com.locate.rmds.client.RFAUserManagement;
 import com.locate.rmds.dict.DirectoryClient;
 import com.locate.rmds.dict.RDMServiceInfo;
 import com.locate.rmds.dict.ServiceInfo;
+import com.locate.rmds.engine.filter.EngineLine;
+import com.locate.rmds.engine.filter.FilterManager;
 import com.locate.rmds.processer.ItemGroupManager;
 import com.locate.rmds.processer.ItemManager;
 import com.locate.rmds.processer.NewsItemManager;
@@ -329,6 +331,15 @@ public class QSConsumerProxy{
 
 	// This method utilizes ItemManager class to request items
 	public ItemManager itemRequests(String itemName, byte responseMsgType,int channelId) {
+		//如果ITEM以PT开头,则表示为客户自定义的产品,需要实施产品策略.以后策略添加在这个位置.
+		if(itemName.startsWith("PT")){
+			
+		}
+		//load filter.
+		if(FilterManager.filterMap.containsKey(itemName)){
+			EngineLine enginLine = new EngineLine();
+			enginLine.addEngine("filedFilter", FilterManager.filterMap.get(itemName));
+		}
 		Map<String,IProcesser> subscribeItemManagerMap = RmdsDataCache.RIC_ITEMMANAGER_Map;
 		boolean needRenewSubscribeItem=checkSubscribeStatus(itemName);
 		if(needRenewSubscribeItem){
@@ -384,15 +395,15 @@ public class QSConsumerProxy{
 	 */
 	private boolean checkSubscribeStatus(String itemName) {
 		Map<String, IProcesser> subscribeItemManagerMap = RmdsDataCache.RIC_ITEMMANAGER_Map;
+		if (!subscribeItemManagerMap.containsKey(itemName)) {
+			return false;
+		}
 		ItemManager itemManager = (ItemManager)subscribeItemManagerMap.get(itemName);
 		if(itemManager!=null){
 			Handle itemHandle = itemManager.getItemHandle();
 			if(itemHandle!=null&&!itemHandle.isActive()){
 				return false;
 			}
-		}
-		if (!subscribeItemManagerMap.containsKey(itemName)) {
-			return false;
 		}
 		return true;
 	}

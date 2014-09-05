@@ -12,7 +12,7 @@ import com.locate.common.utils.NetTimeUtil;
  */
 public class DataBaseCache {
 	static Logger logger = Logger.getLogger(DataBaseCache.class);
-	public static final long checkTime = NetTimeUtil.getNetTime() - System.currentTimeMillis();
+	public static final long NET_SUB_LOCAL_TIME = NetTimeUtil.getNetTime() - System.currentTimeMillis();
 	public static Map<String, String> _userConnection = new HashMap<String, String>();
 	// Client User Name+itemName -- IoSession
 	public static Map<String, Integer> _clientRequestSession = new HashMap<String, Integer>();

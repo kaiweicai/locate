@@ -136,7 +136,7 @@ public class RFApplication extends JFrame {
 		panel.add(getRicTextField(new Rectangle(inputX+120,inputY, 100, 15)));
 		panel.add(getOpenButton(new Rectangle(inputX,inputY+=30, 100, 15)));
 		panel.add(getTableScrollPane(new Rectangle(inputX, inputY+=30, 360, 400)));
-		panel.add(getUseTimeTextLabel(new Rectangle(inputX, inputY+=150, 12, 12)));
+		panel.add(getUseTimeTextLabel(new Rectangle(inputX, 620, 500, 50)));
 		panel.add(getJScrollPane0(new Rectangle(30, 10, 500, 560)));
 		panel.add(getStatusBar(new Rectangle(30, 570, 500, 50)));
 		panel.add(getServerBar(new Rectangle(30, 620, 500, 50)));
@@ -452,7 +452,7 @@ public class RFApplication extends JFrame {
 			useTimeTextLabel = new JLabel();
 			useTimeTextLabel.setFont(UIManager.getFont("Label.font"));
 			useTimeTextLabel.setBackground(UIManager.getColor("Panel.background"));
-			useTimeTextLabel.setText("");
+			useTimeTextLabel.setText("dddddddddddd");
 			useTimeTextLabel.setBounds(r);
 		}
 		return useTimeTextLabel;
@@ -537,12 +537,12 @@ public class RFApplication extends JFrame {
 				return;
 			}
 			long startTime = message.getStartTime();
-			long endTime = System.currentTimeMillis();
+			long endTime = NetTimeUtil.getCurrentNetTime();
 			logger.info("original message -------"+message);
 			byte msgType = message.getMsgType();
 			sBuilder.append("Received message type:" + LocateMessageTypes.toString(msgType)+"\n");
-			useTimeTextLabel.setText("From Locate Server to client use time:"+String.valueOf(NetTimeUtil.getCheckTime()-startTime)+" millseconds");
-			logger.info("The message From RFA to user use time"+(startTime-endTime)+"milliseconds");
+			useTimeTextLabel.setText("From Locate Server to client use time:"+(startTime-endTime)+" millseconds");
+			logger.info("The message From RFA to user use time "+(startTime-endTime)+" milliseconds");
 			switch(msgType){
 				//first the Locate send the snapshot of market price
 				case LocateMessageTypes.REFRESH_RESP:
@@ -566,13 +566,19 @@ public class RFApplication extends JFrame {
 						statusBar.setStatusFixed(newStatus);
 					}
 					break;
-//				case LocateMessageTypes.STATUS_RESP:
-//					String newStatus = message.getState();
-//					statusBar.setStatusFixed(newStatus);
-//					break;
-				//Locate send the undefined message.
+				case LocateMessageTypes.STATUS_RESP:
+					errorDescription = message.getResultDes();
+					if(StringUtils.isNotBlank(errorDescription)){
+						serverBar.setStatusFixed(errorDescription);
+					}
+					newStatus = message.getState();
+					if(StringUtils.isNotBlank(newStatus)){
+						statusBar.setStatusFixed(newStatus);
+					}
+					break;
+//				Locate send the undefined message.
 				default:
-					logger.error("Not should to here! message type is "+msgType);
+					logger.error("Not should to here! message type is "+message);
 					statusBar.setStatusFixed("The Message can not be handle according with correct message type match.",Color.RED);
 			}
 			

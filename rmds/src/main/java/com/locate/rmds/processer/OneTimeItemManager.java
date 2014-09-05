@@ -4,6 +4,7 @@ import org.apache.log4j.Logger;
 
 import com.locate.bridge.GateWayResponser;
 import com.locate.common.model.LocateUnionMessage;
+import com.locate.common.utils.NetTimeUtil;
 import com.locate.rmds.QSConsumerProxy;
 import com.locate.rmds.parser.LocateOMMParser;
 import com.locate.rmds.statistic.LogTool;
@@ -117,7 +118,7 @@ public class OneTimeItemManager implements Client
     // this method gets called.
     public void processEvent(Event event)
     {
-    	long startTime = System.currentTimeMillis();
+    	long startTime = NetTimeUtil.getCurrentNetTime();
     	switch (event.getType())
         {
             case Event.OMM_SOLICITED_ITEM_EVENT:
@@ -145,7 +146,7 @@ public class OneTimeItemManager implements Client
         OMMItemEvent ommItemEvent = (OMMItemEvent) event;
         OMMMsg respMsg = ommItemEvent.getMsg();
         LocateUnionMessage locateMessage = locateGenericOMMParser.parse(respMsg, clientRequestItemName);
-        
+        locateMessage.setStartTime(startTime);
         // Status response can contain group id
 		if ((respMsg.getMsgType() == OMMMsg.MsgType.REFRESH_RESP)
 				|| (respMsg.getMsgType() == OMMMsg.MsgType.STATUS_RESP && respMsg.has(OMMMsg.HAS_ITEM_GROUP))) {
@@ -156,7 +157,7 @@ public class OneTimeItemManager implements Client
         
 		GateWayResponser.sendSnapShotToChannel(locateMessage, channelID);
         if(locateMessage != null){
-        	long endTime = System.currentTimeMillis();
+        	long endTime = NetTimeUtil.getCurrentNetTime();
         	_logger.info("publish Item "+clientRequestItemName+" use time "+(endTime-startTime)+" microseconds");
         }
     }

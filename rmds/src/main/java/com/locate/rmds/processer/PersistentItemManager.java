@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.locate.common.SystemConstant;
 import com.locate.common.datacache.RmdsDataCache;
 import com.locate.common.model.LocateUnionMessage;
+import com.locate.common.utils.NetTimeUtil;
 import com.locate.rmds.QSConsumerProxy;
 import com.locate.rmds.parser.face.IOmmParser;
 import com.locate.rmds.processer.face.IPriceKeeper;
@@ -162,7 +163,7 @@ public class PersistentItemManager implements Client,IProcesser {
     // This is a Client method. When an event for this client is dispatched,
     // this method gets called.
 	public void processEvent(Event event) {
-    	long startTime = System.currentTimeMillis();
+    	long startTime = NetTimeUtil.getCurrentNetTime();
 		switch (event.getType()) {
             case Event.OMM_SOLICITED_ITEM_EVENT:
                 processOMMSolicitedItemEvent((OMMSolicitedItemEvent)event);
@@ -189,7 +190,7 @@ public class PersistentItemManager implements Client,IProcesser {
         OMMItemEvent ommItemEvent = (OMMItemEvent) event;
         OMMMsg respMsg = ommItemEvent.getMsg();
         LocateUnionMessage message = locateOmmParser.parse(respMsg, clientRequestItemName);
-        
+        message.setStartTime(startTime);
 		// 如果是状态消息.记录一个警告日志.
         if(respMsg.getMsgType()==OMMMsg.MsgType.STATUS_RESP && (respMsg.has(OMMMsg.HAS_STATE))){
         	byte streamState= respMsg.getState().getStreamState();
@@ -211,12 +212,11 @@ public class PersistentItemManager implements Client,IProcesser {
 		// 保存报价信息以供查询.
 		// JSON jsonObject = JsonUtil.getJSONFromXml(responseMsg.asXML()) ;
 		JSON jsonObject = JSONObject.fromObject(message);
-		System.out.println("-------------------------------------------------"+priceKeeper);
 		priceKeeper.persistentThePrice(jsonObject);
 		// GateWayResponser.sentMrketPriceToSubsribeChannel(responseMsg,
 		// clientRequestItemName);
 		if (message != null) {
-        	long endTime = System.currentTimeMillis();
+        	long endTime = NetTimeUtil.getCurrentNetTime();
         	logger.info("publish Item "+clientRequestItemName+" use time "+(endTime-startTime)+" microseconds");
         }
     }

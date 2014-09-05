@@ -157,7 +157,7 @@ public class XmlMessageUtil {
 	}
 
 	public static void addStartHandleTime(Document doc, long startTime) {
-		startTime = NetTimeUtil.getCheckTime();
+		startTime = NetTimeUtil.getCurrentNetTime();
 		Element rootElement = doc.getRootElement();
 		Element locateElement = rootElement.element(RFANodeconstant.LOCATE_NODE);
 		Element startTimeElement = locateElement.element(RFANodeconstant.START_HANDLE_TIME_NODE);

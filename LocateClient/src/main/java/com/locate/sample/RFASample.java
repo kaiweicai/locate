@@ -11,6 +11,7 @@ import org.dom4j.io.DocumentResult;
 
 import com.locate.common.LocateMessageTypes;
 import com.locate.common.model.LocateUnionMessage;
+import com.locate.common.utils.NetTimeUtil;
 import com.locate.face.IBussiness;
 import com.locate.face.IClientConnector;
 import com.locate.gate.handler.ClientConnector;
@@ -58,6 +59,9 @@ public class RFASample {
 		 */
 		@Override
 		public void handleMessage(LocateUnionMessage message){
+			long starTime = message.getStartTime();
+			long endTime = NetTimeUtil.getCurrentNetTime();
+			System.out.println("Recieve this message use time:"+(endTime-starTime)+" microseconds");
 			byte msgType = message.getMsgType();
 			String RIC = message.getRic();
 			switch(msgType){
@@ -85,6 +89,7 @@ public class RFASample {
 						System.out.println("handel the au message "+message);
 						break;
 					case XAG_RIC:
+						//将消息对象转换成JSON型字符串使用.
 						JSONObject jsonObject = JSONObject.fromObject(message);
 						String jsonResult = jsonObject.toString();
 						System.out.println(RIC);
@@ -109,10 +114,13 @@ public class RFASample {
 					System.out.println(errorDescription);
 					break;
 				//如果服务器有通知服务器状态改变的信息,会使用此状态信息.
-//				case LocateMessageTypes.SERVER_STATE:
-//					String state = message.getState();
-//					System.out.println(state);
-//					break;
+				case LocateMessageTypes.STATUS_RESP:
+					errorDescription = message.getResultDes();
+					System.out.println("向服务器放的请求出现了错误,请看下面的具体错误描述");
+					state = message.getState();
+					System.out.println(state);
+					System.out.println(errorDescription);
+					break;
 				//服务器发送了未知的消息,一般这里不用处理.扔掉该消息就好了.
 				default:
 					System.out.println("Not should to here! message type is "+LocateMessageTypes.REFRESH_RESP);

@@ -19,7 +19,7 @@ public class FilterManager {
 	private static Logger logger = Logger.getLogger(FilterManager.class);
 	private static String filterConfigFileName = SystemProperties.getProperties(SystemProperties.FILTER_CONFIG_NAME);
 	//List<Integer> is the filter.
-	public static Map<String, List<Integer>> filterMap = new HashMap<String, List<Integer>>();
+	public static Map<String, FieldFilter> filterMap = new HashMap<String,FieldFilter>();
 	public static String filterIsAffect = SystemProperties.getProperties(SystemProperties.FILTER_AFFECT,"false");
 	public static void loadFilter() {
 		logger.info("start to load filterConfig using filter config file name:"+filterConfigFileName);
@@ -28,7 +28,7 @@ public class FilterManager {
 			filterConfigReader = new BufferedReader(new FileReader(new File(filterConfigFileName)));
 			filterMap.clear();
 			String config = filterConfigReader.readLine();
-			if (StringUtils.isNotBlank(config)) {
+			while (filterConfigReader.readLine()!=null) {
 				String[] filterconfig = config.split(":");
 				String ric = filterconfig[0];
 				String[] filter = filterconfig[1].split(",");
@@ -36,7 +36,9 @@ public class FilterManager {
 				for (int i = 0; i < filter.length; i++) {
 					filterIdList.add(Integer.parseInt(filter[i]));
 				}
-				filterMap.put(ric, filterIdList);
+				FieldFilter fieldFilter = new FieldFilter();
+				fieldFilter.setFilterIdList(filterIdList);
+				filterMap.put(ric, fieldFilter);
 			}
 			logger.info("Load filterConfig success!");
 		} catch (Exception e) {

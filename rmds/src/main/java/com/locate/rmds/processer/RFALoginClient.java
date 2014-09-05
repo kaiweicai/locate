@@ -17,6 +17,7 @@ import com.locate.bridge.GateWayResponser;
 import com.locate.common.LocateMessageTypes;
 import com.locate.common.model.LocateUnionMessage;
 import com.locate.common.utils.MessageEncapsulator;
+import com.locate.common.utils.NetTimeUtil;
 import com.locate.common.utils.SystemProperties;
 import com.locate.rmds.QSConsumerProxy;
 import com.locate.rmds.dict.RDMServiceInfo;
@@ -141,7 +142,7 @@ public class RFALoginClient implements Client {
 	// this method gets called.
 	public void processEvent(Event event) {
 		String needNotify = SystemProperties.getProperties(SystemProperties.ADMIN_NEED_NOTIFY);
-		long startTime = System.currentTimeMillis();
+		long startTime = NetTimeUtil.getCurrentNetTime();
 		// Completion event indicates that the stream was closed by RFA
 		if (event.getType() == Event.COMPLETION_EVENT) {
 			logger.info("Receive a COMPLETION_EVENT, " + event.getHandle());
@@ -218,6 +219,9 @@ public class RFALoginClient implements Client {
 			_mainApp.loginFailure();
 			ommParser.parse(respMsg, "RFALogin");
 		}
+		long endTime = NetTimeUtil.getCurrentNetTime();
+		logger.info("login use time "+(endTime - startTime));
+		
 	}
 
 	protected void processDirectoryMsg(OMMMsg msg) {

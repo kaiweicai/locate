@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.locate.bridge.GateWayResponser;
 import com.locate.common.datacache.RmdsDataCache;
 import com.locate.common.model.LocateUnionMessage;
+import com.locate.common.utils.NetTimeUtil;
 import com.locate.rmds.QSConsumerProxy;
 import com.locate.rmds.parser.face.IOmmParser;
 import com.locate.rmds.processer.face.IProcesser;
@@ -201,7 +202,7 @@ public class ItemManager implements Client,IProcesser
     // this method gets called.
     public void processEvent(Event event)
     {
-    	long startTime = System.currentTimeMillis();
+    	long startTime = NetTimeUtil.getCurrentNetTime();
     	switch (event.getType())
         {
             case Event.OMM_SOLICITED_ITEM_EVENT:
@@ -230,6 +231,7 @@ public class ItemManager implements Client,IProcesser
         OMMItemEvent ommItemEvent = (OMMItemEvent) event;
         OMMMsg respMsg = ommItemEvent.getMsg();
         LocateUnionMessage locateMessage = ommParser.parse(respMsg, clientRequestItemName);
+        locateMessage.setStartTime(startTime);
         //将信息开始处理时间加入到消息中
 //		XmlMessageUtil.addStartHandleTime(responseMsg, startTime);
         //如果是状态消息.处理后直接发送给客户端.
@@ -252,7 +254,7 @@ public class ItemManager implements Client,IProcesser
 		}
         
 		GateWayResponser.sentMrketPriceToSubsribeChannel(locateMessage);
-		long endTime = System.currentTimeMillis();
+		long endTime = NetTimeUtil.getCurrentNetTime();
 		_logger.info("publish Item " + clientRequestItemName + " use time " + (endTime - startTime) + " microseconds");
         
     }
