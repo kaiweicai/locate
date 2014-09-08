@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.locate.common.SystemConstant;
 import com.locate.rmds.engine.filter.FilterManager;
 import com.locate.rmds.statistic.StatisticThread;
+import com.reuters.rfa.internal.dictionary.FieldNameExchanger;
 
 @Service
 public class RFAServerManager extends Thread {
@@ -26,6 +27,7 @@ public class RFAServerManager extends Thread {
 		if(FilterManager.filterIsAffect.equals(SystemConstant.BOOLEAN_TRUE)){
 			FilterManager.loadFilter();
 		}
+		FieldNameExchanger.loadFieldExchange();
 		// Startup and initialization
 //		demo.init();
 		// Login
