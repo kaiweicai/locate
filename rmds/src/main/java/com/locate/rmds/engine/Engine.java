@@ -1,4 +1,4 @@
-package com.locate.rmds.engine.filter;
+package com.locate.rmds.engine;
 
 import com.locate.common.model.LocateUnionMessage;
 

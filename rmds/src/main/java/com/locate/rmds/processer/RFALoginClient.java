@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 import com.locate.bridge.GateWayResponser;
 import com.locate.common.LocateMessageTypes;
+import com.locate.common.SystemConstant;
 import com.locate.common.model.LocateUnionMessage;
 import com.locate.common.utils.MessageEncapsulator;
 import com.locate.common.utils.NetTimeUtil;
@@ -64,6 +65,7 @@ import com.reuters.rfa.session.omm.OMMItemIntSpec;
 
 @Component
 public class RFALoginClient implements Client {
+	private static final String NEED_NOTIFY = SystemProperties.getProperties(SystemProperties.ADMIN_NEED_NOTIFY);
 	private static boolean checkRFAServerUp = false;
 	Handle _loginHandle;
 	@Resource
@@ -141,7 +143,6 @@ public class RFALoginClient implements Client {
 	// This is a Client method. When an event for this client is dispatched,
 	// this method gets called.
 	public void processEvent(Event event) {
-		String needNotify = SystemProperties.getProperties(SystemProperties.ADMIN_NEED_NOTIFY);
 		long startTime = NetTimeUtil.getCurrentNetTime();
 		// Completion event indicates that the stream was closed by RFA
 		if (event.getType() == Event.COMPLETION_EVENT) {
@@ -194,7 +195,7 @@ public class RFALoginClient implements Client {
 			_mainApp.loginSuccess();
 			_mainApp.registerDirectory(this);
 			if (checkRFAServerUp) {
-				if (StringUtils.isBlank(needNotify) || !needNotify.equalsIgnoreCase("true")) {
+				if (StringUtils.isBlank(NEED_NOTIFY) || NEED_NOTIFY.equalsIgnoreCase(SystemConstant.BOOLEAN_TRUE)) {
 					this.notifier.notifyAdmin("Server Info: RFA server is up!",
 							"RFA Server has been recovery from the disaster!");
 					checkRFAServerUp = false;
@@ -206,7 +207,7 @@ public class RFALoginClient implements Client {
 			logger.error("The server has been suspect!\n Received Login Response - "
 					+ OMMMsg.MsgType.toString(respMsg.getMsgType()));
 			_mainApp.loginFailure();
-			if (StringUtils.isBlank(needNotify) || !needNotify.equalsIgnoreCase("true")) {
+			if (StringUtils.isBlank(NEED_NOTIFY) || NEED_NOTIFY.equalsIgnoreCase(SystemConstant.BOOLEAN_TRUE)) {
 				String title="Server Info:The RFA server has been suspect";
 				String content="The server has been suspect. The server state is"+ (respMsg.has(OMMMsg.HAS_STATE) ? respMsg.getState() : "has no stat");
 				notifier.notifyAdmin(title,content);

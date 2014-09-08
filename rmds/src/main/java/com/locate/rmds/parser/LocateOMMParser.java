@@ -14,6 +14,8 @@ import org.springframework.stereotype.Component;
 import com.locate.common.model.LocateUnionMessage;
 import com.locate.common.utils.SystemProperties;
 import com.locate.rmds.QSConsumerProxy;
+import com.locate.rmds.engine.filter.FieldFilterEngine;
+import com.locate.rmds.engine.filter.FilterManager;
 import com.locate.rmds.gui.viewer.FieldValue;
 import com.locate.rmds.parser.face.IOmmParser;
 import com.locate.rmds.util.RFATypeConvert;
@@ -81,7 +83,6 @@ public final class LocateOMMParser implements IOmmParser {
 
 		byte msgType = msg.getMsgType();
 		locateObject.setMsgType(msgType);
-		
 		// 初始化,记录该RIC的所有FiledValue到Map中.REFRESH_RESP means snapshot message.
 		if (msgType == OMMMsg.MsgType.REFRESH_RESP && ITEM_FIELD_MAP.get(itemName) == null) {
 			if (msg.getDataType() != OMMTypes.NO_DATA && msg.getDataType() == OMMTypes.FIELD_LIST) {

@@ -15,7 +15,6 @@ import javax.annotation.Resource;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import com.locate.common.LocateMessageTypes;
 import com.locate.common.SystemConstant;
@@ -25,7 +24,8 @@ import com.locate.rmds.client.RFAUserManagement;
 import com.locate.rmds.dict.DirectoryClient;
 import com.locate.rmds.dict.RDMServiceInfo;
 import com.locate.rmds.dict.ServiceInfo;
-import com.locate.rmds.engine.filter.EngineLine;
+import com.locate.rmds.engine.EngineLine;
+import com.locate.rmds.engine.filter.EngineLinerManager;
 import com.locate.rmds.engine.filter.FilterManager;
 import com.locate.rmds.processer.ItemGroupManager;
 import com.locate.rmds.processer.ItemManager;
@@ -335,11 +335,6 @@ public class QSConsumerProxy{
 		if(itemName.startsWith("PT")){
 			
 		}
-		//load filter.
-		if(FilterManager.filterMap.containsKey(itemName)){
-			EngineLine enginLine = new EngineLine();
-			enginLine.addEngine("filedFilter", FilterManager.filterMap.get(itemName));
-		}
 		Map<String,IProcesser> subscribeItemManagerMap = RmdsDataCache.RIC_ITEMMANAGER_Map;
 		boolean needRenewSubscribeItem=checkSubscribeStatus(itemName);
 		if(needRenewSubscribeItem){
@@ -349,6 +344,7 @@ public class QSConsumerProxy{
 			 */
 			OneTimeItemManager oneTimeItemManager =  new OneTimeItemManager(this, _itemGroupManager,channelId);
 			oneTimeItemManager.sendOneTimeRequest(itemName, responseMsgType);
+			oneTimeItemManager = null;
 //			ItemManager subscibeItemManager =  subscribeItemManagerMap.get(itemName);
 //			subscibeItemManager.sendInitialDocument(channelId);
 			return null;
@@ -356,8 +352,14 @@ public class QSConsumerProxy{
 			//一个产品对应一个itemManager对象
 			itemManager=SystemConstant.springContext.getBean("itemManager",ItemManager.class);
 			subscribeItemManagerMap.put(itemName, itemManager);
+			//load filter.
+			EngineLine engineLine = new EngineLine();
+			if(FilterManager.filterMap.containsKey(itemName)){
+				engineLine.addEngine("filedFilter", FilterManager.filterMap.get(itemName));
+			}
 			// Send requests
 			itemManager.sendRicRequest(itemName, responseMsgType);
+			EngineLinerManager.engineLineCache.put(itemName, engineLine);
 			return itemManager;
 		}
 		

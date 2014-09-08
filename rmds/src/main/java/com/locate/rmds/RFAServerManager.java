@@ -23,7 +23,7 @@ public class RFAServerManager extends Thread {
 	private static boolean connectedDataSource;
 	@PostConstruct
 	public void init() {
-		if(FilterManager.filterIsAffect.endsWith(SystemConstant.BOOLEAN_TRUE)){
+		if(FilterManager.filterIsAffect.equals(SystemConstant.BOOLEAN_TRUE)){
 			FilterManager.loadFilter();
 		}
 		// Startup and initialization

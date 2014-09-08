@@ -6,6 +6,8 @@ import com.locate.bridge.GateWayResponser;
 import com.locate.common.model.LocateUnionMessage;
 import com.locate.common.utils.NetTimeUtil;
 import com.locate.rmds.QSConsumerProxy;
+import com.locate.rmds.engine.EngineLine;
+import com.locate.rmds.engine.filter.EngineLinerManager;
 import com.locate.rmds.parser.LocateOMMParser;
 import com.locate.rmds.statistic.LogTool;
 import com.locate.rmds.statistic.OutputFormatter;
@@ -145,7 +147,7 @@ public class OneTimeItemManager implements Client
 
         OMMItemEvent ommItemEvent = (OMMItemEvent) event;
         OMMMsg respMsg = ommItemEvent.getMsg();
-        LocateUnionMessage locateMessage = locateGenericOMMParser.parse(respMsg, clientRequestItemName);
+        final LocateUnionMessage locateMessage = locateGenericOMMParser.parse(respMsg, clientRequestItemName);
         locateMessage.setStartTime(startTime);
         // Status response can contain group id
 		if ((respMsg.getMsgType() == OMMMsg.MsgType.REFRESH_RESP)
@@ -154,8 +156,7 @@ public class OneTimeItemManager implements Client
 			Handle itemHandle = event.getHandle();
 			_itemGroupManager.applyGroup(itemHandle, group);
 		}
-        
-		GateWayResponser.sendSnapShotToChannel(locateMessage, channelID);
+		EngineLinerManager.engineLineCache.get(clientRequestItemName).applyStrategy(locateMessage,channelID);
         if(locateMessage != null){
         	long endTime = NetTimeUtil.getCurrentNetTime();
         	_logger.info("publish Item "+clientRequestItemName+" use time "+(endTime-startTime)+" microseconds");

@@ -11,6 +11,8 @@ import com.locate.common.datacache.RmdsDataCache;
 import com.locate.common.model.LocateUnionMessage;
 import com.locate.common.utils.NetTimeUtil;
 import com.locate.rmds.QSConsumerProxy;
+import com.locate.rmds.engine.EngineLine;
+import com.locate.rmds.engine.filter.EngineLinerManager;
 import com.locate.rmds.parser.face.IOmmParser;
 import com.locate.rmds.processer.face.IProcesser;
 import com.locate.rmds.statistic.CycleStatistics;
@@ -230,7 +232,8 @@ public class ItemManager implements Client,IProcesser
 
         OMMItemEvent ommItemEvent = (OMMItemEvent) event;
         OMMMsg respMsg = ommItemEvent.getMsg();
-        LocateUnionMessage locateMessage = ommParser.parse(respMsg, clientRequestItemName);
+        //可以考虑将以下的动作放入到
+        final LocateUnionMessage locateMessage = ommParser.parse(respMsg, clientRequestItemName);
         locateMessage.setStartTime(startTime);
         //将信息开始处理时间加入到消息中
 //		XmlMessageUtil.addStartHandleTime(responseMsg, startTime);
@@ -252,8 +255,7 @@ public class ItemManager implements Client,IProcesser
 			Handle itemHandle = event.getHandle();
 			_itemGroupManager.applyGroup(itemHandle, group);
 		}
-        
-		GateWayResponser.sentMrketPriceToSubsribeChannel(locateMessage);
+		EngineLinerManager.engineLineCache.get(clientRequestItemName).applyStrategy(locateMessage);
 		long endTime = NetTimeUtil.getCurrentNetTime();
 		_logger.info("publish Item " + clientRequestItemName + " use time " + (endTime - startTime) + " microseconds");
         
@@ -415,5 +417,4 @@ public class ItemManager implements Client,IProcesser
 	public void setItemHandle(Handle itemHandle) {
 		this.itemHandle = itemHandle;
 	}
-	
 }
