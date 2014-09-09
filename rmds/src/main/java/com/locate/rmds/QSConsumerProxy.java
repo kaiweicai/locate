@@ -44,6 +44,7 @@ import com.reuters.rfa.common.Handle;
 import com.reuters.rfa.config.ConfigDb;
 import com.reuters.rfa.dictionary.DictionaryException;
 import com.reuters.rfa.dictionary.FieldDictionary;
+import com.reuters.rfa.internal.dictionary.FieldNameExchanger;
 import com.reuters.rfa.omm.OMMAttribInfo;
 import com.reuters.rfa.omm.OMMEncoder;
 import com.reuters.rfa.omm.OMMMsg;
@@ -167,6 +168,7 @@ public class QSConsumerProxy{
 			dictionary = initializeDictionary(fieldDictionaryFilename, enumDictionaryFilename);
 			_loadedDictionaries.add("RWFFld");
 			_loadedDictionaries.add("RWFEnum");
+			FieldNameExchanger.loadFieldExchange();
 		} catch (DictionaryException ex) {
 			logger.error("ERROR: Unable to initialize dictionaries");
 			logger.error(ex.getMessage());
@@ -175,7 +177,7 @@ public class QSConsumerProxy{
 			cleanup();
 			return;
 		}
-
+		
 		// Create a OMMPool.
 		_pool = OMMPool.create();
 
@@ -333,7 +335,7 @@ public class QSConsumerProxy{
 	public ItemManager itemRequests(String itemName, byte responseMsgType,int channelId) {
 		//如果ITEM以PT开头,则表示为客户自定义的产品,需要实施产品策略.以后策略添加在这个位置.
 		if(itemName.startsWith("PT")){
-			
+			itemName.endsWith("CYN");
 		}
 		Map<String,IProcesser> subscribeItemManagerMap = RmdsDataCache.RIC_ITEMMANAGER_Map;
 		boolean needRenewSubscribeItem=checkSubscribeStatus(itemName);

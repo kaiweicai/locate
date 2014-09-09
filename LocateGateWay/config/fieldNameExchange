@@ -26,8 +26,8 @@
 27,name:ASK_2,long name:ASK 2,type:8,
 28,name:NEWS,long name:NEWS,type:19,
 29,name:NEWS_TIME,long name:NEWS TIME,type:10,
-30,name:BIDSIZE,long name:BID SIZE,type:8,
-31,name:ASKSIZE,long name:ASK SIZE,type:8,
+30,name:BIDSIZE,long name:BID SIZE,type:8,买量
+31,name:ASKSIZE,long name:ASK SIZE,type:8,卖量
 32,name:ACVOL_1,long name:VOL ACCUMULATED,type:8,
 34,name:EARNINGS,long name:EARNINGS,type:8,
 35,name:YIELD,long name:YIELD,type:8,

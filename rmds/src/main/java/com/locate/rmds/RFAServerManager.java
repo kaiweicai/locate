@@ -27,7 +27,6 @@ public class RFAServerManager extends Thread {
 		if(FilterManager.filterIsAffect.equals(SystemConstant.BOOLEAN_TRUE)){
 			FilterManager.loadFilter();
 		}
-		FieldNameExchanger.loadFieldExchange();
 		// Startup and initialization
 //		demo.init();
 		// Login
