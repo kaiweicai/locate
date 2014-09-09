@@ -24,6 +24,7 @@ import com.locate.rmds.client.RFAUserManagement;
 import com.locate.rmds.dict.DirectoryClient;
 import com.locate.rmds.dict.RDMServiceInfo;
 import com.locate.rmds.dict.ServiceInfo;
+import com.locate.rmds.engine.CurrencyEngine;
 import com.locate.rmds.engine.EngineLine;
 import com.locate.rmds.engine.filter.EngineLinerManager;
 import com.locate.rmds.engine.filter.FilterManager;
@@ -333,9 +334,19 @@ public class QSConsumerProxy{
 
 	// This method utilizes ItemManager class to request items
 	public ItemManager itemRequests(String itemName, byte responseMsgType,int channelId) {
+		EngineLine engineLine = EngineLinerManager.engineLineCache.get(itemName);
+		if(engineLine == null){
+			engineLine= new EngineLine();
+			EngineLinerManager.engineLineCache.put(itemName, engineLine);
+		}
 		//如果ITEM以PT开头,则表示为客户自定义的产品,需要实施产品策略.以后策略添加在这个位置.
-		if(itemName.startsWith("PT")){
-			itemName.endsWith("CYN");
+		if(itemName.startsWith("PT_")){
+			String customerItemName=itemName;
+			itemName=itemName.split("_")[1];
+			if(itemName.endsWith("_CYN")){
+				CurrencyEngine.currency = Float.parseFloat(SystemProperties.getProperties(SystemProperties.CUR_US_CYN));
+				engineLine.addEngine("currencyEngine", new CurrencyEngine());
+			}
 		}
 		Map<String,IProcesser> subscribeItemManagerMap = RmdsDataCache.RIC_ITEMMANAGER_Map;
 		boolean needRenewSubscribeItem=checkSubscribeStatus(itemName);
@@ -355,13 +366,11 @@ public class QSConsumerProxy{
 			itemManager=SystemConstant.springContext.getBean("itemManager",ItemManager.class);
 			subscribeItemManagerMap.put(itemName, itemManager);
 			//load filter.
-			EngineLine engineLine = new EngineLine();
 			if(FilterManager.filterMap.containsKey(itemName)){
 				engineLine.addEngine("filedFilter", FilterManager.filterMap.get(itemName));
 			}
 			// Send requests
 			itemManager.sendRicRequest(itemName, responseMsgType);
-			EngineLinerManager.engineLineCache.put(itemName, engineLine);
 			return itemManager;
 		}
 		

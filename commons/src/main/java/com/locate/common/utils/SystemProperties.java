@@ -47,6 +47,8 @@ public class SystemProperties {
 	//filter config
 	public static final String FILTER_CONFIG_NAME = "filter.config.name";
 	public static final String FILTER_AFFECT = "filter.affect";
+
+	public static final String CUR_US_CYN = "cur_us_cyn";
 	
 	public static void init(String propertiesFile) {
 		// InputStream inputStream = this.getClass().getResourceAsStream(propertiesFile);
