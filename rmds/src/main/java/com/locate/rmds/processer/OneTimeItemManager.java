@@ -1,5 +1,8 @@
 package com.locate.rmds.processer;
 
+import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import com.locate.bridge.GateWayResponser;
@@ -8,7 +11,9 @@ import com.locate.common.utils.NetTimeUtil;
 import com.locate.rmds.QSConsumerProxy;
 import com.locate.rmds.engine.EngineLine;
 import com.locate.rmds.engine.filter.EngineLinerManager;
+import com.locate.rmds.engine.filter.FilterManager;
 import com.locate.rmds.parser.LocateOMMParser;
+import com.locate.rmds.processer.face.IProcesser;
 import com.locate.rmds.statistic.LogTool;
 import com.locate.rmds.statistic.OutputFormatter;
 import com.reuters.rfa.common.Client;
@@ -44,7 +49,7 @@ import com.reuters.rfa.session.omm.OMMSolicitedItemEvent;
  * @author Cloud.Wei
  *
  */
-public class OneTimeItemManager implements Client
+public class OneTimeItemManager extends IProcesser implements Client
 {
 	Handle  itemHandle;
 	QSConsumerProxy _mainApp;
@@ -74,7 +79,8 @@ public class OneTimeItemManager implements Client
     }
     
  // creates streaming request messages for items and register them to RFA
-    public void sendOneTimeRequest(String pItemName,byte responseMsgType)
+    @Override
+    public void sendRicRequest(String pItemName,byte responseMsgType)
     {
     	this.responseMessageType = responseMsgType;
     	_logger.info(_className+".sendOneTimeRequest: Sending item("+pItemName+") requests to server ");
@@ -156,7 +162,12 @@ public class OneTimeItemManager implements Client
 			Handle itemHandle = event.getHandle();
 			_itemGroupManager.applyGroup(itemHandle, group);
 		}
+		List<Integer> fieldFilterList = FilterManager.filterMap.get(clientRequestItemName);
+		this.filedFiltrMessage(locateMessage, fieldFilterList);
 		EngineLinerManager.engineLineCache.get(clientRequestItemName).applyStrategy(locateMessage,channelID);
+		if(!StringUtils.isBlank(derivactiveItemName)){
+			EngineLinerManager.engineLineCache.get(derivactiveItemName).applyStrategy(locateMessage.clone());
+		}
         if(locateMessage != null){
         	long endTime = NetTimeUtil.getCurrentNetTime();
         	_logger.info("publish Item "+clientRequestItemName+" use time "+(endTime-startTime)+" microseconds");
@@ -208,4 +219,9 @@ public class OneTimeItemManager implements Client
                 break;
         }
     }
+
+	@Override
+	public void closeRequest() {
+		//do nothing
+	}
 }

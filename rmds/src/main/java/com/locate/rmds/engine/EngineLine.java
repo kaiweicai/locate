@@ -54,7 +54,8 @@ public class EngineLine {
 		Callable<LocateUnionMessage> engineTask = new Callable<LocateUnionMessage>() {
 			@Override
 			public LocateUnionMessage call() throws Exception {
-				for (final Engine engine : swapEngineMap.values()) {
+				for (final String engineName : swapEngineMap.keySet()) {
+					Engine engine=swapEngineMap.get(engineName);
 					engine.doEngine(locateMessage);
 				}
 				GateWayResponser.sentMrketPriceToSubsribeChannel(locateMessage);
@@ -69,7 +70,8 @@ public class EngineLine {
 			Callable<LocateUnionMessage> engineTask = new Callable<LocateUnionMessage>() {
 				@Override
 				public LocateUnionMessage call() throws Exception {
-					for (final Engine engine : swapEngineMap.values()) {
+					for (final String engineName : swapEngineMap.keySet()) {
+						Engine engine=swapEngineMap.get(engineName);
 						engine.doEngine(locateMessage);
 					}
 					GateWayResponser.sendSnapShotToChannel(locateMessage, channelId);

@@ -340,13 +340,12 @@ public class QSConsumerProxy{
 			EngineLinerManager.engineLineCache.put(itemName, engineLine);
 		}
 		//如果ITEM以PT开头,则表示为客户自定义的产品,需要实施产品策略.以后策略添加在这个位置.
-		if(itemName.startsWith("PT_")){
-			String customerItemName=itemName;
+		String derivactiveItemName = "";
+		if(itemName.startsWith("PT_")&&itemName.endsWith("_CYN")){
+			derivactiveItemName = itemName;
 			itemName=itemName.split("_")[1];
-			if(itemName.endsWith("_CYN")){
 				CurrencyEngine.currency = Float.parseFloat(SystemProperties.getProperties(SystemProperties.CUR_US_CYN));
 				engineLine.addEngine("currencyEngine", new CurrencyEngine());
-			}
 		}
 		Map<String,IProcesser> subscribeItemManagerMap = RmdsDataCache.RIC_ITEMMANAGER_Map;
 		boolean needRenewSubscribeItem=checkSubscribeStatus(itemName);
@@ -356,7 +355,8 @@ public class QSConsumerProxy{
 			 * 已经将该用户加入到订阅该产品的用户组中.所以该用户能够收到该产品的更新信息.
 			 */
 			OneTimeItemManager oneTimeItemManager =  new OneTimeItemManager(this, _itemGroupManager,channelId);
-			oneTimeItemManager.sendOneTimeRequest(itemName, responseMsgType);
+			oneTimeItemManager.sendRicRequest(itemName, responseMsgType);
+			oneTimeItemManager.setDerivactiveItemName(derivactiveItemName);
 			oneTimeItemManager = null;
 //			ItemManager subscibeItemManager =  subscribeItemManagerMap.get(itemName);
 //			subscibeItemManager.sendInitialDocument(channelId);
@@ -366,11 +366,12 @@ public class QSConsumerProxy{
 			itemManager=SystemConstant.springContext.getBean("itemManager",ItemManager.class);
 			subscribeItemManagerMap.put(itemName, itemManager);
 			//load filter.
-			if(FilterManager.filterMap.containsKey(itemName)){
-				engineLine.addEngine("filedFilter", FilterManager.filterMap.get(itemName));
-			}
+//			if(FilterManager.filterMap.containsKey(itemName)){
+//				engineLine.addEngine("filedFilter", FilterManager.filterMap.get(itemName));
+//			}
 			// Send requests
 			itemManager.sendRicRequest(itemName, responseMsgType);
+			itemManager.setDerivactiveItemName(derivactiveItemName);
 			return itemManager;
 		}
 		
@@ -445,11 +446,11 @@ public class QSConsumerProxy{
 		}
 		String[] rics = ricArray.split(",");
 		for (String ric : rics) {
-			itemRequests(ric);
+			itemPersistentRequests(ric);
 		}
 	}
 	
-	public void itemRequests(String ric) {
+	public void itemPersistentRequests(String ric) {
 		// Initialize item manager for item domains
 		IProcesser persistentItemManager = SystemConstant.springContext.getBean("persistentItemManager",PersistentItemManager.class);
 		// Send requests

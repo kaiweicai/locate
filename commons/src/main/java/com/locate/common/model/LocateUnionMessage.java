@@ -23,10 +23,11 @@ import net.sf.json.JSONObject;
 
 import org.dom4j.io.DocumentResult;
 
+import com.locate.common.LocateException;
 import com.locate.common.SystemConstant;
 
 @XmlRootElement(name="rmds")
-public class LocateUnionMessage {
+public class LocateUnionMessage implements Cloneable{
 	@XmlAttribute(name="RIC")
 	private String ric;//itemName将作为person的的一个属性
 	@XmlElement
@@ -54,6 +55,28 @@ public class LocateUnionMessage {
 	
 	@XmlElement(name="Field")
 	private List<String[]> payLoadSet = new ArrayList<String[]>();
+	
+	@Override
+	public LocateUnionMessage clone(){
+		LocateUnionMessage message = new LocateUnionMessage();
+		try {
+			message = (LocateUnionMessage)super.clone();
+			List<String[]> payLoadList = this.getPayLoadSet();
+			List<String[]> clienPayLoadList = new ArrayList<String[]>();
+			for(String[] payload:payLoadList){
+				String[] clonePayload = new String[4];
+				clonePayload[0]=payload[0];
+				clonePayload[1]=payload[1];
+				clonePayload[2]=payload[2];
+				clonePayload[3]=payload[3];
+				clienPayLoadList.add(clonePayload);
+			}
+			message.setPayLoadSet(clienPayLoadList);
+		} catch (CloneNotSupportedException e) {
+			throw new LocateException("clone failed.",e);
+		}
+		return message;
+	}
 	
 	public LocateUnionMessage() {
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

@@ -1,7 +1,10 @@
 package com.locate.rmds.processer;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -11,8 +14,8 @@ import com.locate.common.datacache.RmdsDataCache;
 import com.locate.common.model.LocateUnionMessage;
 import com.locate.common.utils.NetTimeUtil;
 import com.locate.rmds.QSConsumerProxy;
-import com.locate.rmds.engine.EngineLine;
 import com.locate.rmds.engine.filter.EngineLinerManager;
+import com.locate.rmds.engine.filter.FilterManager;
 import com.locate.rmds.parser.face.IOmmParser;
 import com.locate.rmds.processer.face.IProcesser;
 import com.locate.rmds.statistic.CycleStatistics;
@@ -53,7 +56,7 @@ import com.reuters.rfa.session.omm.OMMSolicitedItemEvent;
  *
  */
 @Service("itemManager")@Scope("prototype")
-public class ItemManager implements Client,IProcesser
+public class ItemManager extends IProcesser implements Client
 {
 	Handle  itemHandle;
 	@Resource
@@ -63,8 +66,9 @@ public class ItemManager implements Client,IProcesser
     ItemGroupManager _itemGroupManager;
     @Resource(name="locateOMMParser")
     IOmmParser ommParser;
-    public String clientRequestItemName;
-//    public String clientName;
+    private String clientRequestItemName;
+
+	//    public String clientName;
     public byte responseMessageType;
 
     private	String	_className = "ItemManager";
@@ -255,10 +259,14 @@ public class ItemManager implements Client,IProcesser
 			Handle itemHandle = event.getHandle();
 			_itemGroupManager.applyGroup(itemHandle, group);
 		}
+		List<Integer> fieldFilterList = FilterManager.filterMap.get(clientRequestItemName);
+		this.filedFiltrMessage(locateMessage, fieldFilterList);
 		EngineLinerManager.engineLineCache.get(clientRequestItemName).applyStrategy(locateMessage);
+		if(!StringUtils.isBlank(derivactiveItemName)){
+			EngineLinerManager.engineLineCache.get(derivactiveItemName).applyStrategy(locateMessage.clone());
+		}
 		long endTime = NetTimeUtil.getCurrentNetTime();
 		_logger.info("publish Item " + clientRequestItemName + " use time " + (endTime - startTime) + " microseconds");
-        
     }
     
     public void sendInitialDocument(int channelId) {

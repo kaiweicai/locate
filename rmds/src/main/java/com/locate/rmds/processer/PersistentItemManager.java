@@ -57,7 +57,7 @@ import com.reuters.rfa.session.omm.OMMSolicitedItemEvent;
  */
 @Service("persistentItemManager")
 @Scope("prototype")
-public class PersistentItemManager implements Client,IProcesser {
+public class PersistentItemManager extends IProcesser implements Client {
 	Handle  itemHandle;
 	@Resource
 	QSConsumerProxy _mainApp;

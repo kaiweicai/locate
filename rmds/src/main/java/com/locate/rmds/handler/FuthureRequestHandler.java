@@ -31,7 +31,7 @@ public class FuthureRequestHandler extends BaseRequestHandler {
 		for(String itemName : itemNames){
 			DataBaseCache._clientResponseType.put(itemName, responseMsgType);
 			logger.info("Register client request item "+itemName);
-			ItemManager itemManager = mainApp.itemRequests(itemName, responseMsgType,channelId);
+			mainApp.itemRequests(itemName, responseMsgType,channelId);
 //			regiestItemRequestManager(itemName, clientInstance);
 //			regiestClientRequestItem(clientName,itemName);
 		}
