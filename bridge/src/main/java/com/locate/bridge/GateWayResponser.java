@@ -45,10 +45,15 @@ public class GateWayResponser {
 	public static void sentMrketPriceToSubsribeChannel(LocateUnionMessage locateMessage) {
 		String itemName = locateMessage.getRic();
 		ChannelGroup channelGroup = GateChannelCache.itemNameChannelMap.get(itemName);
-		channelGroup.write(locateMessage);
+		if(channelGroup==null){
+			logger.error("channel can not find ! The itemName"+itemName);
+			return;
+		}
 		if(channelGroup.size()==0){
 			logger.error("channel has been clean,but the ric not be register! The itemName"+itemName);
+			return;
 		}
+		channelGroup.write(locateMessage);
 		logger.info("send message is :" + locateMessage + " to order group" + channelGroup.getName());
 	}
 

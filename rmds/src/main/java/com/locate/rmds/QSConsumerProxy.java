@@ -19,6 +19,7 @@ import org.springframework.stereotype.Component;
 import com.locate.common.LocateMessageTypes;
 import com.locate.common.SystemConstant;
 import com.locate.common.datacache.RmdsDataCache;
+import com.locate.common.utils.DerivedUtils;
 import com.locate.common.utils.SystemProperties;
 import com.locate.rmds.client.RFAUserManagement;
 import com.locate.rmds.dict.DirectoryClient;
@@ -334,18 +335,23 @@ public class QSConsumerProxy{
 
 	// This method utilizes ItemManager class to request items
 	public ItemManager itemRequests(String itemName, byte responseMsgType,int channelId) {
-		EngineLine engineLine = EngineLinerManager.engineLineCache.get(itemName);
-		if(engineLine == null){
-			engineLine= new EngineLine();
-			EngineLinerManager.engineLineCache.put(itemName, engineLine);
-		}
 		//如果ITEM以PT开头,则表示为客户自定义的产品,需要实施产品策略.以后策略添加在这个位置.
 		String derivactiveItemName = "";
-		if(itemName.startsWith("PT_")&&itemName.endsWith("_CYN")){
+		if (itemName.startsWith(DerivedUtils.PRICE_TECH_HEAD) && itemName.endsWith(DerivedUtils.RMB_END)) {
 			derivactiveItemName = itemName;
-			itemName=itemName.split("_")[1];
-				CurrencyEngine.currency = Float.parseFloat(SystemProperties.getProperties(SystemProperties.CUR_US_CYN));
-				engineLine.addEngine("currencyEngine", new CurrencyEngine());
+			EngineLine engineLine = EngineLinerManager.engineLineCache.get(derivactiveItemName);
+			if(engineLine == null){
+				engineLine= new EngineLine();
+				EngineLinerManager.engineLineCache.put(derivactiveItemName, engineLine);
+			}
+			itemName = DerivedUtils.genOriginRic(itemName);
+			CurrencyEngine.currency = Float.parseFloat(SystemProperties.getProperties(SystemProperties.CUR_US_CYN));
+			engineLine.addEngine("currencyEngine", new CurrencyEngine());
+		}
+		EngineLine originalEngineLine = EngineLinerManager.engineLineCache.get(itemName);
+		if(originalEngineLine == null){
+			originalEngineLine= new EngineLine();
+			EngineLinerManager.engineLineCache.put(itemName, originalEngineLine);
 		}
 		Map<String,IProcesser> subscribeItemManagerMap = RmdsDataCache.RIC_ITEMMANAGER_Map;
 		boolean needRenewSubscribeItem=checkSubscribeStatus(itemName);
@@ -369,9 +375,9 @@ public class QSConsumerProxy{
 //			if(FilterManager.filterMap.containsKey(itemName)){
 //				engineLine.addEngine("filedFilter", FilterManager.filterMap.get(itemName));
 //			}
+			itemManager.setDerivactiveItemName(derivactiveItemName);
 			// Send requests
 			itemManager.sendRicRequest(itemName, responseMsgType);
-			itemManager.setDerivactiveItemName(derivactiveItemName);
 			return itemManager;
 		}
 		

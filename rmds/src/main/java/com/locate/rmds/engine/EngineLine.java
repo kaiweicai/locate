@@ -62,7 +62,11 @@ public class EngineLine {
 				return locateMessage;
 			}
 		};
-		executeService.submit(engineTask);
+		try{
+			executeService.submit(engineTask);
+		}catch(Exception e){
+			logger.error("ocurrer error !!!!",e);
+		}
 	}
 	
 	public void applyStrategy(final LocateUnionMessage locateMessage,final int channelId) {

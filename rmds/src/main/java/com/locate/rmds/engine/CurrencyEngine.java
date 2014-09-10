@@ -11,7 +11,7 @@ public class CurrencyEngine implements Engine {
 		List<String[]> payLoadList = message.getPayLoadSet();
 		for(String[] payLoad:payLoadList){
 			String id = payLoad[0];
-			if(id.equals("6")){
+			if(id.equals("6")||id.equals("25")){
 				float exchangValue=Float.parseFloat(payLoad[3])*currency;
 				payLoad[3]=""+exchangValue;
 			}

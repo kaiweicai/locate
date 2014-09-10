@@ -25,6 +25,7 @@ import org.dom4j.io.DocumentResult;
 
 import com.locate.common.LocateException;
 import com.locate.common.SystemConstant;
+import com.locate.common.utils.DerivedUtils;
 
 @XmlRootElement(name="rmds")
 public class LocateUnionMessage implements Cloneable{
@@ -61,6 +62,9 @@ public class LocateUnionMessage implements Cloneable{
 		LocateUnionMessage message = new LocateUnionMessage();
 		try {
 			message = (LocateUnionMessage)super.clone();
+			String ric = message.getRic();
+			ric=DerivedUtils.DerivesRic(ric);
+			message.setRic(ric);
 			List<String[]> payLoadList = this.getPayLoadSet();
 			List<String[]> clienPayLoadList = new ArrayList<String[]>();
 			for(String[] payload:payLoadList){
@@ -226,7 +230,7 @@ public class LocateUnionMessage implements Cloneable{
 			payLoad.deleteCharAt(payLoad.length()-1);
 			payLoad.append("]");
 		}
-		return "LocateUnionMessage [itemName=" + ric + ", startTime=" + startTime + ", generatetime="
+		return "LocateUnionMessage [ric=" + ric + ", startTime=" + startTime + ", generatetime="
 				+ generatetime + ", msgType=" + msgType + ", seqNumber=" + seqNumber + ", locateSeqNumber="
 				+ locateSeqNumber + ", state=" + state + ", streamingState=" + streamingState + ", dataingState="
 				+ dataingState + ", resultCode=" + resultCode + ", resultDes=" + resultDes + ", header="

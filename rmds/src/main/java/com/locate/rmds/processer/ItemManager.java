@@ -14,6 +14,7 @@ import com.locate.common.datacache.RmdsDataCache;
 import com.locate.common.model.LocateUnionMessage;
 import com.locate.common.utils.NetTimeUtil;
 import com.locate.rmds.QSConsumerProxy;
+import com.locate.rmds.engine.EngineLine;
 import com.locate.rmds.engine.filter.EngineLinerManager;
 import com.locate.rmds.engine.filter.FilterManager;
 import com.locate.rmds.parser.face.IOmmParser;
@@ -260,10 +261,12 @@ public class ItemManager extends IProcesser implements Client
 			_itemGroupManager.applyGroup(itemHandle, group);
 		}
 		List<Integer> fieldFilterList = FilterManager.filterMap.get(clientRequestItemName);
-		this.filedFiltrMessage(locateMessage, fieldFilterList);
-		EngineLinerManager.engineLineCache.get(clientRequestItemName).applyStrategy(locateMessage);
+		filedFiltrMessage(locateMessage, fieldFilterList);
+//		EngineLine engineLine = EngineLinerManager.engineLineCache.get(clientRequestItemName);
+//		engineLine.applyStrategy(locateMessage);
+		LocateUnionMessage derivLocateMessage=locateMessage.clone();
 		if(!StringUtils.isBlank(derivactiveItemName)){
-			EngineLinerManager.engineLineCache.get(derivactiveItemName).applyStrategy(locateMessage.clone());
+			EngineLinerManager.engineLineCache.get(derivactiveItemName).applyStrategy(derivLocateMessage);
 		}
 		long endTime = NetTimeUtil.getCurrentNetTime();
 		_logger.info("publish Item " + clientRequestItemName + " use time " + (endTime - startTime) + " microseconds");

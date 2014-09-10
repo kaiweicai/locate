@@ -195,7 +195,8 @@ public class RFApplication extends JFrame {
 	
 	private JTextField getServerAddressTextField(Rectangle r){
 		if(serverAddressTextField == null){
-			serverAddressTextField = new JTextField("61.144.244.173");
+//			serverAddressTextField = new JTextField("61.144.244.173");
+			serverAddressTextField = new JTextField("127.0.0.1");
 		}
 		serverAddressTextField.setBounds(r);
 		return serverAddressTextField;
@@ -231,7 +232,7 @@ public class RFApplication extends JFrame {
 	public JTextField getRicTextField(Rectangle r){
 		if(ricTextField == null){
 			ricTextField = new JTextField();
-			ricTextField.setText("MCU3=LX");
+			ricTextField.setText("PT_MCU3=LX_CYN");
 			ricTextField.setBounds(r);
 		}
 		return ricTextField;
@@ -523,7 +524,7 @@ public class RFApplication extends JFrame {
 			}
 			sBuilder.append("Client has been occure Exception. Please contact the developer! "+e);
 			logger.error("Client has been occure Exception. Please contact the developer!",e);
-			updateLog(sBuilder.toString());
+//			updateLog(sBuilder.toString());
 			serverBar.setStatusFixed("Client has been occure Exception. Please contact the developer!");
 		}
 		
