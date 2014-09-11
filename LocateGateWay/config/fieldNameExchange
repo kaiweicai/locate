@@ -1,37 +1,37 @@
 1,name:PROD_PERM,long name:PERMISSION,type:4,
 2,name:RDNDISPLAY,long name:DISPLAYTEMPLATE,type:2,
-3,name:DSPLY_NAME,long name:DISPLAY NAME,type:19,
+3,name:DSPLY_NAME,long name:DISPLAY NAME,type:19,Instr_Name
 4,name:RDN_EXCHID,long name:IDN EXCHANGE ID,type:14,
-5,name:TIMACT,long name:TIME OF UPDATE,type:10,
-6,name:TRDPRC_1,long name:LAST,type:8,
+5,name:TIMACT,long name:TIME OF UPDATE,type:10,ZD_Time
+6,name:TRDPRC_1,long name:LAST,type:8,Trade_Price1
 7,name:TRDPRC_2,long name:LAST 1,type:8,
 8,name:TRDPRC_3,long name:LAST 2,type:8,
 9,name:TRDPRC_4,long name:LAST 3,type:8,
 10,name:TRDPRC_5,long name:LAST 4,type:8,
 11,name:NETCHNG_1,long name:NET CHANGE,type:8,
-12,name:HIGH_1,long name:TODAY'S HIGH,type:8,
-13,name:LOW_1,long name:TODAY'S LOW,type:8,
+12,name:HIGH_1,long name:TODAY'S HIGH,type:8,ZD_MaxPrice
+13,name:LOW_1,long name:TODAY'S LOW,type:8,ZD_MinPrice
 14,name:PRCTCK_1,long name:TICK:UP/DOWN,type:14,
 15,name:CURRENCY,long name:CURRENCY,type:14,
-16,name:TRADE_DATE,long name:TRADE DATE,type:9,
+16,name:TRADE_DATE,long name:TRADE DATE,type:9,Trade_Day
 17,name:ACTIV_DATE,long name:ACTIVE DATE,type:9,
 18,name:TRDTIM_1,long name:TRADE TIME,type:10,
-19,name:OPEN_PRC,long name:OPENING PRICE,type:8,
-21,name:HST_CLOSE,long name:HISTORIC CLOSE,type:8,
-22,name:BID,long name:BID,type:8,买价
+19,name:OPEN_PRC,long name:OPENING PRICE,type:8,ZD_Open
+21,name:HST_CLOSE,long name:HISTORIC CLOSE,type:8,ZD_PrevClose
+22,name:BID,long name:BID,type:8,ZD_BuyPrice1
 23,name:BID_1,long name:BID 1,type:8,
 24,name:BID_2,long name:BID 2,type:8,
-25,name:ASK,long name:ASK,type:8,卖价
+25,name:ASK,long name:ASK,type:8,ZD_SellPrice1
 26,name:ASK_1,long name:ASK 1,type:8,
 27,name:ASK_2,long name:ASK 2,type:8,
 28,name:NEWS,long name:NEWS,type:19,
 29,name:NEWS_TIME,long name:NEWS TIME,type:10,
-30,name:BIDSIZE,long name:BID SIZE,type:8,买量
-31,name:ASKSIZE,long name:ASK SIZE,type:8,卖量
-32,name:ACVOL_1,long name:VOL ACCUMULATED,type:8,
+30,name:BIDSIZE,long name:BID SIZE,type:8,ZD_BuyCount1
+31,name:ASKSIZE,long name:ASK SIZE,type:8,ZD_SellCount1
+32,name:ACVOL_1,long name:VOL ACCUMULATED,type:8,ZD_Total
 34,name:EARNINGS,long name:EARNINGS,type:8,
 35,name:YIELD,long name:YIELD,type:8,
-36,name:PERATIO,long name:P.E.,type:8,
+36,name:PERATIO,long name:P.E.,type:8,ZD_PE
 37,name:DIVIDENDTP,long name:DIVIDEND TYPE,type:14,
 38,name:DIVPAYDATE,long name:DIVIDEND DATE,type:9,
 39,name:EXDIVDATE,long name:EX DIV DATE,type:9,
@@ -57,7 +57,7 @@
 61,name:CLOSE_ASK,long name:CLOSE ASK,type:8,
 62,name:LOCHIGH,long name:CNTR LIFE HIGH,type:8,
 63,name:LOCLOW,long name:CNTR LIFE LOW,type:8,
-64,name:OPINT_1,long name:OPEN INTEREST,type:8,
+64,name:OPINT_1,long name:OPEN INTEREST,type:8,ZD_OpenInt
 65,name:OPINTNC,long name:OPN INT NETCHG,type:8,
 66,name:STRIKE_PRC,long name:STRIKE PRICE,type:8,
 67,name:EXPIR_DATE,long name:EXPIRE DATE,type:9,
@@ -360,11 +360,11 @@
 376,name:INSPRC,long name:INSERT PRICE,type:8,
 377,name:INSVOL,long name:INSERT VOLUME,type:8,
 378,name:INSCOND,long name:INSERT PRC TYPE,type:14,
-379,name:SALTIM,long name:LAST TIME,type:10,
+379,name:SALTIM,long name:LAST TIME,type:10,SALETIME
 380,name:TNOVER_SC,long name:TURNOVER SCALE,type:14,
 381,name:PARITY99,long name:PARITY >= 100,type:8,
 382,name:PARITY100,long name:PARITY < 100,type:8,
-383,name:HST_VOL,long name:VOL ACC 2,type:8,
+383,name:HST_VOL,long name:VOL ACC 2,type:8,ZD_PreOpenInt
 384,name:SESS_HIFLG,long name:SESSION HI FLAG,type:14,
 385,name:SESS_LOFLG,long name:SESSION LOW FLAG,type:14,
 386,name:SSPRNG1,long name:SSP RANGE 1,type:8,
@@ -374,7 +374,7 @@
 390,name:RSMRNG2,long name:RSM RANGE 2,type:8,
 391,name:RSMRNGTP,long name:RESUMPTION TYPE,type:14,
 392,name:VOL_DATE,long name:VOLUME DATE,type:9,
-393,name:PRIMACT_1,long name:PRIM ACT 1,type:8,
+393,name:PRIMACT_1,long name:PRIM ACT 1,type:8,ZD_NewPrice
 394,name:PRIMACT_2,long name:PRIM ACT 2,type:8,
 395,name:PRIMACT_3,long name:PRIM ACT 3,type:8,
 396,name:PRIMACT_4,long name:PRIM ACT 4,type:8,

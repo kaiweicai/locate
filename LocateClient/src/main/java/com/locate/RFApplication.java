@@ -518,7 +518,7 @@ public class RFApplication extends JFrame {
 			if(e instanceof ConnectException||e instanceof ClosedChannelException){
 				sBuilder.append("Connection refused! please check the server info!");
 				logger.error("Connection refused! please check the server info!",e);
-				updateLog(sBuilder.toString());
+				updateLog(sBuilder);
 				serverBar.setStatusFixed("Connection refused! please check the server info!");
 				return;
 			}
@@ -585,7 +585,8 @@ public class RFApplication extends JFrame {
 			
 			// String content = response.asXML();
 			sBuilder.append("Received server's  message : " + message+"\n");
-			updateLog(sBuilder.toString());
+			sBuilder.ensureCapacity(100);
+			updateLog(sBuilder);
 		}
 		
 		private void updateMarketPriceTable(TableModel tableModel,LocateUnionMessage message) {
@@ -616,14 +617,17 @@ public class RFApplication extends JFrame {
 		@Override
 		public void handleDisconnected() {
 			sBuilder.append("Locate Server disconnted!!! ");
-			updateLog(sBuilder.toString());
+			updateLog(sBuilder);
 			serverBar.setStatusFixed(sBuilder.toString());
 			System.out.println("Locate Server disconnted!!! ");			
 		}
 	}
 	
-	public void updateLog(String logContent){
-		showLog.setText(logContent);
+	public void updateLog(StringBuilder log){
+		if(log.length()>6000){
+			this.sBuilder=log.delete(0 , log.length()-6000);
+		}
+		showLog.setText(log.toString());
 	}
 	
 	class RedRenderer implements TableCellRenderer {
