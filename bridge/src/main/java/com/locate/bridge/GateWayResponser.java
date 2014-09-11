@@ -83,10 +83,15 @@ public class GateWayResponser {
 	public static void notifyAllCustomersStateChange(LocateUnionMessage locateMessage) {
 		String itemName = locateMessage.getRic();
 		ChannelGroup channelGroup = GateChannelCache.itemNameChannelMap.get(itemName);
-		channelGroup.write(locateMessage);
-		if(channelGroup.size()==0){
-			logger.error("channel has been clean,but the ric not be register! The itemName"+itemName);
+		if(channelGroup==null){
+			logger.warn("channel group is null!");
+			return;
 		}
+		if(channelGroup.size()==0){
+			logger.warn("channel has been clean,but the ric not be register! The itemName"+itemName);
+			return;
+		}
+		channelGroup.write(locateMessage);
 		logger.info("send message is :" + locateMessage + " to order group" + channelGroup.getName());
 	}
 }

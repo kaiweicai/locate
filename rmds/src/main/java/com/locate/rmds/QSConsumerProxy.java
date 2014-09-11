@@ -75,7 +75,6 @@ public class QSConsumerProxy{
 	protected RFALoginClient _loginClient;
 	@Resource
 	protected ItemGroupManager _itemGroupManager;
-	ItemManager itemManager;
 	protected OMMEncoder _encoder;
 	protected OMMPool _pool;
 	public String serviceName;
@@ -361,13 +360,16 @@ public class QSConsumerProxy{
 			 * 已经将该用户加入到订阅该产品的用户组中.所以该用户能够收到该产品的更新信息.
 			 */
 			OneTimeItemManager oneTimeItemManager =  new OneTimeItemManager(this, _itemGroupManager,channelId);
-			oneTimeItemManager.sendRicRequest(itemName, responseMsgType);
 			oneTimeItemManager.setDerivactiveItemName(derivactiveItemName);
+			//如果是衍生品是后面订阅的.需要将衍生品加入到itemManager,否则接收不到update的订阅信息.
+			subscribeItemManagerMap.get(itemName).setDerivactiveItemName(derivactiveItemName);
+			oneTimeItemManager.sendRicRequest(itemName, responseMsgType);
 			oneTimeItemManager = null;
 //			ItemManager subscibeItemManager =  subscribeItemManagerMap.get(itemName);
 //			subscibeItemManager.sendInitialDocument(channelId);
 			return null;
 		}else{//fist subscribe this RIC.
+			ItemManager itemManager = null;
 			//一个产品对应一个itemManager对象
 			itemManager=SystemConstant.springContext.getBean("itemManager",ItemManager.class);
 			subscribeItemManagerMap.put(itemName, itemManager);

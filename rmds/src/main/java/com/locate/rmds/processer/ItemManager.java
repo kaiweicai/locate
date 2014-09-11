@@ -246,6 +246,9 @@ public class ItemManager extends IProcesser implements Client
         if(respMsg.getMsgType()==OMMMsg.MsgType.STATUS_RESP && (respMsg.has(OMMMsg.HAS_STATE))){
         	ommParser.handelLocateState(respMsg, locateMessage);
         	GateWayResponser.notifyAllCustomersStateChange(locateMessage);
+        	if(!StringUtils.isBlank(derivactiveItemName)){
+        		GateWayResponser.notifyAllCustomersStateChange(locateMessage.clone());
+        	}
 			_logger.warn("RFA server has new state. streamState:"+locateMessage.getStreamingState()+" datasstate "+locateMessage.getDataingState());
 			return;
         }
@@ -262,11 +265,10 @@ public class ItemManager extends IProcesser implements Client
 		}
 		List<Integer> fieldFilterList = FilterManager.filterMap.get(clientRequestItemName);
 		filedFiltrMessage(locateMessage, fieldFilterList);
-//		EngineLine engineLine = EngineLinerManager.engineLineCache.get(clientRequestItemName);
-//		engineLine.applyStrategy(locateMessage);
-		LocateUnionMessage derivLocateMessage=locateMessage.clone();
+		EngineLine engineLine = EngineLinerManager.engineLineCache.get(clientRequestItemName);
+		engineLine.applyStrategy(locateMessage);
 		if(!StringUtils.isBlank(derivactiveItemName)){
-			EngineLinerManager.engineLineCache.get(derivactiveItemName).applyStrategy(derivLocateMessage);
+			EngineLinerManager.engineLineCache.get(derivactiveItemName).applyStrategy(locateMessage.clone());
 		}
 		long endTime = NetTimeUtil.getCurrentNetTime();
 		_logger.info("publish Item " + clientRequestItemName + " use time " + (endTime - startTime) + " microseconds");

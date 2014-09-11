@@ -133,7 +133,7 @@ public class RFApplication extends JFrame {
 		
 		panel.add(getConnetedButton(new Rectangle(inputX,inputY+=30, 100, 15)));
 		panel.add(getRicLabel(new Rectangle(inputX,inputY+=30, 100, 15)));
-		panel.add(getRicTextField(new Rectangle(inputX+120,inputY, 100, 15)));
+		panel.add(getRicTextField(new Rectangle(inputX+120,inputY, 150, 15)));
 		panel.add(getOpenButton(new Rectangle(inputX,inputY+=30, 100, 15)));
 		panel.add(getTableScrollPane(new Rectangle(inputX, inputY+=30, 360, 400)));
 		panel.add(getUseTimeTextLabel(new Rectangle(inputX, 620, 500, 50)));

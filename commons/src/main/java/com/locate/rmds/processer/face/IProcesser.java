@@ -3,6 +3,8 @@ package com.locate.rmds.processer.face;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.locate.common.model.LocateUnionMessage;
 
 
@@ -34,7 +36,9 @@ public abstract class IProcesser{
 	}
 
 	public void setDerivactiveItemName(String derivactiveItemName) {
-		this.derivactiveItemName = derivactiveItemName;
+		if(!StringUtils.isBlank(derivactiveItemName)){
+			this.derivactiveItemName = derivactiveItemName;
+		}
 	}
 
 	public abstract void closeRequest();
