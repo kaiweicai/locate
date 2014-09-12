@@ -2,6 +2,7 @@ package com.locate.rmds.processer.face;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Future;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -10,6 +11,8 @@ import com.locate.common.model.LocateUnionMessage;
 
 public abstract class IProcesser{
 	protected String derivactiveItemName;
+    protected Future<LocateUnionMessage> engineFuture;
+    protected Future<LocateUnionMessage> derivedEngineFuture;
 	
 	public LocateUnionMessage filedFiltrMessage(LocateUnionMessage message,List<Integer> filterIdList){
 		if(filterIdList==null){

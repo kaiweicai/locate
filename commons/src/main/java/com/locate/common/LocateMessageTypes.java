@@ -154,6 +154,8 @@ public class LocateMessageTypes {
 			return "MsgType.RESPONSE_OPTION_LINK";
 		case 65:
 			return "MsgType.RESPONSE_INDEX_LINK";
+		case 127:
+			return "SERVER_STATE";
 		}
 		return "Unknown MsgType: " + paramByte;
 	}

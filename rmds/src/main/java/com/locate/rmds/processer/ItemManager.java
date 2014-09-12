@@ -1,6 +1,8 @@
 package com.locate.rmds.processer;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 import javax.annotation.Resource;
 
@@ -68,7 +70,6 @@ public class ItemManager extends IProcesser implements Client
     @Resource(name="locateOMMParser")
     IOmmParser ommParser;
     private String clientRequestItemName;
-
 	//    public String clientName;
     public byte responseMessageType;
 
@@ -266,9 +267,23 @@ public class ItemManager extends IProcesser implements Client
 		List<Integer> fieldFilterList = FilterManager.filterMap.get(clientRequestItemName);
 		filedFiltrMessage(locateMessage, fieldFilterList);
 		EngineLine engineLine = EngineLinerManager.engineLineCache.get(clientRequestItemName);
-		engineLine.applyStrategy(locateMessage);
+		if(engineFuture!=null){
+			try {
+				engineFuture.get();
+			} catch (InterruptedException | ExecutionException e) {
+				_logger.error("get the engine result error!",e);
+			}
+		}
+		engineFuture=engineLine.applyStrategy(locateMessage);
 		if(!StringUtils.isBlank(derivactiveItemName)){
-			EngineLinerManager.engineLineCache.get(derivactiveItemName).applyStrategy(locateMessage.clone());
+			if(derivedEngineFuture!=null){
+				try {
+					derivedEngineFuture.get();
+				} catch (InterruptedException | ExecutionException e) {
+					_logger.error("get the dervied engine result error!",e);
+				}
+			}
+			derivedEngineFuture=EngineLinerManager.engineLineCache.get(derivactiveItemName).applyStrategy(locateMessage.clone());
 		}
 		long endTime = NetTimeUtil.getCurrentNetTime();
 		_logger.info("publish Item " + clientRequestItemName + " use time " + (endTime - startTime) + " microseconds");

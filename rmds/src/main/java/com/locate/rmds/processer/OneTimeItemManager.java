@@ -1,6 +1,7 @@
 package com.locate.rmds.processer;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -164,9 +165,23 @@ public class OneTimeItemManager extends IProcesser implements Client
 		}
 		List<Integer> fieldFilterList = FilterManager.filterMap.get(clientRequestItemName);
 		this.filedFiltrMessage(locateMessage, fieldFilterList);
-		EngineLinerManager.engineLineCache.get(clientRequestItemName).applyStrategy(locateMessage,channelID);
+		if(engineFuture!=null){
+			try {
+				engineFuture.get();
+			} catch (InterruptedException | ExecutionException e) {
+				_logger.error("get the engine result error!",e);
+			}
+		}
+		engineFuture=EngineLinerManager.engineLineCache.get(clientRequestItemName).applyStrategy(locateMessage,channelID);
 		if(!StringUtils.isBlank(derivactiveItemName)){
-			EngineLinerManager.engineLineCache.get(derivactiveItemName).applyStrategy(locateMessage.clone());
+			if(derivedEngineFuture!=null){
+				try {
+					derivedEngineFuture.get();
+				} catch (InterruptedException | ExecutionException e) {
+					_logger.error("get the dervied engine result error!",e);
+				}
+			}
+			derivedEngineFuture = EngineLinerManager.engineLineCache.get(derivactiveItemName).applyStrategy(locateMessage.clone());
 		}
         if(locateMessage != null){
         	long endTime = NetTimeUtil.getCurrentNetTime();

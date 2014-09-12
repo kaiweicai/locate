@@ -2,20 +2,19 @@ package com.locate.common.utils;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.dom4j.Document;
-import org.junit.Test;
-
-import com.locate.common.model.LocateUnionMessage;
-
-import sun.misc.IOUtils;
 import net.sf.json.JSON;
 import net.sf.json.JSONObject;
 import net.sf.json.xml.XMLSerializer;
+
+import org.dom4j.Document;
+
+import sun.misc.IOUtils;
+
+import com.locate.common.model.LocateUnionMessage;
 
 public class JsonUtil {
 	/**

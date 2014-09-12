@@ -21,6 +21,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -30,6 +31,9 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.log4j.xml.DOMConfigurator;
 import org.jboss.netty.channel.SimpleChannelHandler;
+import org.pushingpixels.substance.api.SubstanceLookAndFeel;
+import org.pushingpixels.substance.api.skin.RavenSkin;
+import org.pushingpixels.substance.api.skin.SaharaSkin;
 
 import com.locate.client.gui.StatusBar;
 import com.locate.common.LocateException;
@@ -98,9 +102,6 @@ public class RFApplication extends JFrame {
 	private IClientConnector clientConnetor;
 
 	private static final String PREFERRED_LOOK_AND_FEEL = "javax.swing.plaf.metal.MetalLookAndFeel";
-
-	
-	
 	
 	public RFApplication() {
 		DOMConfigurator.configureAndWatch("config/log4j.xml");
@@ -113,34 +114,42 @@ public class RFApplication extends JFrame {
 
 
 	private void initComponents() {
-		
-		JPanel panel = new JPanel();
-		panel.setLayout(null);
-		JScrollPane sp = new JScrollPane(panel);
-//		sp.setLayout(mainGroupLayout);
-		getContentPane().add(sp);
-		int inputX = 550;
-		int inputY = 20;
-		panel.add(getCloseButton(new Rectangle(inputX+200, inputY, 100, 15)));
-		panel.add(getUserNameLabel(new Rectangle(inputX,inputY,100,12)));
-		panel.add(getUserNameTextField(new Rectangle(inputX+70,inputY,100,15)));
-		panel.add(getPasswordLabel(new Rectangle(inputX,inputY+=30, 100, 12)));
-		panel.add(getPasswordTextField(new Rectangle(inputX+70,inputY, 100, 15)));
-		panel.add(getServerAddressLabel(new Rectangle(inputX,inputY+=30, 100, 15)));
-		panel.add(getServerAddressTextField(new Rectangle(inputX+120,inputY, 100, 15)));
-		panel.add(getPortLabel(new Rectangle(inputX,inputY+=30, 100, 15)));
-		panel.add(getPortTextField(new Rectangle(inputX+120,inputY, 100, 15)));
-		
-		panel.add(getConnetedButton(new Rectangle(inputX,inputY+=30, 100, 15)));
-		panel.add(getRicLabel(new Rectangle(inputX,inputY+=30, 100, 15)));
-		panel.add(getRicTextField(new Rectangle(inputX+120,inputY, 150, 15)));
-		panel.add(getOpenButton(new Rectangle(inputX,inputY+=30, 100, 15)));
-		panel.add(getTableScrollPane(new Rectangle(inputX, inputY+=30, 360, 400)));
-		panel.add(getUseTimeTextLabel(new Rectangle(inputX, 620, 500, 50)));
-		panel.add(getJScrollPane0(new Rectangle(30, 10, 500, 560)));
-		panel.add(getStatusBar(new Rectangle(30, 570, 500, 50)));
-		panel.add(getServerBar(new Rectangle(30, 620, 500, 50)));
-		setSize(1024, 680);
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				SubstanceLookAndFeel.setSkin(new RavenSkin());
+				try {
+					setSize(1024, 720);
+					JPanel panel = new JPanel();
+					panel.setLayout(null);
+					JScrollPane sp = new JScrollPane(panel);
+//					sp.setLayout(mainGroupLayout);
+					getContentPane().add(sp);
+					int inputX = 550;
+					int inputY = 20;
+					panel.add(getCloseButton(new Rectangle(inputX+200, inputY, 100, 20)));
+					panel.add(getUserNameLabel(new Rectangle(inputX,inputY,100,20)));
+					panel.add(getUserNameTextField(new Rectangle(inputX+70,inputY,100,20)));
+					panel.add(getPasswordLabel(new Rectangle(inputX,inputY+=30, 100, 20)));
+					panel.add(getPasswordTextField(new Rectangle(inputX+70,inputY, 100, 20)));
+					panel.add(getServerAddressLabel(new Rectangle(inputX,inputY+=30, 100, 20)));
+					panel.add(getServerAddressTextField(new Rectangle(inputX+120,inputY, 100, 20)));
+					panel.add(getPortLabel(new Rectangle(inputX,inputY+=30, 100, 20)));
+					panel.add(getPortTextField(new Rectangle(inputX+120,inputY, 100, 20)));
+					
+					panel.add(getConnetedButton(new Rectangle(inputX,inputY+=30, 100, 20)));
+					panel.add(getRicLabel(new Rectangle(inputX,inputY+=30, 100, 20)));
+					panel.add(getRicTextField(new Rectangle(inputX+120,inputY, 150, 20)));
+					panel.add(getOpenButton(new Rectangle(inputX,inputY+=30, 100, 20)));
+					panel.add(getTableScrollPane(new Rectangle(inputX, inputY+=30, 360, 400)));
+					panel.add(getUseTimeTextLabel(new Rectangle(inputX, 620, 500, 50)));
+					panel.add(getJScrollPane0(new Rectangle(30, 10, 500, 560)));
+					panel.add(getStatusBar(new Rectangle(30, 570, 500, 50)));
+					panel.add(getServerBar(new Rectangle(30, 620, 500, 50)));
+				}catch(Exception e){
+					e.printStackTrace();
+				}
+			}
+		});
 	}
 	
 	public void initialPriceModel(){
@@ -264,6 +273,14 @@ public class RFApplication extends JFrame {
 			closeButton.setText("close");
 			closeButton.addMouseListener(new MouseAdapter() {
 				public void mouseClicked(MouseEvent event) {
+					
+					int flag = JOptionPane.showConfirmDialog(closeButton, "Sure to close?", "Care!",
+							JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
+					if (JOptionPane.YES_OPTION == flag) {
+						System.exit(0);
+					} else {
+						return;
+					}
 					shutdownLocateGateWay();
 				}
 			});
@@ -453,7 +470,7 @@ public class RFApplication extends JFrame {
 			useTimeTextLabel = new JLabel();
 			useTimeTextLabel.setFont(UIManager.getFont("Label.font"));
 			useTimeTextLabel.setBackground(UIManager.getColor("Panel.background"));
-			useTimeTextLabel.setText("dddddddddddd");
+			useTimeTextLabel.setText("");
 			useTimeTextLabel.setBounds(r);
 		}
 		return useTimeTextLabel;
@@ -494,7 +511,7 @@ public class RFApplication extends JFrame {
 		frame.pack();
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
-		installLnF();
+//		installLnF();
 //		RFAServerManager proxy = new RFAServerManager();
 //		frame.demo = proxy.getDemo();
 		// frame.demo._configFile = "rfaConfig.properties";
@@ -637,7 +654,7 @@ public class RFApplication extends JFrame {
 			if(chanedRowList.contains(row)){
 				jl.setForeground(Color.RED);
 			}
-			jl.setBackground(Color.WHITE);
+//			jl.setBackground(Color.WHITE);
 			jl.setOpaque(true);
 			jl.setText(value.toString());
 			return jl;
@@ -651,7 +668,7 @@ public class RFApplication extends JFrame {
 			if(chanedRowList.contains(row)){
 				jl.setForeground(Color.blue);
 			}
-			jl.setBackground(Color.WHITE);
+//			jl.setBackground(Color.WHITE);
 			jl.setOpaque(true);
 			jl.setText(value.toString());
 			return jl;

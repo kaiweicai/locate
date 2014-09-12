@@ -6,6 +6,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
 
 import org.apache.log4j.Logger;
@@ -50,7 +51,7 @@ public class EngineLine {
 		swapEngineMap = engineMap;
 	}
 
-	public void applyStrategy(final LocateUnionMessage locateMessage) {
+	public Future<LocateUnionMessage> applyStrategy(final LocateUnionMessage locateMessage) {
 		Callable<LocateUnionMessage> engineTask = new Callable<LocateUnionMessage>() {
 			@Override
 			public LocateUnionMessage call() throws Exception {
@@ -63,13 +64,15 @@ public class EngineLine {
 			}
 		};
 		try{
-			executeService.submit(engineTask);
+			return executeService.submit(engineTask);
 		}catch(Exception e){
 			logger.error("ocurrer error !!!!",e);
+			return null;
 		}
 	}
 	
-	public void applyStrategy(final LocateUnionMessage locateMessage,final int channelId) {
+	public Future<LocateUnionMessage> applyStrategy(final LocateUnionMessage locateMessage,final int channelId) {
+		Future<LocateUnionMessage> future = null;
 		if (swapEngineMap != null) {
 			Callable<LocateUnionMessage> engineTask = new Callable<LocateUnionMessage>() {
 				@Override
@@ -82,7 +85,8 @@ public class EngineLine {
 					return locateMessage;
 				}
 			};
-			executeService.submit(engineTask);
+			future = executeService.submit(engineTask);
 		}
+		return future;
 	}
 }

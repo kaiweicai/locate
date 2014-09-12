@@ -109,10 +109,4 @@ public class RFAUtils {
 			e.printStackTrace();
 		}
 	}
-	
-	@Test
-	public void testOutputFunction() throws Exception{
-		String s =output("4c6d2db7b781a2e0");
-		System.out.println(s);
-	}
 }

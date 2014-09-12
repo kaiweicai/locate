@@ -1,8 +1,6 @@
 package com.locate.common;
 
-import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
@@ -138,21 +136,5 @@ public class CryptSecurity {
 		byte _b1 = Byte.decode("0x" + new String(new byte[] { src1 })).byteValue();
 		byte ret = (byte) (_b0 ^ _b1);
 		return ret;
-	}
-
-	@Test
-	public void test() {
-		String info = "魏勇阿德克里夫奥丢分快乐abccdefadfadskllkjalkdfdklfajdsl卡机的法律框架fkjaklsf;lgs l;retpofsl;gskdfl;gks;fgklvb;sldfkg'lwekrptoks;lfg;lsdfgkls;dfkg;lsdfkglkjlks";
-		SecretKey key = null;
-		try {
-			key = KeyGenerator.getInstance("DES").generateKey();
-		} catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
-		}
-		System.out.println(key.getEncoded());
-		String result = encryptToDES(key,info);
-		System.out.println(result);
-		String decrypt = decryptByDES(key,result);
-		System.out.println(decrypt);
 	}
 }
