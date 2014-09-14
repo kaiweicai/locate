@@ -74,7 +74,7 @@ public final class LocateOMMParser implements IOmmParser {
 			itemName = "";
 		LocateUnionMessage locateObject = new LocateUnionMessage(itemName);
 		parseMsg(msg, locateObject);
-		logger.info("Parse object is:\n" + locateObject);
+//		logger.info("Parse object is:\n" + locateObject);
 		return locateObject;
 	}
 

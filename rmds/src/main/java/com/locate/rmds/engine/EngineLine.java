@@ -20,7 +20,7 @@ import com.locate.common.model.LocateUnionMessage;
 @Scope("prototype")
 public class EngineLine {
 	private static Logger logger = Logger.getLogger(EngineLine.class);
-	public static ExecutorService executeService = Executors.newSingleThreadExecutor();
+	public static ExecutorService executeService = Executors.newCachedThreadPool();
 	private Map<String, Engine> engineMap;
 	public Map<String, Engine> swapEngineMap;
 

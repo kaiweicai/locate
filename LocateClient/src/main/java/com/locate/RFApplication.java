@@ -666,7 +666,7 @@ public class RFApplication extends JFrame {
 				boolean hasFocus, int row, int column) {
 			JLabel jl = new JLabel();
 			if(chanedRowList.contains(row)){
-				jl.setForeground(Color.blue);
+				jl.setForeground(Color.green);
 			}
 //			jl.setBackground(Color.WHITE);
 			jl.setOpaque(true);
