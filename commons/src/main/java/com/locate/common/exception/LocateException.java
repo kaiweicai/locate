@@ -1,4 +1,4 @@
-package com.locate.common;
+package com.locate.common.exception;
 
 public class LocateException extends RuntimeException {
 	

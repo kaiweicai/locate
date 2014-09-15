@@ -6,13 +6,14 @@ import javax.xml.bind.Marshaller;
 import net.sf.json.JSON;
 import net.sf.json.JSONObject;
 
-import org.apache.log4j.Logger;
 import org.dom4j.io.DocumentResult;
 import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.buffer.ChannelBuffers;
 import org.jboss.netty.channel.Channel;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.handler.codec.oneone.OneToOneEncoder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.locate.common.model.LocateUnionMessage;
@@ -20,7 +21,7 @@ import com.locate.common.utils.SystemProperties;
 
 @Service
 public class AdapterHandler extends OneToOneEncoder {
-	Logger logger = Logger.getLogger(getClass());
+	Logger logger = LoggerFactory.getLogger(getClass());
 	private static String defaultEncode = SystemProperties.getProperties(SystemProperties.DEFAULT_ENCODE);
 	
 	@Override

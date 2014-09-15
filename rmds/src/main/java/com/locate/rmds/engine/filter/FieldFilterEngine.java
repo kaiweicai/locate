@@ -3,13 +3,14 @@ package com.locate.rmds.engine.filter;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.locate.common.model.LocateUnionMessage;
 import com.locate.rmds.engine.Engine;
 
 public class FieldFilterEngine implements Engine {
-	Logger logger = Logger.getLogger(getClass());
+	Logger logger = LoggerFactory.getLogger(getClass());
 	private List<Integer> filterIdList = new ArrayList<Integer>();
 
 	@Override

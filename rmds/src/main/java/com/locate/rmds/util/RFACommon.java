@@ -6,7 +6,8 @@ import org.dom4j.Document;
 import org.dom4j.Element;
 //import org.apache.mina.core.session.IoSession;
 
-import com.locate.common.RFANodeconstant;
+
+import com.locate.common.constant.RFANodeconstant;
 
 @Deprecated
 public class RFACommon {

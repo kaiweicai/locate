@@ -7,7 +7,6 @@ import java.util.concurrent.Executors;
 import net.sf.json.JSONObject;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
 import org.jboss.netty.bootstrap.ClientBootstrap;
 import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.buffer.ChannelBuffers;
@@ -26,9 +25,11 @@ import org.jboss.netty.handler.codec.frame.LengthFieldPrepender;
 import org.jboss.netty.handler.timeout.IdleState;
 import org.jboss.netty.handler.timeout.IdleStateAwareChannelHandler;
 import org.jboss.netty.handler.timeout.IdleStateEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import com.locate.common.LocateMessageTypes;
-import com.locate.common.LocateException;
+import com.locate.common.constant.LocateMessageTypes;
+import com.locate.common.exception.LocateException;
 import com.locate.common.model.ClientRequest;
 import com.locate.face.IBussiness;
 import com.locate.face.IClientConnector;
@@ -36,7 +37,7 @@ import com.locate.gate.coder.EncrytDecoder;
 import com.locate.gate.coder.EncrytEncoder;
 
 public class ClientConnector implements IClientConnector {
-	Logger logger = Logger.getLogger(ClientConnector.class);
+	Logger logger = LoggerFactory.getLogger(ClientConnector.class);
 	private Channel clientchannel;
 	private ClientBootstrap bootstrap;
 	private boolean conLocate;

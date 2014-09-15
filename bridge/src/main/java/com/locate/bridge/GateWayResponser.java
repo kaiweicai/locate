@@ -2,12 +2,13 @@ package com.locate.bridge;
 
 import java.nio.charset.Charset;
 
-import org.apache.log4j.Logger;
 import org.dom4j.Document;
 import org.jboss.netty.channel.Channel;
 import org.jboss.netty.channel.group.ChannelGroup;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import com.locate.common.SystemConstant;
+import com.locate.common.constant.SystemConstant;
 import com.locate.common.datacache.GateChannelCache;
 import com.locate.common.model.LocateUnionMessage;
 import com.locate.common.utils.XmlMessageUtil;
@@ -21,7 +22,7 @@ import com.locate.common.utils.XmlMessageUtil;
 public class GateWayResponser {
 
 	public static final Charset CHARSET = Charset.forName("UTF-8");
-	static Logger logger = Logger.getLogger(GateWayResponser.class.getName());
+	static Logger logger = LoggerFactory.getLogger(GateWayResponser.class.getName());
 
 	public static void sentResponseMsg(LocateUnionMessage response, Integer channelId) {
 		// LocateMessage message = new LocateMessage(msgType, response, 0);

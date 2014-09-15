@@ -2,12 +2,13 @@ package com.locate.rmds.processer;
 
 import javax.annotation.Resource;
 
-import org.apache.log4j.Logger;
 import org.dom4j.Document;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.locate.bridge.HttpWayResponser;
-import com.locate.common.SystemConstant;
+import com.locate.common.constant.SystemConstant;
 import com.locate.common.utils.XmlMessageUtil;
 import com.locate.rmds.QSConsumerProxy;
 import com.locate.rmds.parser.GenericOMMParser;
@@ -50,7 +51,7 @@ public class WebItemManager implements Client {
 	Handle itemHandle;
 	@Resource
 	QSConsumerProxy mainApp;
-	static Logger logger = Logger.getLogger(WebItemManager.class.getName());
+	static Logger logger = LoggerFactory.getLogger(WebItemManager.class.getName());
 	public String clientRequestItemName;
 	// public String clientName;
 	public byte responseMessageType;

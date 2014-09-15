@@ -10,12 +10,13 @@ import java.util.Set;
 import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import com.locate.bridge.GateWayResponser;
-import com.locate.common.LocateMessageTypes;
-import com.locate.common.SystemConstant;
+import com.locate.common.constant.LocateMessageTypes;
+import com.locate.common.constant.SystemConstant;
 import com.locate.common.model.LocateUnionMessage;
 import com.locate.common.utils.MessageEncapsulator;
 import com.locate.common.utils.NetTimeUtil;
@@ -78,7 +79,7 @@ public class RFALoginClient implements Client {
 	public static byte DATA_STATE = 0;
 	public static String STATE = "";
 	public static LocateUnionMessage rfaStateMessage;
-	static Logger logger = Logger.getLogger(RFALoginClient.class.getName());
+	static Logger logger = LoggerFactory.getLogger(RFALoginClient.class.getName());
 	// static Logger _logger;
 	Map<String, ServiceInfo> _services = new HashMap<String, ServiceInfo>();
 	private HashMap<Handle, Integer> _dictHandles = new HashMap<Handle, Integer>();

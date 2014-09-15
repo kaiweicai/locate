@@ -7,7 +7,7 @@ import javax.crypto.SecretKey;
 
 import org.junit.Test;
 
-import com.locate.common.CryptSecurity;
+import com.locate.common.utils.CryptSecurity;
 import com.locate.common.utils.RFAUtils;
 
 public class TestAll {

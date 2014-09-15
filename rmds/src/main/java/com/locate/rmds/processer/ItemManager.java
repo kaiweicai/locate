@@ -2,12 +2,12 @@ package com.locate.rmds.processer;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 
 import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
@@ -64,7 +64,7 @@ public class ItemManager extends IProcesser implements Client
 	Handle  itemHandle;
 	@Resource
 	QSConsumerProxy _mainApp;
-    static Logger _logger = Logger.getLogger(ItemManager.class.getName());
+    static Logger _logger = LoggerFactory.getLogger(ItemManager.class.getName());
     @Resource
     ItemGroupManager _itemGroupManager;
     @Resource(name="locateOMMParser")

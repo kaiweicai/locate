@@ -12,7 +12,6 @@ import java.nio.charset.Charset;
 import java.util.Iterator;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
 import org.dom4j.Document;
 import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.buffer.ChannelBuffers;
@@ -28,8 +27,10 @@ import org.jboss.netty.handler.codec.http.HttpHeaders;
 import org.jboss.netty.handler.codec.http.HttpRequest;
 import org.jboss.netty.handler.codec.http.HttpResponse;
 import org.jboss.netty.handler.codec.http.HttpResponseStatus;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import com.locate.common.SystemConstant;
+import com.locate.common.constant.SystemConstant;
 import com.locate.common.datacache.GateChannelCache;
 import com.locate.common.utils.JsonUtil;
 import com.locate.common.utils.XmlMessageUtil;
@@ -44,7 +45,7 @@ import com.locate.common.utils.XmlMessageUtil;
 public class HttpWayResponser {
 
 	public static final Charset CHARSET = Charset.forName("UTF-8");
-	static Logger logger = Logger.getLogger(HttpWayResponser.class.getName());
+	static Logger logger = LoggerFactory.getLogger(HttpWayResponser.class.getName());
 
 	public static void sentResponseMsg(byte msgType, Document response, Integer channelId) {
 		// LocateMessage message = new LocateMessage(msgType, response, 0);

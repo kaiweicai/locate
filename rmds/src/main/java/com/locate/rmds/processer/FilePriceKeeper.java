@@ -7,11 +7,10 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.util.Date;
 
-import javax.annotation.PostConstruct;
-
 import net.sf.json.JSON;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +19,7 @@ import com.locate.rmds.processer.face.IPriceKeeper;
 @Service("filePriceKeeper")
 @Scope("prototype")
 public class FilePriceKeeper implements IPriceKeeper {
-	Logger logger = Logger.getLogger(getClass());
+	Logger logger = LoggerFactory.getLogger(getClass());
 	private File keepFile;
 	private String ric;
 	private BufferedWriter bufferedWriter;

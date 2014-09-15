@@ -9,14 +9,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import com.locate.common.LocateException;
+import com.locate.common.exception.LocateException;
 import com.locate.common.utils.SystemProperties;
 
 public class FilterManager {
-	private static Logger logger = Logger.getLogger(FilterManager.class);
+	private static Logger logger = LoggerFactory.getLogger(FilterManager.class);
 	private static String filterConfigFileName = SystemProperties.getProperties(SystemProperties.FILTER_CONFIG_NAME);
 	//List<Integer> is the filter.
 	public static Map<String, List<Integer>> filterMap = new HashMap<String,List<Integer>>();

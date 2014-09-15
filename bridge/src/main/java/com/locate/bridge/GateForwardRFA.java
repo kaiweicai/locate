@@ -2,11 +2,12 @@ package com.locate.bridge;
 
 import javax.annotation.Resource;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import com.locate.common.LocateMessageTypes;
-import com.locate.common.LocateResultCode;
+import com.locate.common.constant.LocateMessageTypes;
+import com.locate.common.constant.LocateResultCode;
 import com.locate.common.datacache.DataBaseCache;
 import com.locate.common.datacache.RmdsDataCache;
 import com.locate.common.model.ClientRequest;
@@ -25,7 +26,7 @@ import com.locate.rmds.processer.face.IProcesser;
 @Service
 public class GateForwardRFA {
 	
-	static Logger _logger = Logger.getLogger(GateForwardRFA.class.getName());
+	static Logger _logger = LoggerFactory.getLogger(GateForwardRFA.class.getName());
 	@Resource(name="futhureRequestHandler")
 	private IRequestHandler requestHandler;
 	@Resource

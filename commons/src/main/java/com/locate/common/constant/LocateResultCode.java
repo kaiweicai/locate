@@ -1,4 +1,4 @@
-package com.locate.common;
+package com.locate.common.constant;
 
 /**
  * Locate gate way result code and descriptions

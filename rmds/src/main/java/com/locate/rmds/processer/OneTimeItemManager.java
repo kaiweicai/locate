@@ -4,13 +4,12 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import com.locate.bridge.GateWayResponser;
 import com.locate.common.model.LocateUnionMessage;
 import com.locate.common.utils.NetTimeUtil;
 import com.locate.rmds.QSConsumerProxy;
-import com.locate.rmds.engine.EngineLine;
 import com.locate.rmds.engine.filter.EngineLinerManager;
 import com.locate.rmds.engine.filter.FilterManager;
 import com.locate.rmds.parser.LocateOMMParser;
@@ -54,7 +53,7 @@ public class OneTimeItemManager extends IProcesser implements Client
 {
 	Handle  itemHandle;
 	QSConsumerProxy _mainApp;
-    static Logger _logger = Logger.getLogger(OneTimeItemManager.class.getName());
+    static Logger _logger = LoggerFactory.getLogger(OneTimeItemManager.class.getName());
     ItemGroupManager _itemGroupManager;
     public String clientRequestItemName;
 //    public String clientName;

@@ -23,8 +23,8 @@ import net.sf.json.JSONObject;
 
 import org.dom4j.io.DocumentResult;
 
-import com.locate.common.LocateException;
-import com.locate.common.SystemConstant;
+import com.locate.common.constant.SystemConstant;
+import com.locate.common.exception.LocateException;
 import com.locate.common.utils.DerivedUtils;
 
 @XmlRootElement(name="rmds")

@@ -22,7 +22,6 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 
-import org.apache.log4j.Logger;
 import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.buffer.ChannelBuffers;
 import org.jboss.netty.channel.Channel;
@@ -54,10 +53,12 @@ import org.jboss.netty.handler.codec.http.websocketx.WebSocketServerHandshaker;
 import org.jboss.netty.handler.codec.http.websocketx.WebSocketServerHandshakerFactory;
 import org.jboss.netty.handler.stream.ChunkedFile;
 import org.jboss.netty.util.CharsetUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.locate.bridge.GateForwardRFA;
-import com.locate.common.LocateMessageTypes;
+import com.locate.common.constant.LocateMessageTypes;
 import com.locate.common.datacache.GateChannelCache;
 import com.locate.common.model.ClientRequest;
 import com.locate.gate.coder.WebAdapterHandler;
@@ -65,7 +66,7 @@ import com.locate.gate.server.WebSocketServerIndexPage;
 
 @Service
 public class HttpRequestHandler extends SimpleChannelUpstreamHandler {
-	Logger logger = Logger.getLogger(getClass());
+	Logger logger = LoggerFactory.getLogger(getClass());
 	private HttpRequest request;
 	private boolean readingChunks;
 //	@Resource

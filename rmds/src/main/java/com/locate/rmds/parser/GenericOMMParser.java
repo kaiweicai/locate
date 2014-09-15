@@ -7,12 +7,13 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Vector;
 
-import org.apache.log4j.Logger;
 import org.dom4j.Document;
 import org.dom4j.DocumentFactory;
 import org.dom4j.Element;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import com.locate.common.RFANodeconstant;
+import com.locate.common.constant.RFANodeconstant;
 import com.locate.rmds.gui.viewer.FieldValue;
 import com.locate.rmds.parser.face.IOmmParser;
 import com.locate.rmds.util.ExampleUtil;
@@ -70,7 +71,7 @@ public final class GenericOMMParser
     private static HashMap<Integer, FieldDictionary> DICTIONARIES = new HashMap<Integer, FieldDictionary>();
     private static FieldDictionary CURRENT_DICTIONARY= FieldDictionary.create();
     private static Page CURRENT_PAGE;
-    static Logger _logger = Logger.getLogger(GenericOMMParser.class.getName());
+    static Logger _logger = LoggerFactory.getLogger(GenericOMMParser.class.getName());
 //    static Logger _logger;
     private static boolean INTERNAL_DEBUG = false;
 

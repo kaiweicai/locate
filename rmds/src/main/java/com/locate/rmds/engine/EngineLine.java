@@ -3,13 +3,12 @@ package com.locate.rmds.engine;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.concurrent.FutureTask;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -19,7 +18,7 @@ import com.locate.common.model.LocateUnionMessage;
 @Component("engineLine")
 @Scope("prototype")
 public class EngineLine {
-	private static Logger logger = Logger.getLogger(EngineLine.class);
+	private static Logger logger = LoggerFactory.getLogger(EngineLine.class);
 	public static ExecutorService executeService = Executors.newCachedThreadPool();
 	private Map<String, Engine> engineMap;
 	public Map<String, Engine> swapEngineMap;

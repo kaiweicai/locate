@@ -2,11 +2,12 @@ package com.locate.rmds.handler;
 
 import javax.annotation.Resource;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.locate.bridge.GateWayResponser;
-import com.locate.common.LocateResultCode;
+import com.locate.common.constant.LocateResultCode;
 import com.locate.common.datacache.DataBaseCache;
 import com.locate.common.model.ClientRequest;
 import com.locate.rmds.QSConsumerProxy;
@@ -16,7 +17,7 @@ import com.locate.rmds.processer.RFALoginClient;
 
 @Service
 public class FuthureRequestHandler extends BaseRequestHandler {
-	private static Logger logger = Logger.getLogger(FuthureRequestHandler.class.getName());
+	private static Logger logger = LoggerFactory.getLogger(FuthureRequestHandler.class.getName());
 	@Resource
 	private QSConsumerProxy mainApp;
 	@Override

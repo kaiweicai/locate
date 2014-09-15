@@ -28,16 +28,20 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
-import org.apache.log4j.xml.DOMConfigurator;
 import org.jboss.netty.channel.SimpleChannelHandler;
 import org.pushingpixels.substance.api.SubstanceLookAndFeel;
 import org.pushingpixels.substance.api.skin.RavenSkin;
-import org.pushingpixels.substance.api.skin.SaharaSkin;
+import org.slf4j.ILoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.joran.JoranConfigurator;
+import ch.qos.logback.core.joran.spi.JoranException;
 
 import com.locate.client.gui.StatusBar;
-import com.locate.common.LocateException;
-import com.locate.common.LocateMessageTypes;
+import com.locate.common.constant.LocateMessageTypes;
+import com.locate.common.exception.LocateException;
 import com.locate.common.model.CustomerFiled;
 import com.locate.common.model.LocateUnionMessage;
 import com.locate.common.utils.NetTimeUtil;
@@ -53,7 +57,7 @@ import com.locate.gate.handler.ClientHandler;
  * 
  */
 public class RFApplication extends JFrame {
-	private Logger logger = Logger.getLogger(RFApplication.class);
+	private Logger logger = LoggerFactory.getLogger(RFApplication.class);
 	private boolean conLocate;
 	private static final long serialVersionUID = 1L;
 	private JLabel currentUserTitle;
@@ -104,7 +108,18 @@ public class RFApplication extends JFrame {
 	private static final String PREFERRED_LOOK_AND_FEEL = "javax.swing.plaf.metal.MetalLookAndFeel";
 	
 	public RFApplication() {
-		DOMConfigurator.configureAndWatch("config/log4j.xml");
+		
+		JoranConfigurator configurator = new JoranConfigurator();
+		ILoggerFactory loggerFactory = LoggerFactory.getILoggerFactory();
+		LoggerContext loggerContext = (LoggerContext) loggerFactory;
+		loggerContext.reset();
+		configurator.setContext(loggerContext);
+		try {
+			configurator.doConfigure("config/logback.xml");
+		} catch (JoranException e) {
+			logger.error("initial logback.xml error!");
+			throw new LocateException("initial logback.xml error!",e);
+		}
 		initComponents();
 		IBussiness bussinessHandler = new UIHandler();
 		SimpleChannelHandler clientHandler = new ClientHandler(bussinessHandler);

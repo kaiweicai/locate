@@ -6,18 +6,19 @@ import java.util.concurrent.Executors;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
-import org.apache.log4j.Logger;
 import org.jboss.netty.bootstrap.ServerBootstrap;
 import org.jboss.netty.channel.ChannelFactory;
 import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import com.locate.common.LocateException;
+import com.locate.common.exception.LocateException;
 import com.locate.common.utils.SystemProperties;
 
 @Service
 public class GateWayWebServer {
-	private Logger logger = Logger.getLogger(GateWayWebServer.class.getName());
+	private Logger logger = LoggerFactory.getLogger(GateWayWebServer.class.getName());
 	@Resource
 	private HttpServerPipelineFactory httpServerPipelineFactory;
 	/**

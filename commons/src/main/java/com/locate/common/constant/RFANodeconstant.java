@@ -1,4 +1,4 @@
-package com.locate.common;
+package com.locate.common.constant;
 
 public class RFANodeconstant {
 	

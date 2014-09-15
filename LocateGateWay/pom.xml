@@ -6,6 +6,7 @@
 		<groupId>com.locate</groupId>
 		<artifactId>pt</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
+		<relativePath>../pricetech/pom.xml</relativePath>
 	</parent>
 	<build>
 		<plugins>

@@ -5,11 +5,12 @@ import javax.annotation.Resource;
 import net.sf.json.JSON;
 import net.sf.json.JSONObject;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
-import com.locate.common.SystemConstant;
+import com.locate.common.constant.SystemConstant;
 import com.locate.common.datacache.RmdsDataCache;
 import com.locate.common.model.LocateUnionMessage;
 import com.locate.common.utils.NetTimeUtil;
@@ -61,7 +62,7 @@ public class PersistentItemManager extends IProcesser implements Client {
 	Handle  itemHandle;
 	@Resource
 	QSConsumerProxy _mainApp;
-    static Logger logger = Logger.getLogger(PersistentItemManager.class.getName());
+    static Logger logger = LoggerFactory.getLogger(PersistentItemManager.class.getName());
     @Resource
     ItemGroupManager _itemGroupManager;
     @Resource(name="locateOMMParser")

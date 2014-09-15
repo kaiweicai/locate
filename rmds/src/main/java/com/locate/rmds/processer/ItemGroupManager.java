@@ -9,7 +9,8 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.locate.rmds.QSConsumerProxy;
@@ -50,7 +51,7 @@ import com.reuters.rfa.session.omm.OMMItemIntSpec;
 public class ItemGroupManager implements Client
 {
 
-	static Logger _logger = Logger.getLogger(ItemGroupManager.class.getName());
+	static Logger _logger = LoggerFactory.getLogger(ItemGroupManager.class.getName());
 	@Resource
 	QSConsumerProxy _mainApp;
     Handle _directoryHandle;

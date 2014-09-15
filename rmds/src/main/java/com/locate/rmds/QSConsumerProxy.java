@@ -13,11 +13,12 @@ import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import com.locate.common.LocateMessageTypes;
-import com.locate.common.SystemConstant;
+import com.locate.common.constant.LocateMessageTypes;
+import com.locate.common.constant.SystemConstant;
 import com.locate.common.datacache.RmdsDataCache;
 import com.locate.common.utils.DerivedUtils;
 import com.locate.common.utils.SystemProperties;
@@ -28,7 +29,6 @@ import com.locate.rmds.dict.ServiceInfo;
 import com.locate.rmds.engine.CurrencyEngine;
 import com.locate.rmds.engine.EngineLine;
 import com.locate.rmds.engine.filter.EngineLinerManager;
-import com.locate.rmds.engine.filter.FilterManager;
 import com.locate.rmds.processer.ItemGroupManager;
 import com.locate.rmds.processer.ItemManager;
 import com.locate.rmds.processer.NewsItemManager;
@@ -65,7 +65,7 @@ import com.reuters.rfa.session.omm.OMMItemIntSpec;
 */  
 @Component("qSConsumerProxy")
 public class QSConsumerProxy{
-	static Logger logger = Logger.getLogger(QSConsumerProxy.class.getName());
+	static Logger logger = LoggerFactory.getLogger(QSConsumerProxy.class.getName());
 
 	// RFA objects
 	protected Session _session;

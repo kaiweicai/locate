@@ -1,6 +1,7 @@
 package com.locate.rmds.util;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.locate.rmds.QSConsumerProxy;
 import com.reuters.rfa.common.Event;
@@ -18,7 +19,7 @@ import com.reuters.rfa.session.omm.OMMItemEvent;
 
 public class EventFieldUtils {
 
-	 static Logger _logger = Logger.getLogger(EventFieldUtils.class.getName());
+	 static Logger _logger = LoggerFactory.getLogger(EventFieldUtils.class.getName());
 	   
     public static FieldDictionary dictionary = QSConsumerProxy.dictionary;
     

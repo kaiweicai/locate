@@ -8,11 +8,12 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SystemProperties {
 
-	static Logger _logger = Logger.getLogger(SystemProperties.class.getName());
+	static Logger _logger = LoggerFactory.getLogger(SystemProperties.class.getName());
 
 	static Map<String, String> systemProperties = new HashMap<String, String>();
 	public static final String RFA_USER_FILE = "client.user.file";

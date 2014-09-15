@@ -28,7 +28,7 @@ import net.sf.json.processors.PropertyNameProcessor;
 
 import org.dom4j.io.DocumentResult;
 
-import com.locate.common.SystemConstant;
+import com.locate.common.constant.SystemConstant;
 import com.locate.common.model.LocateUnionMessage;
 
 public class JsonArrayTest {

@@ -6,7 +6,6 @@ import java.util.concurrent.Executors;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
-import org.apache.log4j.Logger;
 import org.dom4j.Document;
 import org.jboss.netty.bootstrap.ServerBootstrap;
 import org.jboss.netty.buffer.ChannelBuffer;
@@ -22,11 +21,13 @@ import org.jboss.netty.handler.codec.frame.LengthFieldPrepender;
 import org.jboss.netty.handler.timeout.IdleState;
 import org.jboss.netty.handler.timeout.IdleStateAwareChannelHandler;
 import org.jboss.netty.handler.timeout.IdleStateEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import com.locate.common.LocateException;
-import com.locate.common.LocateMessageTypes;
-import com.locate.common.SystemConstant;
+import com.locate.common.constant.LocateMessageTypes;
+import com.locate.common.constant.SystemConstant;
+import com.locate.common.exception.LocateException;
 import com.locate.common.utils.SystemProperties;
 import com.locate.common.utils.XmlMessageUtil;
 import com.locate.gate.coder.EncrytDecoder;
@@ -36,7 +37,7 @@ import com.locate.gate.hanlder.GatewayServerHandler;
 
 @Service
 public class GateWayServer {
-	static Logger logger = Logger.getLogger(GateWayServer.class.getName());
+	static Logger logger = LoggerFactory.getLogger(GateWayServer.class.getName());
 	
 	@Resource
 	private GatewayServerHandler gateWayServerHandler;

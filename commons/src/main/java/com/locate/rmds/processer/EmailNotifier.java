@@ -13,8 +13,11 @@ import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+
+
 
 import com.locate.common.utils.SystemProperties;
 import com.locate.rmds.processer.face.INotifier;
@@ -25,7 +28,7 @@ import com.locate.rmds.processer.face.INotifier;
  */
 @Component
 public class EmailNotifier implements INotifier {
-	private Logger logger = Logger.getLogger(EmailNotifier.class);
+	private Logger logger = LoggerFactory.getLogger(EmailNotifier.class);
 
 	@Override
 	public void notifyAdmin(String title, String content) {

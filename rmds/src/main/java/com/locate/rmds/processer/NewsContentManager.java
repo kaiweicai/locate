@@ -3,7 +3,8 @@ package com.locate.rmds.processer;
 import java.nio.charset.Charset;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.locate.rmds.QSConsumerProxy;
 import com.locate.rmds.util.EventFieldUtils;
@@ -37,7 +38,7 @@ import com.reuters.rfa.session.omm.OMMItemIntSpec;
  * @see SegmentChainClient
  */
 public class NewsContentManager  implements Client {
-	static Logger _logger = Logger
+	static Logger _logger = LoggerFactory
 			.getLogger(NewsContentManager.class.getName());
 //	ItemGroupManager _itemGroupManager;
 	Handle itemHandle ;

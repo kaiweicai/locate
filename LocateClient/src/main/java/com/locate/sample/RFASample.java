@@ -8,10 +8,11 @@ import javax.xml.bind.Marshaller;
 
 import net.sf.json.JSONObject;
 
-import org.apache.log4j.Logger;
 import org.dom4j.io.DocumentResult;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import com.locate.common.LocateMessageTypes;
+import com.locate.common.constant.LocateMessageTypes;
 import com.locate.common.model.LocateUnionMessage;
 import com.locate.common.utils.NetTimeUtil;
 import com.locate.face.IBussiness;
@@ -25,7 +26,7 @@ import com.locate.gate.handler.ClientConnector;
  * @copyRight by Author
  */
 public class RFASample {
-	private Logger logger = Logger.getLogger(getClass());
+	private Logger logger = LoggerFactory.getLogger(getClass());
 	public static final String XAU_RIC = "XAU=";
 	public static final String XAG_RIC = "XAG=";
 	//客户端接口声明.

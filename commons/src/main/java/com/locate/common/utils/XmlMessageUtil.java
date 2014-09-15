@@ -9,8 +9,8 @@ import org.dom4j.DocumentFactory;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 
-import com.locate.common.RFANodeconstant;
-import com.locate.common.SystemConstant;
+import com.locate.common.constant.RFANodeconstant;
+import com.locate.common.constant.SystemConstant;
 
 public class XmlMessageUtil {
 	static final String LOGIN_SUCCESSFUL = "0";

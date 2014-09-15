@@ -6,14 +6,15 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
 import org.dom4j.Document;
 import org.dom4j.Element;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.locate.bridge.GateWayResponser;
-import com.locate.common.LocateMessageTypes;
-import com.locate.common.RFANodeconstant;
-import com.locate.common.SystemConstant;
+import com.locate.common.constant.LocateMessageTypes;
+import com.locate.common.constant.RFANodeconstant;
+import com.locate.common.constant.SystemConstant;
 import com.locate.rmds.QSConsumerProxy;
 import com.locate.rmds.parser.GenericOMMParser;
 import com.locate.rmds.util.EventFieldUtils;
@@ -61,7 +62,7 @@ public class NewsItemManager implements Client {
 	RmtesCharsetProvider rmtesProv = new RmtesCharsetProvider();
 	Charset rmtesCharset = rmtesProv.charsetForName("RMTES");
 
-	static Logger _logger = Logger.getLogger(NewsItemManager.class);
+	static Logger _logger = LoggerFactory.getLogger(NewsItemManager.class);
 	ItemGroupManager _itemGroupManager;
 	public static String clientRequestItemName;
 	public String clientName;

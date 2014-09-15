@@ -6,13 +6,14 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
-import org.apache.log4j.Logger;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import com.locate.common.RFANodeconstant;
+import com.locate.common.constant.RFANodeconstant;
 import com.locate.common.utils.RFAUtils;
 import com.locate.common.utils.SystemProperties;
 import com.locate.rmds.user.RFAUser;
@@ -20,7 +21,7 @@ import com.locate.rmds.user.RFAUserPermission;
 
 public class RFAUserManagement {
 	
-	static Logger _logger = Logger.getLogger(RFAUserManagement.class.getName());
+	static Logger _logger = LoggerFactory.getLogger(RFAUserManagement.class.getName());
 	
 	public static Map<String,RFAUser> RFAUserList = new HashMap<String,RFAUser>();
 	public static Map<String,RFAUser> RFAUserBusiness = new HashMap<String,RFAUser>();

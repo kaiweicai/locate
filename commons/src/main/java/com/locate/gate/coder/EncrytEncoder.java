@@ -8,7 +8,7 @@ import org.jboss.netty.channel.Channel;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.handler.codec.oneone.OneToOneEncoder;
 
-import com.locate.common.CryptSecurity;
+import com.locate.common.utils.CryptSecurity;
 
 public class EncrytEncoder extends OneToOneEncoder {
 	@Override

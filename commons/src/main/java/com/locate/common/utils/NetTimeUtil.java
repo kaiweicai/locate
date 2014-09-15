@@ -4,15 +4,14 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.locate.common.datacache.DataBaseCache;
 
 public class NetTimeUtil {
-	static Logger logger = Logger.getLogger(NetTimeUtil.class);
+	static Logger logger = LoggerFactory.getLogger(NetTimeUtil.class);
 	public static long getNetTime(){
 		long time=0;
 		try {

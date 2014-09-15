@@ -1,11 +1,6 @@
 package rmds;
 
-import org.apache.log4j.PropertyConfigurator;
 import org.junit.Test;
-
-import com.locate.rmds.parser.GenericOMMParser;
-import com.reuters.rfa.dictionary.FidDef;
-import com.reuters.rfa.dictionary.FieldDictionary;
 
 public class EventFieldUtilsTest {
 	@Test

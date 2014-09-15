@@ -1,4 +1,4 @@
-package com.locate.common;
+package com.locate.common.utils;
 
 import java.security.NoSuchAlgorithmException;
 
@@ -6,13 +6,13 @@ import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 
-import org.apache.log4j.Logger;
-import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 
 public class CryptSecurity {
-	private static Logger logger = Logger.getLogger(CryptSecurity.class);
+	private static Logger logger = LoggerFactory.getLogger(CryptSecurity.class);
 	public static SecretKey key = null;
 	static{
 		try {

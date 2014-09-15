@@ -5,8 +5,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Vector;
 
-import org.apache.log4j.Logger;
 import org.dom4j.Element;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import com.locate.common.model.LocateUnionMessage;
@@ -65,7 +66,7 @@ public final class LoginOMMParser implements IOmmParser
     private static HashMap<Integer, FieldDictionary> DICTIONARIES = new HashMap<Integer, FieldDictionary>();
     private static FieldDictionary CURRENT_DICTIONARY;
     private static Page CURRENT_PAGE;
-    static Logger _logger = Logger.getLogger(LoginOMMParser.class.getName());
+    static Logger _logger = LoggerFactory.getLogger(LoginOMMParser.class.getName());
 //    static Logger _logger;
     private static boolean INTERNAL_DEBUG = false;
     

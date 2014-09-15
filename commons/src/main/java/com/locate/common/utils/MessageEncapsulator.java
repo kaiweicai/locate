@@ -1,6 +1,6 @@
 package com.locate.common.utils;
 
-import com.locate.common.LocateResultCode;
+import com.locate.common.constant.LocateResultCode;
 import com.locate.common.model.LocateUnionMessage;
 
 public class MessageEncapsulator {

@@ -1,14 +1,15 @@
 package com.locate.rmds.client;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import com.locate.common.LocateResultCode;
+import com.locate.common.constant.LocateResultCode;
 import com.locate.common.datacache.DataBaseCache;
 import com.locate.common.model.ClientRequest;
 
 public class ClientUserValidator {
 
-	static Logger logger = Logger.getLogger(ClientUserValidator.class.getName());
+	static Logger logger = LoggerFactory.getLogger(ClientUserValidator.class.getName());
 	private String clientIp;
 	public ClientUserValidator(String clientIp) {
 		this.clientIp = clientIp;

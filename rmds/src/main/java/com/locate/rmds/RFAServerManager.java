@@ -3,18 +3,18 @@ package com.locate.rmds;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import com.locate.common.SystemConstant;
+import com.locate.common.constant.SystemConstant;
 import com.locate.rmds.engine.filter.FilterManager;
 import com.locate.rmds.statistic.StatisticThread;
-import com.reuters.rfa.internal.dictionary.FieldNameExchanger;
 
 @Service
 public class RFAServerManager extends Thread {
 
-	static Logger _logger = Logger.getLogger(RFAServerManager.class);
+	static Logger _logger = LoggerFactory.getLogger(RFAServerManager.class);
 
 	@Resource
 	private QSConsumerProxy demo;

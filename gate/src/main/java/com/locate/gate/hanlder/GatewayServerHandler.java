@@ -13,7 +13,6 @@ import javax.annotation.Resource;
 import net.sf.json.JSONObject;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
 import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.channel.Channel;
 import org.jboss.netty.channel.ChannelHandlerContext;
@@ -23,17 +22,19 @@ import org.jboss.netty.channel.MessageEvent;
 import org.jboss.netty.channel.SimpleChannelHandler;
 import org.jboss.netty.channel.group.ChannelGroup;
 import org.jboss.netty.channel.group.DefaultChannelGroup;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.locate.bridge.GateForwardRFA;
-import com.locate.common.LocateMessageTypes;
+import com.locate.common.constant.LocateMessageTypes;
 import com.locate.common.datacache.DataBaseCache;
 import com.locate.common.datacache.GateChannelCache;
 import com.locate.common.model.ClientRequest;
 
 @Service
 public class GatewayServerHandler extends SimpleChannelHandler {
-	static Logger _logger = Logger.getLogger(GatewayServerHandler.class.getName());
+	static Logger _logger = LoggerFactory.getLogger(GatewayServerHandler.class.getName());
 	
 	/** The number of message to receive */
 	public static final int MAX_RECEIVED = 100000;

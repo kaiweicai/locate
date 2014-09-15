@@ -8,14 +8,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import com.locate.common.model.LocateUnionMessage;
 import com.locate.common.utils.SystemProperties;
 import com.locate.rmds.QSConsumerProxy;
-import com.locate.rmds.engine.filter.FieldFilterEngine;
-import com.locate.rmds.engine.filter.FilterManager;
 import com.locate.rmds.gui.viewer.FieldValue;
 import com.locate.rmds.parser.face.IOmmParser;
 import com.locate.rmds.util.RFATypeConvert;
@@ -57,7 +56,7 @@ public final class LocateOMMParser implements IOmmParser {
 	private static HashMap<Integer, FieldDictionary> DICTIONARIES = QSConsumerProxy.DICTIONARIES;
 	private static FieldDictionary CURRENT_DICTIONARY = QSConsumerProxy.dictionary;
 	private static Page CURRENT_PAGE;
-	static Logger logger = Logger.getLogger(LocateOMMParser.class.getName());
+	static Logger logger = LoggerFactory.getLogger(LocateOMMParser.class.getName());
 
 	public static FieldDictionary getDictionary(int dictId) {
 		if (dictId == 0)

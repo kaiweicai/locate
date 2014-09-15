@@ -23,7 +23,7 @@ import org.jboss.netty.channel.SimpleChannelHandler;
 import org.jboss.netty.channel.socket.nio.NioClientSocketChannelFactory;
 import org.junit.Test;
 
-import com.locate.common.LocateMessageTypes;
+import com.locate.common.constant.LocateMessageTypes;
 import com.locate.common.model.LocateUnionMessage;
 
 
