@@ -6,8 +6,6 @@ import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
-import org.junit.Test;
-
 import com.sun.crypto.provider.SunJCE;
 
 public class RFAUtils {
