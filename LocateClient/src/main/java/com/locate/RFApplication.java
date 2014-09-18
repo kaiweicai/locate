@@ -583,8 +583,8 @@ public class RFApplication extends JFrame {
 			logger.info("original message -------"+message);
 			byte msgType = message.getMsgType();
 			sBuilder.append("Received message type:" + LocateMessageTypes.toString(msgType)+"\n");
-			useTimeTextLabel.setText("From Locate Server to client use time:"+(startTime-endTime)+" millseconds");
-			logger.info("The message From RFA to user use time "+(startTime-endTime)+" milliseconds");
+			useTimeTextLabel.setText("From Locate Server to client use time:"+(endTime-startTime)+" millseconds");
+			logger.info("The message From RFA to user use time "+(endTime-startTime)+" milliseconds");
 			switch(msgType){
 				//first the Locate send the snapshot of market price
 				case LocateMessageTypes.REFRESH_RESP:

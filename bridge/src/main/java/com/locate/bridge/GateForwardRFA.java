@@ -13,6 +13,7 @@ import com.locate.common.datacache.RmdsDataCache;
 import com.locate.common.model.ClientRequest;
 import com.locate.common.model.LocateUnionMessage;
 import com.locate.common.utils.MessageEncapsulator;
+import com.locate.common.utils.NetTimeUtil;
 import com.locate.rmds.client.ClientUserValidator;
 import com.locate.rmds.handler.inter.IRequestHandler;
 import com.locate.rmds.processer.face.IProcesser;
@@ -61,6 +62,7 @@ public class GateForwardRFA {
 		    case LocateMessageTypes.LOGIN : 
 		    	resultCode = clientUserLogin.authUserLogin(request,clientIP);
 		    	LocateUnionMessage message = new LocateUnionMessage();
+		    	message.setStartTime(NetTimeUtil.getCurrentNetTime());
 				byte msgType = LocateMessageTypes.SERVER_STATE;
 				MessageEncapsulator.encapLogionResponseMessage(message,resultCode, msgType);
 		    	GateWayResponser.sentResponseMsg( message, channelID);
