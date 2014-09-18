@@ -47,11 +47,11 @@ public class GateWayResponser {
 		String itemName = locateMessage.getRic();
 		ChannelGroup channelGroup = GateChannelCache.itemNameChannelMap.get(itemName);
 		if(channelGroup==null){
-			logger.error("channel can not find ! The itemName"+itemName);
+			logger.warn("channel can not find ! The itemName"+itemName);
 			return;
 		}
 		if(channelGroup.size()==0){
-			logger.error("channel has been clean,but the ric not be register! The itemName"+itemName);
+			logger.warn("channel has been clean,but the ric not be register! The itemName"+itemName);
 			return;
 		}
 		channelGroup.write(locateMessage);

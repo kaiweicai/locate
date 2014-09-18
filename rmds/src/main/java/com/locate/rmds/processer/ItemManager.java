@@ -69,13 +69,10 @@ public class ItemManager extends IProcesser implements Client
     ItemGroupManager _itemGroupManager;
     @Resource(name="locateOMMParser")
     IOmmParser ommParser;
-    private String clientRequestItemName;
 	//    public String clientName;
     public byte responseMessageType;
 
     private	String	_className = "ItemManager";
-
-	private Integer channelID = 0;
 
 	private LocateUnionMessage snapshotLocateMessage;
 	
@@ -202,8 +199,10 @@ public class ItemManager extends IProcesser implements Client
 	public void closeRequest() {
 		_itemGroupManager._handles.remove(itemHandle);
 		_mainApp.getOMMConsumer().unregisterClient(itemHandle);
-		RmdsDataCache.RIC_ITEMMANAGER_Map.remove(clientRequestItemName);
-		RmdsDataCache.CLIENT_ITEMMANAGER_MAP.remove(clientRequestItemName);
+		RmdsDataCache.RIC_ITEMMANAGER_Map.remove(this.clientRequestItemName);
+		RmdsDataCache.RIC_ITEMMANAGER_Map.remove(this.derivactiveItemName);
+		RmdsDataCache.CLIENT_ITEMMANAGER_MAP.remove(this.clientRequestItemName);
+		RmdsDataCache.CLIENT_ITEMMANAGER_MAP.remove(this.derivactiveItemName);
 	}
 
     // This is a Client method. When an event for this client is dispatched,
@@ -271,7 +270,7 @@ public class ItemManager extends IProcesser implements Client
 			try {
 				engineFuture.get();
 			} catch (InterruptedException | ExecutionException e) {
-				_logger.error("get the engine result error!",e);
+				_logger.warn("get the engine result error!",e);
 			}
 		}
 		engineFuture=engineLine.applyStrategy(locateMessage);
@@ -280,7 +279,7 @@ public class ItemManager extends IProcesser implements Client
 				try {
 					derivedEngineFuture.get();
 				} catch (InterruptedException | ExecutionException e) {
-					_logger.error("get the dervied engine result error!",e);
+					_logger.warn("get the dervied engine result error!",e);
 				}
 			}
 			derivedEngineFuture=EngineLinerManager.engineLineCache.get(derivactiveItemName).applyStrategy(locateMessage.clone());

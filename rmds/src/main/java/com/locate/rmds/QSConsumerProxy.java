@@ -343,7 +343,7 @@ public class QSConsumerProxy{
 				engineLine= new EngineLine();
 				EngineLinerManager.engineLineCache.put(derivactiveItemName, engineLine);
 			}
-			itemName = DerivedUtils.genOriginRic(itemName);
+			itemName = DerivedUtils.restoreRic(itemName);
 			CurrencyEngine.currency = Float.parseFloat(SystemProperties.getProperties(SystemProperties.CUR_US_CYN));
 			engineLine.addEngine("currencyEngine", new CurrencyEngine());
 		}

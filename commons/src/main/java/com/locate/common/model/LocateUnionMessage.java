@@ -63,7 +63,7 @@ public class LocateUnionMessage implements Cloneable{
 		try {
 			message = (LocateUnionMessage)super.clone();
 			String ric = message.getRic();
-			ric=DerivedUtils.DerivesRic(ric);
+			ric=DerivedUtils.derivesCurrencyRic(ric);
 			message.setRic(ric);
 			List<String[]> payLoadList = this.getPayLoadSet();
 			List<String[]> clienPayLoadList = new ArrayList<String[]>();

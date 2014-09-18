@@ -150,7 +150,7 @@ public class RFASample {
 		 * 与服务器的网络连接断开后处理方法
 		 */
 		public void handleDisconnected() {
-			System.out.println("Locate Server disconnted!!! ");			
+			System.out.println("Locate Server disconnted!!! ");
 		}
 	}
 	

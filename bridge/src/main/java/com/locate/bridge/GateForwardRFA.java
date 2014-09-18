@@ -229,10 +229,10 @@ public class GateForwardRFA {
 	 * @param itemName
 	 */
 	public void closeHandler(String itemName) {
-		IProcesser itemHandler = RmdsDataCache.RIC_ITEMMANAGER_Map.get(itemName);
+		IProcesser itemManager = RmdsDataCache.RIC_ITEMMANAGER_Map.get(itemName);
 		//取消订阅该产品
-		if(itemHandler!=null){
-			itemHandler.closeRequest();
+		if(itemManager!=null){
+			itemManager.closeRequest();
 		}
 	}
 	

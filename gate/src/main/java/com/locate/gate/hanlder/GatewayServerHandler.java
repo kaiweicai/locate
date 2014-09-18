@@ -1,5 +1,6 @@
 package com.locate.gate.hanlder;
 
+import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -31,10 +32,11 @@ import com.locate.common.constant.LocateMessageTypes;
 import com.locate.common.datacache.DataBaseCache;
 import com.locate.common.datacache.GateChannelCache;
 import com.locate.common.model.ClientRequest;
+import com.locate.common.utils.DerivedUtils;
 
 @Service
 public class GatewayServerHandler extends SimpleChannelHandler {
-	static Logger _logger = LoggerFactory.getLogger(GatewayServerHandler.class.getName());
+	static Logger logger = LoggerFactory.getLogger(GatewayServerHandler.class.getName());
 	
 	/** The number of message to receive */
 	public static final int MAX_RECEIVED = 100000;
@@ -57,7 +59,7 @@ public class GatewayServerHandler extends SimpleChannelHandler {
 			for(String itemName : itemNames){
 				System.out.println("clientName "+clientName);
 				itemName = itemName.replaceAll(clientName, "");
-				_logger.info("Register client request item "+itemName);
+				logger.info("Register client request item "+itemName);
 				System.out.println("Register client request item "+itemName);
 				System.out.println("_clientResponseType size "+DataBaseCache._clientResponseType.size());
 				byte responseMsgType  =  DataBaseCache._clientResponseType.get(itemName);
@@ -68,14 +70,18 @@ public class GatewayServerHandler extends SimpleChannelHandler {
 //				}
 			}
 		}
-		_logger.info("End re-register all of client request ");
+		logger.info("End re-register all of client request ");
 	}
 	
 	
 	@Override
 	public void exceptionCaught(ChannelHandlerContext ctx, ExceptionEvent e) throws Exception {
-		_logger.error("Unexpect Exception from downstream! please contact the developer!"+e.getCause());
-//		e.getChannel().close();
+		if(e instanceof IOException){
+			logger.warn(((IOException) e).getMessage(),e);
+			return;
+		}else{
+			logger.error("Unexpect Exception from downstream! please contact the developer!",e);
+		}
 	}
 
 //	@Deprecated
@@ -145,14 +151,14 @@ public class GatewayServerHandler extends SimpleChannelHandler {
 			String msg = channelBuffer.toString(Charset.forName("UTF-8"));
 			JSONObject jsonObject = JSONObject.fromObject(msg);
 			ClientRequest request = (ClientRequest)JSONObject.toBean(jsonObject,ClientRequest.class);
-			_logger.info("original message -------"+request);
+			logger.info("original message -------"+request);
 			
 			byte msgType = request.getMsgType();
 			// Judge client whether logon
 			String userName = request.getUserName();
 			
 			String clientIP = ((InetSocketAddress) e.getRemoteAddress()).getAddress().getHostAddress();
-			_logger.info("Server received " + clientIP + " messages, Request message type:" + msgType);
+			logger.info("Server received " + clientIP + " messages, Request message type:" + msgType);
 			
 			Channel channel = e.getChannel();
 			
@@ -164,6 +170,8 @@ public class GatewayServerHandler extends SimpleChannelHandler {
 		    if(msgType != LocateMessageTypes.LOGIN){
 				for (String subcribeItemName : request.getRIC().split(",")) {
 					Map<String, ChannelGroup> subscribeChannelMap = GateChannelCache.itemNameChannelMap;
+					boolean isDerived = DerivedUtils.isDerived(subcribeItemName);
+					String itemName = DerivedUtils.restoreRic(subcribeItemName);
 					ChannelGroup subChannelGroup = subscribeChannelMap.get(subcribeItemName);
 					if (subChannelGroup == null) {
 						subChannelGroup = new DefaultChannelGroup();
@@ -171,6 +179,16 @@ public class GatewayServerHandler extends SimpleChannelHandler {
 					}
 					if (!subChannelGroup.contains(channel)) {
 						subChannelGroup.add(channel);
+					}
+					if(isDerived){
+						List<String> derivedChannelList = GateChannelCache.derivedChannelGroupMap.get(itemName);
+						if(derivedChannelList==null){
+							derivedChannelList = new ArrayList<String>();
+							derivedChannelList.add(subcribeItemName);
+							GateChannelCache.derivedChannelGroupMap.put(itemName, derivedChannelList);
+						}else if(!derivedChannelList.contains(subcribeItemName)){
+							derivedChannelList.add(subcribeItemName);
+						}
 					}
 				}
 		    }
@@ -181,13 +199,13 @@ public class GatewayServerHandler extends SimpleChannelHandler {
 		    //RFAClientHandler process message and send the request to RFA.
 	    	gateForwardRFA.process(clientInfo);
 		} catch (Throwable throwable) {
-			_logger.error("Unexpected error ocurres", throwable);
+			logger.error("Unexpected error ocurres", throwable);
 		}
 	}
 
 	@Override
 	public void channelClosed(ChannelHandlerContext ctx, ChannelStateEvent e) throws Exception {
-		_logger.info("channel has been closed.");
+		logger.info("channel has been closed.");
 		
 		Channel channel = ctx.getChannel();
 		GateChannelCache.allChannelGroup.remove(channel);
@@ -195,11 +213,15 @@ public class GatewayServerHandler extends SimpleChannelHandler {
 		//遍历所有的channelgoup,发现有该channel的就remove掉.如果该channelGroup为空,
 		for(Entry<String,ChannelGroup> entry:GateChannelCache.itemNameChannelMap.entrySet()){
 			String itemName = entry.getKey();
+			boolean derived = DerivedUtils.isDerived(itemName);
+			if(derived){
+				itemName = DerivedUtils.restoreRic(itemName);
+			}
 			ChannelGroup channelGroup = entry.getValue();
 			if(channelGroup.contains(channel)){
 				channelGroup.remove(channel);
 			}
-			if(channelGroup.isEmpty()){//没有用户订阅了,退订该item
+			if(GateChannelCache.isEmnpty(itemName)){//没有用户订阅了,退订该item
 				unregisterList.add(itemName);
 				gateForwardRFA.closeHandler(itemName);
 			}

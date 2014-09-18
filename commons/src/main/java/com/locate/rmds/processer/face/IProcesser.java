@@ -11,6 +11,7 @@ import com.locate.common.model.LocateUnionMessage;
 
 public abstract class IProcesser{
 	protected String derivactiveItemName;
+	protected String clientRequestItemName;
     protected Future<LocateUnionMessage> engineFuture;
     protected Future<LocateUnionMessage> derivedEngineFuture;
 	

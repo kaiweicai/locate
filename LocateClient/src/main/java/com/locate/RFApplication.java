@@ -2,7 +2,9 @@ package com.locate;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Rectangle;
+import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.net.ConnectException;
@@ -134,33 +136,40 @@ public class RFApplication extends JFrame {
 				SubstanceLookAndFeel.setSkin(new RavenSkin());
 				try {
 					setSize(1024, 720);
+					int windowWidth = getWidth(); // 获得窗口宽
+					int windowHeight = getHeight(); // 获得窗口高
+					Toolkit kit = Toolkit.getDefaultToolkit(); // 定义工具包
+					Dimension screenSize = kit.getScreenSize(); // 获取屏幕的尺寸
+					int screenWidth = screenSize.width; // 获取屏幕的宽
+					int screenHeight = screenSize.height; // 获取屏幕的高
+					setLocation(screenWidth / 2 - windowWidth / 2, screenHeight / 2 - windowHeight / 2);// 设置窗口居中显示
 					JPanel panel = new JPanel();
 					panel.setLayout(null);
 					JScrollPane sp = new JScrollPane(panel);
-//					sp.setLayout(mainGroupLayout);
+					// sp.setLayout(mainGroupLayout);
 					getContentPane().add(sp);
 					int inputX = 550;
 					int inputY = 20;
-					panel.add(getCloseButton(new Rectangle(inputX+200, inputY, 100, 20)));
-					panel.add(getUserNameLabel(new Rectangle(inputX,inputY,100,20)));
-					panel.add(getUserNameTextField(new Rectangle(inputX+70,inputY,100,20)));
-					panel.add(getPasswordLabel(new Rectangle(inputX,inputY+=30, 100, 20)));
-					panel.add(getPasswordTextField(new Rectangle(inputX+70,inputY, 100, 20)));
-					panel.add(getServerAddressLabel(new Rectangle(inputX,inputY+=30, 100, 20)));
-					panel.add(getServerAddressTextField(new Rectangle(inputX+120,inputY, 100, 20)));
-					panel.add(getPortLabel(new Rectangle(inputX,inputY+=30, 100, 20)));
-					panel.add(getPortTextField(new Rectangle(inputX+120,inputY, 100, 20)));
-					
-					panel.add(getConnetedButton(new Rectangle(inputX,inputY+=30, 100, 20)));
-					panel.add(getRicLabel(new Rectangle(inputX,inputY+=30, 100, 20)));
-					panel.add(getRicTextField(new Rectangle(inputX+120,inputY, 150, 20)));
-					panel.add(getOpenButton(new Rectangle(inputX,inputY+=30, 100, 20)));
-					panel.add(getTableScrollPane(new Rectangle(inputX, inputY+=30, 360, 400)));
+					panel.add(getCloseButton(new Rectangle(inputX + 200, inputY, 100, 20)));
+					panel.add(getUserNameLabel(new Rectangle(inputX, inputY, 100, 20)));
+					panel.add(getUserNameTextField(new Rectangle(inputX + 70, inputY, 100, 20)));
+					panel.add(getPasswordLabel(new Rectangle(inputX, inputY += 30, 100, 20)));
+					panel.add(getPasswordTextField(new Rectangle(inputX + 70, inputY, 100, 20)));
+					panel.add(getServerAddressLabel(new Rectangle(inputX, inputY += 30, 100, 20)));
+					panel.add(getServerAddressTextField(new Rectangle(inputX + 120, inputY, 100, 20)));
+					panel.add(getPortLabel(new Rectangle(inputX, inputY += 30, 100, 20)));
+					panel.add(getPortTextField(new Rectangle(inputX + 120, inputY, 100, 20)));
+
+					panel.add(getConnetedButton(new Rectangle(inputX, inputY += 30, 100, 20)));
+					panel.add(getRicLabel(new Rectangle(inputX, inputY += 30, 100, 20)));
+					panel.add(getRicTextField(new Rectangle(inputX + 120, inputY, 150, 20)));
+					panel.add(getOpenButton(new Rectangle(inputX, inputY += 30, 100, 20)));
+					panel.add(getTableScrollPane(new Rectangle(inputX, inputY += 30, 360, 400)));
 					panel.add(getUseTimeTextLabel(new Rectangle(inputX, 620, 500, 50)));
 					panel.add(getJScrollPane0(new Rectangle(30, 10, 500, 560)));
 					panel.add(getStatusBar(new Rectangle(30, 570, 500, 50)));
 					panel.add(getServerBar(new Rectangle(30, 620, 500, 50)));
-				}catch(Exception e){
+				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
@@ -521,10 +530,10 @@ public class RFApplication extends JFrame {
 
 		RFApplication frame = new RFApplication();
 		frame.setDefaultCloseOperation(RFApplication.EXIT_ON_CLOSE);
-		frame.setTitle("RFApplication");
+		frame.setTitle("Price Tech application");
 		frame.getContentPane().setPreferredSize(frame.getSize());
 		frame.pack();
-		frame.setLocationRelativeTo(null);
+//		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
 //		installLnF();
 //		RFAServerManager proxy = new RFAServerManager();
