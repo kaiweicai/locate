@@ -79,7 +79,6 @@ public class QSConsumerProxy{
 	protected OMMPool _pool;
 	public String serviceName;
 	private boolean all = true;
-	protected static String _configFile = "config/rfaConfig.properties";
 	public static HashMap<Integer, FieldDictionary> DICTIONARIES = new HashMap<Integer, FieldDictionary>();
 	public static FieldDictionary dictionary;
 	DecimalFormat dataFormat = new DecimalFormat("0.00");
@@ -117,9 +116,6 @@ public class QSConsumerProxy{
 		_loadedDictionaries = new LinkedList<String>();
 		_pendingDictionaries = new HashMap<Handle, String>();
 		_services = new HashMap<String, ServiceInfo>();
-		//
-		SystemProperties.init(_configFile);
-		
 		
 		// Context.initialize();
 		// 1. Initialize system config
@@ -576,7 +572,7 @@ public class QSConsumerProxy{
 		// The name is passed as a command line parameter.
 		if ((argv != null) && (argv.length > 1)) {
 			demo.serviceName = argv[0];
-			demo._configFile = argv[1];
+//			demo._configFile = argv[1];
 		} else {
 			System.exit(0);
 		}
