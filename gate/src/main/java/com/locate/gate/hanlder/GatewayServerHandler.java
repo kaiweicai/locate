@@ -158,7 +158,7 @@ public class GatewayServerHandler extends SimpleChannelHandler {
 			String userName = request.getUserName();
 			
 			String clientIP = ((InetSocketAddress) e.getRemoteAddress()).getAddress().getHostAddress();
-			logger.info("Server received " + clientIP + " messages, Request message type:" + msgType);
+			logger.info("Server received " + clientIP + " messages, Request message type:" + LocateMessageTypes.toString(msgType));
 			
 			Channel channel = e.getChannel();
 			

@@ -5,6 +5,7 @@ import org.junit.Test;
 import com.locate.rmds.QSConsumerProxy;
 import com.reuters.rfa.dictionary.FidDef;
 import com.reuters.rfa.dictionary.FieldDictionary;
+import com.reuters.rfa.omm.OMMTypes;
 
 public class DictTest {
 	@Test
@@ -19,7 +20,7 @@ public class DictTest {
 			FidDef fidDef = dictionary.getFidDef(i);
 			if (fidDef != null)
 				System.out.println(fidDef.getFieldId() + ",name:" + fidDef.getName() + ",long name:"
-						+ fidDef.getLongName() + ",type:" + fidDef.getOMMType()+",");
+						+ fidDef.getLongName() + ",type:" + OMMTypes.toString(fidDef.getOMMType())+",");
 		}
 	}
 

@@ -4,16 +4,18 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import com.locate.common.model.LocateUnionMessage;
+import com.locate.common.utils.SystemProperties;
 
 public class CurrencyEngine implements Engine {
 	public static float currency;
+	public static String currencyFiled = SystemProperties.getProperties(SystemProperties.CURRENCY_FIELD);
+	private static String[] curFields = currencyFiled.split(",");
 	@Override
 	public LocateUnionMessage doEngine(LocateUnionMessage message) {
 		List<String[]> payLoadList = message.getPayLoadSet();
 		for(String[] payLoad:payLoadList){
 			String id = payLoad[0];
-			//TODO select the filed to change to the CYN.
-			if(id.equals("6")||id.equals("25")){
+			if(fieldInChange(id,curFields)){
 				BigDecimal payLoadValue = new BigDecimal(payLoad[3]);
 				BigDecimal currencyValue = new BigDecimal(Double.toString(currency));
 				BigDecimal resultValue = payLoadValue.multiply(currencyValue);
@@ -26,6 +28,16 @@ public class CurrencyEngine implements Engine {
 		return message;
 	}
 
+	public boolean fieldInChange(String exchangeField,String[] curFields){
+		boolean result = false;
+		for(String filed:curFields){
+			if(exchangeField.equals(filed)){
+				result = true;
+				break;
+			}
+		}
+		return result;
+	}
 	public static void main(String[] args) {
 		long startTime = System.currentTimeMillis();
 		BigDecimal payLoadValue = new BigDecimal("65225.584");
