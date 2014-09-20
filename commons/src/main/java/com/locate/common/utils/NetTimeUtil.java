@@ -1,6 +1,8 @@
 package com.locate.common.utils;
 
 import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -10,6 +12,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
 import org.apache.commons.net.ntp.NTPUDPClient;
+import org.apache.commons.net.ntp.NtpV3Impl;
+import org.apache.commons.net.ntp.NtpV3Packet;
 import org.apache.commons.net.ntp.TimeInfo;
 import org.apache.commons.net.ntp.TimeStamp;
 import org.slf4j.Logger;
@@ -20,6 +24,7 @@ import com.locate.common.datacache.DataBaseCache;
 public class NetTimeUtil {
 	static Logger logger = LoggerFactory.getLogger(NetTimeUtil.class);
 	public static final long NET_SUB_LOCAL_TIME = getNetTime() - System.currentTimeMillis();
+
 	public static long getNetTime() {
 		long time = 0;
 		// try {
@@ -34,10 +39,10 @@ public class NetTimeUtil {
 		// }
 		try {
 			NTPUDPClient timeClient = new NTPUDPClient();
-			String timeServerUrl = "ntp.nasa.gov";
+			String timeServerUrl = "ntp.sjtu.edu.cn";
 			// String timeServerUrl = "ntp.sjtu.edu.cn";
 			InetAddress timeServerAddress = InetAddress.getByName(timeServerUrl);
-			TimeInfo timeInfo = timeClient.getTime(timeServerAddress);
+			TimeInfo timeInfo = getTime(timeServerAddress,123);
 			TimeStamp timeStamp = timeInfo.getMessage().getTransmitTimeStamp();
 			time = timeStamp.getTime();
 		} catch (UnknownHostException e) {
@@ -53,29 +58,33 @@ public class NetTimeUtil {
 		return NET_SUB_LOCAL_TIME + System.currentTimeMillis();
 	}
 
-	public static void main(String[] args) {
-		// for(int i=0;i<100;i++){
-		// System.out.println(getNetTime()-System.currentTimeMillis());
-		// }
+	public static TimeInfo getTime(InetAddress host, int port) throws IOException {
+		DatagramSocket _socket_ = new DatagramSocket();
 		try {
-			for (int i = 0; i < 100; i++) {
-				NTPUDPClient timeClient = new NTPUDPClient();
-//				 String timeServerUrl = "time-a.nist.gov";
-				String timeServerUrl = "ntp.nasa.gov";
-				InetAddress timeServerAddress = InetAddress.getByName(timeServerUrl);
-				TimeInfo timeInfo = timeClient.getTime(timeServerAddress);
-				TimeStamp timeStamp = timeInfo.getMessage().getTransmitTimeStamp();
-				long diffTime = timeStamp.getTime() - System.currentTimeMillis();
-				System.out.println(diffTime);
-			}
+			NtpV3Packet message = new NtpV3Impl();
+			message.setMode(3);
+			message.setVersion(3);
+			DatagramPacket sendPacket = message.getDatagramPacket();
+			sendPacket.setAddress(host);
+			sendPacket.setPort(port);
 
-			// DateFormat dateFormat = new
-			// SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-			// System.out.println(dateFormat.format(timeStamp.getDate()));
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
+			NtpV3Packet recMessage = new NtpV3Impl();
+			DatagramPacket receivePacket = recMessage.getDatagramPacket();
+
+			TimeStamp now = TimeStamp.getCurrentTime();
+
+			message.setTransmitTime(now);
+			_socket_.setSoTimeout(2000);
+			_socket_.send(sendPacket);
+			_socket_.receive(receivePacket);
+
+			long returnTime = System.currentTimeMillis();
+
+			TimeInfo info = new TimeInfo(recMessage, returnTime, false);
+
+			return info;
+		} finally {
+			_socket_.close();
 		}
 	}
 }
