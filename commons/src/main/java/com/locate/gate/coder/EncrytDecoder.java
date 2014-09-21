@@ -1,30 +1,34 @@
 package com.locate.gate.coder;
 
-import java.nio.charset.Charset;
+import io.netty.handler.codec.MessageToMessageDecoder;
+
+import java.util.List;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
-import org.jboss.netty.buffer.ChannelBuffer;
-import org.jboss.netty.buffer.ChannelBuffers;
-import org.jboss.netty.channel.Channel;
-import org.jboss.netty.channel.ChannelHandlerContext;
-import org.jboss.netty.handler.codec.oneone.OneToOneDecoder;
-
 import com.locate.common.utils.CryptSecurity;
 
-public class EncrytDecoder extends OneToOneDecoder {
+public class EncrytDecoder extends MessageToMessageDecoder<String> {
 
+//	@Override
+//	protected Object decode(ChannelHandlerContext ctx, Channel channel, Object msg) throws Exception {
+//		ChannelBuffer buffer = (ChannelBuffer)msg;
+//		byte[] keyByte = new byte[8];
+//		buffer.readBytes(keyByte);
+//		SecretKey desKey = new SecretKeySpec(keyByte, "DES");
+//		String result = CryptSecurity.decryptByDES(desKey,buffer.toString(Charset.forName("UTF-8")));
+//		byte[] message = result.getBytes("UTF-8");
+//		ChannelBuffer channelBuffer = ChannelBuffers.buffer(message.length);
+//		channelBuffer.writeBytes(message);
+//		return channelBuffer;
+//	}
 	@Override
-	protected Object decode(ChannelHandlerContext ctx, Channel channel, Object msg) throws Exception {
-		ChannelBuffer buffer = (ChannelBuffer)msg;
-		byte[] keyByte = new byte[8];
-		buffer.readBytes(keyByte);
+	protected void decode(io.netty.channel.ChannelHandlerContext ctx, String msg, List<Object> out) throws Exception {
+		String[] message = msg.split(",");
+		byte[] keyByte = message[0].getBytes("UTF-8");
 		SecretKey desKey = new SecretKeySpec(keyByte, "DES");
-		String result = CryptSecurity.decryptByDES(desKey,buffer.toString(Charset.forName("UTF-8")));
-		byte[] message = result.getBytes("UTF-8");
-		ChannelBuffer channelBuffer = ChannelBuffers.buffer(message.length);
-		channelBuffer.writeBytes(message);
-		return channelBuffer;
+		String result = CryptSecurity.decryptByDES(desKey,message[1]);
+		out.add(result);
 	}
 }

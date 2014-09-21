@@ -7,7 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import com.locate.bridge.HttpWayResponser;
 import com.locate.common.constant.SystemConstant;
 import com.locate.common.utils.XmlMessageUtil;
 import com.locate.rmds.QSConsumerProxy;
@@ -182,7 +181,7 @@ public class WebItemManager implements Client {
 			String state = respMsg.getState().toString();
 			responseMsg = null;
 			XmlMessageUtil.addLocateInfo(responseMsg, msgType, SystemConstant.sequenceNo.getAndIncrement(), 0);
-			HttpWayResponser.sentMrketPriceToSubsribeChannel(responseMsg, clientRequestItemName);
+//			HttpWayResponser.sentMrketPriceToSubsribeChannel(responseMsg, clientRequestItemName);
 			logger.warn("RFA server has new state. streamState:" + streamState + " datasstate " + dataState);
 			return;
 		}

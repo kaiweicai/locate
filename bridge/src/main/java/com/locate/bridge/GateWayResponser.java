@@ -1,10 +1,11 @@
 package com.locate.bridge;
 
+import io.netty.channel.Channel;
+import io.netty.channel.group.ChannelGroup;
+
 import java.nio.charset.Charset;
 
 import org.dom4j.Document;
-import org.jboss.netty.channel.Channel;
-import org.jboss.netty.channel.group.ChannelGroup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,9 +27,9 @@ public class GateWayResponser {
 
 	public static void sentResponseMsg(LocateUnionMessage response, Integer channelId) {
 		// LocateMessage message = new LocateMessage(msgType, response, 0);
-		Channel channel = GateChannelCache.allChannelGroup.find(channelId);
-		if (channel != null && channel.isConnected()) {
-			channel.write(response);
+		Channel channel = GateChannelCache.channelMap.get(channelId);
+		if (channel != null && channel.isActive()) {
+			channel.writeAndFlush(response);
 		} else {
 			logger.error("The channel had been closed when write login response to client. Channel ID is " + channelId);
 		}
@@ -39,7 +40,7 @@ public class GateWayResponser {
 		// LocateMessage message = new LocateMessage(msgType, response, 0);
 		// message.setSequenceNo(RFAServerManager.sequenceNo.getAndIncrement());
 		XmlMessageUtil.addLocateInfo(response, msgType, SystemConstant.sequenceNo.getAndIncrement(), 0);
-		GateChannelCache.allChannelGroup.write(response);
+		GateChannelCache.allChannelGroup.writeAndFlush(response);
 		logger.info("downStream message is :"+response);
 	}
 
@@ -55,11 +56,11 @@ public class GateWayResponser {
 			return;
 		}
 		channelGroup.write(locateMessage);
-		logger.info("send message is :" + locateMessage + " to order group" + channelGroup.getName());
+		logger.info("send message is :" + locateMessage + " to order group" + channelGroup.name());
 	}
 
 	public static void sendSnapShotToChannel(LocateUnionMessage locatMessage, int channelId) {
-		GateChannelCache.allChannelGroup.find(channelId).write(locatMessage);
+		GateChannelCache.channelMap.get(channelId).writeAndFlush(locatMessage);
 		logger.info("downStream message is :"+locatMessage);
 	}
 
@@ -93,6 +94,6 @@ public class GateWayResponser {
 			return;
 		}
 		channelGroup.write(locateMessage);
-		logger.info("send message is :" + locateMessage + " to order group" + channelGroup.getName());
+		logger.info("send message is :" + locateMessage + " to order group" + channelGroup.name());
 	}
 }

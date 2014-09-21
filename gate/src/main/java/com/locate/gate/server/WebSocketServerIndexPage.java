@@ -6,9 +6,6 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
-import org.jboss.netty.buffer.ChannelBuffer;
-import org.jboss.netty.buffer.ChannelBuffers;
-import org.jboss.netty.util.CharsetUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -19,10 +16,10 @@ public class WebSocketServerIndexPage {
 	private static final String MARKET_WEB_SOCKET_PAGE = "web/MarkpriceWebSocket.html";
 	private static final String NEWLINE = "\r\n";
 
-	public ChannelBuffer getContent(String webSocketLocation) {
-		File file = new File(MARKET_WEB_SOCKET_PAGE);
-		return ChannelBuffers.copiedBuffer(readHtmlFile2String(file), CharsetUtil.UTF_8);
-	}
+//	public ChannelBuffer getContent(String webSocketLocation) {
+//		File file = new File(MARKET_WEB_SOCKET_PAGE);
+//		return ChannelBuffers.copiedBuffer(readHtmlFile2String(file), CharsetUtil.UTF_8);
+//	}
 
 	private String readHtmlFile2String(File file) {
 		StringBuilder sBuilder = new StringBuilder();

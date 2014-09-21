@@ -1,5 +1,12 @@
 package com.locate.gate.hanlder;
 
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.group.ChannelGroup;
+import io.netty.channel.group.DefaultChannelGroup;
+import io.netty.handler.codec.string.StringDecoder;
+import io.netty.util.concurrent.GlobalEventExecutor;
+
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.charset.Charset;
@@ -14,28 +21,20 @@ import javax.annotation.Resource;
 import net.sf.json.JSONObject;
 
 import org.apache.commons.lang.StringUtils;
-import org.jboss.netty.buffer.ChannelBuffer;
-import org.jboss.netty.channel.Channel;
-import org.jboss.netty.channel.ChannelHandlerContext;
-import org.jboss.netty.channel.ChannelStateEvent;
-import org.jboss.netty.channel.ExceptionEvent;
-import org.jboss.netty.channel.MessageEvent;
-import org.jboss.netty.channel.SimpleChannelHandler;
-import org.jboss.netty.channel.group.ChannelGroup;
-import org.jboss.netty.channel.group.DefaultChannelGroup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.locate.bridge.GateForwardRFA;
 import com.locate.common.constant.LocateMessageTypes;
+import com.locate.common.constant.SystemConstant;
 import com.locate.common.datacache.DataBaseCache;
 import com.locate.common.datacache.GateChannelCache;
 import com.locate.common.model.ClientRequest;
 import com.locate.common.utils.DerivedUtils;
 
 @Service
-public class GatewayServerHandler extends SimpleChannelHandler {
+public class GatewayServerHandler extends StringDecoder {
 	static Logger logger = LoggerFactory.getLogger(GatewayServerHandler.class.getName());
 	
 	/** The number of message to receive */
@@ -73,16 +72,26 @@ public class GatewayServerHandler extends SimpleChannelHandler {
 		logger.info("End re-register all of client request ");
 	}
 	
-	
 	@Override
-	public void exceptionCaught(ChannelHandlerContext ctx, ExceptionEvent e) throws Exception {
-		if(e instanceof IOException){
-			logger.warn(((IOException) e).getMessage(),e);
+	public void exceptionCaught(io.netty.channel.ChannelHandlerContext ctx, Throwable cause) throws Exception {
+		super.exceptionCaught(ctx, cause);
+		if(cause instanceof IOException){
+			logger.warn(((IOException) cause).getMessage(),cause);
 			return;
 		}else{
-			logger.error("Unexpect Exception from downstream! please contact the developer!",e);
+			logger.error("Unexpect Exception from downstream! please contact the developer!",cause);
 		}
 	}
+	
+//	@Override
+//	public void exceptionCaught(ChannelHandlerContext ctx, ExceptionEvent e) throws Exception {
+//		if(e instanceof IOException){
+//			logger.warn(((IOException) e).getMessage(),e);
+//			return;
+//		}else{
+//			logger.error("Unexpect Exception from downstream! please contact the developer!",e);
+//		}
+//	}
 
 //	@Deprecated
 //	private void updateServerStatInfo() {
@@ -141,73 +150,134 @@ public class GatewayServerHandler extends SimpleChannelHandler {
 //		}
 //	}
 	
-	@Override
-	public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-		// super.messageReceived(ctx, e);
+	public void channelRead(ChannelHandlerContext ctx, Object mesg) throws Exception {
 		t0 = System.currentTimeMillis();
 		int numberOfMessage = numberOfReceived.incrementAndGet();
 		try {
-			ChannelBuffer channelBuffer = (ChannelBuffer) e.getMessage();
-			String msg = channelBuffer.toString(Charset.forName("UTF-8"));
-			JSONObject jsonObject = JSONObject.fromObject(msg);
-			ClientRequest request = (ClientRequest)JSONObject.toBean(jsonObject,ClientRequest.class);
-			logger.info("original message -------"+request);
-			
+			String message = (String)mesg;
+			JSONObject jsonObject = JSONObject.fromObject(message);
+			ClientRequest request = (ClientRequest) JSONObject.toBean(jsonObject, ClientRequest.class);
+			logger.info("original message -------" + request);
+			Channel channel = ctx.channel();
 			byte msgType = request.getMsgType();
 			// Judge client whether logon
 			String userName = request.getUserName();
-			
-			String clientIP = ((InetSocketAddress) e.getRemoteAddress()).getAddress().getHostAddress();
-			logger.info("Server received " + clientIP + " messages, Request message type:" + LocateMessageTypes.toString(msgType));
-			
-			Channel channel = e.getChannel();
-			
-			//将channelId和对应的channel放到map中,会写客户端的时候可以根据该id找到对应的channel.
-			if(!GateChannelCache.allChannelGroup.contains(channel)){
+
+			String clientIP = ((InetSocketAddress) channel.remoteAddress()).getAddress().getHostAddress();
+			logger.info("Server received " + clientIP + " messages, Request message type:"
+					+ LocateMessageTypes.toString(msgType));
+
+			// 将channelId和对应的channel放到map中,会写客户端的时候可以根据该id找到对应的channel.
+			if (!GateChannelCache.allChannelGroup.contains(channel)) {
 				GateChannelCache.allChannelGroup.add(channel);
 			}
-			//store the channel of customer in a map according by the RIC 
-		    if(msgType != LocateMessageTypes.LOGIN){
+			// store the channel of customer in a map according by the RIC
+			if (msgType != LocateMessageTypes.LOGIN) {
 				for (String subcribeItemName : request.getRIC().split(",")) {
 					Map<String, ChannelGroup> subscribeChannelMap = GateChannelCache.itemNameChannelMap;
 					boolean isDerived = DerivedUtils.isDerived(subcribeItemName);
 					String itemName = DerivedUtils.restoreRic(subcribeItemName);
 					ChannelGroup subChannelGroup = subscribeChannelMap.get(subcribeItemName);
 					if (subChannelGroup == null) {
-						subChannelGroup = new DefaultChannelGroup();
-						subscribeChannelMap.put(subcribeItemName,subChannelGroup);
+						subChannelGroup = new DefaultChannelGroup("subcribeItemName",GlobalEventExecutor.INSTANCE);
+						subscribeChannelMap.put(subcribeItemName, subChannelGroup);
 					}
 					if (!subChannelGroup.contains(channel)) {
 						subChannelGroup.add(channel);
 					}
-					if(isDerived){
+					if (isDerived) {
 						List<String> derivedChannelList = GateChannelCache.derivedChannelGroupMap.get(itemName);
-						if(derivedChannelList==null){
+						if (derivedChannelList == null) {
 							derivedChannelList = new ArrayList<String>();
 							derivedChannelList.add(subcribeItemName);
 							GateChannelCache.derivedChannelGroupMap.put(itemName, derivedChannelList);
-						}else if(!derivedChannelList.contains(subcribeItemName)){
+						} else if (!derivedChannelList.contains(subcribeItemName)) {
 							derivedChannelList.add(subcribeItemName);
 						}
 					}
 				}
-		    }
-		    if(StringUtils.isBlank(userName)){
+			}
+			if (StringUtils.isBlank(userName)) {
 				userName = DataBaseCache._userConnection.get(clientIP);
 			}
-			ClientRequest clientInfo = new ClientRequest(request,userName, channel.getId(), clientIP);
-		    //RFAClientHandler process message and send the request to RFA.
-	    	gateForwardRFA.process(clientInfo);
+			int channelId = SystemConstant.channelId.incrementAndGet();
+			GateChannelCache.channelMap.put(channelId, ctx.channel());
+			ClientRequest clientInfo = new ClientRequest(request, userName, channelId, clientIP);
+			// RFAClientHandler process message and send the request to RFA.
+			gateForwardRFA.process(clientInfo);
 		} catch (Throwable throwable) {
 			logger.error("Unexpected error ocurres", throwable);
 		}
-	}
+	};
+	
+//	@Override
+//	public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
+//		// super.messageReceived(ctx, e);
+//		t0 = System.currentTimeMillis();
+//		int numberOfMessage = numberOfReceived.incrementAndGet();
+//		try {
+//			ChannelBuffer channelBuffer = (ChannelBuffer) e.getMessage();
+//			String msg = channelBuffer.toString(Charset.forName("UTF-8"));
+//			JSONObject jsonObject = JSONObject.fromObject(msg);
+//			ClientRequest request = (ClientRequest)JSONObject.toBean(jsonObject,ClientRequest.class);
+//			logger.info("original message -------"+request);
+//			
+//			byte msgType = request.getMsgType();
+//			// Judge client whether logon
+//			String userName = request.getUserName();
+//			
+//			String clientIP = ((InetSocketAddress) e.getRemoteAddress()).getAddress().getHostAddress();
+//			logger.info("Server received " + clientIP + " messages, Request message type:" + LocateMessageTypes.toString(msgType));
+//			
+//			Channel channel = e.getChannel();
+//			
+//			//将channelId和对应的channel放到map中,会写客户端的时候可以根据该id找到对应的channel.
+//			if(!GateChannelCache.allChannelGroup.contains(channel)){
+//				GateChannelCache.allChannelGroup.add(channel);
+//			}
+//			//store the channel of customer in a map according by the RIC 
+//		    if(msgType != LocateMessageTypes.LOGIN){
+//				for (String subcribeItemName : request.getRIC().split(",")) {
+//					Map<String, ChannelGroup> subscribeChannelMap = GateChannelCache.itemNameChannelMap;
+//					boolean isDerived = DerivedUtils.isDerived(subcribeItemName);
+//					String itemName = DerivedUtils.restoreRic(subcribeItemName);
+//					ChannelGroup subChannelGroup = subscribeChannelMap.get(subcribeItemName);
+//					if (subChannelGroup == null) {
+//						subChannelGroup = new DefaultChannelGroup();
+//						subscribeChannelMap.put(subcribeItemName,subChannelGroup);
+//					}
+//					if (!subChannelGroup.contains(channel)) {
+//						subChannelGroup.add(channel);
+//					}
+//					if(isDerived){
+//						List<String> derivedChannelList = GateChannelCache.derivedChannelGroupMap.get(itemName);
+//						if(derivedChannelList==null){
+//							derivedChannelList = new ArrayList<String>();
+//							derivedChannelList.add(subcribeItemName);
+//							GateChannelCache.derivedChannelGroupMap.put(itemName, derivedChannelList);
+//						}else if(!derivedChannelList.contains(subcribeItemName)){
+//							derivedChannelList.add(subcribeItemName);
+//						}
+//					}
+//				}
+//		    }
+//		    if(StringUtils.isBlank(userName)){
+//				userName = DataBaseCache._userConnection.get(clientIP);
+//			}
+//			ClientRequest clientInfo = new ClientRequest(request,userName, channel.getId(), clientIP);
+//		    //RFAClientHandler process message and send the request to RFA.
+//	    	gateForwardRFA.process(clientInfo);
+//		} catch (Throwable throwable) {
+//			logger.error("Unexpected error ocurres", throwable);
+//		}
+//	}
 
 	@Override
-	public void channelClosed(ChannelHandlerContext ctx, ChannelStateEvent e) throws Exception {
-		logger.info("channel has been closed.");
+	public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+		super.channelInactive(ctx);
+logger.info("channel has been closed.");
 		
-		Channel channel = ctx.getChannel();
+		Channel channel = ctx.channel();
 		GateChannelCache.allChannelGroup.remove(channel);
 		List<String> unregisterList = new ArrayList<String>();
 		//遍历所有的channelgoup,发现有该channel的就remove掉.如果该channelGroup为空,
@@ -234,6 +304,38 @@ public class GatewayServerHandler extends SimpleChannelHandler {
 			}
 		}
 	}
+	
+//	@Override
+//	public void channelClosed(ChannelHandlerContext ctx, ChannelStateEvent e) throws Exception {
+//		logger.info("channel has been closed.");
+//		
+//		Channel channel = ctx.getChannel();
+//		GateChannelCache.allChannelGroup.remove(channel);
+//		List<String> unregisterList = new ArrayList<String>();
+//		//遍历所有的channelgoup,发现有该channel的就remove掉.如果该channelGroup为空,
+//		for(Entry<String,ChannelGroup> entry:GateChannelCache.itemNameChannelMap.entrySet()){
+//			String itemName = entry.getKey();
+//			boolean derived = DerivedUtils.isDerived(itemName);
+//			if(derived){
+//				itemName = DerivedUtils.restoreRic(itemName);
+//			}
+//			ChannelGroup channelGroup = entry.getValue();
+//			if(channelGroup.contains(channel)){
+//				channelGroup.remove(channel);
+//			}
+//			if(GateChannelCache.isEmnpty(itemName)){//没有用户订阅了,退订该item
+//				unregisterList.add(itemName);
+//				gateForwardRFA.closeHandler(itemName);
+//			}
+//		}
+//		//清空掉该itemname和ChannelGroup的对应关系.
+//		for (String itemName : unregisterList) {
+//			ChannelGroup itemChannelGroup = GateChannelCache.itemNameChannelMap.get(itemName);
+//			if (itemChannelGroup.isEmpty()) {
+//				GateChannelCache.itemNameChannelMap.remove(itemName);
+//			}
+//		}
+//	}
 	
 	
 	/**

@@ -30,7 +30,6 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 
 import org.apache.commons.lang.StringUtils;
-import org.jboss.netty.channel.SimpleChannelHandler;
 import org.pushingpixels.substance.api.SubstanceLookAndFeel;
 import org.pushingpixels.substance.api.skin.RavenSkin;
 import org.slf4j.ILoggerFactory;
@@ -124,7 +123,7 @@ public class RFApplication extends JFrame {
 		}
 		initComponents();
 		IBussiness bussinessHandler = new UIHandler();
-		SimpleChannelHandler clientHandler = new ClientHandler(bussinessHandler);
+		ClientHandler clientHandler = new ClientHandler(bussinessHandler);
 		clientConnetor = new ClientConnector(bussinessHandler);
 //		initNettyClient();
 	}

@@ -43,12 +43,6 @@
 			<version>3.1.1.RELEASE</version>
 		</dependency>
 		<dependency>
-			<groupId>io.netty</groupId>
-			<artifactId>netty</artifactId>
-			<version>3.9.2.Final</version>
-			<type>bundle</type>
-		</dependency>
-		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.0</version>
@@ -63,6 +57,11 @@
 			<groupId>com.locate</groupId>
 			<artifactId>bridge</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>io.netty</groupId>
+			<artifactId>netty-all</artifactId>
+			<version>4.0.23.Final</version>
 		</dependency>
 	</dependencies>
 </project>

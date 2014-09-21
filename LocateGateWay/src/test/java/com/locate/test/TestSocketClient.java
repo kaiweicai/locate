@@ -1,45 +1,28 @@
 package com.locate.test;
 
 
-import java.net.InetSocketAddress;
-import java.util.concurrent.Executors;
-
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentFactory;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
-import org.jboss.netty.bootstrap.ClientBootstrap;
-import org.jboss.netty.channel.Channel;
-import org.jboss.netty.channel.ChannelFactory;
-import org.jboss.netty.channel.ChannelFuture;
-import org.jboss.netty.channel.ChannelHandlerContext;
-import org.jboss.netty.channel.ChannelPipeline;
-import org.jboss.netty.channel.ChannelPipelineFactory;
-import org.jboss.netty.channel.Channels;
-import org.jboss.netty.channel.ExceptionEvent;
-import org.jboss.netty.channel.MessageEvent;
-import org.jboss.netty.channel.SimpleChannelHandler;
-import org.jboss.netty.channel.socket.nio.NioClientSocketChannelFactory;
-import org.junit.Test;
 
 import com.locate.common.constant.LocateMessageTypes;
-import com.locate.common.model.LocateUnionMessage;
 
 
 public class TestSocketClient{
-	private Channel channel;
+//	private Channel channel;
 	
 	long t0,t1;
 	
-	class ClientHandler extends SimpleChannelHandler {
+	class ClientHandler {
 
 		long t0, t1;
 
-		@Override
-		public void exceptionCaught(ChannelHandlerContext ctx, ExceptionEvent e) throws Exception {
-			System.out.println(e.getCause());
-		}
+//		@Override
+//		public void exceptionCaught(ChannelHandlerContext ctx, ExceptionEvent e) throws Exception {
+//			System.out.println(e.getCause());
+//		}
 
 		public Document parseFile() {
 			SAXReader reader = new SAXReader();
@@ -53,30 +36,30 @@ public class TestSocketClient{
 			return userData;
 		}
 
-		@Override
-		public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-			super.messageReceived(ctx, e);
-			LocateUnionMessage message = (LocateUnionMessage) e.getMessage();
-			byte msgType = message.getMsgType();
-//			int length = message.getMsgLength();
-//			System.out.println("receive messages length:" + length);
-			System.out.println("Received message type:" + msgType);
-
-//			Document document = message.getDocument();
-//			if (document == null) {
-//				System.out.println("Received server's  message is null ");
-//				return;
-//			}
-//			String content = document.asXML();
-//			// String content = response.asXML();
-//			System.out.println("Received server's  message : " + content);
-
-			t1 = System.currentTimeMillis();
-
-			System.out.println("Sent messages delay : " + (t1 - t0));
-			System.out.println();
-		}
-	}
+//		@Override
+//		public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
+//			super.messageReceived(ctx, e);
+//			LocateUnionMessage message = (LocateUnionMessage) e.getMessage();
+//			byte msgType = message.getMsgType();
+////			int length = message.getMsgLength();
+////			System.out.println("receive messages length:" + length);
+//			System.out.println("Received message type:" + msgType);
+//
+////			Document document = message.getDocument();
+////			if (document == null) {
+////				System.out.println("Received server's  message is null ");
+////				return;
+////			}
+////			String content = document.asXML();
+////			// String content = response.asXML();
+////			System.out.println("Received server's  message : " + content);
+//
+//			t1 = System.currentTimeMillis();
+//
+//			System.out.println("Sent messages delay : " + (t1 - t0));
+//			System.out.println();
+//		}
+//	}
 
 	private void createOneTimesRequest(Document doc){
 		Element rmds = doc.addElement("rmds");
@@ -144,27 +127,27 @@ public class TestSocketClient{
 //		item.addElement("name").addText("XAG=");
 	}
 	
-	public void createClientConnetion() {
-		// 创建客户端channel的辅助类,发起connection请求
-		ChannelFactory factory = new NioClientSocketChannelFactory(Executors.newCachedThreadPool(),
-				Executors.newCachedThreadPool());
-		ClientBootstrap bootstrap = new ClientBootstrap(factory);
-		bootstrap.setPipelineFactory(new ChannelPipelineFactory() {
-			@Override
-			public ChannelPipeline getPipeline() throws Exception {
-				ChannelPipeline pipeline = Channels.pipeline();
-//				pipeline.addLast("encoder", new GateWayEncoder());
-//				pipeline.addLast("decoder", new GateWayDecoder());
-				pipeline.addLast("hanlder", new ClientHandler());
-				return pipeline;
-			}
-		});
-		
-		ChannelFuture future = bootstrap.connect(new InetSocketAddress(8888));
-		channel = future.getChannel();
-		future.awaitUninterruptibly();
-		bootstrap.releaseExternalResources();
-	}
+//	public void createClientConnetion() {
+//		// 创建客户端channel的辅助类,发起connection请求
+//		ChannelFactory factory = new NioClientSocketChannelFactory(Executors.newCachedThreadPool(),
+//				Executors.newCachedThreadPool());
+//		ClientBootstrap bootstrap = new ClientBootstrap(factory);
+//		bootstrap.setPipelineFactory(new ChannelPipelineFactory() {
+//			@Override
+//			public ChannelPipeline getPipeline() throws Exception {
+//				ChannelPipeline pipeline = Channels.pipeline();
+////				pipeline.addLast("encoder", new GateWayEncoder());
+////				pipeline.addLast("decoder", new GateWayDecoder());
+//				pipeline.addLast("hanlder", new ClientHandler());
+//				return pipeline;
+//			}
+//		});
+//		
+//		ChannelFuture future = bootstrap.connect(new InetSocketAddress(8888));
+//		channel = future.getChannel();
+//		future.awaitUninterruptibly();
+//		bootstrap.releaseExternalResources();
+//	}
 	
 	public void testSendRequest(byte msgType){
 		DocumentFactory documentFactory = DocumentFactory.getInstance();
@@ -213,19 +196,19 @@ public class TestSocketClient{
 	
 	
 	
-	@Test
-	public void testClient(){
-		t0=System.currentTimeMillis();
-		createClientConnetion();
-//		testSendRequest(RFAMessageTypes.LOGINWRONGUSER);
-//		testSendRequest(RFAMessageTypes.LOGINWRONGPASSWORD);
-//		testSendRequest(RFAMessageTypes.FUTURE_REQUEST);
-		testSendRequest(LocateMessageTypes.LOGIN);
-		testSendRequest(LocateMessageTypes.FUTURE_REQUEST);
-		
-		
-		channel.getCloseFuture().awaitUninterruptibly();
-	}
+//	@Test
+//	public void testClient(){
+//		t0=System.currentTimeMillis();
+//		createClientConnetion();
+////		testSendRequest(RFAMessageTypes.LOGINWRONGUSER);
+////		testSendRequest(RFAMessageTypes.LOGINWRONGPASSWORD);
+////		testSendRequest(RFAMessageTypes.FUTURE_REQUEST);
+//		testSendRequest(LocateMessageTypes.LOGIN);
+//		testSendRequest(LocateMessageTypes.FUTURE_REQUEST);
+//		
+//		
+//		channel.getCloseFuture().awaitUninterruptibly();
+//	}
 	
 //	/**
 //	 * Create the UdpClient's instance
@@ -283,4 +266,5 @@ public class TestSocketClient{
 //	    
 //	}
 
+}
 }

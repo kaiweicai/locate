@@ -1,30 +1,30 @@
 package com.locate.gate.handler;
 
+import io.netty.bootstrap.Bootstrap;
+import io.netty.bootstrap.ChannelFactory;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelHandler;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelOption;
+import io.netty.channel.ChannelPipeline;
+import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.SocketChannel;
+import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
+import io.netty.handler.codec.LengthFieldPrepender;
+import io.netty.handler.timeout.IdleState;
+import io.netty.handler.timeout.IdleStateEvent;
+
 import java.io.UnsupportedEncodingException;
 import java.net.InetSocketAddress;
+import java.nio.channels.Channels;
 import java.util.concurrent.Executors;
 
 import net.sf.json.JSONObject;
 
 import org.apache.commons.lang.StringUtils;
-import org.jboss.netty.bootstrap.ClientBootstrap;
-import org.jboss.netty.buffer.ChannelBuffer;
-import org.jboss.netty.buffer.ChannelBuffers;
-import org.jboss.netty.channel.Channel;
-import org.jboss.netty.channel.ChannelFactory;
-import org.jboss.netty.channel.ChannelFuture;
-import org.jboss.netty.channel.ChannelHandler;
-import org.jboss.netty.channel.ChannelHandlerContext;
-import org.jboss.netty.channel.ChannelPipeline;
-import org.jboss.netty.channel.ChannelPipelineFactory;
-import org.jboss.netty.channel.Channels;
-import org.jboss.netty.channel.SimpleChannelHandler;
-import org.jboss.netty.channel.socket.nio.NioClientSocketChannelFactory;
-import org.jboss.netty.handler.codec.frame.LengthFieldBasedFrameDecoder;
-import org.jboss.netty.handler.codec.frame.LengthFieldPrepender;
-import org.jboss.netty.handler.timeout.IdleState;
-import org.jboss.netty.handler.timeout.IdleStateAwareChannelHandler;
-import org.jboss.netty.handler.timeout.IdleStateEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,9 +39,9 @@ import com.locate.gate.coder.EncrytEncoder;
 public class ClientConnector implements IClientConnector {
 	Logger logger = LoggerFactory.getLogger(ClientConnector.class);
 	private Channel clientchannel;
-	private ClientBootstrap bootstrap;
+	private Bootstrap bootstrap;
 	private boolean conLocate;
-	private SimpleChannelHandler clientHandler;
+	private ClientHandler clientHandler;
 	private IBussiness bussinessHandler;
 
 	public ClientConnector(IBussiness bussinessHandler) {
@@ -51,27 +51,45 @@ public class ClientConnector implements IClientConnector {
 	}
 	
 	private void initNettyClient() {
+		logger.info("gate way Server starting...");
 		// 创建客户端channel的辅助类,发起connection请求
-		ChannelFactory factory = new NioClientSocketChannelFactory(Executors.newCachedThreadPool(),
-				Executors.newCachedThreadPool());
-		bootstrap = new ClientBootstrap(factory);
-		bootstrap.setPipelineFactory(new ChannelPipelineFactory() {
-			@Override
-			public ChannelPipeline getPipeline() throws Exception {
-				ChannelPipeline pipeline = Channels.pipeline();
-				pipeline.addLast("encoder", new LengthFieldPrepender(2));
-				pipeline.addLast("encrytEncoder", new EncrytEncoder());
-				pipeline.addLast("decoder", new LengthFieldBasedFrameDecoder(64*1024,0,2,0,2));
-				pipeline.addLast("encrytDecoder", new EncrytDecoder());
-//				pipeline.addLast("encoder", new GateWayEncoder());
-//				pipeline.addLast("decoder", new GateWayDecoder());
-				pipeline.addLast("hanlder", clientHandler);
-				// pipeline.addLast("timeout", new IdleStateHandler(new
-				// HashedWheelTimer(), 0, 0, 10));
-				// pipeline.addLast("heartBeat", new ClientIdleHandler());
-				return pipeline;
-			}
-		});
+		
+		
+		bootstrap = new Bootstrap();
+		bootstrap.group(new NioEventLoopGroup()).channel(NioServerSocketChannel.class)
+				.option(ChannelOption.SO_BACKLOG, 100)
+				.option(ChannelOption.SO_KEEPALIVE, true)
+				.option(ChannelOption.TCP_NODELAY, true)
+				.handler(new ChannelInitializer<SocketChannel>() {
+		             @Override
+							public void initChannel(SocketChannel ch) throws Exception {
+								ch.pipeline().addLast("encoder", new LengthFieldPrepender(2))
+										.addLast("encrytEncoder", new EncrytEncoder())
+										.addLast("fixLengthDecoder", new LengthFieldBasedFrameDecoder(64 * 1024, 0, 2, 0, 2))
+										.addLast("encrytDecoder", new EncrytDecoder())
+										.addLast("hander", clientHandler);
+
+							}
+		         });
+		
+		
+//		bootstrap.setPipelineFactory(new ChannelPipelineFactory() {
+//			@Override
+//			public ChannelPipeline getPipeline() throws Exception {
+//				ChannelPipeline pipeline = Channels.pipeline();
+//				pipeline.addLast("encoder", new LengthFieldPrepender(2));
+//				pipeline.addLast("encrytEncoder", new EncrytEncoder());
+//				pipeline.addLast("decoder", new LengthFieldBasedFrameDecoder(64*1024,0,2,0,2));
+//				pipeline.addLast("encrytDecoder", new EncrytDecoder());
+////				pipeline.addLast("encoder", new GateWayEncoder());
+////				pipeline.addLast("decoder", new GateWayDecoder());
+//				pipeline.addLast("hanlder", clientHandler);
+//				// pipeline.addLast("timeout", new IdleStateHandler(new
+//				// HashedWheelTimer(), 0, 0, 10));
+//				// pipeline.addLast("heartBeat", new ClientIdleHandler());
+//				return pipeline;
+//			}
+//		});
 
 	}
 	
@@ -80,12 +98,12 @@ public class ClientConnector implements IClientConnector {
 	 */
 	@Override
 	public void conneteLocateGateWay(String serverAddress,int port,String userName,String password) {
-		bootstrap.setOption("tcpNodelay", true);
-		bootstrap.setOption("child.keepalive", true);
+//		bootstrap.setOption("tcpNodelay", true);
+//		bootstrap.setOption("child.keepalive", true);
 		logger.info("start to conneted to server");
 		try{
 			ChannelFuture future = bootstrap.connect(new InetSocketAddress(serverAddress,port));
-			clientchannel = future.getChannel();
+			clientchannel = future.channel();
 			future.awaitUninterruptibly();
 		}catch(Exception e){
 			logger.error("NIO error "+e.getCause());
@@ -119,16 +137,16 @@ public class ClientConnector implements IClientConnector {
 		return request;
 	}
 	
-	class ClientIdleHandler extends IdleStateAwareChannelHandler implements ChannelHandler {
-		@Override
-		public void channelIdle(ChannelHandlerContext ctx, IdleStateEvent e) throws Exception {
-			if(e.getState()==IdleState.ALL_IDLE){
-				logger.debug("链路空闲,发送心跳 S:{" + e.getChannel().getRemoteAddress() + "} - C:{"
-						+ e.getChannel().getLocalAddress() + "} idleState:{" + e.getState() + "}");
-			}
-			super.channelIdle(ctx, e);
-		}
-	}
+//	class ClientIdleHandler extends IdleStateAwareChannelHandler implements ChannelHandler {
+//		@Override
+//		public void channelIdle(ChannelHandlerContext ctx, IdleStateEvent e) throws Exception {
+//			if(e.getState()==IdleState.ALL_IDLE){
+//				logger.debug("链路空闲,发送心跳 S:{" + e.getChannel().getRemoteAddress() + "} - C:{"
+//						+ e.getChannel().getLocalAddress() + "} idleState:{" + e.getState() + "}");
+//			}
+//			super.channelIdle(ctx, e);
+//		}
+//	}
 	
 	private ClientRequest createFutureRequest(String ric){
 		ClientRequest request = new ClientRequest();
@@ -152,14 +170,14 @@ public class ClientConnector implements IClientConnector {
 		}
 		byte[] content = null;
 		JSONObject jsonObject = JSONObject.fromObject(request);
-		try {
-			content = jsonObject.toString().getBytes("UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			logger.error("Not surport encoding",e);
-		}
-		ChannelBuffer buffer = ChannelBuffers.buffer(content.length);
-		buffer.writeBytes(content);
-		clientchannel.write(buffer);
+//		try {
+//			content = jsonObject.toString().getBytes("UTF-8");
+//		} catch (UnsupportedEncodingException e) {
+//			logger.error("Not surport encoding",e);
+//		}
+//		ChannelBuffer buffer = ChannelBuffers.buffer(content.length);
+//		buffer.writeBytes(jsonObject.toString());
+		clientchannel.write(jsonObject.toString());
 		logger.info("client downStream message is :"+jsonObject.toString());
 	}
 	
