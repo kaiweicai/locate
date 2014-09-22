@@ -38,6 +38,7 @@ public class SystemProperties {
 	
 	public static final String ADMIN_NEED_NOTIFY = "admin.need.notify";
 	public static final String ADMIN_USER_EMAIL = "admin.user.email";
+	public static final String ADMIN_EMAIL_FROM = "admin.email.from";
 	public static final String SMTP_ADMIN_USER_EMAIL = "smtp.admin.user.email";
 	public static final String SMTP_MAIL_USER_NAME = "smtp.mail.user.name";
 	public static final String SMTP_MAIL_PASSWORD = "smtp.mail.password";
