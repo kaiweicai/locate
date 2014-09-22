@@ -7,6 +7,7 @@ import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
 import java.net.ConnectException;
 import java.nio.channels.ClosedChannelException;
 import java.util.ArrayList;
@@ -555,17 +556,22 @@ public class RFApplication extends JFrame {
 		 */
 		@Override
 		public void handleException(Throwable e){
-			if(e instanceof ConnectException||e instanceof ClosedChannelException){
+			if(e instanceof ConnectException){
 				sBuilder.append("Connection refused! please check the server info!");
 				logger.error("Connection refused! please check the server info!",e);
 				updateLog(sBuilder);
-				serverBar.setStatusFixed("Connection refused! please check the server info!");
-				return;
+				serverBar.setStatusFixed("Connection refused! please check the server info!",Color.RED);
+			}else if(e instanceof IOException){
+				sBuilder.append("Connection close! Locate Server is down!");
+				logger.error("Connection close! Locate Server is down!",e);
+				updateLog(sBuilder);
+				serverBar.setStatusFixed("Connection close! Locate Server is down!",Color.RED);
+			}else{
+				sBuilder.append("Client has been occure Exception. Please contact the developer! ");
+				logger.error("Client has been occure Exception. Please contact the developer!",e);
+	//			updateLog(sBuilder.toString());
+				serverBar.setStatusFixed("Client has been occure Exception. Please contact the developer!",Color.RED);
 			}
-			sBuilder.append("Client has been occure Exception. Please contact the developer! "+e);
-			logger.error("Client has been occure Exception. Please contact the developer!",e);
-//			updateLog(sBuilder.toString());
-			serverBar.setStatusFixed("Client has been occure Exception. Please contact the developer!");
 		}
 		
 		/* (non-Javadoc)
@@ -656,9 +662,10 @@ public class RFApplication extends JFrame {
 
 		@Override
 		public void handleDisconnected() {
-			sBuilder.append("Locate Server disconnted!!! ");
+			String state = "Locate Server disconnted!!! ";
+			sBuilder.append(state);
 			updateLog(sBuilder);
-			serverBar.setStatusFixed(sBuilder.toString());
+			serverBar.setStatusFixed(state,Color.RED);
 			System.out.println("Locate Server disconnted!!! ");			
 		}
 	}
