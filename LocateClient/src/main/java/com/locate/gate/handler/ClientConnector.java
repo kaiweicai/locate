@@ -1,26 +1,17 @@
 package com.locate.gate.handler;
 
 import io.netty.bootstrap.Bootstrap;
-import io.netty.bootstrap.ChannelFactory;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelHandler;
-import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
-import io.netty.channel.ChannelPipeline;
 import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import io.netty.handler.codec.LengthFieldPrepender;
-import io.netty.handler.timeout.IdleState;
-import io.netty.handler.timeout.IdleStateEvent;
 
-import java.io.UnsupportedEncodingException;
 import java.net.InetSocketAddress;
-import java.nio.channels.Channels;
-import java.util.concurrent.Executors;
 
 import net.sf.json.JSONObject;
 
@@ -54,15 +45,15 @@ public class ClientConnector implements IClientConnector {
 		logger.info("gate way Server starting...");
 		// 创建客户端channel的辅助类,发起connection请求
 		
-		
 		bootstrap = new Bootstrap();
-		bootstrap.group(new NioEventLoopGroup()).channel(NioServerSocketChannel.class)
+		bootstrap.group(new NioEventLoopGroup())
+				.channel(NioSocketChannel.class)
 				.option(ChannelOption.SO_BACKLOG, 100)
 				.option(ChannelOption.SO_KEEPALIVE, true)
 				.option(ChannelOption.TCP_NODELAY, true)
-				.handler(new ChannelInitializer<SocketChannel>() {
+				.handler(new ChannelInitializer<NioSocketChannel>() {
 		             @Override
-							public void initChannel(SocketChannel ch) throws Exception {
+							public void initChannel(NioSocketChannel ch) throws Exception {
 								ch.pipeline().addLast("encoder", new LengthFieldPrepender(2))
 										.addLast("encrytEncoder", new EncrytEncoder())
 										.addLast("fixLengthDecoder", new LengthFieldBasedFrameDecoder(64 * 1024, 0, 2, 0, 2))
@@ -104,7 +95,7 @@ public class ClientConnector implements IClientConnector {
 		try{
 			ChannelFuture future = bootstrap.connect(new InetSocketAddress(serverAddress,port));
 			clientchannel = future.channel();
-			future.awaitUninterruptibly();
+//			future.awaitUninterruptibly();
 		}catch(Exception e){
 			logger.error("NIO error "+e.getCause());
 		}
@@ -177,7 +168,7 @@ public class ClientConnector implements IClientConnector {
 //		}
 //		ChannelBuffer buffer = ChannelBuffers.buffer(content.length);
 //		buffer.writeBytes(jsonObject.toString());
-		clientchannel.write(jsonObject.toString());
+		clientchannel.writeAndFlush(jsonObject.toString());
 		logger.info("client downStream message is :"+jsonObject.toString());
 	}
 	

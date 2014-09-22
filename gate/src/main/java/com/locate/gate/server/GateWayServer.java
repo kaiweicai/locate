@@ -51,9 +51,9 @@ public class GateWayServer {
 	         .childOption(ChannelOption.SO_KEEPALIVE, true)
 	         .childOption(ChannelOption.TCP_NODELAY, true)
 	         .localAddress(serverPort)
-	         .childHandler(new ChannelInitializer<SocketChannel>() {
+	         .childHandler(new ChannelInitializer<NioServerSocketChannel>() {
 	             @Override
-						public void initChannel(SocketChannel ch) throws Exception {
+						public void initChannel(NioServerSocketChannel ch) throws Exception {
 							ch.pipeline().addLast("fixLengthEncoder", new LengthFieldPrepender(2))
 									.addLast("encrytEncoder", new EncrytEncoder())
 									.addLast("fixLengthDecoder", new LengthFieldBasedFrameDecoder(64 * 1024, 0, 2, 0, 2))
