@@ -6,6 +6,7 @@ import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
@@ -51,17 +52,7 @@ public class ClientConnector implements IClientConnector {
 				.option(ChannelOption.SO_BACKLOG, 100)
 				.option(ChannelOption.SO_KEEPALIVE, true)
 				.option(ChannelOption.TCP_NODELAY, true)
-				.handler(new ChannelInitializer<NioSocketChannel>() {
-		             @Override
-							public void initChannel(NioSocketChannel ch) throws Exception {
-								ch.pipeline().addLast("encoder", new LengthFieldPrepender(2))
-										.addLast("encrytEncoder", new EncrytEncoder())
-										.addLast("fixLengthDecoder", new LengthFieldBasedFrameDecoder(64 * 1024, 0, 2, 0, 2))
-										.addLast("encrytDecoder", new EncrytDecoder())
-										.addLast("hander", clientHandler);
-
-							}
-		         });
+				.handler(new ClientChannelInitializer(clientHandler));
 		
 		
 //		bootstrap.setPipelineFactory(new ChannelPipelineFactory() {
@@ -88,23 +79,22 @@ public class ClientConnector implements IClientConnector {
 	 * @see com.locate.gate.handler.ClientConnectedInterface#conneteLocateGateWay(java.lang.String, int, java.lang.String, java.lang.String)
 	 */
 	@Override
-	public void conneteLocateGateWay(String serverAddress,int port,String userName,String password) {
-//		bootstrap.setOption("tcpNodelay", true);
-//		bootstrap.setOption("child.keepalive", true);
+	public void conneteLocateGateWay(String serverAddress, int port, String userName, String password) {
 		logger.info("start to conneted to server");
-		try{
-			ChannelFuture future = bootstrap.connect(new InetSocketAddress(serverAddress,port));
-			clientchannel = future.channel();
-//			future.awaitUninterruptibly();
-		}catch(Exception e){
-			logger.error("NIO error "+e.getCause());
+		if (clientchannel == null) {
+			try {
+				ChannelFuture future = bootstrap.connect(serverAddress, port);
+				future.awaitUninterruptibly();
+				clientchannel = future.channel();
+			} catch (Exception e) {
+				logger.error("NIO error " + e.getCause());
+			}
 		}
 		this.conLocate = true;
-		logger.info("conneted to server "+serverAddress+" port:" + port);
-		
-	    
-		ClientRequest clientRequest = createLoginRequest(userName,password);
-    	sentMessageToServer(clientRequest);
+		logger.info("conneted to server " + serverAddress + " port:" + port);
+
+		ClientRequest clientRequest = createLoginRequest(userName, password);
+		sentMessageToServer(clientRequest);
 	}
 	
 	/* (non-Javadoc)

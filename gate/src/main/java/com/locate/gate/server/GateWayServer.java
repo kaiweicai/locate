@@ -7,6 +7,7 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import io.netty.handler.codec.LengthFieldPrepender;
 
@@ -51,9 +52,9 @@ public class GateWayServer {
 	         .childOption(ChannelOption.SO_KEEPALIVE, true)
 	         .childOption(ChannelOption.TCP_NODELAY, true)
 	         .localAddress(serverPort)
-	         .childHandler(new ChannelInitializer<NioServerSocketChannel>() {
+	         .childHandler(new ChannelInitializer<NioSocketChannel>() {
 	             @Override
-						public void initChannel(NioServerSocketChannel ch) throws Exception {
+						public void initChannel(NioSocketChannel ch) throws Exception {
 							ch.pipeline().addLast("fixLengthEncoder", new LengthFieldPrepender(2))
 									.addLast("encrytEncoder", new EncrytEncoder())
 									.addLast("fixLengthDecoder", new LengthFieldBasedFrameDecoder(64 * 1024, 0, 2, 0, 2))
