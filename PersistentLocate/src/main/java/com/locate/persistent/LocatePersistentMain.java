@@ -12,6 +12,7 @@ import ch.qos.logback.core.joran.spi.JoranException;
 import com.locate.common.constant.SystemConstant;
 import com.locate.common.exception.LocateException;
 import com.locate.common.utils.ShutdownWorker;
+import com.locate.common.utils.SystemProperties;
 import com.locate.rmds.QSConsumerProxy;
 
 /**
@@ -23,8 +24,9 @@ import com.locate.rmds.QSConsumerProxy;
  */
 public class LocatePersistentMain {
 	static Logger logger = LoggerFactory.getLogger(LocatePersistentMain.class);
-
+	protected static final String configFile = "config/rfaConfig.properties";
 	static {
+		SystemProperties.init(configFile);
 		JoranConfigurator configurator = new JoranConfigurator();
 		ILoggerFactory loggerFactory = LoggerFactory.getILoggerFactory();
 		LoggerContext loggerContext = (LoggerContext) loggerFactory;

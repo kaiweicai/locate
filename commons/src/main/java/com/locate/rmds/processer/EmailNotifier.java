@@ -5,6 +5,7 @@ import java.net.UnknownHostException;
 import java.util.Date;
 import java.util.Properties;
 
+import javax.mail.Address;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Session;
@@ -16,6 +17,7 @@ import javax.mail.internet.MimeMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+
 
 
 
@@ -42,10 +44,12 @@ public class EmailNotifier implements INotifier {
 		hostName = localAddress.getHostName();
 		title = title + ", Message from host " + hostName;
 
-		String adminEmail = SystemProperties.getProperties(SystemProperties.ADMIN_USER_EMAIL);
+		String[] adminEmail = SystemProperties.getProperties(SystemProperties.ADMIN_USER_EMAIL).split(",");
+		Address[] ccAdresses = new InternetAddress[adminEmail.length];
 		String mailSmtpHost = SystemProperties.getProperties(SystemProperties.SMTP_ADMIN_USER_EMAIL);
 		String smtpMailUserName = SystemProperties.getProperties(SystemProperties.SMTP_MAIL_USER_NAME);
 		String smtpMailPassword = SystemProperties.getProperties(SystemProperties.SMTP_MAIL_PASSWORD);
+		String adminEmailFrom = SystemProperties.getProperties(SystemProperties.ADMIN_EMAIL_FROM);
 		Properties properties = new Properties();
 		properties.put("mail.smtp.host", mailSmtpHost);// 指定SMTP服务器
 		properties.put("mail.smtp.auth", "true");// 指定是否需要SMTP验证
@@ -53,8 +57,11 @@ public class EmailNotifier implements INotifier {
 		Session emailSession = Session.getDefaultInstance(properties);
 		Message emailMessage = new MimeMessage(emailSession);
 		try {
-			emailMessage.addRecipient(Message.RecipientType.TO, new InternetAddress(adminEmail));
-			emailMessage.setFrom(new InternetAddress(adminEmail));
+			for(int i = 0;i<adminEmail.length;i++){
+				ccAdresses[i]=new InternetAddress(adminEmail[i]);
+			}
+			emailMessage.setRecipients(Message.RecipientType.TO, ccAdresses);
+			emailMessage.setFrom(new InternetAddress(adminEmailFrom));
 			emailMessage.setSubject(title);
 			content = content + "\n happen time " + new Date();
 			emailMessage.setText(content);

@@ -24,31 +24,30 @@ import com.locate.common.datacache.DataBaseCache;
 public class NetTimeUtil {
 	static Logger logger = LoggerFactory.getLogger(NetTimeUtil.class);
 	public static final long NET_SUB_LOCAL_TIME = getNetTime() - System.currentTimeMillis();
+	private static String timeServerUrl1 = "ntp.sjtu.edu.cn";
+	private static String timeServerUrl2 = "ntp.nasa.gov";
 
 	public static long getNetTime() {
 		long time = 0;
-		// try {
-		// URL url = new URL("http://www.bjtime.cn");
-		// URLConnection uc = url.openConnection();
-		// uc.connect();
-		// time = uc.getDate();
-		// } catch (MalformedURLException e) {
-		// logger.error("malfFormat URl:http://www.bjtime.cn",e.getCause());
-		// }catch(IOException ioe){
-		// logger.error("IOException ");
-		// }
 		try {
 			NTPUDPClient timeClient = new NTPUDPClient();
-			String timeServerUrl = "ntp.sjtu.edu.cn";
 			// String timeServerUrl = "ntp.sjtu.edu.cn";
-			InetAddress timeServerAddress = InetAddress.getByName(timeServerUrl);
-			TimeInfo timeInfo = getTime(timeServerAddress,123);
+			InetAddress timeServerAddress = InetAddress.getByName(timeServerUrl1);
+			TimeInfo timeInfo = getTime(timeServerAddress, 123);
 			TimeStamp timeStamp = timeInfo.getMessage().getTransmitTimeStamp();
 			time = timeStamp.getTime();
 		} catch (UnknownHostException e) {
 			logger.error("malfFormat URl:ntp.sjtu.edu.cn", e.getCause());
 		} catch (IOException e) {
 			logger.error("IOException ", e);
+			try {
+				InetAddress timeServerAddress = InetAddress.getByName(timeServerUrl2);
+				TimeInfo timeInfo = getTime(timeServerAddress, 123);
+				TimeStamp timeStamp = timeInfo.getMessage().getTransmitTimeStamp();
+				time = timeStamp.getTime();
+			} catch (IOException ioe) {
+				logger.error("IOException ", ioe);
+			}
 		}
 		return time;
 	}
@@ -74,7 +73,7 @@ public class NetTimeUtil {
 			TimeStamp now = TimeStamp.getCurrentTime();
 
 			message.setTransmitTime(now);
-			_socket_.setSoTimeout(2000);
+			_socket_.setSoTimeout(1000);
 			_socket_.send(sendPacket);
 			_socket_.receive(receivePacket);
 

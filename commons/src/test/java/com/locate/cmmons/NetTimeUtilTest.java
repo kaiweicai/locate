@@ -11,13 +11,14 @@ import com.locate.common.utils.NetTimeUtil;
 public class NetTimeUtilTest {
 	@Test
 	public void testNetTime() throws Exception {
+		// NTPUDPClient timeClient = new NTPUDPClient();
+//		 String timeServerUrl = "time-a.nist.gov";
+		 String timeServerUrl = "s2c.time.edu.cn";
+//		String timeServerUrl = "ntp.sjtu.edu.cn";
+//		String timeServerUrl = "s2g.time.edu.cn";
+		InetAddress timeServerAddress = InetAddress.getByName(timeServerUrl);
+		TimeInfo timeInfo = NetTimeUtil.getTime(timeServerAddress, 123);
 		for (int i = 0; i < 100; i++) {
-			// NTPUDPClient timeClient = new NTPUDPClient();
-			// String timeServerUrl = "time-a.nist.gov";
-			// String timeServerUrl = "ntp.nasa.gov";
-			String timeServerUrl = "ntp.sjtu.edu.cn";
-			InetAddress timeServerAddress = InetAddress.getByName(timeServerUrl);
-			TimeInfo timeInfo = NetTimeUtil.getTime(timeServerAddress, 123);
 			TimeStamp timeStamp = timeInfo.getMessage().getTransmitTimeStamp();
 			long diffTime = timeStamp.getTime() - System.currentTimeMillis();
 			System.out.println(diffTime);
