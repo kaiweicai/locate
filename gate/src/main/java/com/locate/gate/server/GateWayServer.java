@@ -24,6 +24,7 @@ import com.locate.gate.coder.EncrytDecoder;
 import com.locate.gate.coder.EncrytEncoder;
 import com.locate.gate.hanlder.AdapterHandler;
 import com.locate.gate.hanlder.GatewayServerHandler;
+import com.locate.gate.hanlder.ServerChannelInitializer;
 
 @Service
 public class GateWayServer {
@@ -52,24 +53,12 @@ public class GateWayServer {
 	         .childOption(ChannelOption.SO_KEEPALIVE, true)
 	         .childOption(ChannelOption.TCP_NODELAY, true)
 	         .localAddress(serverPort)
-	         .childHandler(new ChannelInitializer<NioSocketChannel>() {
-	             @Override
-						public void initChannel(NioSocketChannel ch) throws Exception {
-							ch.pipeline().addLast("fixLengthEncoder", new LengthFieldPrepender(2))
-									.addLast("encrytEncoder", new EncrytEncoder())
-									.addLast("fixLengthDecoder", new LengthFieldBasedFrameDecoder(64 * 1024, 0, 2, 0, 2))
-									.addLast("encrytDecoder", new EncrytDecoder())
-									.addLast("hander", gateWayServerHandler)
-									.addLast("adaptor", adapterHandler);
-
-						}
-	         });
-	  
+	         .childHandler(new ServerChannelInitializer(gateWayServerHandler,adapterHandler));
 	        // Start the server.
 	        ChannelFuture f = serverBootStrap.bind().sync();
 	        logger.info("gate way Server started success!");
 	        // Wait until the server socket is closed.
-	        f.channel().closeFuture().sync();
+//	        f.channel().closeFuture().sync();
 		}catch(Exception e){
 			logger.error("Create the Locate netty server error!",e);
 			throw new LocateException("Create the Locate netty server error!",e);

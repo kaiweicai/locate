@@ -55,7 +55,7 @@ public class GateWayResponser {
 			logger.warn("channel has been clean,but the ric not be register! The itemName"+itemName);
 			return;
 		}
-		channelGroup.write(locateMessage);
+		channelGroup.writeAndFlush(locateMessage);
 		logger.info("send message is :" + locateMessage + " to order group" + channelGroup.name());
 	}
 

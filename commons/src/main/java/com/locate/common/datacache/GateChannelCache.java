@@ -47,11 +47,13 @@ public class GateChannelCache {
 		}
 		boolean derivedItemEnpty = false;
 		List<String> derivedChannelGroupList = derivedChannelGroupMap.get(itemName);
-		for (String derivedName : derivedChannelGroupList) {
-			ChannelGroup derivedChannelGroup = itemNameChannelMap.get(derivedName);
-			if (derivedChannelGroup == null || derivedChannelGroup.isEmpty()) {
-				derivedItemEnpty = true;
-				break;
+		if(derivedChannelGroupList!=null){
+			for (String derivedName : derivedChannelGroupList) {
+				ChannelGroup derivedChannelGroup = itemNameChannelMap.get(derivedName);
+				if (derivedChannelGroup == null || derivedChannelGroup.isEmpty()) {
+					derivedItemEnpty = true;
+					break;
+				}
 			}
 		}
 		boolean result = itemEnpty & derivedItemEnpty;
