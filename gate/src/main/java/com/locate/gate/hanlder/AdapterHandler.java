@@ -1,5 +1,6 @@
 package com.locate.gate.hanlder;
 
+import io.netty.channel.ChannelHandler;
 import io.netty.handler.codec.MessageToMessageEncoder;
 
 import java.util.List;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 import com.locate.common.model.LocateUnionMessage;
 import com.locate.common.utils.SystemProperties;
 
+@ChannelHandler.Sharable
 @Service
 public class AdapterHandler extends MessageToMessageEncoder<LocateUnionMessage> {
 	Logger logger = LoggerFactory.getLogger(getClass());
@@ -26,7 +28,7 @@ public class AdapterHandler extends MessageToMessageEncoder<LocateUnionMessage> 
 	@Override
 	protected void encode(io.netty.channel.ChannelHandlerContext ctx, LocateUnionMessage msg, List<Object> out)
 			throws Exception {
-		String content="";
+		String content = "";
 		switch (defaultEncode) {
 		case "JSON":
 			JSON jsonObject = JSONObject.fromObject(msg);

@@ -2,6 +2,7 @@ package com.locate.gate.coder;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.PooledByteBufAllocator;
+import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageEncoder;
 
 import java.util.List;
@@ -22,10 +23,10 @@ public class EncrytEncoder extends MessageToMessageEncoder<String> {
 //	}
 
 	@Override
-	protected void encode(io.netty.channel.ChannelHandlerContext ctx, String msg, List<Object> out) throws Exception {
+	protected void encode(ChannelHandlerContext ctx, String msg, List<Object> out) throws Exception {
 		String result = CryptSecurity.encryptToDES(CryptSecurity.key,msg);
 		byte[] message = result.getBytes("UTF-8");
-		ByteBuf buffer= PooledByteBufAllocator.DEFAULT.heapBuffer(message.length+8);
+		ByteBuf buffer= PooledByteBufAllocator.DEFAULT.buffer(message.length+8);
 		buffer.writeBytes(CryptSecurity.key.getEncoded());
 		buffer.writeBytes(message);
 		out.add(buffer);

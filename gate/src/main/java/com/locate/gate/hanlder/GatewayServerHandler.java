@@ -176,16 +176,16 @@ public class GatewayServerHandler extends StringDecoder {
 				for (String subcribeItemName : request.getRIC().split(",")) {
 					Map<String, ChannelGroup> subscribeChannelMap = GateChannelCache.itemNameChannelMap;
 					boolean isDerived = DerivedUtils.isDerived(subcribeItemName);
-					String itemName = DerivedUtils.restoreRic(subcribeItemName);
 					ChannelGroup subChannelGroup = subscribeChannelMap.get(subcribeItemName);
 					if (subChannelGroup == null) {
-						subChannelGroup = new DefaultChannelGroup("subcribeItemName",GlobalEventExecutor.INSTANCE);
+						subChannelGroup = new DefaultChannelGroup(subcribeItemName,GlobalEventExecutor.INSTANCE);
 						subscribeChannelMap.put(subcribeItemName, subChannelGroup);
 					}
 					if (!subChannelGroup.contains(channel)) {
 						subChannelGroup.add(channel);
 					}
 					if (isDerived) {
+						String itemName = DerivedUtils.restoreRic(subcribeItemName);
 						List<String> derivedChannelList = GateChannelCache.derivedChannelGroupMap.get(itemName);
 						if (derivedChannelList == null) {
 							derivedChannelList = new ArrayList<String>();
@@ -275,7 +275,7 @@ public class GatewayServerHandler extends StringDecoder {
 	@Override
 	public void channelInactive(ChannelHandlerContext ctx) throws Exception {
 		super.channelInactive(ctx);
-logger.info("channel has been closed.");
+		logger.info("channel has been closed.");
 		
 		Channel channel = ctx.channel();
 		GateChannelCache.allChannelGroup.remove(channel);

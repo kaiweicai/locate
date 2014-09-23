@@ -23,7 +23,8 @@ import com.locate.common.datacache.DataBaseCache;
 
 public class NetTimeUtil {
 	static Logger logger = LoggerFactory.getLogger(NetTimeUtil.class);
-	public static final long NET_SUB_LOCAL_TIME = getNetTime() - System.currentTimeMillis();
+//	public static final long NET_SUB_LOCAL_TIME = getNetTime() - System.currentTimeMillis();
+	public static final long NET_SUB_LOCAL_TIME = 0;
 	private static String timeServerUrl1 = "ntp.sjtu.edu.cn";
 	private static String timeServerUrl2 = "ntp.nasa.gov";
 
