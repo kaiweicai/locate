@@ -19,9 +19,9 @@ public class GateChannelCache {
 	// 存放所有web连接的channel.暂时没有太大作用.
 	public static ChannelGroup webSocketGroup;
 	// 订阅的itemName与订阅该itemName的所有客户的对应关系.
-	public static Map<String, ChannelGroup> itemNameChannelMap;
+	public static Map<String, ChannelGroup> itemNameChannelGroupMap;
 	// 一个商品的所有衍生品存放的map.
-	public static Map<String, List<String>> derivedChannelGroupMap;
+	public static Map<String, List<String>> item2derivedMap;
 	//channelid和channel由系统自己管理.
 	public static Map<Integer,Channel> channelMap;
 	//增加web用户订阅的itemName与订阅该itemName的web客户的对应关系.
@@ -30,28 +30,28 @@ public class GateChannelCache {
 		EventExecutor executor = GlobalEventExecutor.INSTANCE;
 		allChannelGroup =  new DefaultChannelGroup("allChannels",executor);
 		webSocketGroup = new DefaultChannelGroup("webSocketChannels", executor);
-		itemNameChannelMap = new HashMap<String, ChannelGroup>();
-		derivedChannelGroupMap = new HashMap<String, List<String>>();
+		itemNameChannelGroupMap = new HashMap<String, ChannelGroup>();
+		item2derivedMap = new HashMap<String, List<String>>();
 		channelMap = new HashMap<Integer,Channel>();
 	}
 	/**
-	 * 检查商品和该商品的衍生品是否都已经不再需要.
-	 * @param itemName 商品名称
+	 * 检查商品和该商品的衍生品是否都已经不再需要.既要检查原生的该商品,也要检查衍生的商品.
+	 * @param itemName 原生商品名称
 	 * @return 是否都为空
 	 */
 	public static boolean isEmnpty(String itemName) {
-		ChannelGroup itemGroup = itemNameChannelMap.get(itemName);
+		ChannelGroup itemGroup = itemNameChannelGroupMap.get(itemName);
 		boolean itemEnpty = false;
 		if (itemGroup == null || itemGroup.isEmpty()) {
 			itemEnpty = true;
 		}
-		boolean derivedItemEnpty = false;
-		List<String> derivedChannelGroupList = derivedChannelGroupMap.get(itemName);
-		if(derivedChannelGroupList!=null){
-			for (String derivedName : derivedChannelGroupList) {
-				ChannelGroup derivedChannelGroup = itemNameChannelMap.get(derivedName);
-				if (derivedChannelGroup == null || derivedChannelGroup.isEmpty()) {
-					derivedItemEnpty = true;
+		boolean derivedItemEnpty = true;
+		List<String> derivedItemList = item2derivedMap.get(itemName);
+		if(derivedItemList!=null){
+			for (String derivedName : derivedItemList) {
+				ChannelGroup derivedChannelGroup = itemNameChannelGroupMap.get(derivedName);
+				if (derivedChannelGroup != null && !derivedChannelGroup.isEmpty()) {
+					derivedItemEnpty = false;
 					break;
 				}
 			}

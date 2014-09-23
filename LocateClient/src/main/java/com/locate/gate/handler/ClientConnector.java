@@ -81,14 +81,12 @@ public class ClientConnector implements IClientConnector {
 	@Override
 	public void conneteLocateGateWay(String serverAddress, int port, String userName, String password) {
 		logger.info("start to conneted to server");
-		if (clientchannel == null) {
-			try {
-				ChannelFuture future = bootstrap.connect(serverAddress, port);
-				future.awaitUninterruptibly();
-				clientchannel = future.channel();
-			} catch (Exception e) {
-				logger.error("NIO error " + e.getCause());
-			}
+		ChannelFuture future = bootstrap.connect(new InetSocketAddress(serverAddress, port));
+		future.awaitUninterruptibly();
+		clientchannel = future.channel();
+		if (!clientchannel.isActive()) {
+			logger.error("NIO error, The connect server not success! Please check your server ip or port!");
+			throw new LocateException("NIO error, The connect server not success! Please check your server ip or port!");
 		}
 		this.conLocate = true;
 		logger.info("conneted to server " + serverAddress + " port:" + port);

@@ -320,11 +320,15 @@ public class RFApplication extends JFrame {
 			connetedButton.addMouseListener(new MouseAdapter() {
 
 				public void mouseClicked(MouseEvent event) {
+					try{
 					String serverAddress = serverAddressTextField.getText();
 					int port = Integer.parseInt(portTextField.getText());
 					String userName = userNameTextField.getText();
 					String password = passwordTextField.getText();
 					clientConnetor.conneteLocateGateWay(serverAddress,port,userName,password);
+					}catch(Exception e){
+						serverBar.setStatusFixed("连接服务器错误.请检查服务器配置!");
+					}
 				}
 			});
 			connetedButton.setBounds(r);

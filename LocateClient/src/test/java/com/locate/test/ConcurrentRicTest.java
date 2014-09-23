@@ -16,7 +16,7 @@ public class ConcurrentRicTest {
 		RFASample sample = new RFASample();
 		sample = new RFASample();
 //		sample.clientConnetor.conneteLocateGateWay("61.144.244.173", 8888, "ztcj", "ztcj2013");
-		sample.clientConnetor.conneteLocateGateWay("54.250.181.110", 8888, "ztcj", "ztcj2013");
+		sample.clientConnetor.conneteLocateGateWay("127.0.0.1", 8888, "ztcj", "ztcj2013");
 		// 锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟絉IC锟斤拷锟斤拷.BussinessHandler锟斤拷handleMessage锟斤拷锟斤拷锟酵匡拷锟皆斤拷锟秸碉拷锟斤拷锟斤拷锟斤拷锟斤拷锟截碉拷锟叫筹拷锟桔革拷锟斤拷.
 		FileReader fr = new FileReader(new File("testResource/Ric.txt"));
 		BufferedReader br = new BufferedReader(fr);
