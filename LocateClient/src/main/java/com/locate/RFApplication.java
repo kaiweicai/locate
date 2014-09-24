@@ -44,6 +44,7 @@ import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.core.joran.spi.JoranException;
 
+import com.locate.client.gui.LogoPanel;
 import com.locate.client.gui.StatusBar;
 import com.locate.common.constant.LocateMessageTypes;
 import com.locate.common.exception.LocateException;
@@ -73,8 +74,9 @@ public class RFApplication extends JFrame {
 	private JLabel responseTitle;
 	public static JLabel responseNumber;
 	public static JTextArea showLog;
-	private JScrollPane jScrollPane0;
+	private JScrollPane logScrollPanel;
 	private JScrollPane tableScrollPane;
+	private JPanel chartPanel;
 	private JLabel avgTitle;
 	public static JLabel avgTimes;
 	private JButton closeButton;
@@ -115,7 +117,6 @@ public class RFApplication extends JFrame {
 	private static final String PREFERRED_LOOK_AND_FEEL = "javax.swing.plaf.metal.MetalLookAndFeel";
 	
 	public RFApplication() {
-		
 		JoranConfigurator configurator = new JoranConfigurator();
 		ILoggerFactory loggerFactory = LoggerFactory.getILoggerFactory();
 		LoggerContext loggerContext = (LoggerContext) loggerFactory;
@@ -128,8 +129,9 @@ public class RFApplication extends JFrame {
 			throw new LocateException("initial logback.xml error!",e);
 		}
 		initComponents();
+		finalSetting();
 		IBussiness bussinessHandler = new UIHandler();
-		ClientHandler clientHandler = new ClientHandler(bussinessHandler);
+//		ClientHandler clientHandler = new ClientHandler(bussinessHandler);
 		clientConnetor = new ClientConnector(bussinessHandler);
 //		initNettyClient();
 	}
@@ -138,43 +140,42 @@ public class RFApplication extends JFrame {
 	private void initComponents() {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				SubstanceLookAndFeel.setSkin(new RavenSkin());
+				SubstanceLookAndFeel.setSkin(new org.pushingpixels.substance.api.skin.ModerateSkin());
 				try {
 					setSize(1024, 720);
-					int windowWidth = getWidth(); // 获得窗口宽
-					int windowHeight = getHeight(); // 获得窗口高
-					Toolkit kit = Toolkit.getDefaultToolkit(); // 定义工具包
-					Dimension screenSize = kit.getScreenSize(); // 获取屏幕的尺寸
-					int screenWidth = screenSize.width; // 获取屏幕的宽
-					int screenHeight = screenSize.height; // 获取屏幕的高
-					setLocation(screenWidth / 2 - windowWidth / 2, screenHeight / 2 - windowHeight / 2);// 设置窗口居中显示
-					JPanel panel = new JPanel();
+					LogoPanel panel = new LogoPanel();
+					panel.setImagePath("config/PTLOGO.png");
+					panel.setPreferredSize(new Dimension(panel.getImgWidth(), panel  
+			                .getImgHeight()));  
+					
 					panel.setLayout(null);
 					JScrollPane sp = new JScrollPane(panel);
+					sp.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);  
+					sp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS); 
 					// sp.setLayout(mainGroupLayout);
 					getContentPane().add(sp);
 					int inputX = 550;
 					int inputY = 20;
-					panel.getGraphics().drawImage(getLogo(), 0, 0, null);
-//					panel.add(getCloseButton(new Rectangle(inputX + 200, inputY, 100, 20)));
-//					panel.add(getUserNameLabel(new Rectangle(inputX, inputY, 100, 20)));
-//					panel.add(getUserNameTextField(new Rectangle(inputX + 70, inputY, 100, 20)));
-//					panel.add(getPasswordLabel(new Rectangle(inputX, inputY += 30, 100, 20)));
-//					panel.add(getPasswordTextField(new Rectangle(inputX + 70, inputY, 100, 20)));
-//					panel.add(getServerAddressLabel(new Rectangle(inputX, inputY += 30, 100, 20)));
-//					panel.add(getServerAddressTextField(new Rectangle(inputX + 120, inputY, 100, 20)));
-//					panel.add(getPortLabel(new Rectangle(inputX, inputY += 30, 100, 20)));
-//					panel.add(getPortTextField(new Rectangle(inputX + 120, inputY, 100, 20)));
-//
-//					panel.add(getConnetedButton(new Rectangle(inputX, inputY += 30, 100, 20)));
-//					panel.add(getRicLabel(new Rectangle(inputX, inputY += 30, 100, 20)));
-//					panel.add(getRicTextField(new Rectangle(inputX + 120, inputY, 150, 20)));
-//					panel.add(getOpenButton(new Rectangle(inputX, inputY += 30, 100, 20)));
-//					panel.add(getTableScrollPane(new Rectangle(inputX, inputY += 30, 360, 400)));
-//					panel.add(getUseTimeTextLabel(new Rectangle(inputX, 620, 500, 50)));
-//					panel.add(getJScrollPane0(new Rectangle(30, 10, 500, 560)));
-//					panel.add(getStatusBar(new Rectangle(30, 570, 500, 50)));
-//					panel.add(getServerBar(new Rectangle(30, 620, 500, 50)));
+					panel.add(getCloseButton(new Rectangle(inputX + 200, inputY, 100, 20)));
+					panel.add(getUserNameLabel(new Rectangle(inputX, inputY, 100, 20)));
+					panel.add(getUserNameTextField(new Rectangle(inputX + 70, inputY, 100, 20)));
+					panel.add(getPasswordLabel(new Rectangle(inputX, inputY += 30, 100, 20)));
+					panel.add(getPasswordTextField(new Rectangle(inputX + 70, inputY, 100, 20)));
+					panel.add(getServerAddressLabel(new Rectangle(inputX, inputY += 30, 100, 20)));
+					panel.add(getServerAddressTextField(new Rectangle(inputX + 120, inputY, 100, 20)));
+					panel.add(getPortLabel(new Rectangle(inputX, inputY += 30, 100, 20)));
+					panel.add(getPortTextField(new Rectangle(inputX + 120, inputY, 100, 20)));
+
+					panel.add(getConnetedButton(new Rectangle(inputX, inputY += 30, 100, 20)));
+					panel.add(getRicLabel(new Rectangle(inputX, inputY += 30, 100, 20)));
+					panel.add(getRicTextField(new Rectangle(inputX + 120, inputY, 150, 22)));
+					panel.add(getOpenButton(new Rectangle(inputX, inputY += 30, 100, 20)));
+					panel.add(getTableScrollPane(new Rectangle(inputX, inputY += 30, 360, 400)));
+					panel.add(getUseTimeTextLabel(new Rectangle(inputX, 620, 500, 50)));
+					panel.add(getLogPanel(new Rectangle(30, 10, 500, 280)));
+					panel.add(getChartPanel(new Rectangle(30, 300, 500, 200)));
+					panel.add(getStatusBar(new Rectangle(30, 570, 500, 50)));
+					panel.add(getServerBar(new Rectangle(30, 620, 500, 50)));
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -182,20 +183,24 @@ public class RFApplication extends JFrame {
 		});
 	}
 	
-	public void initialPriceModel(){
+	private void finalSetting() {
+		setDefaultCloseOperation(RFApplication.EXIT_ON_CLOSE);
+		setTitle("Price Tech application");
+		getContentPane().setPreferredSize(this.getSize());
+		Image image = Toolkit.getDefaultToolkit().getImage("config/PTLOGO.png");
+		setIconImage(image);
+		int windowWidth = getWidth(); // 获得窗口宽
+		int windowHeight = getHeight(); // 获得窗口高
+		Toolkit kit = Toolkit.getDefaultToolkit(); // 定义工具包
+		Dimension screenSize = kit.getScreenSize(); // 获取屏幕的尺寸
+		int screenWidth = screenSize.width; // 获取屏幕的宽
+		int screenHeight = screenSize.height; // 获取屏幕的高
+		setLocation(screenWidth / 4 - windowWidth / 4, screenHeight / 4 - windowHeight /4);// 设置窗口居中显示
+		setVisible(true);
+		setResizable(true);
+		pack();
 	}
 	
-	
-	private Image getLogo(){
-		if(ptLogo == null){
-			try{
-				ptLogo = ImageIO.read(new File("config/PTLOGO.png"));
-			}catch(Exception e){
-				logger.error("read logo image failed",e);
-			}
-		}
-		return ptLogo;
-	}
 	/**
 	 * add by cloud
 	 * @return
@@ -487,14 +492,24 @@ public class RFApplication extends JFrame {
 		return tableScrollPane;
 	}
 	
-	private JScrollPane getJScrollPane0(Rectangle r) {
-		if (jScrollPane0 == null) {
-			jScrollPane0 = new JScrollPane();
-			jScrollPane0.setViewportView(getShowLog());
-			jScrollPane0.setBounds(r);
+	private JScrollPane getLogPanel(Rectangle r) {
+		if (logScrollPanel == null) {
+			logScrollPanel = new JScrollPane();
+			logScrollPanel.setViewportView(getShowLog());
+			logScrollPanel.setBounds(r);
 		}
-		return jScrollPane0;
+		return logScrollPanel;
 	}
+	
+	private JPanel getChartPanel(Rectangle r) {
+		if (chartPanel == null) {
+			chartPanel = new JPanel();
+			chartPanel.setBounds(r);
+			chartPanel.setBackground(Color.WHITE);
+		}
+		return chartPanel;
+	}
+	
 	
 	private StatusBar getStatusBar(Rectangle r) {
 		if (statusBar == null) {
@@ -555,10 +570,6 @@ public class RFApplication extends JFrame {
 
 		SystemProperties.init("config/config.properties");
 		RFApplication frame = new RFApplication();
-		frame.setDefaultCloseOperation(RFApplication.EXIT_ON_CLOSE);
-		frame.setTitle("Price Tech application");
-		frame.getContentPane().setPreferredSize(frame.getSize());
-		frame.pack();
 //		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
 //		installLnF();
@@ -622,6 +633,8 @@ public class RFApplication extends JFrame {
 					tableModel = new TableModel(message);
 					marketPriceTable.setModel(tableModel);
 					updateTablePriceThread.setMarketPriceTable(marketPriceTable);
+					chartPanel.getGraphics().setColor(Color.RED);
+					chartPanel.getGraphics().drawLine(12, 21, 54, 99);
 					break;
 				//Locate send the update market price.
 				case LocateMessageTypes.UPDATE_RESP:
