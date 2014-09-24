@@ -266,6 +266,7 @@ public class ItemManager extends IProcesser implements Client
 		List<Integer> fieldFilterList = FilterManager.filterMap.get(clientRequestItemName);
 		filedFiltrMessage(locateMessage, fieldFilterList);
 		EngineLine engineLine = EngineLinerManager.engineLineCache.get(clientRequestItemName);
+		engineFuture=engineLine.applyStrategy(locateMessage);
 		if(engineFuture!=null){
 			try {
 				engineFuture.get();
@@ -273,7 +274,7 @@ public class ItemManager extends IProcesser implements Client
 				_logger.warn("get the engine result error!",e);
 			}
 		}
-		engineFuture=engineLine.applyStrategy(locateMessage);
+		derivedEngineFuture=EngineLinerManager.engineLineCache.get(derivactiveItemName).applyStrategy(locateMessage.clone());
 		if(!StringUtils.isBlank(derivactiveItemName)){
 			if(derivedEngineFuture!=null){
 				try {
@@ -282,7 +283,6 @@ public class ItemManager extends IProcesser implements Client
 					_logger.warn("get the dervied engine result error!",e);
 				}
 			}
-			derivedEngineFuture=EngineLinerManager.engineLineCache.get(derivactiveItemName).applyStrategy(locateMessage.clone());
 		}
 		long endTime = NetTimeUtil.getCurrentNetTime();
 		_logger.info("publish Item " + clientRequestItemName + " use time " + (endTime - startTime) + " microseconds");

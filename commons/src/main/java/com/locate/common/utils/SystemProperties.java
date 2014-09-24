@@ -45,6 +45,7 @@ public class SystemProperties {
 	public static final String RIPPLE = "ripple";
 
 	public static final String RIC_ARRAY = "ric.array";
+	public static final String ITEM_NAME = "item.name";
 
 	//filter config
 	public static final String FILTER_CONFIG_NAME = "filter.config.name";

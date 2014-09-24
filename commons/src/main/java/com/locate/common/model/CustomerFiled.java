@@ -1,8 +1,47 @@
 package com.locate.common.model;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class CustomerFiled {
-	
-	
+	private static Logger logger = LoggerFactory.getLogger(CustomerFiled.class);
+	public static Map<String,String> filedExchangeMap = new HashMap<String,String>();
+	static{
+		loadExchangFile();
+	}
+	public static void loadExchangFile(){
+		BufferedReader bufferReader = null;
+		
+		try{
+			FileInputStream filedNameExchangeFileStream = new FileInputStream("config/fieldNameExchange");
+			bufferReader = new BufferedReader(new InputStreamReader(filedNameExchangeFileStream,"UTF-8"));
+			String line = "";
+			while((line = bufferReader.readLine())!=null){
+				String[] lineContent = line.split(",");
+				if(lineContent.length>4){
+					filedExchangeMap.put(lineContent[0], lineContent[4]);
+				}
+			}
+		}catch(Exception e){
+			logger.error("read exhange file error!",e);
+		}finally{
+			try {
+				bufferReader.close();
+			} catch (IOException e) {
+				logger.error("close buffer reader error!",e);
+			}
+		}
+	}
 	private String id;
 	private String name;
 	private String type;

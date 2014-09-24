@@ -27,7 +27,7 @@ public class GateWayResponser {
 
 	public static void sentResponseMsg(LocateUnionMessage response, Integer channelId) {
 		// LocateMessage message = new LocateMessage(msgType, response, 0);
-		Channel channel = GateChannelCache.channelMap.get(channelId);
+		Channel channel = GateChannelCache.id2ChannelMap.get(channelId);
 		if (channel != null && channel.isActive()) {
 			channel.writeAndFlush(response);
 		} else {
@@ -60,7 +60,7 @@ public class GateWayResponser {
 	}
 
 	public static void sendSnapShotToChannel(LocateUnionMessage locatMessage, int channelId) {
-		GateChannelCache.channelMap.get(channelId).writeAndFlush(locatMessage);
+		GateChannelCache.id2ChannelMap.get(channelId).writeAndFlush(locatMessage);
 		logger.info("downStream message is :"+locatMessage);
 	}
 

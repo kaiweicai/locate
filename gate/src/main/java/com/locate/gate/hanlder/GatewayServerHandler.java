@@ -9,7 +9,6 @@ import io.netty.util.concurrent.GlobalEventExecutor;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -200,8 +199,10 @@ public class GatewayServerHandler extends StringDecoder {
 			if (StringUtils.isBlank(userName)) {
 				userName = DataBaseCache._userConnection.get(clientIP);
 			}
-			int channelId = SystemConstant.channelId.incrementAndGet();
-			GateChannelCache.channelMap.put(channelId, ctx.channel());
+			int channelId = SystemConstant.channelId.incrementAndGet();;
+			if(GateChannelCache.id2ChannelMap.get(channelId)==null){
+				GateChannelCache.id2ChannelMap.put(channelId, channel);
+			}
 			ClientRequest clientInfo = new ClientRequest(request, userName, channelId, clientIP);
 			// RFAClientHandler process message and send the request to RFA.
 			gateForwardRFA.process(clientInfo);

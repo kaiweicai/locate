@@ -21,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.locate.common.constant.LocateMessageTypes;
+import com.locate.common.constant.SystemConstant;
 import com.locate.common.exception.LocateException;
 import com.locate.common.model.ClientRequest;
 import com.locate.face.IBussiness;
@@ -30,6 +31,7 @@ import com.locate.gate.coder.EncrytEncoder;
 
 public class ClientConnector implements IClientConnector {
 	Logger logger = LoggerFactory.getLogger(ClientConnector.class);
+	private int channelID;
 	private Channel clientchannel;
 	private Bootstrap bootstrap;
 	private boolean conLocate;
@@ -84,6 +86,7 @@ public class ClientConnector implements IClientConnector {
 		ChannelFuture future = bootstrap.connect(new InetSocketAddress(serverAddress, port));
 		future.awaitUninterruptibly();
 		clientchannel = future.channel();
+		channelID = SystemConstant.channelId.incrementAndGet();
 		if (!clientchannel.isActive()) {
 			logger.error("NIO error, The connect server not success! Please check your server ip or port!");
 			throw new LocateException("NIO error, The connect server not success! Please check your server ip or port!");
@@ -113,6 +116,7 @@ public class ClientConnector implements IClientConnector {
 		request.setUserName(userName);
 		request.setPassword(password);
 		request.setMsgType(LocateMessageTypes.LOGIN);
+		request.setChannelID(channelID);
 		return request;
 	}
 	
@@ -131,6 +135,7 @@ public class ClientConnector implements IClientConnector {
 		ClientRequest request = new ClientRequest();
 		request.setMsgType(LocateMessageTypes.FUTURE_REQUEST);
 		request.setRIC(ric);
+		request.setChannelID(channelID);
 		return request;
 	}
 	

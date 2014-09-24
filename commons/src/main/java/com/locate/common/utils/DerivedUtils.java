@@ -2,7 +2,7 @@ package com.locate.common.utils;
 
 public class DerivedUtils {
 	public static final String PRICE_TECH_HEAD = "PT_";
-	public static final String RMB_END = "_CYN";
+	public static final String RMB_END = "_CNY";
 
 	public static String derivesCurrencyRic(String ric) {
 		ric = PRICE_TECH_HEAD + ric + RMB_END;

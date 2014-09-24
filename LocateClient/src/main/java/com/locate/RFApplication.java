@@ -3,19 +3,22 @@ package com.locate;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
 import java.io.IOException;
 import java.net.ConnectException;
-import java.nio.channels.ClosedChannelException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.imageio.ImageIO;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -47,6 +50,7 @@ import com.locate.common.exception.LocateException;
 import com.locate.common.model.CustomerFiled;
 import com.locate.common.model.LocateUnionMessage;
 import com.locate.common.utils.NetTimeUtil;
+import com.locate.common.utils.SystemProperties;
 import com.locate.face.IBussiness;
 import com.locate.face.IClientConnector;
 import com.locate.gate.handler.ClientConnector;
@@ -81,6 +85,7 @@ public class RFApplication extends JFrame {
 
 	
 	//add by Cloud Wei
+	private Image ptLogo;
 	private JLabel userNameLabel;
 	private JTextField userNameTextField;
 	private JLabel passwordLabel;
@@ -91,7 +96,7 @@ public class RFApplication extends JFrame {
 	private JTextField portTextField;
 	private JButton connetedButton;
 	private JLabel ricLabel;
-	private JTextField ricTextField;
+	private JComboBox<String> itemNameComboBox;
 	private JButton openButton;
 	private JTable marketPriceTable;
 	private TableModel tableModel;
@@ -150,25 +155,26 @@ public class RFApplication extends JFrame {
 					getContentPane().add(sp);
 					int inputX = 550;
 					int inputY = 20;
-					panel.add(getCloseButton(new Rectangle(inputX + 200, inputY, 100, 20)));
-					panel.add(getUserNameLabel(new Rectangle(inputX, inputY, 100, 20)));
-					panel.add(getUserNameTextField(new Rectangle(inputX + 70, inputY, 100, 20)));
-					panel.add(getPasswordLabel(new Rectangle(inputX, inputY += 30, 100, 20)));
-					panel.add(getPasswordTextField(new Rectangle(inputX + 70, inputY, 100, 20)));
-					panel.add(getServerAddressLabel(new Rectangle(inputX, inputY += 30, 100, 20)));
-					panel.add(getServerAddressTextField(new Rectangle(inputX + 120, inputY, 100, 20)));
-					panel.add(getPortLabel(new Rectangle(inputX, inputY += 30, 100, 20)));
-					panel.add(getPortTextField(new Rectangle(inputX + 120, inputY, 100, 20)));
-
-					panel.add(getConnetedButton(new Rectangle(inputX, inputY += 30, 100, 20)));
-					panel.add(getRicLabel(new Rectangle(inputX, inputY += 30, 100, 20)));
-					panel.add(getRicTextField(new Rectangle(inputX + 120, inputY, 150, 20)));
-					panel.add(getOpenButton(new Rectangle(inputX, inputY += 30, 100, 20)));
-					panel.add(getTableScrollPane(new Rectangle(inputX, inputY += 30, 360, 400)));
-					panel.add(getUseTimeTextLabel(new Rectangle(inputX, 620, 500, 50)));
-					panel.add(getJScrollPane0(new Rectangle(30, 10, 500, 560)));
-					panel.add(getStatusBar(new Rectangle(30, 570, 500, 50)));
-					panel.add(getServerBar(new Rectangle(30, 620, 500, 50)));
+					panel.getGraphics().drawImage(getLogo(), 0, 0, null);
+//					panel.add(getCloseButton(new Rectangle(inputX + 200, inputY, 100, 20)));
+//					panel.add(getUserNameLabel(new Rectangle(inputX, inputY, 100, 20)));
+//					panel.add(getUserNameTextField(new Rectangle(inputX + 70, inputY, 100, 20)));
+//					panel.add(getPasswordLabel(new Rectangle(inputX, inputY += 30, 100, 20)));
+//					panel.add(getPasswordTextField(new Rectangle(inputX + 70, inputY, 100, 20)));
+//					panel.add(getServerAddressLabel(new Rectangle(inputX, inputY += 30, 100, 20)));
+//					panel.add(getServerAddressTextField(new Rectangle(inputX + 120, inputY, 100, 20)));
+//					panel.add(getPortLabel(new Rectangle(inputX, inputY += 30, 100, 20)));
+//					panel.add(getPortTextField(new Rectangle(inputX + 120, inputY, 100, 20)));
+//
+//					panel.add(getConnetedButton(new Rectangle(inputX, inputY += 30, 100, 20)));
+//					panel.add(getRicLabel(new Rectangle(inputX, inputY += 30, 100, 20)));
+//					panel.add(getRicTextField(new Rectangle(inputX + 120, inputY, 150, 20)));
+//					panel.add(getOpenButton(new Rectangle(inputX, inputY += 30, 100, 20)));
+//					panel.add(getTableScrollPane(new Rectangle(inputX, inputY += 30, 360, 400)));
+//					panel.add(getUseTimeTextLabel(new Rectangle(inputX, 620, 500, 50)));
+//					panel.add(getJScrollPane0(new Rectangle(30, 10, 500, 560)));
+//					panel.add(getStatusBar(new Rectangle(30, 570, 500, 50)));
+//					panel.add(getServerBar(new Rectangle(30, 620, 500, 50)));
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -179,6 +185,17 @@ public class RFApplication extends JFrame {
 	public void initialPriceModel(){
 	}
 	
+	
+	private Image getLogo(){
+		if(ptLogo == null){
+			try{
+				ptLogo = ImageIO.read(new File("config/PTLOGO.png"));
+			}catch(Exception e){
+				logger.error("read logo image failed",e);
+			}
+		}
+		return ptLogo;
+	}
 	/**
 	 * add by cloud
 	 * @return
@@ -186,7 +203,7 @@ public class RFApplication extends JFrame {
 	private JLabel getUserNameLabel(Rectangle r) {
 		if (userNameLabel == null) {
 			userNameLabel = new JLabel();
-			userNameLabel.setText("Username:");
+			userNameLabel.setText("用户名:");
 		}
 		userNameLabel.setBounds(r);
 		return userNameLabel;
@@ -203,7 +220,7 @@ public class RFApplication extends JFrame {
 	private JLabel getPasswordLabel(Rectangle r) {
 		if (passwordLabel == null) {
 			passwordLabel = new JLabel();
-			passwordLabel.setText("password:");
+			passwordLabel.setText("密码:");
 		}
 		passwordLabel.setBounds(r);
 		return passwordLabel;
@@ -220,7 +237,7 @@ public class RFApplication extends JFrame {
 	private JLabel getServerAddressLabel(Rectangle r) {
 		if (serverAddressLabel == null) {
 			serverAddressLabel = new JLabel();
-			serverAddressLabel.setText("serverAddress:");
+			serverAddressLabel.setText("服务器IP地址:");
 			serverAddressLabel.setBounds(r);
 		}
 		return serverAddressLabel;
@@ -239,7 +256,7 @@ public class RFApplication extends JFrame {
 	private JLabel getPortLabel(Rectangle r) {
 		if (portLabel == null) {
 			portLabel = new JLabel();
-			portLabel.setText("Port:");
+			portLabel.setText("服务器端口:");
 		}
 		portLabel.setBounds(r);
 		return portLabel;
@@ -256,29 +273,30 @@ public class RFApplication extends JFrame {
 	private JLabel getRicLabel(Rectangle r) {
 		if (ricLabel == null) {
 			ricLabel = new JLabel();
-			ricLabel.setText("RIC:");
+			ricLabel.setText("商品代码:");
 			ricLabel.setBounds(r);
 		}
 		return ricLabel;
 	}
 	
-	public JTextField getRicTextField(Rectangle r){
-		if(ricTextField == null){
-			ricTextField = new JTextField();
-			ricTextField.setText("PT_MCU3=LX_CYN");
-			ricTextField.setBounds(r);
+	public JComboBox<String> getRicTextField(Rectangle r){
+		if(itemNameComboBox == null){
+			String[] itemName = SystemProperties.getProperties(SystemProperties.ITEM_NAME).split(",");
+			itemNameComboBox = new JComboBox<String>(itemName);
+			itemNameComboBox.setEditable(true);
+			itemNameComboBox.setBounds(r);
 		}
-		return ricTextField;
+		return itemNameComboBox;
 	}
 	
 	private JButton getOpenButton(Rectangle r) {
 		if (openButton == null) {
 			openButton = new JButton();
-			openButton.setText("open");
+			openButton.setText("请求报价");
 			openButton.addMouseListener(new MouseAdapter() {
 				public void mouseClicked(MouseEvent event) {
 					try{
-						String ric = ricTextField.getText();
+						String ric = (String)itemNameComboBox.getSelectedItem();
 						clientConnetor.openRICMarket(ric);
 					}catch(LocateException le){
 						serverBar.setStatusFixed("Send the RIC to server error!");
@@ -294,11 +312,11 @@ public class RFApplication extends JFrame {
 	private JButton getCloseButton(Rectangle r) {
 		if (closeButton == null) {
 			closeButton = new JButton();
-			closeButton.setText("close");
+			closeButton.setText("关闭应用");
 			closeButton.addMouseListener(new MouseAdapter() {
 				public void mouseClicked(MouseEvent event) {
 					
-					int flag = JOptionPane.showConfirmDialog(closeButton, "Sure to close?", "Care!",
+					int flag = JOptionPane.showConfirmDialog(closeButton, "确定?", "注意!",
 							JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
 					if (JOptionPane.YES_OPTION == flag) {
 						System.exit(0);
@@ -316,7 +334,7 @@ public class RFApplication extends JFrame {
 	private JButton getConnetedButton(Rectangle r) {
 		if (connetedButton == null) {
 			connetedButton = new JButton();
-			connetedButton.setText("connet");
+			connetedButton.setText("连接服务器");
 			connetedButton.addMouseListener(new MouseAdapter() {
 
 				public void mouseClicked(MouseEvent event) {
@@ -328,6 +346,7 @@ public class RFApplication extends JFrame {
 					clientConnetor.conneteLocateGateWay(serverAddress,port,userName,password);
 					}catch(Exception e){
 						serverBar.setStatusFixed("连接服务器错误.请检查服务器配置!");
+						JOptionPane.showMessageDialog(null, "连接服务器错误,请检查服务器配置!", "连接错误!", JOptionPane.ERROR_MESSAGE);
 					}
 				}
 			});
@@ -339,7 +358,7 @@ public class RFApplication extends JFrame {
 	class TableModel extends AbstractTableModel{
 		private static final long serialVersionUID = 1L;
 		Map<Integer,CustomerFiled> data = new HashMap<Integer,CustomerFiled>();
-		String[] columns = { "id", "name", "value" };
+		String[] columns = { "编号", "域名", "值" };
 
 		public TableModel(LocateUnionMessage message) {
 			List<String[]> palyLoadSet = message.getPayLoadSet();
@@ -416,6 +435,10 @@ public class RFApplication extends JFrame {
 				break;
 			case 1:
 				r = customerFiled.getName();
+				String exchangeName = CustomerFiled.filedExchangeMap.get(customerFiled.getId());
+				if(!StringUtils.isBlank(exchangeName)){
+					r = exchangeName;
+				}
 				break;
 			case 2:
 				if(customerFiled.getValue()!=null){
@@ -530,8 +553,7 @@ public class RFApplication extends JFrame {
 	public static void main(String[] argv) {
 		// load properties file
 
-		// SystemProperties.init("rfaConfig.properties");
-
+		SystemProperties.init("config/config.properties");
 		RFApplication frame = new RFApplication();
 		frame.setDefaultCloseOperation(RFApplication.EXIT_ON_CLOSE);
 		frame.setTitle("Price Tech application");
