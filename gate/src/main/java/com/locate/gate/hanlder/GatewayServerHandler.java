@@ -174,7 +174,7 @@ public class GatewayServerHandler extends StringDecoder {
 			// store the channel of customer in a map according by the RIC
 			if (msgType != LocateMessageTypes.LOGIN) {
 				for (String subcribeItemName : request.getRIC().split(",")) {
-					Map<String, ChannelGroup> subscribeChannelMap = GateChannelCache.itemNameChannelMap;
+					Map<String, ChannelGroup> subscribeChannelMap = GateChannelCache.itemNameChannelGroupMap;
 					boolean isDerived = DerivedUtils.isDerived(subcribeItemName);
 					ChannelGroup subChannelGroup = subscribeChannelMap.get(subcribeItemName);
 					if (subChannelGroup == null) {
@@ -186,11 +186,11 @@ public class GatewayServerHandler extends StringDecoder {
 					}
 					if (isDerived) {
 						String itemName = DerivedUtils.restoreRic(subcribeItemName);
-						List<String> derivedChannelList = GateChannelCache.derivedChannelGroupMap.get(itemName);
+						List<String> derivedChannelList = GateChannelCache.item2derivedMap.get(itemName);
 						if (derivedChannelList == null) {
 							derivedChannelList = new ArrayList<String>();
 							derivedChannelList.add(subcribeItemName);
-							GateChannelCache.derivedChannelGroupMap.put(itemName, derivedChannelList);
+							GateChannelCache.item2derivedMap.put(itemName, derivedChannelList);
 						} else if (!derivedChannelList.contains(subcribeItemName)) {
 							derivedChannelList.add(subcribeItemName);
 						}
@@ -281,26 +281,30 @@ public class GatewayServerHandler extends StringDecoder {
 		GateChannelCache.allChannelGroup.remove(channel);
 		List<String> unregisterList = new ArrayList<String>();
 		//遍历所有的channelgoup,发现有该channel的就remove掉.如果该channelGroup为空,
-		for(Entry<String,ChannelGroup> entry:GateChannelCache.itemNameChannelMap.entrySet()){
+		for(Entry<String,ChannelGroup> entry:GateChannelCache.itemNameChannelGroupMap.entrySet()){
 			String itemName = entry.getKey();
+			
+			String derivedName = "";
 			boolean derived = DerivedUtils.isDerived(itemName);
-			if(derived){
-				itemName = DerivedUtils.restoreRic(itemName);
-			}
 			ChannelGroup channelGroup = entry.getValue();
 			if(channelGroup.contains(channel)){
 				channelGroup.remove(channel);
 			}
-			if(GateChannelCache.isEmnpty(itemName)){//没有用户订阅了,退订该item
+			if(derived){
+				derivedName = itemName;
+				itemName = DerivedUtils.restoreRic(itemName);
+			}
+			if (GateChannelCache.isEmnpty(itemName)) {// 没有用户订阅了,退订该item
 				unregisterList.add(itemName);
 				gateForwardRFA.closeHandler(itemName);
 			}
 		}
-		//清空掉该itemname和ChannelGroup的对应关系.
+		//清空掉该itemname和ChannelGroup的对应关系.注意ITEMName和ChannelGroup的对应关系可以不用清除.
+		//保存在内存中.
 		for (String itemName : unregisterList) {
-			ChannelGroup itemChannelGroup = GateChannelCache.itemNameChannelMap.get(itemName);
-			if (itemChannelGroup.isEmpty()) {
-				GateChannelCache.itemNameChannelMap.remove(itemName);
+			ChannelGroup itemChannelGroup = GateChannelCache.itemNameChannelGroupMap.get(itemName);
+			if (itemChannelGroup!=null && itemChannelGroup.isEmpty()) {
+				GateChannelCache.itemNameChannelGroupMap.remove(itemName);
 			}
 		}
 	}
