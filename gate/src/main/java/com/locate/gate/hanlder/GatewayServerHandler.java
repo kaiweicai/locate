@@ -10,9 +10,11 @@ import io.netty.util.concurrent.GlobalEventExecutor;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.annotation.Resource;
@@ -280,7 +282,7 @@ public class GatewayServerHandler extends StringDecoder {
 		
 		Channel channel = ctx.channel();
 		GateChannelCache.allChannelGroup.remove(channel);
-		List<String> unregisterList = new ArrayList<String>();
+		Set<String> unregisterSet = new HashSet<String>();
 		//遍历所有的channelgoup,发现有该channel的就remove掉.如果该channelGroup为空,
 		for(Entry<String,ChannelGroup> entry:GateChannelCache.itemNameChannelGroupMap.entrySet()){
 			String itemName = entry.getKey();
@@ -296,15 +298,19 @@ public class GatewayServerHandler extends StringDecoder {
 				itemName = DerivedUtils.restoreRic(itemName);
 			}
 			if (GateChannelCache.isEmnpty(itemName)) {// 没有用户订阅了,退订该item
-				unregisterList.add(itemName);
+				unregisterSet.add(itemName);
+				List<String> derivedList = GateChannelCache.item2derivedMap.get(itemName);
+				if(derivedList!=null){
+					unregisterSet.addAll(derivedList);
+				}
 				gateForwardRFA.closeHandler(itemName);
 			}
 		}
 		//清空掉该itemname和ChannelGroup的对应关系.注意ITEMName和ChannelGroup的对应关系可以不用清除.
 		//保存在内存中.
-		for (String itemName : unregisterList) {
+		for (String itemName : unregisterSet) {
 			ChannelGroup itemChannelGroup = GateChannelCache.itemNameChannelGroupMap.get(itemName);
-			if (itemChannelGroup!=null && itemChannelGroup.isEmpty()) {
+			if (itemChannelGroup==null || itemChannelGroup.isEmpty()) {
 				GateChannelCache.itemNameChannelGroupMap.remove(itemName);
 			}
 		}

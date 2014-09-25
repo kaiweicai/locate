@@ -3,6 +3,8 @@ package com.locate.rmds.engine;
 import java.math.BigDecimal;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.locate.common.model.LocateUnionMessage;
 import com.locate.common.utils.SystemProperties;
 
@@ -15,6 +17,9 @@ public class CurrencyEngine implements Engine {
 		List<String[]> payLoadList = message.getPayLoadSet();
 		for(String[] payLoad:payLoadList){
 			String id = payLoad[0];
+			if(StringUtils.isBlank(payLoad[3])){
+				continue;
+			}
 			if(fieldInChange(id,curFields)){
 				BigDecimal payLoadValue = new BigDecimal(payLoad[3]);
 				BigDecimal currencyValue = new BigDecimal(Double.toString(currency));

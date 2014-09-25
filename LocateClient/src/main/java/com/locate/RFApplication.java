@@ -5,7 +5,10 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Rectangle;
+import java.awt.TextField;
 import java.awt.Toolkit;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
@@ -21,12 +24,15 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.ListCellRenderer;
+import javax.swing.ListModel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.table.AbstractTableModel;
@@ -44,6 +50,8 @@ import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.core.joran.spi.JoranException;
 
+import com.locate.client.gui.ComboItemName;
+import com.locate.client.gui.ItemNameLabel;
 import com.locate.client.gui.LogoPanel;
 import com.locate.client.gui.StatusBar;
 import com.locate.common.constant.LocateMessageTypes;
@@ -98,7 +106,7 @@ public class RFApplication extends JFrame {
 	private JTextField portTextField;
 	private JButton connetedButton;
 	private JLabel ricLabel;
-	private JComboBox<String> itemNameComboBox;
+	private JComboBox<ComboItemName> itemNameComboBox;
 	private JButton openButton;
 	private JTable marketPriceTable;
 	private TableModel tableModel;
@@ -216,7 +224,7 @@ public class RFApplication extends JFrame {
 	
 	private JTextField getUserNameTextField(Rectangle r){
 		if(userNameTextField == null){
-			userNameTextField = new JTextField("ztcj");
+			userNameTextField = new JTextField("demo");
 		}
 		userNameTextField.setBounds(r);
 		return userNameTextField;
@@ -233,7 +241,7 @@ public class RFApplication extends JFrame {
 	
 	private JTextField getPasswordTextField(Rectangle r){
 		if(passwordTextField == null){
-			passwordTextField = new JTextField("ztcj2013");
+			passwordTextField = new JTextField("demo");
 		}
 		passwordTextField.setBounds(r);
 		return passwordTextField;
@@ -284,10 +292,21 @@ public class RFApplication extends JFrame {
 		return ricLabel;
 	}
 	
-	public JComboBox<String> getRicTextField(Rectangle r){
-		if(itemNameComboBox == null){
-			String[] itemName = SystemProperties.getProperties(SystemProperties.ITEM_NAME).split(",");
-			itemNameComboBox = new JComboBox<String>(itemName);
+	public JComboBox<ComboItemName> getRicTextField(Rectangle r) {
+		if (itemNameComboBox == null) {
+			String[] itemNames = SystemProperties.getProperties(SystemProperties.ITEM_NAME).split(",");
+			ComboItemName[] comboItemName = new ComboItemName[itemNames.length];
+			for(int i=0;i<comboItemName.length;i++){
+				comboItemName[i]= new ComboItemName(itemNames[i]);
+			}
+			itemNameComboBox = new JComboBox<ComboItemName>(comboItemName);
+//			itemNameComboBox.addItemListener(new ItemListener(){
+//				@Override
+//				public void itemStateChanged(ItemEvent e) {
+//					Object object = e.getItem();
+//					System.out.println(object);
+//				}
+//			});
 			itemNameComboBox.setEditable(true);
 			itemNameComboBox.setBounds(r);
 		}
@@ -301,8 +320,14 @@ public class RFApplication extends JFrame {
 			openButton.addMouseListener(new MouseAdapter() {
 				public void mouseClicked(MouseEvent event) {
 					try{
-						String ric = (String)itemNameComboBox.getSelectedItem();
-						clientConnetor.openRICMarket(ric);
+						String ricName = "";
+						Object object = itemNameComboBox.getSelectedItem();
+						if(object instanceof String){
+							ricName = (String)object;
+						}else if(object instanceof ComboItemName){
+							ricName = ((ComboItemName)object).getItemValue();
+						}
+						clientConnetor.openRICMarket(ricName);
 					}catch(LocateException le){
 						serverBar.setStatusFixed("Send the RIC to server error!");
 						JOptionPane.showMessageDialog(null, "请先登录到服务器", "未登录", JOptionPane.ERROR_MESSAGE);
@@ -634,12 +659,12 @@ public class RFApplication extends JFrame {
 					marketPriceTable.setModel(tableModel);
 					updateTablePriceThread.setMarketPriceTable(marketPriceTable);
 					chartPanel.getGraphics().setColor(Color.RED);
-					chartPanel.getGraphics().drawLine(12, 21, 54, 99);
 					break;
 				//Locate send the update market price.
 				case LocateMessageTypes.UPDATE_RESP:
 					updateMarketPriceTable(tableModel,message);
 					updateTablePriceThread.setUpdate(true);
+					chartPanel.getGraphics().drawLine(12, 21, 54, 99);
 					break;
 				//Locate send the state info to client
 				case LocateMessageTypes.SERVER_STATE:
@@ -735,7 +760,7 @@ public class RFApplication extends JFrame {
 				boolean hasFocus, int row, int column) {
 			JLabel jl = new JLabel();
 			if(chanedRowList.contains(row)){
-				jl.setForeground(Color.green);
+				jl.setForeground(Color.blue);
 			}
 //			jl.setBackground(Color.WHITE);
 			jl.setOpaque(true);

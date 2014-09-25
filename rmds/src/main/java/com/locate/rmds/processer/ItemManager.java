@@ -274,13 +274,16 @@ public class ItemManager extends IProcesser implements Client
 				_logger.warn("get the engine result error!",e);
 			}
 		}
-		derivedEngineFuture=EngineLinerManager.engineLineCache.get(derivactiveItemName).applyStrategy(locateMessage.clone());
-		if(!StringUtils.isBlank(derivactiveItemName)){
-			if(derivedEngineFuture!=null){
-				try {
-					derivedEngineFuture.get();
-				} catch (InterruptedException | ExecutionException e) {
-					_logger.warn("get the dervied engine result error!",e);
+		EngineLine derivedEngline = EngineLinerManager.engineLineCache.get(derivactiveItemName);
+		if(derivedEngline!=null){
+			derivedEngineFuture = derivedEngline.applyStrategy(locateMessage.clone());
+			if(!StringUtils.isBlank(derivactiveItemName)){
+				if(derivedEngineFuture!=null){
+					try {
+						derivedEngineFuture.get();
+					} catch (InterruptedException | ExecutionException e) {
+						_logger.warn("get the dervied engine result error!",e);
+					}
 				}
 			}
 		}

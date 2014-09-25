@@ -94,7 +94,7 @@ public class RFAUtils {
 		// (byte)0x98, 0x30, 0x40, 0x36, (byte)0xE2
 		// };
 
-		String szSrc = "jw2013";
+		String szSrc = "demo";
 
 //		byte[] encoded = encryptMode(szSrc.getBytes());
 		String encoded = input(szSrc);
@@ -103,7 +103,6 @@ public class RFAUtils {
 		try {
 			System.out.println(output(encoded));
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

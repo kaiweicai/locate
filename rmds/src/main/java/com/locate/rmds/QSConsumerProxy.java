@@ -332,16 +332,16 @@ public class QSConsumerProxy{
 	public ItemManager itemRequests(String itemName, byte responseMsgType,int channelId) {
 		//如果ITEM以PT开头,则表示为客户自定义的产品,需要实施产品策略.以后策略添加在这个位置.
 		String derivactiveItemName = "";
-		if (itemName.startsWith(DerivedUtils.PRICE_TECH_HEAD) && itemName.endsWith(DerivedUtils.RMB_END)) {
+		if (DerivedUtils.isDerived(itemName)) {
 			derivactiveItemName = itemName;
-			EngineLine engineLine = EngineLinerManager.engineLineCache.get(derivactiveItemName);
-			if(engineLine == null){
-				engineLine= new EngineLine();
-				EngineLinerManager.engineLineCache.put(derivactiveItemName, engineLine);
+			EngineLine derivedEngineLine = EngineLinerManager.engineLineCache.get(derivactiveItemName);
+			if(derivedEngineLine == null){
+				derivedEngineLine = new EngineLine();
+				EngineLinerManager.engineLineCache.put(derivactiveItemName, derivedEngineLine);
 			}
 			itemName = DerivedUtils.restoreRic(itemName);
 			CurrencyEngine.currency = Float.parseFloat(SystemProperties.getProperties(SystemProperties.CUR_US_CYN));
-			engineLine.addEngine("currencyEngine", new CurrencyEngine());
+			derivedEngineLine.addEngine("currencyEngine", new CurrencyEngine());
 		}
 		EngineLine originalEngineLine = EngineLinerManager.engineLineCache.get(itemName);
 		if(originalEngineLine == null){
