@@ -54,6 +54,10 @@ import com.locate.client.gui.ComboItemName;
 import com.locate.client.gui.ItemNameLabel;
 import com.locate.client.gui.LogoPanel;
 import com.locate.client.gui.StatusBar;
+import com.locate.client.gui.Tab;
+import com.locate.client.gui.TabbedPane;
+import com.locate.client.gui.TabbedPaneListener;
+import com.locate.common.ClientConstant;
 import com.locate.common.constant.LocateMessageTypes;
 import com.locate.common.exception.LocateException;
 import com.locate.common.model.CustomerFiled;
@@ -88,7 +92,8 @@ public class RFApplication extends JFrame {
 	private JLabel avgTitle;
 	public static JLabel avgTimes;
 	private JButton closeButton;
-	private DefaultTableCellRenderer cellRanderer; 
+	private TabbedPane tabbedPane;
+	private DefaultTableCellRenderer cellRanderer;
 	private List<Integer> chanedRowList = new ArrayList<Integer>();
 	
 	public static boolean stop = false;
@@ -108,18 +113,18 @@ public class RFApplication extends JFrame {
 	private JLabel ricLabel;
 	private JComboBox<ComboItemName> itemNameComboBox;
 	private JButton openButton;
-	private JTable marketPriceTable;
-	private TableModel tableModel;
+//	private JTable marketPriceTable;
+//	private TableModel tableModel;
 	private StatusBar statusBar;
 	private StatusBar serverBar;
 	private JLabel useTimeTextLabel;
 	private RedRenderer redRenderer =new RedRenderer();
 	private BlueRenderer blueRenderer =new BlueRenderer();
-	private Map<String,Integer> IdAtRowidMap = new HashMap<String,Integer>();
+	
 	StringBuilder sBuilder = new StringBuilder();
 	public static long totalResponseNumber = 0;
 	public static long totalProcessTime = 0;
-	UpdateTableColore updateTablePriceThread = new UpdateTableColore();
+//	UpdateTableColore updateTablePriceThread = new UpdateTableColore();
 	private IClientConnector clientConnetor;
 
 	private static final String PREFERRED_LOOK_AND_FEEL = "javax.swing.plaf.metal.MetalLookAndFeel";
@@ -152,7 +157,7 @@ public class RFApplication extends JFrame {
 				try {
 					setSize(1024, 720);
 					LogoPanel panel = new LogoPanel();
-					panel.setImagePath("config/PTLOGO.png");
+					panel.setImagePath(ClientConstant.iamgeDirectory+"PTLOGO.png");
 					panel.setPreferredSize(new Dimension(panel.getImgWidth(), panel  
 			                .getImgHeight()));  
 					
@@ -178,7 +183,7 @@ public class RFApplication extends JFrame {
 					panel.add(getRicLabel(new Rectangle(inputX, inputY += 30, 100, 20)));
 					panel.add(getRicTextField(new Rectangle(inputX + 120, inputY, 150, 22)));
 					panel.add(getOpenButton(new Rectangle(inputX, inputY += 30, 100, 20)));
-					panel.add(getTableScrollPane(new Rectangle(inputX, inputY += 30, 360, 400)));
+					panel.add(getTableScrollPane(new Rectangle(inputX, inputY += 30, 400, 400)));
 					panel.add(getUseTimeTextLabel(new Rectangle(inputX, 620, 500, 50)));
 					panel.add(getLogPanel(new Rectangle(30, 10, 500, 280)));
 					panel.add(getChartPanel(new Rectangle(30, 300, 500, 200)));
@@ -195,7 +200,7 @@ public class RFApplication extends JFrame {
 		setDefaultCloseOperation(RFApplication.EXIT_ON_CLOSE);
 		setTitle("Price Tech application");
 		getContentPane().setPreferredSize(this.getSize());
-		Image image = Toolkit.getDefaultToolkit().getImage("config/PTLOGO.png");
+		Image image = Toolkit.getDefaultToolkit().getImage(ClientConstant.iamgeDirectory+"PTLOGO.png");
 		setIconImage(image);
 		int windowWidth = getWidth(); // 获得窗口宽
 		int windowHeight = getHeight(); // 获得窗口高
@@ -385,12 +390,13 @@ public class RFApplication extends JFrame {
 		return connetedButton;
 	}
 	
-	class TableModel extends AbstractTableModel{
+	public class PriceTableModel extends AbstractTableModel{
 		private static final long serialVersionUID = 1L;
+		private Map<String,Integer> IdAtRowidMap = new HashMap<String,Integer>();
 		Map<Integer,CustomerFiled> data = new HashMap<Integer,CustomerFiled>();
 		String[] columns = { "编号", "域名", "值" };
 
-		public TableModel(LocateUnionMessage message) {
+		public PriceTableModel(LocateUnionMessage message) {
 			List<String[]> palyLoadSet = message.getPayLoadSet();
 			Integer rowid=0;
 			for (String[] filed : palyLoadSet) {
@@ -410,7 +416,6 @@ public class RFApplication extends JFrame {
 					CustomerFiled customerFiled = new CustomerFiled(id, name, value);
 					IdAtRowidMap.put(id, rowid);
 					data.put(rowid++,customerFiled);
-					
 			}
 		}
 		
@@ -487,18 +492,25 @@ public class RFApplication extends JFrame {
 		public boolean isCellEditable(int rowIndex, int columnIndex) {
 			return false;
 		}
+		
+		public Map<String, Integer> getIdAtRowidMap() {
+			return IdAtRowidMap;
+		}
+
+		public void setIdAtRowidMap(Map<String, Integer> idAtRowidMap) {
+			IdAtRowidMap = idAtRowidMap;
+		}
 	}
 	
 	private JTable getMarketPriceTable() {
-		if (marketPriceTable == null) {
-			marketPriceTable = new JTable();
-//			marketPriceTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
-			marketPriceTable.addMouseListener(new MouseAdapter() {
-				public void mouseClicked(MouseEvent event) {
+		JTable marketPriceTable = new JTable();
+//		marketPriceTable.setBounds(0, 0, 200, 30);
+//		marketPriceTable.getColumnModel().getColumn(3).setPreferredWidth(460);
+		marketPriceTable.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent event) {
 //					conneteLocateGateWay();
-				}
-			});
-		}
+			}
+		});
 		return marketPriceTable;
 	}
 
@@ -511,17 +523,57 @@ public class RFApplication extends JFrame {
 	private JScrollPane getTableScrollPane(Rectangle r) {
 		if (tableScrollPane == null) {
 			tableScrollPane = new JScrollPane();
-			tableScrollPane.setViewportView(getMarketPriceTable());
+			tableScrollPane.setViewportView(getTabbedPane());
 			tableScrollPane.setBounds(r);
 		}
 		return tableScrollPane;
+	}
+	
+	private TabbedPane getTabbedPane() {
+		if (tabbedPane == null) {
+			tabbedPane = new TabbedPane();
+			tabbedPane.setCloseButtonEnabled(true);
+//			tabbedPane.addTab("日志", null, getLogPanel(null));
+			tabbedPane.addTabbedPaneListener(new TabbedPaneListener() {
+				@Override
+				public void allTabsRemoved() {
+					// TODO Auto-generated method stub
+
+				}
+
+				@Override
+				public boolean canTabClose(Tab tab, Component component) {
+					return false;
+				}
+
+				@Override
+				public void tabAdded(Tab tab, Component component, int index) {
+
+				}
+
+				@Override
+				public void tabRemoved(Tab tab, Component component, int index) {
+					logger.debug("close");
+				}
+
+				@Override
+				public void tabSelected(Tab tab, Component component, int index) {
+
+				}
+			});
+		}
+		return tabbedPane;
 	}
 	
 	private JScrollPane getLogPanel(Rectangle r) {
 		if (logScrollPanel == null) {
 			logScrollPanel = new JScrollPane();
 			logScrollPanel.setViewportView(getShowLog());
-			logScrollPanel.setBounds(r);
+			if(r!=null){
+				logScrollPanel.setBounds(r);
+			}else{
+				logScrollPanel.setBounds(0,0,400,400);
+			}
 		}
 		return logScrollPanel;
 	}
@@ -640,7 +692,7 @@ public class RFApplication extends JFrame {
 		 * @see com.locate.client.gui.BussinessInterface#handleMessage(java.lang.String)
 		 */
 		@Override
-		public void handleMessage(LocateUnionMessage message){
+		public void handleMessage(final LocateUnionMessage message){
 			if (message == null) {
 				logger.warn("Received server's  message is null \n");
 				return;
@@ -649,21 +701,41 @@ public class RFApplication extends JFrame {
 			long endTime = NetTimeUtil.getCurrentNetTime();
 			logger.info("original message -------"+message);
 			byte msgType = message.getMsgType();
+			final String itemName = message.getRic();
 			sBuilder.append("Received message type:" + LocateMessageTypes.toString(msgType)+"\n");
 			useTimeTextLabel.setText("From Locate Server to client use time:"+(endTime-startTime)+" millseconds");
 			logger.info("The message From RFA to user use time "+(endTime-startTime)+" milliseconds");
 			switch(msgType){
 				//first the Locate send the snapshot of market price
 				case LocateMessageTypes.REFRESH_RESP:
-					tableModel = new TableModel(message);
-					marketPriceTable.setModel(tableModel);
-					updateTablePriceThread.setMarketPriceTable(marketPriceTable);
+					SwingUtilities.invokeLater(new Runnable() {
+						public void run() {
+							SubstanceLookAndFeel.setSkin(new org.pushingpixels.substance.api.skin.ModerateSkin());
+							PriceTableModel tableModel = new PriceTableModel(message);
+							JTable marketPriceTable = getMarketPriceTable();
+							marketPriceTable.setModel(tableModel);
+							//add the item tab
+							tabbedPane.addTab(ComboItemName.exhangeTheName(itemName), null, marketPriceTable);
+							marketPriceTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+							marketPriceTable.getColumnModel().getColumn(0).setPreferredWidth(20);
+							marketPriceTable.getColumnModel().getColumn(1).setPreferredWidth(20);
+							marketPriceTable.getColumnModel().getColumn(2).setPreferredWidth(20);
+							UpdateTableColore updateThread = new UpdateTableColore();
+							
+							updateThread.setMarketPriceTable(marketPriceTable);
+							ClientConstant.updateThreadMap.put(itemName, updateThread);
+							ClientConstant.itemName2PriceTableModeMap.put(itemName, tableModel);
+						}
+					});
+					
 					chartPanel.getGraphics().setColor(Color.RED);
 					break;
 				//Locate send the update market price.
 				case LocateMessageTypes.UPDATE_RESP:
-					updateMarketPriceTable(tableModel,message);
-					updateTablePriceThread.setUpdate(true);
+					PriceTableModel tModel = ClientConstant.itemName2PriceTableModeMap.get(itemName);
+					updateMarketPriceTable(tModel,message);
+					ClientConstant.updateThreadMap.get(itemName).setUpdate(true);
+					
 					chartPanel.getGraphics().drawLine(12, 21, 54, 99);
 					break;
 				//Locate send the state info to client
@@ -699,8 +771,8 @@ public class RFApplication extends JFrame {
 			updateLog(sBuilder);
 		}
 		
-		private void updateMarketPriceTable(TableModel tableModel,LocateUnionMessage message) {
-			
+		private void updateMarketPriceTable(PriceTableModel tableModel,LocateUnionMessage message) {
+			Map<String,Integer>IdAtRowidMap=tableModel.getIdAtRowidMap();
 			List<String[]> payLoadSet = message.getPayLoadSet();
 			for (String[] filed : payLoadSet) {
 				String id = "";
@@ -769,7 +841,7 @@ public class RFApplication extends JFrame {
 		}
 	}
 	
-	class UpdateTableColore extends Thread {
+	public class UpdateTableColore extends Thread {
 		private boolean update = false;
 
 		public boolean isUpdate() {

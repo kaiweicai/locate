@@ -6,8 +6,8 @@ public class ComboItemName {
 		this.itemValue = itemValue;
 	}
 	
-	public String toString(){
-		switch (itemValue) {
+	public static String exhangeTheName(String locateMessageName){
+		switch (locateMessageName) {
 		case "PT_MCU3=LX_CNY":
 			return "普兰泰科自定义铜";
 		case "XAU=":
@@ -19,7 +19,7 @@ public class ComboItemName {
 		case "MAL3=LX":
 			return "三月铝";
 		case "MAA3=LX":
-			return "三月特金";
+			return "三月合金铝";
 		case "MZN3=LX":
 			return "三月锌";
 		case "MSN3=LX":
@@ -31,8 +31,12 @@ public class ComboItemName {
 		case "MNA3=LX":
 			return "北美特种铝";
 		default:
-			return itemValue;
+			return locateMessageName;
 		}
+	}
+	
+	public String toString(){
+		return exhangeTheName(itemValue);
 	}
 
 	public String getItemValue() {

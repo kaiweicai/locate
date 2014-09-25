@@ -16,13 +16,13 @@ public class NetTimeUtilTest {
 		 String timeServerUrl = "s2c.time.edu.cn";
 //		String timeServerUrl = "ntp.sjtu.edu.cn";
 //		String timeServerUrl = "s2g.time.edu.cn";
-		InetAddress timeServerAddress = InetAddress.getByName(timeServerUrl);
-		TimeInfo timeInfo = NetTimeUtil.getTime(timeServerAddress, 123);
-		for (int i = 0; i < 100; i++) {
-			TimeStamp timeStamp = timeInfo.getMessage().getTransmitTimeStamp();
-			long diffTime = timeStamp.getTime() - System.currentTimeMillis();
-			System.out.println(diffTime);
-		}
+//		InetAddress timeServerAddress = InetAddress.getByName(timeServerUrl);
+//		TimeInfo timeInfo = NetTimeUtil.getTime(timeServerAddress, 123);
+//		for (int i = 0; i < 100; i++) {
+//			TimeStamp timeStamp = timeInfo.getMessage().getTransmitTimeStamp();
+//			long diffTime = timeStamp.getTime() - System.currentTimeMillis();
+//			System.out.println(diffTime);
+//		}
 		// DateFormat dateFormat = new
 		// SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 		// System.out.println(dateFormat.format(timeStamp.getDate()));

@@ -1,6 +1,6 @@
 1,name:PROD_PERM,long name:PERMISSION,type:4,
 2,name:RDNDISPLAY,long name:DISPLAYTEMPLATE,type:2,
-3,name:DSPLY_NAME,long name:DISPLAY NAME,type:19,商品名称
+3,name:DSPLY_NAME,long name:DISPLAY NAME,type:19,报价商
 4,name:RDN_EXCHID,long name:IDN EXCHANGE ID,type:14,
 5,name:TIMACT,long name:TIME OF UPDATE,type:10,更新时间
 6,name:TRDPRC_1,long name:LAST,type:8,交易价

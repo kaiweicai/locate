@@ -8,6 +8,7 @@ import javax.swing.JList;
 import javax.swing.ListCellRenderer;
 import javax.swing.ListModel;
 
+@Deprecated
 public class ItemNameLabel extends JLabel implements ListCellRenderer<String>{
 
 	@Override
