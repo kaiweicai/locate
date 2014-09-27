@@ -60,3 +60,22 @@
 是否去掉该功能.
 
 4.服务器端的sequnce No被重置了.原因不明.
+
+p2ps请求数增多的问题.
+1.OmmViewer关闭后,所有的请求减少.有可能是OmmViewer中有程序执行了cleanup.
+OMMSubAppContext
+public void cleanup()
+            {
+/* 169*/        _ommConsumer.unregisterClient(_directoryHandle);
+/* 170*/        _ommConsumer.unregisterClient(_loginHandle);
+/* 171*/        _ommConsumer.unregisterClient(null);
+/* 172*/        _ommConsumer.destroy();
+/* 173*/        _session.release();
+/* 174*/        super.cleanup();
+/* 175*/        Context.uninitialize();
+            }
+2.OmmViewer增加新的请求后不会增加P2PS的请求数.
+OmmViewer每次都是用msgType为1的请求.但是会增加一个消息处理器.
+LOCATE使用的是所有ric使用同一个消息处理器.
+如果将同一个消息处理器注册两次.
+一个消息处理会有两条相同的消息生成(假设不同的消息处理器注册同一个请求,消息会同是发送到两个处理器.)明天做实验可以得出结论.

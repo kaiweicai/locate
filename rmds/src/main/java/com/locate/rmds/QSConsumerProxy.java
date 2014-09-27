@@ -520,7 +520,7 @@ public class QSConsumerProxy{
 		Context.uninitialize();
 
 		logger.info("Application is cleanuping and exiting");
-		System.exit(0);
+//		System.exit(0);
 		// RFApplication.stop = true;
 	}
 

@@ -1,5 +1,7 @@
 package com.locate;
 
+import java.io.IOException;
+
 import org.slf4j.ILoggerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +16,7 @@ import com.locate.common.exception.LocateException;
 import com.locate.common.utils.LogbackShutdownHook;
 import com.locate.common.utils.ShutdownWorker;
 import com.locate.common.utils.SystemProperties;
+import com.locate.rmds.QSConsumerProxy;
 
 /**
  * 
@@ -40,7 +43,6 @@ public class LocateGateWayMain {
 
 	public static void main(String[] args) {
 		logger.info("start LocateGateWay!");
-		
 		SystemConstant.springContext = new FileSystemXmlApplicationContext(new String[] { "config/propholder.xml" });
 		Thread logbackShutdownHook = new LogbackShutdownHook();
 		logbackShutdownHook.setName("logbackshutdownWork!");
@@ -48,5 +50,14 @@ public class LocateGateWayMain {
 		ShutdownWorker shutdownWorker = new ShutdownWorker();
 		shutdownWorker.setName("shutdownWorker");
 		Runtime.getRuntime().addShutdownHook(shutdownWorker);
+//		QSConsumerProxy proxy = SystemConstant.springContext.getBean(QSConsumerProxy.class);
+//		proxy.cleanup();
+		SystemConstant.springContext.registerShutdownHook();
+//	    try {
+//			Thread.sleep(10000);
+//		} catch (InterruptedException e) {
+//			e.printStackTrace();
+//		}
+//	    System.exit(0);
 	}
 }
