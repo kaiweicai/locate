@@ -2,6 +2,7 @@ package com.locate.stock.chart;
 import java.io.File;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -21,10 +22,10 @@ import org.jstockchart.axis.logic.LogicDateAxis;
 import org.jstockchart.axis.logic.LogicNumberAxis;
 import org.jstockchart.dataset.TimeseriesDataset;
 import org.jstockchart.model.TimeseriesItem;
-import org.jstockchart.util.DateUtils;
 
 import com.db4o.Db4o;
 import com.db4o.ObjectContainer;
+import com.locate.stock.common.utils.DateUtils;
 import com.locate.stock.data.DataFactory;
 import com.locate.stock.data.GlobalConfig;
 
@@ -41,11 +42,10 @@ public class realTimeChart {
 		String dbFile = "demo/db/jstockchart-timeseries.db4o";
 		ObjectContainer db = Db4o.openFile(GlobalConfig.globalConfig(), dbFile);
 		DataFactory dataFactory = new DataFactory(db);
-		Date startTime = DateUtils.createDate(2008, 1, 1, 9, 30, 0);
-		Date endTime = DateUtils.createDate(2008, 1, 1, 15, 0, 0);
+		Date startTime = DateUtils.beforeCurrentDate(10);
+		Date endTime = DateUtils.currentDate();
 		// 'data' is a list of TimeseriesItem instances.
-		List<TimeseriesItem> data = dataFactory.getTimeseriesItem(startTime,
-				endTime, Calendar.MINUTE, 1);
+		List<TimeseriesItem> data = new ArrayList<TimeseriesItem>();
 		// the 'timeline' indicates the segmented time range '00:00-11:30,
 		// 13:00-24:00'.
 		SegmentedTimeline timeline = new SegmentedTimeline(SegmentedTimeline.MINUTE_SEGMENT_SIZE, 1460, 0);
