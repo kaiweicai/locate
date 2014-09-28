@@ -58,7 +58,8 @@ import com.reuters.rfa.session.omm.OMMSolicitedItemEvent;
  * @author Cloud.Wei
  *
  */
-@Service("itemManager")@Scope("prototype")
+//@Service("itemManager")@Scope("prototype")
+@Service("itemManager")
 public class ItemManager extends IProcesser implements Client
 {
 	Handle  itemHandle;

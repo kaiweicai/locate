@@ -27,7 +27,7 @@ public class ComboItemName {
 		case "MNI3=LX":
 			return "三月镍";
 		case "MPB3=LX":
-			return "三月钯";
+			return "三月铅";
 		case "MNA3=LX":
 			return "北美特种铝";
 		default:

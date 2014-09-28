@@ -350,7 +350,8 @@ public class QSConsumerProxy{
 		}
 		Map<String,IProcesser> subscribeItemManagerMap = RmdsDataCache.RIC_ITEMMANAGER_Map;
 		boolean needRenewSubscribeItem=checkSubscribeStatus(itemName);
-		if(needRenewSubscribeItem){
+//		if(needRenewSubscribeItem){
+		if(false){
 			/**
 			 * 已经订阅过该产品,只需要发送一个一次订阅请求,返回一个snapshot即可.
 			 * 已经将该用户加入到订阅该产品的用户组中.所以该用户能够收到该产品的更新信息.
