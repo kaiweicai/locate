@@ -45,35 +45,36 @@ public class RealTimeChart {
 		Date startTime = DateUtils.beforeCurrentDate(10);
 		Date endTime = DateUtils.currentDate();
 		// 'data' is a list of TimeseriesItem instances.
-		List<TimeseriesItem> data = new ArrayList<TimeseriesItem>();
+		List<TimeseriesItem> dataList = new ArrayList<TimeseriesItem>();
 		// the 'timeline' indicates the segmented time range '00:00-11:30,
 		// 13:00-24:00'.
 		long time = DateUtils.beforeCurrentDate(-3).getTime();
-		System.out.println(new Date(time));
+		System.out.println("-----------------"+new Date(time));
 		double price = 17.8;
 		double amount = 300;
 		int x =-1;
 		x=-x;
 		double deltaPrice = new Random().nextDouble();
-		TimeseriesItem timeseriesItem=new TimeseriesItem(new Date(time+=1000L),price+=x*deltaPrice,amount+=x*(int)(Math.random()*5+1));
+		TimeseriesItem timeseriesItem=new TimeseriesItem(new Date(time),price+=x*deltaPrice,amount+=x*(int)(Math.random()*5+1));
 		for(int i=0;i<30;i++){
 			for(int j=0;j<6;j++){
-				data.add(timeseriesItem);
+				timeseriesItem = new TimeseriesItem(new Date(time+=1000L),timeseriesItem.getPrice(),timeseriesItem.getVolume());
+				dataList.add(timeseriesItem);
 			}
 		}
-		System.out.println(data.size());
-		System.out.println(new Date(time));
+		System.out.println(dataList.size());
+		System.out.println("```````````````````"+new Date(time));
 		SegmentedTimeline timeline = new SegmentedTimeline(SegmentedTimeline.MINUTE_SEGMENT_SIZE, 1440, 0);
 		timeline.setStartTime(SegmentedTimeline.firstMondayAfter1900());
 
 		// Creates timeseries data set.
 		TimeseriesDataset dataset = new TimeseriesDataset(Second.class, 1,
 				timeline, true);
-		dataset.addDataItems(data);
+		dataset.addDataItems(dataList);
 
 		// Creates logic price axis.
 		CentralValueAxis logicPriceAxis = new CentralValueAxis(
-				new Double("19.5"), new Range(
+				new Double(dataList.get(0).getPrice()), new Range(
 						dataset.getMinPrice().doubleValue(), dataset
 								.getMaxPrice().doubleValue()), 9,
 				new DecimalFormat(".00"));
@@ -87,7 +88,7 @@ public class RealTimeChart {
 
 		TimeseriesArea timeseriesArea = new TimeseriesArea(priceArea,
 				volumeArea, createlogicDateAxis(DateUtils
-						.createDate(2014, 9, 29)));
+						.createDate(2014, 9, 30)));
 
 		JFreeChart jfreechart = JStockChartFactory.createTimeseriesChart(
 				"comex3月铜行情走势图", dataset, timeline, timeseriesArea,

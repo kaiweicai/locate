@@ -67,7 +67,10 @@ public class TimeseriesItem implements Serializable, Comparable<TimeseriesItem> 
 	public Date getTime() {
 		return time;
 	}
-
+	
+	public void setTime(Date time) {
+		this.time = time;
+	}
 	public double getPrice() {
 		return price;
 	}
