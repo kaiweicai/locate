@@ -25,40 +25,37 @@
  * in the United States and other countries.]
  */
 
-package com.locate.stock.data;
+package com.locate.stock.axis.logic;
 
-import com.db4o.Db4o;
-import com.db4o.config.Configuration;
-import com.db4o.config.ObjectClass;
-import com.locate.stock.model.CandlestickItem;
+import com.locate.stock.axis.TickAlignment;
 
 /**
- * Configurations for db4o.
+ * <code>LogicNumberTick</code> represents logic number axis tick.
  * 
  * @author Sha Jiang
  */
-public final class GlobalConfig {
+public class LogicNumberTick extends AbstractLogicTick {
 
-	private GlobalConfig() {
+	private static final long serialVersionUID = -4541854230708274172L;
 
+	private Number tickNumber = null;
+
+	public LogicNumberTick(Number tickNumber, String tickLabel,
+			TickAlignment tickAlignment) {
+		super(tickLabel, tickAlignment);
+		this.tickNumber = tickNumber;
 	}
 
-	public static Configuration globalConfig() {
-		Configuration config = Db4o.newConfiguration();
-		generalConfig(config);
-		candleItemConfig(config);
-		return config;
+	public LogicNumberTick(Number tickNumber, String tickLabel) {
+		super(tickLabel);
+		this.tickNumber = tickNumber;
 	}
 
-	private static void generalConfig(Configuration config) {
-		config.activationDepth(2);
+	public Number getTickNumber() {
+		return tickNumber;
 	}
 
-	private static void candleItemConfig(Configuration config) {
-		ObjectClass candleItemObjectClass = config
-				.objectClass(CandlestickItem.class);
-		candleItemObjectClass.cascadeOnActivate(true);
-		candleItemObjectClass.cascadeOnUpdate(true);
-		candleItemObjectClass.cascadeOnDelete(true);
+	public void setTickNumber(Number tickValue) {
+		this.tickNumber = tickValue;
 	}
 }

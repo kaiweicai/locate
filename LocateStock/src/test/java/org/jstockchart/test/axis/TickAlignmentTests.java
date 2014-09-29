@@ -25,40 +25,38 @@
  * in the United States and other countries.]
  */
 
-package com.locate.stock.data;
+package org.jstockchart.test.axis;
 
-import com.db4o.Db4o;
-import com.db4o.config.Configuration;
-import com.db4o.config.ObjectClass;
-import com.locate.stock.model.CandlestickItem;
+import static org.junit.Assert.*;
+
+import org.junit.Test;
+
+import com.locate.stock.axis.TickAlignment;
 
 /**
- * Configurations for db4o.
+ * Tests for <code>TickAlignment</code> class.
  * 
  * @author Sha Jiang
  */
-public final class GlobalConfig {
+public class TickAlignmentTests {
 
-	private GlobalConfig() {
+	@Test
+	public void testEquals() {
+		TickAlignment alignment1 = TickAlignment.START;
+		TickAlignment alignment2 = TickAlignment.START;
+		TickAlignment alignment3 = TickAlignment.MID;
 
+		assertEquals(alignment1, alignment2);
+		assertFalse(alignment1.equals(alignment3));
 	}
 
-	public static Configuration globalConfig() {
-		Configuration config = Db4o.newConfiguration();
-		generalConfig(config);
-		candleItemConfig(config);
-		return config;
-	}
+	@Test
+	public void testHashcode() {
+		TickAlignment alignment1 = TickAlignment.START;
+		TickAlignment alignment2 = TickAlignment.START;
+		TickAlignment alignment3 = TickAlignment.MID;
 
-	private static void generalConfig(Configuration config) {
-		config.activationDepth(2);
-	}
-
-	private static void candleItemConfig(Configuration config) {
-		ObjectClass candleItemObjectClass = config
-				.objectClass(CandlestickItem.class);
-		candleItemObjectClass.cascadeOnActivate(true);
-		candleItemObjectClass.cascadeOnUpdate(true);
-		candleItemObjectClass.cascadeOnDelete(true);
+		assertTrue(alignment1.hashCode() == alignment2.hashCode());
+		assertFalse(alignment1.hashCode() == alignment3.hashCode());
 	}
 }

@@ -25,40 +25,47 @@
  * in the United States and other countries.]
  */
 
-package com.locate.stock.data;
+package com.locate.stock.axis.logic;
 
-import com.db4o.Db4o;
-import com.db4o.config.Configuration;
-import com.db4o.config.ObjectClass;
-import com.locate.stock.model.CandlestickItem;
+import java.io.Serializable;
+
+import com.locate.stock.axis.TickAlignment;
 
 /**
- * Configurations for db4o.
+ * Abstract logic tick.
  * 
  * @author Sha Jiang
  */
-public final class GlobalConfig {
+public abstract class AbstractLogicTick implements Serializable {
 
-	private GlobalConfig() {
+	private static final long serialVersionUID = 5675211554636810961L;
 
+	private String tickLabel = null;
+
+	private TickAlignment tickAlignment = null;
+
+	public AbstractLogicTick(String tickLabel, TickAlignment tickAlignment) {
+		this.tickLabel = tickLabel;
+		this.tickAlignment = tickAlignment;
 	}
 
-	public static Configuration globalConfig() {
-		Configuration config = Db4o.newConfiguration();
-		generalConfig(config);
-		candleItemConfig(config);
-		return config;
+	public AbstractLogicTick(String tickLabel) {
+		this(tickLabel, TickAlignment.MID);
 	}
 
-	private static void generalConfig(Configuration config) {
-		config.activationDepth(2);
+	public TickAlignment getTickAlignment() {
+		return tickAlignment;
 	}
 
-	private static void candleItemConfig(Configuration config) {
-		ObjectClass candleItemObjectClass = config
-				.objectClass(CandlestickItem.class);
-		candleItemObjectClass.cascadeOnActivate(true);
-		candleItemObjectClass.cascadeOnUpdate(true);
-		candleItemObjectClass.cascadeOnDelete(true);
+	public void setTickAlignment(TickAlignment tickAlignment) {
+		this.tickAlignment = tickAlignment;
+	}
+
+	public String getTickLabel() {
+		return tickLabel;
+	}
+
+	public void setTickLabel(String tickLabel) {
+		this.tickLabel = tickLabel;
 	}
 }

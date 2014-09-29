@@ -25,40 +25,46 @@
  * in the United States and other countries.]
  */
 
-package com.locate.stock.data;
+package com.locate.stock.axis.logic;
 
-import com.db4o.Db4o;
-import com.db4o.config.Configuration;
-import com.db4o.config.ObjectClass;
-import com.locate.stock.model.CandlestickItem;
+import java.util.Date;
+
+import com.locate.stock.axis.TickAlignment;
 
 /**
- * Configurations for db4o.
+ * <code>LogicDateTick</code> represents logic date axis tick.
  * 
  * @author Sha Jiang
  */
-public final class GlobalConfig {
+public class LogicDateTick extends AbstractLogicTick {
 
-	private GlobalConfig() {
+	private static final long serialVersionUID = -8059438790652646317L;
 
+	private Date tickDate;
+
+	/**
+	 * 
+	 * 
+	 * @param tickDate
+	 * @param tickLabel
+	 * @param tickAlignment
+	 */
+	public LogicDateTick(Date tickDate, String tickLabel,
+			TickAlignment tickAlignment) {
+		super(tickLabel, tickAlignment);
+		this.tickDate = tickDate;
 	}
 
-	public static Configuration globalConfig() {
-		Configuration config = Db4o.newConfiguration();
-		generalConfig(config);
-		candleItemConfig(config);
-		return config;
+	public LogicDateTick(Date tickDate, String tickLabel) {
+		super(tickLabel);
+		this.tickDate = tickDate;
 	}
 
-	private static void generalConfig(Configuration config) {
-		config.activationDepth(2);
+	public Date getTickDate() {
+		return tickDate;
 	}
 
-	private static void candleItemConfig(Configuration config) {
-		ObjectClass candleItemObjectClass = config
-				.objectClass(CandlestickItem.class);
-		candleItemObjectClass.cascadeOnActivate(true);
-		candleItemObjectClass.cascadeOnUpdate(true);
-		candleItemObjectClass.cascadeOnDelete(true);
+	public void setTickDate(Date tickDate) {
+		this.tickDate = tickDate;
 	}
 }

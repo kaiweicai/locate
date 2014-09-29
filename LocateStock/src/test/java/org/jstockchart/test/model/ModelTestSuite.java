@@ -25,40 +25,18 @@
  * in the United States and other countries.]
  */
 
-package com.locate.stock.data;
+package org.jstockchart.test.model;
 
-import com.db4o.Db4o;
-import com.db4o.config.Configuration;
-import com.db4o.config.ObjectClass;
-import com.locate.stock.model.CandlestickItem;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
 /**
- * Configurations for db4o.
+ * Test suite for model.
  * 
  * @author Sha Jiang
  */
-public final class GlobalConfig {
+@RunWith(Suite.class)
+@Suite.SuiteClasses( { CandlestickItemTests.class, TimeseriesItemTests.class })
+public class ModelTestSuite {
 
-	private GlobalConfig() {
-
-	}
-
-	public static Configuration globalConfig() {
-		Configuration config = Db4o.newConfiguration();
-		generalConfig(config);
-		candleItemConfig(config);
-		return config;
-	}
-
-	private static void generalConfig(Configuration config) {
-		config.activationDepth(2);
-	}
-
-	private static void candleItemConfig(Configuration config) {
-		ObjectClass candleItemObjectClass = config
-				.objectClass(CandlestickItem.class);
-		candleItemObjectClass.cascadeOnActivate(true);
-		candleItemObjectClass.cascadeOnUpdate(true);
-		candleItemObjectClass.cascadeOnDelete(true);
-	}
 }

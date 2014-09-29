@@ -25,7 +25,7 @@
  * in the United States and other countries.]
  */
 
-package com.locate.stock.common.utils;
+package com.locate.stock.util;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -81,8 +81,9 @@ public class DateUtils {
 	}
 	
 	public static Date beforeCurrentDate(int minutue){
-		CALENDAR.clear();
-		CALENDAR.add(Calendar.MINUTE, -minutue);
+		CALENDAR.setTime(new Date());
+		CALENDAR.add(Calendar.SECOND, -1);
+		CALENDAR.add(Calendar.MINUTE, minutue);
 		return CALENDAR.getTime();
 	}
 }

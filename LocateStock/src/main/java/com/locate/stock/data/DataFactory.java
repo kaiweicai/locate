@@ -32,10 +32,9 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
-import org.jstockchart.model.TimeseriesItem;
-
 import com.db4o.ObjectContainer;
 import com.db4o.query.Predicate;
+import com.locate.stock.model.TimeseriesItem;
 
 /**
  * Queries data from db4o data file.

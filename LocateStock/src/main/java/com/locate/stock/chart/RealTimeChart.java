@@ -1,45 +1,17 @@
-/* ===========================================================
- * JStockChart : an extension of JFreeChart for financial market
- * ===========================================================
- *
- * Copyright (C) 2009, by Sha Jiang.
- *
- * Project Info:  http://code.google.com/p/jstockchart
- *
- * This library is free software; you can redistribute it and/or modify it 
- * under the terms of the GNU Lesser General Public License as published by 
- * the Free Software Foundation; either version 2.1 of the License, or 
- * (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful, but 
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY 
- * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public 
- * License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, 
- * USA.  
- *
- * [Java is a trademark or registered trademark of Sun Microsystems, Inc. 
- * in the United States and other countries.]
- */
-
 package com.locate.stock.chart;
-
 import java.io.File;
-import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 import org.jfree.chart.ChartFrame;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.SegmentedTimeline;
 import org.jfree.data.Range;
-import org.jfree.data.time.Minute;
+import org.jfree.data.time.Second;
 
 import com.db4o.Db4o;
 import com.db4o.ObjectContainer;
@@ -57,15 +29,10 @@ import com.locate.stock.dataset.TimeseriesDataset;
 import com.locate.stock.model.TimeseriesItem;
 import com.locate.stock.util.DateUtils;
 
-/**
- * Demo application for JStockChart timeseries.
- * 
- * @author Sha Jiang
- */
-public class TimeseriesChartDemo {
 
-	public static void main(String[] args) throws IOException {
-		String imageDir = "images";
+public class RealTimeChart {
+	public void generateRealChart(){
+		String imageDir = "./images";
 		File images = new File(imageDir);
 		if (!images.exists()) {
 			images.mkdir();
@@ -75,26 +42,38 @@ public class TimeseriesChartDemo {
 		String dbFile = "data/jstockchart-timeseries.db4o";
 		ObjectContainer db = Db4o.openFile(GlobalConfig.globalConfig(), dbFile);
 		DataFactory dataFactory = new DataFactory(db);
-		Date startTime = DateUtils.createDate(2008, 1, 1, 9, 30, 0);
-		Date endTime = DateUtils.createDate(2008, 1, 1, 15, 0, 0);
+		Date startTime = DateUtils.beforeCurrentDate(10);
+		Date endTime = DateUtils.currentDate();
 		// 'data' is a list of TimeseriesItem instances.
-		List<TimeseriesItem> data = dataFactory.getTimeseriesItem(startTime,
-				endTime, Calendar.MINUTE, 1);
+		List<TimeseriesItem> data = new ArrayList<TimeseriesItem>();
+		// the 'timeline' indicates the segmented time range '00:00-11:30,
+		// 13:00-24:00'.
+		long time = DateUtils.beforeCurrentDate(-3).getTime();
+		System.out.println(new Date(time));
+		double price = 17.8;
+		double amount = 300;
+		int x =-1;
+		x=-x;
+		double deltaPrice = new Random().nextDouble();
+		TimeseriesItem timeseriesItem=new TimeseriesItem(new Date(time+=1000L),price+=x*deltaPrice,amount+=x*(int)(Math.random()*5+1));
+		for(int i=0;i<30;i++){
+			for(int j=0;j<6;j++){
+				data.add(timeseriesItem);
+			}
+		}
 		System.out.println(data.size());
-		// the 'timeline' indicates the segmented time range '00:00-11:30, 13:00-24:00'.
-		SegmentedTimeline timeline = new SegmentedTimeline(
-				SegmentedTimeline.MINUTE_SEGMENT_SIZE, 1351, 89);
-		timeline.setStartTime(SegmentedTimeline.firstMondayAfter1900() + 780
-				* SegmentedTimeline.MINUTE_SEGMENT_SIZE);
+		System.out.println(new Date(time));
+		SegmentedTimeline timeline = new SegmentedTimeline(SegmentedTimeline.MINUTE_SEGMENT_SIZE, 1440, 0);
+		timeline.setStartTime(SegmentedTimeline.firstMondayAfter1900());
 
 		// Creates timeseries data set.
-		TimeseriesDataset dataset = new TimeseriesDataset(Minute.class, 1,
+		TimeseriesDataset dataset = new TimeseriesDataset(Second.class, 1,
 				timeline, true);
 		dataset.addDataItems(data);
 
 		// Creates logic price axis.
 		CentralValueAxis logicPriceAxis = new CentralValueAxis(
-				new Double("21"), new Range(
+				new Double("19.5"), new Range(
 						dataset.getMinPrice().doubleValue(), dataset
 								.getMaxPrice().doubleValue()), 9,
 				new DecimalFormat(".00"));
@@ -108,7 +87,7 @@ public class TimeseriesChartDemo {
 
 		TimeseriesArea timeseriesArea = new TimeseriesArea(priceArea,
 				volumeArea, createlogicDateAxis(DateUtils
-						.createDate(2008, 1, 1)));
+						.createDate(2014, 9, 29)));
 
 		JFreeChart jfreechart = JStockChartFactory.createTimeseriesChart(
 				"comex3月铜行情走势图", dataset, timeline, timeseriesArea,
@@ -123,18 +102,30 @@ public class TimeseriesChartDemo {
 
 	// Specifies date axis ticks.
 	private static LogicDateAxis createlogicDateAxis(Date baseDate) {
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss");
 		LogicDateAxis logicDateAxis = new LogicDateAxis(baseDate,
-				new SimpleDateFormat("HH:mm"));
-		logicDateAxis.addDateTick("09:30", TickAlignment.START);
-		logicDateAxis.addDateTick("10:00");
-		logicDateAxis.addDateTick("10:30");
-		logicDateAxis.addDateTick("11:00");
-		logicDateAxis.addDateTick("11:30", TickAlignment.END);
-		logicDateAxis.addDateTick("13:00", TickAlignment.START);
-		logicDateAxis.addDateTick("13:30");
-		logicDateAxis.addDateTick("14:00");
-		logicDateAxis.addDateTick("14:30", TickAlignment.END);
-		logicDateAxis.addDateTick("15:00", TickAlignment.END);
+				simpleDateFormat);
+		int changedMinutes = -3 ;
+		String currentDate = simpleDateFormat.format(DateUtils.beforeCurrentDate(changedMinutes++));
+		System.out.println(currentDate);
+		logicDateAxis.addDateTick(currentDate, TickAlignment.START);
+		currentDate = simpleDateFormat.format(DateUtils.beforeCurrentDate(changedMinutes++));
+		System.out.println(currentDate);
+		logicDateAxis.addDateTick(currentDate);
+		currentDate = simpleDateFormat.format(DateUtils.beforeCurrentDate(changedMinutes++));
+		System.out.println(currentDate);
+		logicDateAxis.addDateTick(currentDate);
+		currentDate = simpleDateFormat.format(DateUtils.beforeCurrentDate(changedMinutes++));
+		System.out.println(currentDate);
+		logicDateAxis.addDateTick(currentDate,TickAlignment.END);
 		return logicDateAxis;
+	}
+	
+	public static void main(String[] args) {
+		Date time = new Date (SegmentedTimeline.firstMondayAfter1900() + 780
+				* SegmentedTimeline.MINUTE_SEGMENT_SIZE);
+		System.out.println(time);
+		RealTimeChart realChart = new RealTimeChart();
+		realChart.generateRealChart();
 	}
 }

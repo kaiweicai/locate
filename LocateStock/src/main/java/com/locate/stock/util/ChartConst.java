@@ -25,40 +25,34 @@
  * in the United States and other countries.]
  */
 
-package com.locate.stock.data;
+package com.locate.stock.util;
 
-import com.db4o.Db4o;
-import com.db4o.config.Configuration;
-import com.db4o.config.ObjectClass;
-import com.locate.stock.model.CandlestickItem;
+import java.awt.Color;
+import java.awt.Font;
 
 /**
- * Configurations for db4o.
+ * Some constants.
  * 
  * @author Sha Jiang
  */
-public final class GlobalConfig {
+public class ChartConst {
 
-	private GlobalConfig() {
+	public static final double DEFAULT_NUMBER_AXIS_MARGIN = 0.0D;
 
-	}
+	public static final Font DEFAULT_NUMBER_TICK_LABEL_FONT = new Font(
+			"Courier New", Font.PLAIN, 10);
 
-	public static Configuration globalConfig() {
-		Configuration config = Db4o.newConfiguration();
-		generalConfig(config);
-		candleItemConfig(config);
-		return config;
-	}
+	public static final Font DEFAULT_DATE_TICK_LABEL_FONT = DEFAULT_NUMBER_TICK_LABEL_FONT;
 
-	private static void generalConfig(Configuration config) {
-		config.activationDepth(2);
-	}
+	public static final Color DEFAULT_NUMBER_TICK_LABEL_COLOR = Color.BLACK;
 
-	private static void candleItemConfig(Configuration config) {
-		ObjectClass candleItemObjectClass = config
-				.objectClass(CandlestickItem.class);
-		candleItemObjectClass.cascadeOnActivate(true);
-		candleItemObjectClass.cascadeOnUpdate(true);
-		candleItemObjectClass.cascadeOnDelete(true);
-	}
+	public static final Color DEFAULT_DATE_TICK_LABEL_COLOR = DEFAULT_NUMBER_TICK_LABEL_COLOR;
+
+	public static final Color DEFAULT_PRICE_COLOR = Color.RED;
+
+	public static final Color DEFAULT_AVERAGE_COLOR = Color.LIGHT_GRAY;
+
+	public static final Color DEFAULT_CENTRALPRICE_COLOR = Color.GRAY;
+
+	public static final Color DEFAULT_VOLUME_COLOR = Color.BLUE;
 }

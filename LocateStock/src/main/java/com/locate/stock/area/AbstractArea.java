@@ -25,40 +25,43 @@
  * in the United States and other countries.]
  */
 
-package com.locate.stock.data;
+package com.locate.stock.area;
 
-import com.db4o.Db4o;
-import com.db4o.config.Configuration;
-import com.db4o.config.ObjectClass;
-import com.locate.stock.model.CandlestickItem;
+import java.awt.Color;
+import java.io.Serializable;
+
+import org.jfree.chart.plot.PlotOrientation;
 
 /**
- * Configurations for db4o.
+ * Abstract area.
  * 
  * @author Sha Jiang
  */
-public final class GlobalConfig {
+public abstract class AbstractArea implements Serializable {
 
-	private GlobalConfig() {
+	private static final long serialVersionUID = 8084442413013963065L;
 
+	public static final PlotOrientation DEFAULT_ORIENTATION = PlotOrientation.VERTICAL;
+
+	public static final Color DEFAULT_BACKGROUD_COLOR = Color.WHITE;
+
+	private PlotOrientation orientation = DEFAULT_ORIENTATION;
+
+	private Color backgroudColor = DEFAULT_BACKGROUD_COLOR;
+
+	public PlotOrientation getOrientation() {
+		return orientation;
 	}
 
-	public static Configuration globalConfig() {
-		Configuration config = Db4o.newConfiguration();
-		generalConfig(config);
-		candleItemConfig(config);
-		return config;
+	public void setOrientation(PlotOrientation orientation) {
+		this.orientation = orientation;
 	}
 
-	private static void generalConfig(Configuration config) {
-		config.activationDepth(2);
+	public Color getBackgroudColor() {
+		return backgroudColor;
 	}
 
-	private static void candleItemConfig(Configuration config) {
-		ObjectClass candleItemObjectClass = config
-				.objectClass(CandlestickItem.class);
-		candleItemObjectClass.cascadeOnActivate(true);
-		candleItemObjectClass.cascadeOnUpdate(true);
-		candleItemObjectClass.cascadeOnDelete(true);
+	public void setBackgroudColor(Color backgroudColor) {
+		this.backgroudColor = backgroudColor;
 	}
 }

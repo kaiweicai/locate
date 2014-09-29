@@ -25,40 +25,21 @@
  * in the United States and other countries.]
  */
 
-package com.locate.stock.data;
+package com.locate.stock.axis.logic;
 
-import com.db4o.Db4o;
-import com.db4o.config.Configuration;
-import com.db4o.config.ObjectClass;
-import com.locate.stock.model.CandlestickItem;
+import java.io.Serializable;
+import java.util.List;
 
 /**
- * Configurations for db4o.
+ * Abstract logic axis.
  * 
  * @author Sha Jiang
  */
-public final class GlobalConfig {
+public abstract class AbstractLogicAxis implements Serializable {
 
-	private GlobalConfig() {
+	private static final long serialVersionUID = -104051023785588717L;
 
-	}
+	public static final int MAXIMUM_TICK_COUNT = 100;
 
-	public static Configuration globalConfig() {
-		Configuration config = Db4o.newConfiguration();
-		generalConfig(config);
-		candleItemConfig(config);
-		return config;
-	}
-
-	private static void generalConfig(Configuration config) {
-		config.activationDepth(2);
-	}
-
-	private static void candleItemConfig(Configuration config) {
-		ObjectClass candleItemObjectClass = config
-				.objectClass(CandlestickItem.class);
-		candleItemObjectClass.cascadeOnActivate(true);
-		candleItemObjectClass.cascadeOnUpdate(true);
-		candleItemObjectClass.cascadeOnDelete(true);
-	}
+	abstract public List<? extends AbstractLogicTick> getLogicTicks();
 }
