@@ -13,7 +13,9 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.net.ConnectException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -665,6 +667,7 @@ public class RFApplication extends JFrame {
 	}
 	
 	class UIHandler implements IBussiness{
+		private Map<String,BigDecimal[]> bidAskMap = new HashMap<String,BigDecimal[]>();
 		/* (non-Javadoc)
 		 * @see com.locate.client.gui.BussinessInterface#handleException(java.lang.Throwable)
 		 */
@@ -705,6 +708,38 @@ public class RFApplication extends JFrame {
 			sBuilder.append("Received message type:" + LocateMessageTypes.toString(msgType)+"\n");
 			useTimeTextLabel.setText("From Locate Server to client use time:"+(endTime-startTime)+" millseconds");
 			logger.info("The message From RFA to user use time "+(endTime-startTime)+" milliseconds");
+			BigDecimal bid = null;
+			BigDecimal ask = null;
+			List<String[]> payLoadList = message.getPayLoadSet();
+			if (payLoadList != null && !payLoadList.isEmpty()) {
+				for (String[] payLoad : payLoadList) {
+					if (payLoad[0].equals("22")) {
+						bid = new BigDecimal(payLoad[3]);
+					}
+					if (payLoad[0].equals("25")) {
+						ask = new BigDecimal(payLoad[3]);
+					}
+				}
+				BigDecimal[] bidAsk=bidAskMap.get(itemName);
+				if(bidAsk==null){
+					bidAsk = new BigDecimal[]{bid,ask};
+					bidAskMap.put(itemName, bidAsk);
+				}else{
+					if(bid == null){
+						bid =bidAsk[0];
+					}
+					if(ask==null){
+						ask = bidAsk[1];
+					}
+					bidAsk[0]=bid;
+					bidAsk[1]=ask;
+				}
+				double average = bid.add(ask).divide(new BigDecimal("2")).setScale(4, BigDecimal.ROUND_HALF_UP).doubleValue();
+//				DecimalFormat df = new DecimalFormat("#.000");
+				payLoadList.add(new String[] { "100000", "中间价", "double", String.valueOf(average) });
+			}
+			
+			
 			switch(msgType){
 				//first the Locate send the snapshot of market price
 				case LocateMessageTypes.REFRESH_RESP:
@@ -733,6 +768,10 @@ public class RFApplication extends JFrame {
 				//Locate send the update market price.
 				case LocateMessageTypes.UPDATE_RESP:
 					PriceTableModel tModel = ClientConstant.itemName2PriceTableModeMap.get(itemName);
+					if(tModel==null){
+						logger.error("tModel is null");
+						tModel = new PriceTableModel(message); 
+					}
 					updateMarketPriceTable(tModel,message);
 					ClientConstant.updateThreadMap.get(itemName).setUpdate(true);
 					
@@ -772,7 +811,7 @@ public class RFApplication extends JFrame {
 		}
 		
 		private void updateMarketPriceTable(PriceTableModel tableModel,LocateUnionMessage message) {
-			Map<String,Integer>IdAtRowidMap=tableModel.getIdAtRowidMap();
+			Map<String,Integer> IdAtRowidMap=tableModel.getIdAtRowidMap();
 			List<String[]> payLoadSet = message.getPayLoadSet();
 			for (String[] filed : payLoadSet) {
 				String id = "";

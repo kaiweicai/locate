@@ -201,6 +201,7 @@ public class GatewayServerHandler extends StringDecoder {
 			if (StringUtils.isBlank(userName)) {
 				userName = DataBaseCache._userConnection.get(clientIP);
 			}
+			channel.config().
 			int channelId = SystemConstant.channelId.incrementAndGet();;
 			if(GateChannelCache.id2ChannelMap.get(channelId)==null){
 				GateChannelCache.id2ChannelMap.put(channelId, channel);

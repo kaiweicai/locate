@@ -228,7 +228,8 @@ public final class LocateOMMParser implements IOmmParser {
 							// defined data already has type
 							data = fe.getData();
 						// 更新缓存,并存储数据对象.
-						FieldValue fieldValue = ITEM_FIELD_MAP.get(itemName).get(fe.getFieldId());
+						FieldValue fieldValue= null;
+						fieldValue = ITEM_FIELD_MAP.get(itemName).get(fe.getFieldId());
 						fieldValue.setValue(data.toString());
 						putRippleValueIntoMessage(fieldValue, fiddef, locateMessage ,rippleMap);
 					}

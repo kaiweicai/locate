@@ -8,28 +8,36 @@ public class ComboItemName {
 	
 	public static String exhangeTheName(String locateMessageName){
 		switch (locateMessageName) {
-		case "PT_MCU3=LX_CNY":
-			return "普兰泰科自定义铜";
 		case "XAU=":
-			return "金";
+			return "国际黄金";
 		case "XAG=":
-			return "银";
+			return "国际白银";
+		case "XPT=":
+			return "国际铂金";
+		case "XPD=":
+			return "国际钯金";
 		case "MCU3=LX":
-			return "三月铜";
+			return "伦敦三月期铜";
 		case "MAL3=LX":
-			return "三月铝";
-		case "MAA3=LX":
-			return "三月合金铝";
-		case "MZN3=LX":
-			return "三月锌";
-		case "MSN3=LX":
-			return "三月锡";
-		case "MNI3=LX":
-			return "三月镍";
+			return "伦敦三月期铝";
 		case "MPB3=LX":
-			return "三月铅";
-		case "MNA3=LX":
-			return "北美特种铝";
+			return "伦敦三月期铅";
+		case "MZN3=LX":
+			return "伦敦三月期锌";
+		case "MNI3=LX":
+			return "伦敦三月期镍";	
+		case "GCv1":
+			return "COMEX黄金期货";
+		case "SIv1":
+			return "COMEX白银期货";
+		case "PLv1":
+			return "NYMEX铂金";
+		case "PAv1":
+			return "NYMEX钯金";
+		case "CLv1":
+			return "WTI原油主力合约";
+		case "LCOv1":
+			return "BRENT原油主力合约";			
 		default:
 			return locateMessageName;
 		}

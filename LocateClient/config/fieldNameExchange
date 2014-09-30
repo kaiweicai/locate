@@ -2,22 +2,22 @@
 2,name:RDNDISPLAY,long name:DISPLAYTEMPLATE,type:2,
 3,name:DSPLY_NAME,long name:DISPLAY NAME,type:19,报价商
 4,name:RDN_EXCHID,long name:IDN EXCHANGE ID,type:14,
-5,name:TIMACT,long name:TIME OF UPDATE,type:10,更新时间
-6,name:TRDPRC_1,long name:LAST,type:8,交易价
-7,name:TRDPRC_2,long name:LAST 1,type:8,
-8,name:TRDPRC_3,long name:LAST 2,type:8,
-9,name:TRDPRC_4,long name:LAST 3,type:8,
-10,name:TRDPRC_5,long name:LAST 4,type:8,
+5,name:TIMACT,long name:TIME OF UPDATE,type:10,时间
+6,name:TRDPRC_1,long name:LAST,type:8,成交价1
+7,name:TRDPRC_2,long name:LAST 1,type:8,成交价2
+8,name:TRDPRC_3,long name:LAST 2,type:8,成交价3
+9,name:TRDPRC_4,long name:LAST 3,type:8,成交价4
+10,name:TRDPRC_5,long name:LAST 4,type:8,成交价5
 11,name:NETCHNG_1,long name:NET CHANGE,type:8,
-12,name:HIGH_1,long name:TODAY'S HIGH,type:8,当日最高价
-13,name:LOW_1,long name:TODAY'S LOW,type:8,当日最低价
+12,name:HIGH_1,long name:TODAY'S HIGH,type:8,交易价日高
+13,name:LOW_1,long name:TODAY'S LOW,type:8,交易价日低
 14,name:PRCTCK_1,long name:TICK:UP/DOWN,type:14,
 15,name:CURRENCY,long name:CURRENCY,type:14,
 16,name:TRADE_DATE,long name:TRADE DATE,type:9,交易日期
-17,name:ACTIV_DATE,long name:ACTIVE DATE,type:9,
-18,name:TRDTIM_1,long name:TRADE TIME,type:10,
+17,name:ACTIV_DATE,long name:ACTIVE DATE,type:9,交易日期
+18,name:TRDTIM_1,long name:TRADE TIME,type:10,交易时间
 19,name:OPEN_PRC,long name:OPENING PRICE,type:8,开盘价
-21,name:HST_CLOSE,long name:HISTORIC CLOSE,type:8,收盘价
+21,name:HST_CLOSE,long name:HISTORIC CLOSE,type:8,昨日收盘价
 22,name:BID,long name:BID,type:8,买价
 23,name:BID_1,long name:BID 1,type:8,
 24,name:BID_2,long name:BID 2,type:8,
@@ -28,7 +28,7 @@
 29,name:NEWS_TIME,long name:NEWS TIME,type:10,
 30,name:BIDSIZE,long name:BID SIZE,type:8,买数量
 31,name:ASKSIZE,long name:ASK SIZE,type:8,卖数量
-32,name:ACVOL_1,long name:VOL ACCUMULATED,type:8,交易总数
+32,name:ACVOL_1,long name:VOL ACCUMULATED,type:8,成交量
 34,name:EARNINGS,long name:EARNINGS,type:8,
 35,name:YIELD,long name:YIELD,type:8,
 36,name:PERATIO,long name:P.E.,type:8,ZD_PE
@@ -40,7 +40,7 @@
 42,name:BLKCOUNT,long name:BLOCK COUNT,type:8,
 43,name:BLKVOLUM,long name:BLOCK VOLUME,type:8,
 44,name:TRDXID_1,long name:TRADE EXCH ID,type:14,
-47,name:OPEN1,long name:FIRST OPEN,type:8,
+47,name:OPEN1,long name:FIRST OPEN,type:8,开盘价
 48,name:OPEN2,long name:SECOND OPEN,type:8,
 49,name:OPNRNGTP,long name:OPEN RNG TYPE,type:14,
 50,name:CLOSE1,long name:FIRST CLOSE,type:8,
@@ -50,14 +50,14 @@
 54,name:LOTSZUNITS,long name:LOT SIZE UNITS,type:14,
 55,name:LOT_SIZE,long name:LOTSIZE,type:8,
 56,name:PCTCHNG,long name:PERCENT CHANGE,type:8,
-57,name:OPEN_BID,long name:OPEN BID,type:8,
+57,name:OPEN_BID,long name:OPEN BID,type:8,开盘买价
 58,name:DJTIME,long name:DJ TIME,type:10,
-59,name:OPEN_ASK,long name:OPEN ASK,type:8,
-60,name:CLOSE_BID,long name:CLOSE BID,type:8,
-61,name:CLOSE_ASK,long name:CLOSE ASK,type:8,
+59,name:OPEN_ASK,long name:OPEN ASK,type:8,开盘卖价
+60,name:CLOSE_BID,long name:CLOSE BID,type:8,收盘买价
+61,name:CLOSE_ASK,long name:CLOSE ASK,type:8,收盘卖价
 62,name:LOCHIGH,long name:CNTR LIFE HIGH,type:8,
 63,name:LOCLOW,long name:CNTR LIFE LOW,type:8,
-64,name:OPINT_1,long name:OPEN INTEREST,type:8,ZD_OpenInt
+64,name:OPINT_1,long name:OPEN INTEREST,type:8,未平仓量
 65,name:OPINTNC,long name:OPN INT NETCHG,type:8,
 66,name:STRIKE_PRC,long name:STRIKE PRICE,type:8,
 67,name:EXPIR_DATE,long name:EXPIRE DATE,type:9,
@@ -89,7 +89,7 @@
 95,name:LIFE_LOW,long name:LIFETIME LOW,type:8,
 98,name:EPYHSTCLOS,long name:PREV YEAR CLOSE,type:8,
 99,name:LIMIT_IND,long name:LIMIT INDICATOR,type:14,
-100,name:TURNOVER,long name:TURNOVER,type:8,
+100,name:TURNOVER,long name:TURNOVER,type:8,开盘卖价
 101,name:NEW_LOWS,long name:NUM NEW LOWS,type:8,
 102,name:COUPN_DATE,long name:COUPON DATE,type:9,
 103,name:RATING,long name:BOND RATING,type:14,
@@ -190,10 +190,10 @@
 200,name:CLSEXID,long name:CLSE XID,type:14,
 201,name:LF_HGH_DAT,long name:LIFE HIGH DATE,type:9,
 202,name:LF_LOW_DAT,long name:LIFE LOW DATE,type:9,
-203,name:BID_HIGH_1,long name:TODAY HIGH BID,type:8,
-204,name:BID_LOW_1,long name:TODAY LOW BID,type:8,
-205,name:YRBIDHIGH,long name:YEAR HIGH BID,type:8,
-206,name:YRBIDLOW,long name:YEAR LOW BID,type:8,
+203,name:BID_HIGH_1,long name:TODAY HIGH BID,type:8,买价日高
+204,name:BID_LOW_1,long name:TODAY LOW BID,type:8,卖价日低
+205,name:YRBIDHIGH,long name:YEAR HIGH BID,type:8,卖价日高
+206,name:YRBIDLOW,long name:YEAR LOW BID,type:8,买价日低
 207,name:HST_CLSBID,long name:HIST CLOSE BID,type:8,
 208,name:HSTCLBDDAT,long name:HIST CLS BID DT,type:9,
 209,name:YRBDHI_IND,long name:YEAR BID HIGH *,type:14,
@@ -222,7 +222,7 @@
 232,name:SPEC_CAP,long name:SPECCAP,type:8,
 233,name:SPECDIV,long name:SPECDIV,type:8,
 234,name:PRV_KASSA,long name:PREV KASSA PRC,type:8,
-235,name:PNAC,long name:PNAC,type:17,
+235,name:PNAC,long name:PNAC,type:17,交易日期
 237,name:PREV_LR,long name:PREVIOUS LINK,type:17,
 238,name:NEXT_LR,long name:NEXT LINK,type:17,
 239,name:REF_COUNT,long name:REFERENCE COUNT,type:2,
@@ -360,11 +360,11 @@
 376,name:INSPRC,long name:INSERT PRICE,type:8,
 377,name:INSVOL,long name:INSERT VOLUME,type:8,
 378,name:INSCOND,long name:INSERT PRC TYPE,type:14,
-379,name:SALTIM,long name:LAST TIME,type:10,交割日
+379,name:SALTIM,long name:LAST TIME,type:10,最新时间
 380,name:TNOVER_SC,long name:TURNOVER SCALE,type:14,
 381,name:PARITY99,long name:PARITY >= 100,type:8,
 382,name:PARITY100,long name:PARITY < 100,type:8,
-383,name:HST_VOL,long name:VOL ACC 2,type:8,ZD_PreOpenInt
+383,name:HST_VOL,long name:VOL ACC 2,type:8,昨日成交量
 384,name:SESS_HIFLG,long name:SESSION HI FLAG,type:14,
 385,name:SESS_LOFLG,long name:SESSION LOW FLAG,type:14,
 386,name:SSPRNG1,long name:SSP RANGE 1,type:8,
