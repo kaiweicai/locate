@@ -59,6 +59,13 @@ public class CentralValueAxis extends LogicNumberAxis {
 		this.centralValue = centralValue;
 	}
 
+	public void updateAxis(Number centralValue, Range range, int tickCount , NumberFormat formatter){
+		super.updateAxis(range, tickCount,formatter);
+		if (centralValue != null) {
+			this.centralValue = centralValue;
+		}
+	}
+	
 	public List<LogicNumberTick> getLogicTicks() {
 		List<LogicNumberTick> ticks = new ArrayList<LogicNumberTick>();
 		int count = getTickCount();

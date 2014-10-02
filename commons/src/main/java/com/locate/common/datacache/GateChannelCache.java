@@ -25,7 +25,7 @@ public class GateChannelCache {
 	// 一个商品的所有衍生品存放的map.
 	public static Map<String, List<String>> item2derivedMap;
 	//channelid和channel由系统自己管理.
-	public static Map<Integer,ClientSession> id2ChannelMap;
+	public static Map<Integer,Channel> id2ChannelMap;
 	//增加web用户订阅的itemName与订阅该itemName的web客户的对应关系.
 //	public static Map<String ,ChannelGroup> webItemChannelMap = new HashMap<String,ChannelGroup>();
 	static{
@@ -34,7 +34,7 @@ public class GateChannelCache {
 		webSocketGroup = new DefaultChannelGroup("webSocketChannels", executor);
 		itemNameChannelGroupMap = new HashMap<String, ChannelGroup>();
 		item2derivedMap = new HashMap<String, List<String>>();
-		id2ChannelMap = new HashMap<Integer,ClientSession>();
+		id2ChannelMap = new HashMap<Integer,Channel>();
 	}
 	/**
 	 * 检查商品和该商品的衍生品是否都已经不再需要.既要检查原生的该商品,也要检查衍生的商品.

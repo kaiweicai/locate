@@ -67,6 +67,23 @@ public class LogicNumberAxis extends AbstractLogicAxis {
 		}
 		this.formatter = formatter;
 	}
+	
+	public void updateAxis(Range range, int tickCount, NumberFormat formatter){
+		if (range == null) {
+			throw new IllegalArgumentException("Null 'range' argumented.");
+		}
+		this.range = range;
+
+		if (tickCount <= 1) {
+			throw new IllegalArgumentException(
+					"'tickCount <= 1' not permitted.");
+		}
+		this.tickCount = tickCount;
+
+		if (formatter != null) {
+			this.formatter = formatter;
+		}
+	}
 
 	public List<LogicNumberTick> getLogicTicks() {
 		List<LogicNumberTick> ticks = new ArrayList<LogicNumberTick>();

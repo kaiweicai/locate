@@ -174,6 +174,33 @@ public class TimeseriesDataset {
 			minVolume = new Double(item.getVolume());
 		}
 	}
+	
+	public void pushDataItem(TimeseriesItem item) {
+		RegularTimePeriod time = RegularTimePeriod.createInstance(timePeriodClass, item.getTime(), timeZone);
+		priceTimeSeries.pushItem(new TimeSeriesDataItem(time, item.getPrice()));
+		volumeTimeSeries.setMaximumItemCount(180);
+		volumeTimeSeries.add(new TimeSeriesDataItem(time, item.getVolume()));
+		
+		if (average != null) {
+			average.setPriceVolume(item.getPrice(), item.getVolume());
+			averageTimeSeries.pushItem(new TimeSeriesDataItem(time,
+					average.value));
+		}
+
+		if (maxPrice == null || maxPrice.doubleValue() < item.getPrice()) {
+			maxPrice = new Double(item.getPrice());
+		}
+		if (minPrice == null || minPrice.doubleValue() > item.getPrice()) {
+			minPrice = new Double(item.getPrice());
+		}
+
+		if (maxVolume == null || maxVolume.doubleValue() < item.getVolume()) {
+			maxVolume = new Double(item.getVolume());
+		}
+		if (minVolume == null || minVolume.doubleValue() > item.getVolume()) {
+			minVolume = new Double(item.getVolume());
+		}
+	}
 
 	public Number getMaxPrice() {
 		return maxPrice;

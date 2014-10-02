@@ -108,6 +108,41 @@ public class SegmentedTimeSeries {
 		size++;
 		lastItem = item;
 	}
+	
+	public void pushItem(TimeSeriesDataItem item) {
+		timeseries.delete(1, 1);
+		if (lastItem != null) {
+			long lastStart = lastItem.getPeriod().getFirstMillisecond();
+			long thisStart = item.getPeriod().getFirstMillisecond();
+			long thisEnd = item.getPeriod().getLastMillisecond();
+			int diff = 0;
+			if (step > 0) {
+				diff = (int) ((thisStart - lastStart) / (thisEnd - thisStart) - 1)
+						/ step;
+			}
+			RegularTimePeriod bufPeriod = lastItem.getPeriod().next();
+			Number bufValue = lastItem.getValue();
+			for (int i = 0; i < diff; i++) {
+				TimeSeriesDataItem bufItem = new TimeSeriesDataItem(bufPeriod,
+						bufValue);
+				if (timeline != null) {
+					if (timeline.containsDomainValue(bufPeriod
+							.getLastMillisecond())) {
+						timeseries.add(bufItem);
+						size++;
+					}
+				} else {
+					timeseries.add(bufItem);
+					size++;
+				}
+				bufPeriod = bufItem.getPeriod().next();
+			}
+		}
+		timeseries.add(item);
+		size++;
+		lastItem = item;
+	}
+	
 
 	public TimeSeries getTimeSeries() {
 		return timeseries;

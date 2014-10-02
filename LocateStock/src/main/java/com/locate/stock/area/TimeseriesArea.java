@@ -83,6 +83,25 @@ public class TimeseriesArea extends AbstractArea {
 		}
 		this.logicDateAxis = logicDateAxis;
 	}
+	
+	public void updateTimeSeriesArea(PriceArea priceArea, VolumeArea volumeArea,
+			LogicDateAxis logicDateAxis){
+		if (priceArea == null) {
+			throw new IllegalArgumentException("Null 'priceArea' argumented.");
+		}
+		this.priceArea = priceArea;
+
+		if (volumeArea == null) {
+			throw new IllegalArgumentException("Null 'volumeArea' argumented.");
+		}
+		this.volumeArea = volumeArea;
+
+		if (logicDateAxis == null) {
+			throw new IllegalArgumentException(
+					"Null 'logicDateAxis' argumented.");
+		}
+		this.logicDateAxis = logicDateAxis;
+	}
 
 	public LogicDateAxis getlogicDateAxis() {
 		return logicDateAxis;

@@ -158,4 +158,8 @@ public class PriceArea extends AbstractArea {
 	public AxisLocation getRateAxisLocation() {
 		return getPriceAxisLocation().getOpposite();
 	}
+
+	public void setLogicPriceAxis(CentralValueAxis logicPriceAxis) {
+		this.logicPriceAxis = logicPriceAxis;
+	}
 }

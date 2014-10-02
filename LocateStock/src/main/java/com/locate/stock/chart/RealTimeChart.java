@@ -75,8 +75,8 @@ public class RealTimeChart {
 		// Creates logic price axis.
 		CentralValueAxis logicPriceAxis = new CentralValueAxis(
 				new Double(dataList.get(0).getPrice()), new Range(
-						dataset.getMinPrice().doubleValue(), dataset
-								.getMaxPrice().doubleValue()), 9,
+						dataset.getMinPrice().doubleValue()*0.8, dataset
+								.getMaxPrice().doubleValue()*1.2), 9,
 				new DecimalFormat(".00"));
 		PriceArea priceArea = new PriceArea(logicPriceAxis);
 
@@ -88,7 +88,7 @@ public class RealTimeChart {
 
 		TimeseriesArea timeseriesArea = new TimeseriesArea(priceArea,
 				volumeArea, createlogicDateAxis(DateUtils
-						.createDate(2014, 9, 30)));
+						.createDate(2014, 10, 2)));
 
 		JFreeChart jfreechart = JStockChartFactory.createTimeseriesChart(
 				"comex3月铜行情走势图", dataset, timeline, timeseriesArea,
@@ -97,6 +97,28 @@ public class RealTimeChart {
 		ChartFrame chatFrame = new ChartFrame("股票图", jfreechart);
 		chatFrame.pack();
 		chatFrame.setVisible(true);
+		
+		for (int j = 0; j < 5000000; j++) {
+			x=-x;
+			deltaPrice = new Random().nextDouble();
+			timeseriesItem = new TimeseriesItem(new Date(time+=1000L), price += x * deltaPrice, amount += x
+					* (int) (Math.random() * 5 + 1));
+			dataset.addDataItem(timeseriesItem);
+			logicPriceAxis.updateAxis(null, new Range(dataset.getMinPrice().doubleValue(), dataset.getMaxPrice()
+					.doubleValue()), 9, null);
+			priceArea.setlogicPriceAxis(logicPriceAxis);
+			logicVolumeAxis.updateAxis(new Range(dataset.getMinVolume().doubleValue(), dataset.getMaxVolume()
+					.doubleValue()), 5, new DecimalFormat("0"));
+			timeseriesArea.updateTimeSeriesArea(priceArea, volumeArea,
+					createlogicDateAxis(DateUtils.createDate(2014, 9, 30)));
+			chatFrame.pack();
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 //		ChartUtilities
 //				.saveChartAsPNG(new File(imageFile), jfreechart, 545, 300);
 	}

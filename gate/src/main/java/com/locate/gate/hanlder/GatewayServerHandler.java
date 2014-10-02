@@ -32,6 +32,7 @@ import com.locate.common.constant.SystemConstant;
 import com.locate.common.datacache.DataBaseCache;
 import com.locate.common.datacache.GateChannelCache;
 import com.locate.common.model.ClientRequest;
+import com.locate.common.model.ClientSession;
 import com.locate.common.utils.DerivedUtils;
 
 @Service
@@ -201,8 +202,7 @@ public class GatewayServerHandler extends StringDecoder {
 			if (StringUtils.isBlank(userName)) {
 				userName = DataBaseCache._userConnection.get(clientIP);
 			}
-			channel.config().
-			int channelId = SystemConstant.channelId.incrementAndGet();;
+			int channelId = channel.hashCode();
 			if(GateChannelCache.id2ChannelMap.get(channelId)==null){
 				GateChannelCache.id2ChannelMap.put(channelId, channel);
 			}
