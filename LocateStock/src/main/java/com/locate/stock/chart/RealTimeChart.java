@@ -88,7 +88,7 @@ public class RealTimeChart {
 
 		TimeseriesArea timeseriesArea = new TimeseriesArea(priceArea,
 				volumeArea, createlogicDateAxis(DateUtils
-						.createDate(2014, 10, 2)));
+						.createDate(2014, 10, 3)));
 
 		JFreeChart jfreechart = JStockChartFactory.createTimeseriesChart(
 				"comex3月铜行情走势图", dataset, timeline, timeseriesArea,
@@ -103,7 +103,7 @@ public class RealTimeChart {
 			deltaPrice = new Random().nextDouble();
 			timeseriesItem = new TimeseriesItem(new Date(time+=1000L), price += x * deltaPrice, amount += x
 					* (int) (Math.random() * 5 + 1));
-			dataset.addDataItem(timeseriesItem);
+			dataset.pushDataItem(timeseriesItem);
 			logicPriceAxis.updateAxis(null, new Range(dataset.getMinPrice().doubleValue(), dataset.getMaxPrice()
 					.doubleValue()), 9, null);
 			priceArea.setlogicPriceAxis(logicPriceAxis);

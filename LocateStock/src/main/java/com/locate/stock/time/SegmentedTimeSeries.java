@@ -139,7 +139,6 @@ public class SegmentedTimeSeries {
 			}
 		}
 		timeseries.add(item);
-		size++;
 		lastItem = item;
 	}
 	
