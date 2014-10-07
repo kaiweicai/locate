@@ -57,12 +57,13 @@ public class RealTimeChart {
 		int x = -1;
 		x = -x;
 		double deltaPrice = new Random().nextDouble();
-		TimeseriesItem timeseriesItem = new TimeseriesItem(new Date(time), price += x * deltaPrice, amount += x
-				* (int) (Math.random() * 5 + 1));
+//		TimeseriesItem timeseriesItem = new TimeseriesItem(new Date(time), price += x * deltaPrice, amount += x
+//				* (int) (Math.random() * 5 + 1));
+		TimeseriesItem timeseriesItem = null;
 		for (int i = 0; i < 30; i++) {
 			for (int j = 0; j < 6; j++) {
-				timeseriesItem = new TimeseriesItem(new Date(time += 1000L), timeseriesItem.getPrice(),
-						timeseriesItem.getVolume());
+				timeseriesItem = new TimeseriesItem(new Date(time += 1000L), price,
+						amount);
 				dataList.add(timeseriesItem);
 			}
 		}
@@ -87,7 +88,7 @@ public class RealTimeChart {
 		VolumeArea volumeArea = new VolumeArea(logicVolumeAxis);
 
 		TimeseriesArea timeseriesArea = new TimeseriesArea(priceArea, volumeArea,
-				createlogicDateAxis(DateUtils.createDate(2014, 10, 6)));
+				createlogicDateAxis(DateUtils.createDate(2014, 10, 8)));
 		db.close();
 		JFreeChart jfreechart = JStockChartFactory.createTimeseriesChart("comex3月铜行情走势图", dataset, timeline,
 				timeseriesArea, true);
@@ -97,32 +98,48 @@ public class RealTimeChart {
 		chatFrame.setVisible(true);
 
 		for (int j = 0; j < 100000; j++) {
-			timeseriesArea.updateTimeSeriesArea(priceArea, volumeArea, updatelogicDateAxis());
-			for (int k = 0; k < 60; j++) {
+//			timeseriesArea.updateTimeSeriesArea(priceArea, volumeArea, updatelogicDateAxis());
+			// Creates logic price axis.
+			for(int l=0;l<3;l++){
+			for (int k = 0; k < 60; k++) {
 				System.out.println("%%%%%%%%%%%%%%%%%%%%"+dataset.size());
-				jfreechart = JStockChartFactory.createTimeseriesChart("comex3月铜行情走势图", dataset, timeline,
-						timeseriesArea, true);
-				chatFrame.getChartPanel().setChart(jfreechart);
-//				chatFrame = new ChartFrame("股票图", jfreechart);
-//				chatFrame.pack();
-				chatFrame.setVisible(true);
 				x = -x;
 				deltaPrice = new Random().nextDouble();
 				timeseriesItem = new TimeseriesItem(new Date(time += 1000L), price += x * deltaPrice, amount += x
 						* (int) (Math.random() * 5 + 1));
 				dataset.pushDataItem(timeseriesItem);
-				logicPriceAxis.updateAxis(null, new Range(dataset.getMinPrice().doubleValue(), dataset.getMaxPrice()
-						.doubleValue()), 9, null);
-				priceArea.setlogicPriceAxis(logicPriceAxis);
-				logicVolumeAxis.updateAxis(new Range(dataset.getMinVolume().doubleValue(), dataset.getMaxVolume()
-						.doubleValue()), 5, new DecimalFormat("0"));
-				chatFrame.pack();
+				logicPriceAxis = new CentralValueAxis(new Double(dataList.get(0).getPrice()), new Range(
+						dataset.getMinPrice().doubleValue() , dataset.getMaxPrice().doubleValue() ), 9,
+						new DecimalFormat(".00"));
+				priceArea = new PriceArea(logicPriceAxis);
+
+				// Creates logic volume axis.
+				logicVolumeAxis = new LogicNumberAxis(new Range(dataset.getMinVolume().doubleValue(), dataset
+						.getMaxVolume().doubleValue()), 5, new DecimalFormat("0"));
+				volumeArea = new VolumeArea(logicVolumeAxis);
+				timeseriesArea = new TimeseriesArea(priceArea, volumeArea,
+						createlogicDateAxis(DateUtils.createDate(2014, 10, 8)));
+				jfreechart = JStockChartFactory.createTimeseriesChart("comex3月铜行情走势图", dataset, timeline,
+						timeseriesArea, true);
+				chatFrame.getChartPanel().setChart(jfreechart);
+//				chatFrame = new ChartFrame("股票图", jfreechart);
+//				chatFrame.pack();
+//				chatFrame.setVisible(true);
+				
+				
+//				logicPriceAxis.updateAxis(null, new Range(dataset.getMinPrice().doubleValue(), dataset.getMaxPrice()
+//						.doubleValue()), 9, null);
+//				priceArea.setlogicPriceAxis(logicPriceAxis);
+//				logicVolumeAxis.updateAxis(new Range(dataset.getMinVolume().doubleValue(), dataset.getMaxVolume()
+//						.doubleValue()), 5, new DecimalFormat("0"));
+//				chatFrame.pack();
 				try {
 					Thread.sleep(1000);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+			}
 			}
 		}
 		// ChartUtilities
@@ -136,7 +153,7 @@ public class RealTimeChart {
 		int changedMinutes = -3;
 		String currentDate = simpleDateFormat.format(DateUtils.beforeCurrentDate(changedMinutes++));
 		System.out.println(currentDate);
-		// logicDateAxis.addDateTick(currentDate, TickAlignment.START);
+		 logicDateAxis.addDateTick(currentDate, TickAlignment.START);
 		currentDate = simpleDateFormat.format(DateUtils.beforeCurrentDate(changedMinutes++));
 		System.out.println(currentDate);
 		logicDateAxis.addDateTick(currentDate);
@@ -152,21 +169,24 @@ public class RealTimeChart {
 	private static LogicDateAxis updatelogicDateAxis() {
 
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss");
-		// LogicDateAxis logicDateAxis = new LogicDateAxis(baseDate,
-		// simpleDateFormat);
+		LogicDateAxis logicDateAxis = new LogicDateAxis(DateUtils.createDate(2014, 10, 7),
+				simpleDateFormat);
 		int changedMinutes = -3;
 		String currentDate = simpleDateFormat.format(DateUtils.beforeCurrentDate(changedMinutes++));
-		System.out.println(currentDate);
-		logicDateAxis.addDateTick(currentDate, TickAlignment.START);
-		currentDate = simpleDateFormat.format(DateUtils.beforeCurrentDate(changedMinutes++));
-		System.out.println(currentDate);
-		logicDateAxis.addDateTick(currentDate);
-		currentDate = simpleDateFormat.format(DateUtils.beforeCurrentDate(changedMinutes++));
-		System.out.println(currentDate);
-		logicDateAxis.addDateTick(currentDate);
-		currentDate = simpleDateFormat.format(DateUtils.beforeCurrentDate(changedMinutes++));
-		System.out.println(currentDate);
-		logicDateAxis.addDateTick(currentDate, TickAlignment.END);
+		logicDateAxis.pushDateTick(currentDate);
+//		int changedMinutes = -3;
+//		String currentDate = simpleDateFormat.format(DateUtils.beforeCurrentDate(changedMinutes++));
+//		System.out.println(currentDate);
+//		logicDateAxis.addDateTick(currentDate, TickAlignment.START);
+//		currentDate = simpleDateFormat.format(DateUtils.beforeCurrentDate(changedMinutes++));
+//		System.out.println(currentDate);
+//		logicDateAxis.addDateTick(currentDate);
+//		currentDate = simpleDateFormat.format(DateUtils.beforeCurrentDate(changedMinutes++));
+//		System.out.println(currentDate);
+//		logicDateAxis.addDateTick(currentDate);
+//		currentDate = simpleDateFormat.format(DateUtils.beforeCurrentDate(changedMinutes++));
+//		System.out.println(currentDate);
+//		logicDateAxis.addDateTick(currentDate, TickAlignment.END);
 		return logicDateAxis;
 	}
 

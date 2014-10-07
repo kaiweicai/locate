@@ -178,7 +178,9 @@ public class TimeseriesDataset {
 	public void pushDataItem(TimeseriesItem item) {
 		RegularTimePeriod time = RegularTimePeriod.createInstance(timePeriodClass, item.getTime(), timeZone);
 		priceTimeSeries.pushItem(new TimeSeriesDataItem(time, item.getPrice()));
-		volumeTimeSeries.setMaximumItemCount(180);
+//		volumeTimeSeries.setMaximumItemCount(180);
+		System.out.println("volumeTimeSeries getItemCount()"+volumeTimeSeries.getItemCount());
+		volumeTimeSeries.delete(0, 0);
 		volumeTimeSeries.add(new TimeSeriesDataItem(time, item.getVolume()));
 		
 		if (average != null) {

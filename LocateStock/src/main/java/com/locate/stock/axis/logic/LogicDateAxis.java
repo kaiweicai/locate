@@ -72,7 +72,7 @@ public class LogicDateAxis extends AbstractLogicAxis {
 	}
 	
 	public void pushDateTick(String timeStr, TickAlignment tickAlignment) {
-		ticks.remove(1);
+		ticks.remove(0);
 		ticks
 				.add(new LogicDateTick(parseTime(timeStr), timeStr,
 						tickAlignment));
