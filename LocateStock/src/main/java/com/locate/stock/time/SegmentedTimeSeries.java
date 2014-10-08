@@ -110,7 +110,7 @@ public class SegmentedTimeSeries {
 	}
 	
 	public void pushItem(TimeSeriesDataItem item) {
-		timeseries.delete(1, 1);
+		timeseries.delete(0, 0,false);
 		if (lastItem != null) {
 			long lastStart = lastItem.getPeriod().getFirstMillisecond();
 			long thisStart = item.getPeriod().getFirstMillisecond();

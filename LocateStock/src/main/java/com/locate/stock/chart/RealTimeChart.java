@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Random;
 
 import org.jfree.chart.ChartFrame;
+import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.SegmentedTimeline;
 import org.jfree.data.Range;
@@ -32,7 +33,9 @@ import com.locate.stock.util.DateUtils;
 
 public class RealTimeChart {
 	private static LogicDateAxis logicDateAxis = null;
-
+	SegmentedTimeline timeline = new SegmentedTimeline(SegmentedTimeline.MINUTE_SEGMENT_SIZE, 1440, 0);
+	// Creates timeseries data set.
+	TimeseriesDataset dataset = new TimeseriesDataset(Second.class, 1, timeline, true);
 	public void generateRealChart() {
 		String imageDir = "./images";
 		File images = new File(imageDir);
@@ -57,13 +60,13 @@ public class RealTimeChart {
 		int x = -1;
 		x = -x;
 		double deltaPrice = new Random().nextDouble();
-//		TimeseriesItem timeseriesItem = new TimeseriesItem(new Date(time), price += x * deltaPrice, amount += x
-//				* (int) (Math.random() * 5 + 1));
+		// TimeseriesItem timeseriesItem = new TimeseriesItem(new Date(time),
+		// price += x * deltaPrice, amount += x
+		// * (int) (Math.random() * 5 + 1));
 		TimeseriesItem timeseriesItem = null;
 		for (int i = 0; i < 30; i++) {
 			for (int j = 0; j < 6; j++) {
-				timeseriesItem = new TimeseriesItem(new Date(time += 1000L), price,
-						amount);
+				timeseriesItem = new TimeseriesItem(new Date(time += 1000L), price, amount);
 				dataList.add(timeseriesItem);
 			}
 		}
@@ -73,7 +76,7 @@ public class RealTimeChart {
 		timeline.setStartTime(SegmentedTimeline.firstMondayAfter1900());
 
 		// Creates timeseries data set.
-		TimeseriesDataset dataset = new TimeseriesDataset(Second.class, 1, timeline, true);
+		TimeseriesDataset dataset = new TimeseriesDataset(Second.class, 1, timeline, false);
 		dataset.addDataItems(dataList);
 
 		// Creates logic price axis.
@@ -92,60 +95,120 @@ public class RealTimeChart {
 		db.close();
 		JFreeChart jfreechart = JStockChartFactory.createTimeseriesChart("comex3月铜行情走势图", dataset, timeline,
 				timeseriesArea, true);
-		
+
 		ChartFrame chatFrame = new ChartFrame("股票图", jfreechart);
 		chatFrame.pack();
 		chatFrame.setVisible(true);
 
 		for (int j = 0; j < 100000; j++) {
-//			timeseriesArea.updateTimeSeriesArea(priceArea, volumeArea, updatelogicDateAxis());
+			// timeseriesArea.updateTimeSeriesArea(priceArea, volumeArea,
+			// updatelogicDateAxis());
 			// Creates logic price axis.
-			for(int l=0;l<3;l++){
-			for (int k = 0; k < 60; k++) {
-				System.out.println("%%%%%%%%%%%%%%%%%%%%"+dataset.size());
-				x = -x;
-				deltaPrice = new Random().nextDouble();
-				timeseriesItem = new TimeseriesItem(new Date(time += 1000L), price += x * deltaPrice, amount += x
-						* (int) (Math.random() * 5 + 1));
-				dataset.pushDataItem(timeseriesItem);
-				logicPriceAxis = new CentralValueAxis(new Double(dataList.get(0).getPrice()), new Range(
-						dataset.getMinPrice().doubleValue() , dataset.getMaxPrice().doubleValue() ), 9,
-						new DecimalFormat(".00"));
-				priceArea = new PriceArea(logicPriceAxis);
+			for (int l = 0; l < 3; l++) {
+				for (int k = 0; k < 60; k++) {
+					System.out.println("%%%%%%%%%%%%%%%%%%%%" + dataset.size());
+					x = -x;
+					deltaPrice = new Random().nextDouble();
+					timeseriesItem = new TimeseriesItem(new Date(time += 1000L), price += x * deltaPrice, amount += x
+							* (int) (Math.random() * 5 + 1));
+					dataset.pushDataItem(timeseriesItem);
+					logicPriceAxis = new CentralValueAxis(new Double(dataList.get(0).getPrice()), new Range(dataset
+							.getMinPrice().doubleValue(), dataset.getMaxPrice().doubleValue()), 9, new DecimalFormat(
+							".00"));
+					priceArea = new PriceArea(logicPriceAxis);
 
-				// Creates logic volume axis.
-				logicVolumeAxis = new LogicNumberAxis(new Range(dataset.getMinVolume().doubleValue(), dataset
-						.getMaxVolume().doubleValue()), 5, new DecimalFormat("0"));
-				volumeArea = new VolumeArea(logicVolumeAxis);
-				timeseriesArea = new TimeseriesArea(priceArea, volumeArea,
-						createlogicDateAxis(DateUtils.createDate(2014, 10, 8)));
-				jfreechart = JStockChartFactory.createTimeseriesChart("comex3月铜行情走势图", dataset, timeline,
-						timeseriesArea, true);
-				chatFrame.getChartPanel().setChart(jfreechart);
-//				chatFrame = new ChartFrame("股票图", jfreechart);
-//				chatFrame.pack();
-//				chatFrame.setVisible(true);
-				
-				
-//				logicPriceAxis.updateAxis(null, new Range(dataset.getMinPrice().doubleValue(), dataset.getMaxPrice()
-//						.doubleValue()), 9, null);
-//				priceArea.setlogicPriceAxis(logicPriceAxis);
-//				logicVolumeAxis.updateAxis(new Range(dataset.getMinVolume().doubleValue(), dataset.getMaxVolume()
-//						.doubleValue()), 5, new DecimalFormat("0"));
-//				chatFrame.pack();
-				try {
-					Thread.sleep(1000);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					// Creates logic volume axis.
+					logicVolumeAxis = new LogicNumberAxis(new Range(dataset.getMinVolume().doubleValue(), dataset
+							.getMaxVolume().doubleValue()), 5, new DecimalFormat("0"));
+					volumeArea = new VolumeArea(logicVolumeAxis);
+					timeseriesArea = new TimeseriesArea(priceArea, volumeArea,
+							createlogicDateAxis(DateUtils.createDate(2014, 10, 8)));
+					jfreechart = JStockChartFactory.createTimeseriesChart("comex3月铜行情走势图", dataset, timeline,
+							timeseriesArea, true);
+					chatFrame.getChartPanel().setChart(jfreechart);
+					// chatFrame = new ChartFrame("股票图", jfreechart);
+					// chatFrame.pack();
+					// chatFrame.setVisible(true);
+
+					// logicPriceAxis.updateAxis(null, new
+					// Range(dataset.getMinPrice().doubleValue(),
+					// dataset.getMaxPrice()
+					// .doubleValue()), 9, null);
+					// priceArea.setlogicPriceAxis(logicPriceAxis);
+					// logicVolumeAxis.updateAxis(new
+					// Range(dataset.getMinVolume().doubleValue(),
+					// dataset.getMaxVolume()
+					// .doubleValue()), 5, new DecimalFormat("0"));
+					// chatFrame.pack();
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
-			}
 			}
 		}
 		// ChartUtilities
 		// .saveChartAsPNG(new File(imageFile), jfreechart, 545, 300);
 	}
 
+	public ChartPanel initialChart(String itemName, double price,double amount){
+		// 'data' is a list of TimeseriesItem instances.
+		List<TimeseriesItem> dataList = new ArrayList<TimeseriesItem>();
+		// the 'timeline' indicates the segmented time range '00:00-11:30,
+		// 13:00-24:00'.
+		long time = DateUtils.beforeCurrentDate(-3).getTime();
+		TimeseriesItem timeseriesItem = null;
+		for (int i = 0; i < 30; i++) {
+			for (int j = 0; j < 6; j++) {
+				timeseriesItem = new TimeseriesItem(new Date(time += 1000L), price, amount);
+				dataList.add(timeseriesItem);
+			}
+		}
+		
+		timeline.setStartTime(SegmentedTimeline.firstMondayAfter1900());
+		dataset.addDataItems(dataList);
+
+		// Creates logic price axis.
+		CentralValueAxis logicPriceAxis = new CentralValueAxis(new Double(dataList.get(0).getPrice()), new Range(
+				dataset.getMinPrice().doubleValue() * 0.9, dataset.getMaxPrice().doubleValue() * 1.1), 9,
+				new DecimalFormat(".00"));
+		PriceArea priceArea = new PriceArea(logicPriceAxis);
+
+		// Creates logic volume axis.
+		LogicNumberAxis logicVolumeAxis = new LogicNumberAxis(new Range(dataset.getMinVolume().doubleValue(), dataset
+				.getMaxVolume().doubleValue()), 5, new DecimalFormat("0"));
+		VolumeArea volumeArea = new VolumeArea(logicVolumeAxis);
+
+		TimeseriesArea timeseriesArea = new TimeseriesArea(priceArea, volumeArea,
+				createlogicDateAxis(DateUtils.createCurrentDate()));
+//		db.close();
+		JFreeChart jfreechart = JStockChartFactory.createTimeseriesChart(itemName+"行情走势图", dataset, timeline,
+				timeseriesArea, true);
+		ChartPanel chatPanel = new ChartPanel(jfreechart);
+//		ChartFrame chatFrame = new ChartFrame("股票图", jfreechart);
+		return chatPanel;
+	}
+	
+	public void updatePriceChart(){
+		TimeseriesItem timeseriesItem = new TimeseriesItem(new Date(time += 1000L), price += x * deltaPrice, amount += x
+				* (int) (Math.random() * 5 + 1));
+		dataset.pushDataItem(timeseriesItem);
+		CentralValueAxis logicPriceAxis = new CentralValueAxis(new Double(dataList.get(0).getPrice()), new Range(dataset
+				.getMinPrice().doubleValue(), dataset.getMaxPrice().doubleValue()), 9, new DecimalFormat(
+				".00"));
+		PriceArea priceArea = new PriceArea(logicPriceAxis);
+
+		// Creates logic volume axis.
+		LogicNumberAxis logicVolumeAxis = new LogicNumberAxis(new Range(dataset.getMinVolume().doubleValue(), dataset
+				.getMaxVolume().doubleValue()), 5, new DecimalFormat("0"));
+		VolumeArea volumeArea = new VolumeArea(logicVolumeAxis);
+		TimeseriesArea timeseriesArea = new TimeseriesArea(priceArea, volumeArea,
+				createlogicDateAxis(DateUtils.createDate(2014, 10, 8)));
+		JFreeChart jfreechart = JStockChartFactory.createTimeseriesChart("comex3月铜行情走势图", dataset, timeline,
+				timeseriesArea, true);
+	}
 	// Specifies date axis ticks.
 	private static LogicDateAxis createlogicDateAxis(Date baseDate) {
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss");
@@ -153,7 +216,7 @@ public class RealTimeChart {
 		int changedMinutes = -3;
 		String currentDate = simpleDateFormat.format(DateUtils.beforeCurrentDate(changedMinutes++));
 		System.out.println(currentDate);
-		 logicDateAxis.addDateTick(currentDate, TickAlignment.START);
+		logicDateAxis.addDateTick(currentDate, TickAlignment.START);
 		currentDate = simpleDateFormat.format(DateUtils.beforeCurrentDate(changedMinutes++));
 		System.out.println(currentDate);
 		logicDateAxis.addDateTick(currentDate);
@@ -169,24 +232,27 @@ public class RealTimeChart {
 	private static LogicDateAxis updatelogicDateAxis() {
 
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss");
-		LogicDateAxis logicDateAxis = new LogicDateAxis(DateUtils.createDate(2014, 10, 7),
-				simpleDateFormat);
+		LogicDateAxis logicDateAxis = new LogicDateAxis(DateUtils.createDate(2014, 10, 7), simpleDateFormat);
 		int changedMinutes = -3;
 		String currentDate = simpleDateFormat.format(DateUtils.beforeCurrentDate(changedMinutes++));
 		logicDateAxis.pushDateTick(currentDate);
-//		int changedMinutes = -3;
-//		String currentDate = simpleDateFormat.format(DateUtils.beforeCurrentDate(changedMinutes++));
-//		System.out.println(currentDate);
-//		logicDateAxis.addDateTick(currentDate, TickAlignment.START);
-//		currentDate = simpleDateFormat.format(DateUtils.beforeCurrentDate(changedMinutes++));
-//		System.out.println(currentDate);
-//		logicDateAxis.addDateTick(currentDate);
-//		currentDate = simpleDateFormat.format(DateUtils.beforeCurrentDate(changedMinutes++));
-//		System.out.println(currentDate);
-//		logicDateAxis.addDateTick(currentDate);
-//		currentDate = simpleDateFormat.format(DateUtils.beforeCurrentDate(changedMinutes++));
-//		System.out.println(currentDate);
-//		logicDateAxis.addDateTick(currentDate, TickAlignment.END);
+		// int changedMinutes = -3;
+		// String currentDate =
+		// simpleDateFormat.format(DateUtils.beforeCurrentDate(changedMinutes++));
+		// System.out.println(currentDate);
+		// logicDateAxis.addDateTick(currentDate, TickAlignment.START);
+		// currentDate =
+		// simpleDateFormat.format(DateUtils.beforeCurrentDate(changedMinutes++));
+		// System.out.println(currentDate);
+		// logicDateAxis.addDateTick(currentDate);
+		// currentDate =
+		// simpleDateFormat.format(DateUtils.beforeCurrentDate(changedMinutes++));
+		// System.out.println(currentDate);
+		// logicDateAxis.addDateTick(currentDate);
+		// currentDate =
+		// simpleDateFormat.format(DateUtils.beforeCurrentDate(changedMinutes++));
+		// System.out.println(currentDate);
+		// logicDateAxis.addDateTick(currentDate, TickAlignment.END);
 		return logicDateAxis;
 	}
 

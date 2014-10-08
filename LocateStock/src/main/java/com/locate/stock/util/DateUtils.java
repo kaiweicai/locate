@@ -56,6 +56,15 @@ public class DateUtils {
 		createDate(year, month, day, 0, 0, 0, 0);
 		return CALENDAR.getTime();
 	}
+	
+	public static synchronized Date createCurrentDate() {
+		Calendar cal = Calendar.getInstance();
+		int year = cal.get(Calendar.YEAR);
+		int month = cal.get(Calendar.MONTH)+1;
+		int day = cal.get(Calendar.DAY_OF_MONTH);
+		createDate(year, month, day, 0, 0, 0, 0);
+		return CALENDAR.getTime();
+	}
 
 	public static synchronized Date createDate(final int year, final int month,
 			final int day, final int hour) {

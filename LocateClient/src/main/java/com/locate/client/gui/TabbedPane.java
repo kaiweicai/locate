@@ -110,10 +110,10 @@ public class TabbedPane extends JPanel{
 
 		TabPanel tabpanel = new TabPanel(tab, title, icon);
 		pane.addTab(null, null, tab, tip);
-		
-		pane.setTabComponentAt(pane.getTabCount() - 1, tabpanel);
+		int index = pane.getTabCount() - 1;
+		pane.setTabComponentAt(index, tabpanel);
 		fireTabAdded(tab, component, getTabPosition(tab));
-
+		pane.setSelectedIndex(index);
 		return tab;
 	}
 

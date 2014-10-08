@@ -70,6 +70,7 @@ import com.locate.face.IBussiness;
 import com.locate.face.IClientConnector;
 import com.locate.gate.handler.ClientConnector;
 import com.locate.gate.handler.ClientHandler;
+import com.locate.stock.chart.RealTimeChart;
 
 /**
  * A swing window panel to monitor RFALocateGateWay Server
@@ -89,12 +90,13 @@ public class RFApplication extends JFrame {
 	public static JLabel responseNumber;
 	public static JTextArea showLog;
 	private JScrollPane logScrollPanel;
-	private JScrollPane tableScrollPane;
-	private JPanel chartPanel;
+	private JScrollPane priceTableScrollPane;
+	private JScrollPane chartPanel;
 	private JLabel avgTitle;
 	public static JLabel avgTimes;
 	private JButton closeButton;
-	private TabbedPane tabbedPane;
+	private TabbedPane priceTableTabbedPane;
+	private TabbedPane priceChartTabbedPane;
 	private DefaultTableCellRenderer cellRanderer;
 	private List<Integer> chanedRowList = new ArrayList<Integer>();
 	
@@ -188,7 +190,7 @@ public class RFApplication extends JFrame {
 					panel.add(getTableScrollPane(new Rectangle(inputX, inputY += 30, 400, 400)));
 					panel.add(getUseTimeTextLabel(new Rectangle(inputX, 620, 500, 50)));
 					panel.add(getLogPanel(new Rectangle(30, 10, 500, 280)));
-					panel.add(getChartPanel(new Rectangle(30, 300, 500, 200)));
+					panel.add(getChartScrollPanel(new Rectangle(30, 300, 500, 200)));
 					panel.add(getStatusBar(new Rectangle(30, 570, 500, 50)));
 					panel.add(getServerBar(new Rectangle(30, 620, 500, 50)));
 				} catch (Exception e) {
@@ -515,6 +517,18 @@ public class RFApplication extends JFrame {
 		});
 		return marketPriceTable;
 	}
+	
+	private JTable getRealTimeChart() {
+		JTable marketPriceTable = new JTable();
+//		marketPriceTable.setBounds(0, 0, 200, 30);
+//		marketPriceTable.getColumnModel().getColumn(3).setPreferredWidth(460);
+		marketPriceTable.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent event) {
+//					conneteLocateGateWay();
+			}
+		});
+		return marketPriceTable;
+	}
 
 	
 	/**
@@ -523,23 +537,22 @@ public class RFApplication extends JFrame {
 	 * @return
 	 */
 	private JScrollPane getTableScrollPane(Rectangle r) {
-		if (tableScrollPane == null) {
-			tableScrollPane = new JScrollPane();
-			tableScrollPane.setViewportView(getTabbedPane());
-			tableScrollPane.setBounds(r);
+		if (priceTableScrollPane == null) {
+			priceTableScrollPane = new JScrollPane();
+			priceTableScrollPane.setViewportView(getPriceTableTabbedPane());
+			priceTableScrollPane.setBounds(r);
 		}
-		return tableScrollPane;
+		return priceTableScrollPane;
 	}
 	
-	private TabbedPane getTabbedPane() {
-		if (tabbedPane == null) {
-			tabbedPane = new TabbedPane();
-			tabbedPane.setCloseButtonEnabled(true);
+	private TabbedPane getPriceTableTabbedPane() {
+		if (priceTableTabbedPane == null) {
+			priceTableTabbedPane = new TabbedPane();
+			priceTableTabbedPane.setCloseButtonEnabled(true);
 //			tabbedPane.addTab("日志", null, getLogPanel(null));
-			tabbedPane.addTabbedPaneListener(new TabbedPaneListener() {
+			priceTableTabbedPane.addTabbedPaneListener(new TabbedPaneListener() {
 				@Override
 				public void allTabsRemoved() {
-					// TODO Auto-generated method stub
 
 				}
 
@@ -560,11 +573,46 @@ public class RFApplication extends JFrame {
 
 				@Override
 				public void tabSelected(Tab tab, Component component, int index) {
-
+//					priceTableTabbedPane.setSelectedIndex(index);
 				}
 			});
 		}
-		return tabbedPane;
+		return priceTableTabbedPane;
+	}
+	
+	private TabbedPane getPriceChartTabbedPane() {
+		if (priceChartTabbedPane == null) {
+			priceChartTabbedPane = new TabbedPane();
+			priceChartTabbedPane.setCloseButtonEnabled(true);
+//			tabbedPane.addTab("日志", null, getLogPanel(null));
+			priceChartTabbedPane.addTabbedPaneListener(new TabbedPaneListener() {
+				@Override
+				public void allTabsRemoved() {
+
+				}
+
+				@Override
+				public boolean canTabClose(Tab tab, Component component) {
+					return false;
+				}
+
+				@Override
+				public void tabAdded(Tab tab, Component component, int index) {
+
+				}
+
+				@Override
+				public void tabRemoved(Tab tab, Component component, int index) {
+					logger.debug("close");
+				}
+
+				@Override
+				public void tabSelected(Tab tab, Component component, int index) {
+//					priceTableTabbedPane.setSelectedIndex(index);
+				}
+			});
+		}
+		return priceChartTabbedPane;
 	}
 	
 	private JScrollPane getLogPanel(Rectangle r) {
@@ -580,11 +628,12 @@ public class RFApplication extends JFrame {
 		return logScrollPanel;
 	}
 	
-	private JPanel getChartPanel(Rectangle r) {
+	private JScrollPane getChartScrollPanel(Rectangle r) {
 		if (chartPanel == null) {
-			chartPanel = new JPanel();
+			chartPanel = new JScrollPane();
+			chartPanel.setViewportView(getPriceChartTabbedPane());
 			chartPanel.setBounds(r);
-			chartPanel.setBackground(Color.WHITE);
+//			chartPanel.setBackground(Color.WHITE);
 		}
 		return chartPanel;
 	}
@@ -710,6 +759,7 @@ public class RFApplication extends JFrame {
 			logger.info("The message From RFA to user use time "+(endTime-startTime)+" milliseconds");
 			BigDecimal bid = null;
 			BigDecimal ask = null;
+			double average = 0d;
 			List<String[]> payLoadList = message.getPayLoadSet();
 			if (payLoadList != null && !payLoadList.isEmpty()) {
 				for (String[] payLoad : payLoadList) {
@@ -734,7 +784,7 @@ public class RFApplication extends JFrame {
 					bidAsk[0]=bid;
 					bidAsk[1]=ask;
 				}
-				double average = bid.add(ask).divide(new BigDecimal("2")).setScale(4, BigDecimal.ROUND_HALF_UP).doubleValue();
+				average = bid.add(ask).divide(new BigDecimal("2")).setScale(4, BigDecimal.ROUND_HALF_UP).doubleValue();
 //				DecimalFormat df = new DecimalFormat("#.000");
 				payLoadList.add(new String[] { "100000", "中间价", "double", String.valueOf(average) });
 			}
@@ -750,16 +800,31 @@ public class RFApplication extends JFrame {
 							JTable marketPriceTable = getMarketPriceTable();
 							marketPriceTable.setModel(tableModel);
 							//add the item tab
-							tabbedPane.addTab(ComboItemName.exhangeTheName(itemName), null, marketPriceTable);
+							priceTableTabbedPane.addTab(ComboItemName.exhangeTheName(itemName), null, marketPriceTable);
 							marketPriceTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 							marketPriceTable.getColumnModel().getColumn(0).setPreferredWidth(20);
 							marketPriceTable.getColumnModel().getColumn(1).setPreferredWidth(20);
 							marketPriceTable.getColumnModel().getColumn(2).setPreferredWidth(20);
 							UpdateTableColore updateThread = new UpdateTableColore();
-							
 							updateThread.setMarketPriceTable(marketPriceTable);
 							ClientConstant.updateThreadMap.put(itemName, updateThread);
 							ClientConstant.itemName2PriceTableModeMap.put(itemName, tableModel);
+							
+							List<String[]> dataPayLoad = message.getPayLoadSet();
+							double price = 0d;
+							double amount = 0;
+							for(String[] payLoad :dataPayLoad){
+								if("100000".equals(payLoad[0])){
+									price = Double.parseDouble(payLoad[3]);
+								}
+								if("32".equals(payLoad[0])){
+									amount = Double.parseDouble(payLoad[3]);
+								}
+							}
+							
+							RealTimeChart realTimeChart = new RealTimeChart();
+							priceChartTabbedPane.addTab(ComboItemName.exhangeTheName(itemName), null,
+								realTimeChart.initialChart(ComboItemName.exhangeTheName(itemName),price, amount));
 						}
 					});
 					
@@ -775,7 +840,7 @@ public class RFApplication extends JFrame {
 					updateMarketPriceTable(tModel,message);
 					ClientConstant.updateThreadMap.get(itemName).setUpdate(true);
 					
-					chartPanel.getGraphics().drawLine(12, 21, 54, 99);
+//					chartPanel.getGraphics().drawLine(12, 21, 54, 99);
 					break;
 				//Locate send the state info to client
 				case LocateMessageTypes.SERVER_STATE:
