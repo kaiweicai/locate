@@ -36,6 +36,8 @@ public class RealTimeChart {
 	SegmentedTimeline timeline = new SegmentedTimeline(SegmentedTimeline.MINUTE_SEGMENT_SIZE, 1440, 0);
 	// Creates timeseries data set.
 	TimeseriesDataset dataset = new TimeseriesDataset(Second.class, 1, timeline, true);
+	private double certenPrice = 0d;
+	private long lastUpdateTime = 0L;
 	public void generateRealChart() {
 		String imageDir = "./images";
 		File images = new File(imageDir);
@@ -153,13 +155,14 @@ public class RealTimeChart {
 		// .saveChartAsPNG(new File(imageFile), jfreechart, 545, 300);
 	}
 
-	public ChartPanel initialChart(String itemName, double price,double amount){
+	public ChartPanel initialChart(String itemName, double price,int amount){
 		// 'data' is a list of TimeseriesItem instances.
 		List<TimeseriesItem> dataList = new ArrayList<TimeseriesItem>();
 		// the 'timeline' indicates the segmented time range '00:00-11:30,
 		// 13:00-24:00'.
 		long time = DateUtils.beforeCurrentDate(-3).getTime();
 		TimeseriesItem timeseriesItem = null;
+		this.certenPrice = price;
 		for (int i = 0; i < 30; i++) {
 			for (int j = 0; j < 6; j++) {
 				timeseriesItem = new TimeseriesItem(new Date(time += 1000L), price, amount);
@@ -172,7 +175,7 @@ public class RealTimeChart {
 
 		// Creates logic price axis.
 		CentralValueAxis logicPriceAxis = new CentralValueAxis(new Double(dataList.get(0).getPrice()), new Range(
-				dataset.getMinPrice().doubleValue() * 0.9, dataset.getMaxPrice().doubleValue() * 1.1), 9,
+				dataset.getMinPrice().doubleValue() * 0.99, dataset.getMaxPrice().doubleValue() * 1.01), 9,
 				new DecimalFormat(".00"));
 		PriceArea priceArea = new PriceArea(logicPriceAxis);
 
@@ -191,11 +194,11 @@ public class RealTimeChart {
 		return chatPanel;
 	}
 	
-	public void updatePriceChart(){
-		TimeseriesItem timeseriesItem = new TimeseriesItem(new Date(time += 1000L), price += x * deltaPrice, amount += x
-				* (int) (Math.random() * 5 + 1));
+	public void updatePriceChart(long time,double price,int amount){
+		this.lastUpdateTime = time;
+		TimeseriesItem timeseriesItem = new TimeseriesItem(new Date(time), price , amount);
 		dataset.pushDataItem(timeseriesItem);
-		CentralValueAxis logicPriceAxis = new CentralValueAxis(new Double(dataList.get(0).getPrice()), new Range(dataset
+		CentralValueAxis logicPriceAxis = new CentralValueAxis(certenPrice, new Range(dataset
 				.getMinPrice().doubleValue(), dataset.getMaxPrice().doubleValue()), 9, new DecimalFormat(
 				".00"));
 		PriceArea priceArea = new PriceArea(logicPriceAxis);
@@ -209,6 +212,7 @@ public class RealTimeChart {
 		JFreeChart jfreechart = JStockChartFactory.createTimeseriesChart("comex3月铜行情走势图", dataset, timeline,
 				timeseriesArea, true);
 	}
+	
 	// Specifies date axis ticks.
 	private static LogicDateAxis createlogicDateAxis(Date baseDate) {
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss");
@@ -261,5 +265,13 @@ public class RealTimeChart {
 		System.out.println(time);
 		RealTimeChart realChart = new RealTimeChart();
 		realChart.generateRealChart();
+	}
+
+	public long getLastUpdateTime() {
+		return lastUpdateTime;
+	}
+
+	public void setLastUpdateTime(long lastUpdateTime) {
+		this.lastUpdateTime = lastUpdateTime;
 	}
 }

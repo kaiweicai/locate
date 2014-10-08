@@ -812,19 +812,20 @@ public class RFApplication extends JFrame {
 							
 							List<String[]> dataPayLoad = message.getPayLoadSet();
 							double price = 0d;
-							double amount = 0;
+							int amount = 0;
 							for(String[] payLoad :dataPayLoad){
-								if("100000".equals(payLoad[0])){
+								if("25".equals(payLoad[0])){
 									price = Double.parseDouble(payLoad[3]);
 								}
 								if("32".equals(payLoad[0])){
-									amount = Double.parseDouble(payLoad[3]);
+									amount = Integer.parseInt(payLoad[3]);
 								}
 							}
 							
 							RealTimeChart realTimeChart = new RealTimeChart();
 							priceChartTabbedPane.addTab(ComboItemName.exhangeTheName(itemName), null,
-								realTimeChart.initialChart(ComboItemName.exhangeTheName(itemName),price, amount));
+							realTimeChart.initialChart(ComboItemName.exhangeTheName(itemName),price, amount));
+							ClientConstant.itemName2RealTimeChartMap.put(itemName, realTimeChart);
 						}
 					});
 					
@@ -840,6 +841,33 @@ public class RFApplication extends JFrame {
 					updateMarketPriceTable(tModel,message);
 					ClientConstant.updateThreadMap.get(itemName).setUpdate(true);
 					
+					RealTimeChart realTimeChart = ClientConstant.itemName2RealTimeChartMap.get(itemName);
+					long currentTime = System.currentTimeMillis();
+					
+					if(realTimeChart==null){
+						try {
+							Thread.sleep(1000);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+						realTimeChart = ClientConstant.itemName2RealTimeChartMap.get(itemName);
+					}
+					
+					if(currentTime-realTimeChart.getLastUpdateTime()<1000){
+						return;
+					}
+					List<String[]> dataPayLoad = message.getPayLoadSet();
+					double price = 0d;
+					int amount = 0;
+					for(String[] payLoad :dataPayLoad){
+						if("25".equals(payLoad[0])){
+							price = Double.parseDouble(payLoad[3]);
+						}
+						if("32".equals(payLoad[0])){
+							amount = Integer.parseInt(payLoad[3]);
+						}
+					}
+					realTimeChart.updatePriceChart(System.currentTimeMillis(), price, amount);
 //					chartPanel.getGraphics().drawLine(12, 21, 54, 99);
 					break;
 				//Locate send the state info to client
