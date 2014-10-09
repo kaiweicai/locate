@@ -159,19 +159,18 @@ public class RFApplication extends JFrame {
 			public void run() {
 				SubstanceLookAndFeel.setSkin(new org.pushingpixels.substance.api.skin.ModerateSkin());
 				try {
-					setSize(1024, 720);
-					LogoPanel panel = new LogoPanel();
-					panel.setImagePath(ClientConstant.iamgeDirectory+"PTLOGO.png");
-					panel.setPreferredSize(new Dimension(panel.getImgWidth(), panel  
-			                .getImgHeight()));  
-					
+					setSize(1344, 720);
+					LogoPanel panel = new LogoPanel(1150, 40);
+					panel.setImagePath(ClientConstant.iamgeDirectory + "PTLOGO.png");
+					panel.setPreferredSize(new Dimension(panel.getImgWidth(), panel.getImgHeight()));
+
 					panel.setLayout(null);
 					JScrollPane sp = new JScrollPane(panel);
-					sp.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);  
-					sp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS); 
+					sp.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+					sp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 					// sp.setLayout(mainGroupLayout);
 					getContentPane().add(sp);
-					int inputX = 550;
+					int inputX = 870;
 					int inputY = 20;
 					panel.add(getCloseButton(new Rectangle(inputX + 200, inputY, 100, 20)));
 					panel.add(getUserNameLabel(new Rectangle(inputX, inputY, 100, 20)));
@@ -189,10 +188,10 @@ public class RFApplication extends JFrame {
 					panel.add(getOpenButton(new Rectangle(inputX, inputY += 30, 100, 20)));
 					panel.add(getTableScrollPane(new Rectangle(inputX, inputY += 30, 400, 400)));
 					panel.add(getUseTimeTextLabel(new Rectangle(inputX, 620, 500, 50)));
-					panel.add(getLogPanel(new Rectangle(30, 10, 500, 280)));
-					panel.add(getChartScrollPanel(new Rectangle(30, 300, 500, 200)));
-					panel.add(getStatusBar(new Rectangle(30, 570, 500, 50)));
-					panel.add(getServerBar(new Rectangle(30, 620, 500, 50)));
+					panel.add(getLogPanel(new Rectangle(30, 10, 820, 280)));
+					panel.add(getChartScrollPanel(new Rectangle(30, 300, 820, 250)));
+					panel.add(getStatusBar(new Rectangle(30, 570, 820, 50)));
+					panel.add(getServerBar(new Rectangle(30, 620, 820, 50)));
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -753,7 +752,7 @@ public class RFApplication extends JFrame {
 			long endTime = NetTimeUtil.getCurrentNetTime();
 			logger.info("original message -------"+message);
 			byte msgType = message.getMsgType();
-			final String itemName = message.getRic();
+			final String itemName = message.getItemName();
 			sBuilder.append("Received message type:" + LocateMessageTypes.toString(msgType)+"\n");
 			useTimeTextLabel.setText("From Locate Server to client use time:"+(endTime-startTime)+" millseconds");
 			logger.info("The message From RFA to user use time "+(endTime-startTime)+" milliseconds");
@@ -800,7 +799,7 @@ public class RFApplication extends JFrame {
 							JTable marketPriceTable = getMarketPriceTable();
 							marketPriceTable.setModel(tableModel);
 							//add the item tab
-							priceTableTabbedPane.addTab(ComboItemName.exhangeTheName(itemName), null, marketPriceTable);
+							priceTableTabbedPane.addTab(ComboItemName.exhangeCode2Name(itemName), null, marketPriceTable);
 							marketPriceTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 							marketPriceTable.getColumnModel().getColumn(0).setPreferredWidth(20);
 							marketPriceTable.getColumnModel().getColumn(1).setPreferredWidth(20);
@@ -823,8 +822,8 @@ public class RFApplication extends JFrame {
 							}
 							
 							RealTimeChart realTimeChart = new RealTimeChart();
-							priceChartTabbedPane.addTab(ComboItemName.exhangeTheName(itemName), null,
-							realTimeChart.initialChart(ComboItemName.exhangeTheName(itemName),price, amount));
+							priceChartTabbedPane.addTab(ComboItemName.exhangeCode2Name(itemName), null,
+							realTimeChart.initialChart(ComboItemName.exhangeCode2Name(itemName),price, amount));
 							ClientConstant.itemName2RealTimeChartMap.put(itemName, realTimeChart);
 						}
 					});

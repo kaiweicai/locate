@@ -219,16 +219,12 @@ public class RealTimeChart {
 		logicDateAxis = new LogicDateAxis(baseDate, simpleDateFormat);
 		int changedMinutes = -3;
 		String currentDate = simpleDateFormat.format(DateUtils.beforeCurrentDate(changedMinutes++));
-		System.out.println(currentDate);
 		logicDateAxis.addDateTick(currentDate, TickAlignment.START);
 		currentDate = simpleDateFormat.format(DateUtils.beforeCurrentDate(changedMinutes++));
-		System.out.println(currentDate);
 		logicDateAxis.addDateTick(currentDate);
 		currentDate = simpleDateFormat.format(DateUtils.beforeCurrentDate(changedMinutes++));
-		System.out.println(currentDate);
 		logicDateAxis.addDateTick(currentDate);
 		currentDate = simpleDateFormat.format(DateUtils.beforeCurrentDate(changedMinutes++));
-		System.out.println(currentDate);
 		logicDateAxis.addDateTick(currentDate, TickAlignment.END);
 		return logicDateAxis;
 	}

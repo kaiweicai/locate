@@ -57,5 +57,6 @@
 		<module>../PersistentLocate</module>
 		<module>../gate</module>
 		<module>../rmds</module>
+		<module>../LocateStock</module>
 	</modules>
 </project>

@@ -102,12 +102,12 @@ public class ClientConnector implements IClientConnector {
 	 * @see com.locate.gate.handler.ClientConnectedInterface#openRICMarket(java.lang.String)
 	 */
 	@Override
-	public void openRICMarket(String ric){
-		if(StringUtils.isBlank(ric)){
+	public void openRICMarket(String itemName){
+		if(StringUtils.isBlank(itemName)){
 			logger.error("The RIC vlaue can not be blank!!");
 			throw new LocateException("The RIC vlaue can not be blank!!");
 		}
-    	ClientRequest request = createFutureRequest(ric);
+    	ClientRequest request = createFutureRequest(itemName);
     	sentMessageToServer(request);
 	}
 	

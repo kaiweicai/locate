@@ -30,7 +30,7 @@ import com.locate.common.utils.DerivedUtils;
 @XmlRootElement(name="rmds")
 public class LocateUnionMessage implements Cloneable{
 	@XmlAttribute(name="RIC")
-	private String ric;//itemName将作为person的的一个属性
+	private String itemName;//itemName将作为person的的一个属性
 	@XmlElement
 	private long startTime;
 	@XmlElement
@@ -62,9 +62,9 @@ public class LocateUnionMessage implements Cloneable{
 		LocateUnionMessage message = new LocateUnionMessage();
 		try {
 			message = (LocateUnionMessage)super.clone();
-			String ric = message.getRic();
+			String ric = message.getItemName();
 			ric=DerivedUtils.derivesCurrencyRic(ric);
-			message.setRic(ric);
+			message.setItemName(ric);
 			List<String[]> payLoadList = this.getPayLoadSet();
 			List<String[]> clienPayLoadList = new ArrayList<String[]>();
 			for(String[] payload:payLoadList){
@@ -92,7 +92,7 @@ public class LocateUnionMessage implements Cloneable{
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		this.generatetime = dateFormat.format(new Date());
 		this.locateSeqNumber = SystemConstant.sequenceNo.getAndIncrement();
-		this.ric = itemName;
+		this.itemName = itemName;
 	}
 	
 	@XmlTransient
@@ -136,12 +136,12 @@ public class LocateUnionMessage implements Cloneable{
 	 * @return
 	 */
 	@XmlTransient
-	public String getRic() {
-		return ric;
+	public String getItemName() {
+		return itemName;
 	}
 
-	public void setRic(String ric) {
-		this.ric = ric;
+	public void setItemName(String itemName) {
+		this.itemName = itemName;
 	}
 	
 	@XmlTransient
@@ -230,7 +230,7 @@ public class LocateUnionMessage implements Cloneable{
 			payLoad.deleteCharAt(payLoad.length()-1);
 			payLoad.append("]");
 		}
-		return "LocateUnionMessage [ric=" + ric + ", startTime=" + startTime + ", generatetime="
+		return "LocateUnionMessage [itemName=" + itemName + ", startTime=" + startTime + ", generatetime="
 				+ generatetime + ", msgType=" + msgType + ", seqNumber=" + seqNumber + ", locateSeqNumber="
 				+ locateSeqNumber + ", state=" + state + ", streamingState=" + streamingState + ", dataingState="
 				+ dataingState + ", resultCode=" + resultCode + ", resultDes=" + resultDes + ", header="

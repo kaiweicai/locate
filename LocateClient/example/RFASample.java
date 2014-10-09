@@ -157,8 +157,8 @@ public class RFASample {
 	public static void main(String[] args) {
 		RFASample sample = new RFASample();
 		//向服务器注册客户端信息.参数1服务器ip,参数2服务器端口,参数3客户名称,参数4客户密码.
-		sample.clientConnetor.conneteLocateGateWay("61.144.244.173", 8888, "demo", "demo");
-//		sample.clientConnetor.conneteLocateGateWay("127.0.0.1", 8888, "demo", "demo");
+//		sample.clientConnetor.conneteLocateGateWay("61.144.244.173", 8888, "ztcj", "ztcj2013");
+		sample.clientConnetor.conneteLocateGateWay("127.0.0.1", 8888, "demo", "demo");
 		//向服务器发送RIC请求.BussinessHandler的handleMessage方法就可以接收到服务器返回的市场价格了.
 		sample.clientConnetor.openRICMarket(COMEX_GOLD_ITEM);
 		sample.clientConnetor.openRICMarket(COMEX_SILVER_ITEM);

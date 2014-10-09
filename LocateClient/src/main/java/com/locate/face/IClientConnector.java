@@ -20,8 +20,8 @@ public interface IClientConnector {
 
 	/**
 	 * 向服务器发起RIC数据请求.
-	 * @param ric RIC字符串
+	 * @param itemName RIC字符串
 	 */
-	public abstract void openRICMarket(String ric);
+	public abstract void openRICMarket(String itemName);
 
 }
