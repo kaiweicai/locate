@@ -2,6 +2,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>LocateClient</artifactId>
+	<version>1.0.0</version>
 	<name>price tech</name>
 	<description>customer interface</description>
 	<build>
@@ -75,6 +76,20 @@
 							<resources>
 								<resource>
 									<directory>config</directory>
+									<filtering>true</filtering>
+								</resource>
+							</resources>
+							<outputDirectory>target/doc</outputDirectory>
+							<resources>
+								<resource>
+									<directory>doc</directory>
+									<filtering>true</filtering>
+								</resource>
+							</resources>
+							<outputDirectory>target/example</outputDirectory>
+							<resources>
+								<resource>
+									<directory>example</directory>
 									<filtering>true</filtering>
 								</resource>
 							</resources>
@@ -154,5 +169,4 @@
 		<version>0.0.1-SNAPSHOT</version>
 		<relativePath>../pricetech/pom.xml</relativePath>
 	</parent>
-
 </project>

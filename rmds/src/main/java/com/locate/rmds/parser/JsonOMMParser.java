@@ -140,7 +140,7 @@ public final class JsonOMMParser
     	LocateUnionMessage jsonModel = new LocateUnionMessage();
     	DocumentFactory factory = DocumentFactory.getInstance();
     	Document responseMsg =  factory.createDocument();
-    	jsonModel.setRic(itemName);
+    	jsonModel.setItemName(itemName);
     	
     	parseMsg(msg, logMsg,itemName,jsonModel);
         _logger.info(logMsg.toString());

@@ -6,7 +6,7 @@ public class ComboItemName {
 		this.itemValue = itemValue;
 	}
 	
-	public static String exhangeTheName(String locateMessageName){
+	public static String exhangeCode2Name(String locateMessageName){
 		switch (locateMessageName) {
 		case "XAU=":
 			return "国际黄金";
@@ -43,8 +43,45 @@ public class ComboItemName {
 		}
 	}
 	
+	public static String exhangeName2Code(String locateMessageName){
+		switch (locateMessageName) {
+		case "国际黄金":
+			return "XAU=";
+		case "国际白银":
+			return "XAG=";
+		case "国际铂金":
+			return "XPT=";
+		case "国际钯金":
+			return "XPD=";
+		case "伦敦三月期铜":
+			return "MCU3=LX";
+		case "伦敦三月期铝":
+			return "MAL3=LX";
+		case "伦敦三月期铅":
+			return "MPB3=LX";
+		case "伦敦三月期锌":
+			return "MZN3=LX";
+		case "伦敦三月期镍":
+			return "MNI3=LX";	
+		case "COMEX黄金期货":
+			return "GCv1";
+		case "COMEX白银期货":
+			return "SIv1";
+		case "NYMEX铂金":
+			return "PLv1";
+		case "NYMEX钯金":
+			return "PAv1";
+		case "WTI原油主力合约":
+			return "CLv1";
+		case "BRENT原油主力合约":
+			return "LCOv1";			
+		default:
+			return locateMessageName;
+		}
+	}
+	
 	public String toString(){
-		return exhangeTheName(itemValue);
+		return exhangeCode2Name(itemValue);
 	}
 
 	public String getItemValue() {

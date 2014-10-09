@@ -16,9 +16,9 @@ public class LocateMessageTest {
 		payloadSet.add(new String[]{"25","ASK","Double","6816.50"});
 		message.setPayLoadSet(payloadSet);
 		LocateUnionMessage cloneMessage = message.clone();
-		message.setRic("oringeRicName");
+		message.setItemName("oringeRicName");
 		message.getPayLoadSet().get(0)[3]="6900";
-		Assert.assertFalse(message.getRic().equalsIgnoreCase(cloneMessage.getRic()));
+		Assert.assertFalse(message.getItemName().equalsIgnoreCase(cloneMessage.getItemName()));
 		Assert.assertFalse(message.getPayLoadSet().get(0)[3].equals(cloneMessage.getPayLoadSet().get(0)[3]));
 		System.out.println(message);
 		System.out.println(cloneMessage);
