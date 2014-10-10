@@ -79,21 +79,32 @@
 									<filtering>true</filtering>
 								</resource>
 							</resources>
-							<outputDirectory>target/doc</outputDirectory>
-							<resources>
-								<resource>
-									<directory>doc</directory>
-									<filtering>true</filtering>
-								</resource>
-							</resources>
-							<outputDirectory>target/example</outputDirectory>
-							<resources>
-								<resource>
-									<directory>example</directory>
-									<filtering>true</filtering>
-								</resource>
-							</resources>
 						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>1.6</version>
+				<executions>
+					<execution>
+						<id>install</id>
+						<phase>install</phase>
+						<configuration>
+							<target>
+								<echo
+									message="********************copy profile propertie file *************************" />
+								<copy file="doc/普兰泰科客户端接口使用文档.docx" tofile="target/doc/普兰泰科客户端接口使用文档.docx"
+									overwrite="true" />
+								<copy file="src/main/java/com/locate/sample/PTSample.java"
+									tofile="target/sample/PTSample.java" overwrite="true" />
+							</target>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
 					</execution>
 				</executions>
 			</plugin>

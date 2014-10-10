@@ -38,6 +38,7 @@ public class RealTimeChart {
 	TimeseriesDataset dataset = new TimeseriesDataset(Second.class, 1, timeline, true);
 	private double certenPrice = 0d;
 	private long lastUpdateTime = 0L;
+	private ChartPanel chartPanel;
 	public void generateRealChart() {
 		String imageDir = "./images";
 		File images = new File(imageDir);
@@ -189,12 +190,12 @@ public class RealTimeChart {
 //		db.close();
 		JFreeChart jfreechart = JStockChartFactory.createTimeseriesChart(itemName+"行情走势图", dataset, timeline,
 				timeseriesArea, true);
-		ChartPanel chatPanel = new ChartPanel(jfreechart);
+		chartPanel = new ChartPanel(jfreechart);
 //		ChartFrame chatFrame = new ChartFrame("股票图", jfreechart);
-		return chatPanel;
+		return chartPanel;
 	}
 	
-	public void updatePriceChart(long time,double price,int amount){
+	public ChartPanel updatePriceChart(String itemName,long time,double price,int amount){
 		this.lastUpdateTime = time;
 		TimeseriesItem timeseriesItem = new TimeseriesItem(new Date(time), price , amount);
 		dataset.pushDataItem(timeseriesItem);
@@ -209,8 +210,10 @@ public class RealTimeChart {
 		VolumeArea volumeArea = new VolumeArea(logicVolumeAxis);
 		TimeseriesArea timeseriesArea = new TimeseriesArea(priceArea, volumeArea,
 				createlogicDateAxis(DateUtils.createDate(2014, 10, 8)));
-		JFreeChart jfreechart = JStockChartFactory.createTimeseriesChart("comex3月铜行情走势图", dataset, timeline,
+		JFreeChart jfreechart = JStockChartFactory.createTimeseriesChart(itemName+"行情走势图", dataset, timeline,
 				timeseriesArea, true);
+		chartPanel.setChart(jfreechart);
+		return chartPanel;
 	}
 	
 	// Specifies date axis ticks.

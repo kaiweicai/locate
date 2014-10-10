@@ -62,6 +62,7 @@ import com.locate.client.gui.TabbedPaneListener;
 import com.locate.common.ClientConstant;
 import com.locate.common.constant.LocateMessageTypes;
 import com.locate.common.exception.LocateException;
+import com.locate.common.logging.biz.BizLogHandler;
 import com.locate.common.model.CustomerFiled;
 import com.locate.common.model.LocateUnionMessage;
 import com.locate.common.utils.NetTimeUtil;
@@ -80,6 +81,7 @@ import com.locate.stock.chart.RealTimeChart;
  */
 public class RFApplication extends JFrame {
 	private Logger logger = LoggerFactory.getLogger(RFApplication.class);
+	private BizLogHandler bizLogger = BizLogHandler.getLogger(RFApplication.class);
 	private boolean conLocate;
 	private static final long serialVersionUID = 1L;
 	private JLabel currentUserTitle;
@@ -750,7 +752,7 @@ public class RFApplication extends JFrame {
 			}
 			long startTime = message.getStartTime();
 			long endTime = NetTimeUtil.getCurrentNetTime();
-			logger.info("original message -------"+message);
+			bizLogger.info(message);
 			byte msgType = message.getMsgType();
 			final String itemName = message.getItemName();
 			sBuilder.append("Received message type:" + LocateMessageTypes.toString(msgType)+"\n");
@@ -763,10 +765,14 @@ public class RFApplication extends JFrame {
 			if (payLoadList != null && !payLoadList.isEmpty()) {
 				for (String[] payLoad : payLoadList) {
 					if (payLoad[0].equals("22")) {
-						bid = new BigDecimal(payLoad[3]);
+						if(StringUtils.isNotBlank(payLoad[3])){
+							bid = new BigDecimal(payLoad[3]);
+						}
 					}
 					if (payLoad[0].equals("25")) {
-						ask = new BigDecimal(payLoad[3]);
+						if(StringUtils.isNotBlank(payLoad[3])){
+							ask = new BigDecimal(payLoad[3]);
+						}
 					}
 				}
 				BigDecimal[] bidAsk=bidAskMap.get(itemName);
@@ -813,11 +819,19 @@ public class RFApplication extends JFrame {
 							double price = 0d;
 							int amount = 0;
 							for(String[] payLoad :dataPayLoad){
-								if("25".equals(payLoad[0])){
-									price = Double.parseDouble(payLoad[3]);
+								if("100000".equals(payLoad[0])){
+									if(StringUtils.isBlank(payLoad[3])){
+										return;
+									}else{
+										price = Double.parseDouble(payLoad[3]);
+									}
 								}
 								if("32".equals(payLoad[0])){
-									amount = Integer.parseInt(payLoad[3]);
+									if(StringUtils.isBlank(payLoad[3])){
+										return;
+									}else{
+										amount = Integer.parseInt(payLoad[3]);
+									}
 								}
 							}
 							
@@ -859,14 +873,20 @@ public class RFApplication extends JFrame {
 					double price = 0d;
 					int amount = 0;
 					for(String[] payLoad :dataPayLoad){
-						if("25".equals(payLoad[0])){
+						if("100000".equals(payLoad[0])){
+							if(StringUtils.isBlank(payLoad[3])){
+								return;
+							}else
 							price = Double.parseDouble(payLoad[3]);
 						}
 						if("32".equals(payLoad[0])){
+							if(StringUtils.isBlank(payLoad[3])){
+								return;
+							}else
 							amount = Integer.parseInt(payLoad[3]);
 						}
 					}
-					realTimeChart.updatePriceChart(System.currentTimeMillis(), price, amount);
+					realTimeChart.updatePriceChart(ComboItemName.exhangeCode2Name(itemName),System.currentTimeMillis(), price, amount);
 //					chartPanel.getGraphics().drawLine(12, 21, 54, 99);
 					break;
 				//Locate send the state info to client

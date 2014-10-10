@@ -25,7 +25,7 @@ import com.locate.gate.handler.ClientConnector;
  * create time 2014年8月26日
  * @copyRight by Author
  */
-public class RFASample {
+public class PTSample {
 	private Logger logger = LoggerFactory.getLogger(getClass());
 	public static final String COMEX_GOLD_ITEM = "XAU=";
 	public static final String COMEX_SILVER_ITEM = "XAG=";
@@ -35,7 +35,7 @@ public class RFASample {
 	//XML对象处理器上下文.
 	private JAXBContext context;
 	//实例化
-	public RFASample(){
+	public PTSample(){
 		//客户端收到数据后调用该接口的方法进行数据处理.因为每个客户数据处理的需求不同,所以客户需要实现该接口进行具体处理数据业务.
 		bussinessHandler = new BussinessHandler();
 		//向服务器发送请求的接口.这个接口客户无需实现.只要调用这个ClientConnector这个类里面的方法就好了.
@@ -155,7 +155,7 @@ public class RFASample {
 	}
 	
 	public static void main(String[] args) {
-		RFASample sample = new RFASample();
+		PTSample sample = new PTSample();
 		//向服务器注册客户端信息.参数1服务器ip,参数2服务器端口,参数3客户名称,参数4客户密码.
 		sample.clientConnetor.conneteLocateGateWay("61.144.244.173", 8888, "demo", "demo");
 //		sample.clientConnetor.conneteLocateGateWay("127.0.0.1", 8888, "demo", "demo");

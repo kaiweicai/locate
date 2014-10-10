@@ -8,7 +8,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-import com.locate.sample.RFASample;
+import com.locate.sample.PTSample;
 
 public class ConcurrentClientTest {
 	

@@ -5,7 +5,8 @@
 		<prudent>true</prudent>
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
 			<fileNamePattern>
-				log/locateGateWay-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+				log/locateGateWay-%d{yyyy-MM-dd}.%i.log
+			</fileNamePattern>
 			<maxHistory>30</maxHistory>
 			<timeBasedFileNamingAndTriggeringPolicy
 				class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
@@ -31,7 +32,24 @@
 		<queueSize>512</queueSize>
 		<!-- 添加附加的appender,最多只能添加一个 -->
 		<appender-ref ref="ROLLING" />
-	</appender>  
+	</appender>
+	<!-- 业务日志记录文件（BIZ）begin  -->
+	<appender name="BIZ_APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>./log/biz/biz.%d{yyyyMMdd}.log</fileNamePattern>
+			<!-- 
+			<timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP"> 
+                 <maxFileSize>20MB</maxFileSize> 
+            </timeBasedFileNamingAndTriggeringPolicy> 
+             -->
+			<maxHistory>365</maxHistory>
+		</rollingPolicy>
+		<encoder>
+            <pattern>%msg%n</pattern>
+            <charset>UTF-8</charset> 
+        </encoder> 
+	</appender>
+	<!-- 业务日志记录文件（BIZ）end  -->
 
 	<root>
 		<appender-ref ref="STDOUT" />
@@ -40,10 +58,10 @@
 
 	<logger name="com.locate" level="debug">
 	</logger>
-	
+
 	<logger name="quartz" level="ERROR">
-    </logger>
-    
+	</logger>
+
 	<logger name="com" level="debug">
 	</logger>
 	<logger name="org.apache" level="ERROR">
@@ -52,7 +70,7 @@
 	</logger>
 	<logger name="org.springframework" level="DEBUG">
 	</logger>
-	
-	
-	
+	<logger name="com.locate.common.logging.biz" level="INFO" additivity="false">
+		<appender-ref ref="BIZ_APPENDER" />
+	</logger>
 </configuration>
