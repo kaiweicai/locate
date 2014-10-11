@@ -53,6 +53,7 @@ import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.core.joran.spi.JoranException;
 
 import com.locate.client.gui.ComboItemName;
+import com.locate.client.gui.HistoryFrame;
 import com.locate.client.gui.ItemNameLabel;
 import com.locate.client.gui.LogoPanel;
 import com.locate.client.gui.StatusBar;
@@ -119,6 +120,7 @@ public class RFApplication extends JFrame {
 	private JLabel ricLabel;
 	private JComboBox<ComboItemName> itemNameComboBox;
 	private JButton openButton;
+	private JButton openHistoryButton;
 //	private JTable marketPriceTable;
 //	private TableModel tableModel;
 	private StatusBar statusBar;
@@ -188,6 +190,7 @@ public class RFApplication extends JFrame {
 					panel.add(getRicLabel(new Rectangle(inputX, inputY += 30, 100, 20)));
 					panel.add(getRicTextField(new Rectangle(inputX + 120, inputY, 150, 22)));
 					panel.add(getOpenButton(new Rectangle(inputX, inputY += 30, 100, 20)));
+					panel.add(getOpenHistoryButton(new Rectangle(inputX+120, inputY , 100, 20)));
 					panel.add(getTableScrollPane(new Rectangle(inputX, inputY += 30, 400, 400)));
 					panel.add(getUseTimeTextLabel(new Rectangle(inputX, 620, 500, 50)));
 					panel.add(getLogPanel(new Rectangle(30, 10, 820, 280)));
@@ -348,7 +351,37 @@ public class RFApplication extends JFrame {
 		}
 		return openButton;
 	}
+	
+	private JButton getOpenHistoryButton(Rectangle r) {
+		if (openHistoryButton == null) {
+			openHistoryButton = new JButton();
+			openHistoryButton.setText("历史消息");
+			openHistoryButton.addMouseListener(new MouseAdapter() {
+				public void mouseClicked(MouseEvent event) {
+					try{
+						String itemName = "";
+						Object object = itemNameComboBox.getSelectedItem();
+						if(object instanceof String){
+							itemName = (String)object;
+						}else if(object instanceof ComboItemName){
+							itemName = ((ComboItemName)object).getItemValue();
+						}
+						HistoryFrame historyFrame = new HistoryFrame();
+						historyFrame.loadHistory(itemName);
+						historyFrame.pack();
+						historyFrame.setVisible(true);
+					}catch(LocateException le){
+						serverBar.setStatusFixed("Open history error!");
+					}
+				}
+			});
+			openHistoryButton.setBounds(r);
+		}
+		return openHistoryButton;
+	}
 
+	
+	
 	private JButton getCloseButton(Rectangle r) {
 		if (closeButton == null) {
 			closeButton = new JButton();
