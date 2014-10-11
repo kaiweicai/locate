@@ -6,10 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -29,7 +26,7 @@ import com.locate.common.utils.DerivedUtils;
 
 @XmlRootElement(name="rmds")
 public class LocateUnionMessage implements Cloneable{
-	@XmlAttribute(name="RIC")
+	@XmlAttribute(name="itemName")
 	private String itemName;//itemName将作为person的的一个属性
 	@XmlElement
 	private long startTime;
@@ -57,14 +54,17 @@ public class LocateUnionMessage implements Cloneable{
 	@XmlElement(name="Field")
 	private List<String[]> payLoadSet = new ArrayList<String[]>();
 	
+	/**
+	 * 克隆出一个衍生的商品Message用作衍生品消息处理.
+	 * 以免影响原产品的处理.
+	 * 这里clone是衍生品的特殊用途.不能用作一般的clone.
+	 */
 	@Override
 	public LocateUnionMessage clone(){
 		LocateUnionMessage message = new LocateUnionMessage();
+		//深度克隆
 		try {
 			message = (LocateUnionMessage)super.clone();
-			String ric = message.getItemName();
-			ric=DerivedUtils.derivesCurrencyRic(ric);
-			message.setItemName(ric);
 			List<String[]> payLoadList = this.getPayLoadSet();
 			List<String[]> clienPayLoadList = new ArrayList<String[]>();
 			for(String[] payload:payLoadList){
@@ -79,6 +79,18 @@ public class LocateUnionMessage implements Cloneable{
 		} catch (CloneNotSupportedException e) {
 			throw new LocateException("clone failed.",e);
 		}
+		return message;
+	}
+	
+	/**
+	 * 克隆一个产品,并修改itemName为衍生品的名字
+	 * @return 衍生出来的Message
+	 */
+	public LocateUnionMessage derivedClone(){
+		LocateUnionMessage message = this.clone();
+		String itemName = message.getItemName();
+		itemName=DerivedUtils.derivesCurrencyRic(itemName);
+		message.setItemName(itemName);
 		return message;
 	}
 	

@@ -5,36 +5,26 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Rectangle;
-import java.awt.TextField;
 import java.awt.Toolkit;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.ConnectException;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.ListCellRenderer;
-import javax.swing.ListModel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.table.AbstractTableModel;
@@ -43,7 +33,6 @@ import javax.swing.table.TableCellRenderer;
 
 import org.apache.commons.lang.StringUtils;
 import org.pushingpixels.substance.api.SubstanceLookAndFeel;
-import org.pushingpixels.substance.api.skin.RavenSkin;
 import org.slf4j.ILoggerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,7 +43,6 @@ import ch.qos.logback.core.joran.spi.JoranException;
 
 import com.locate.client.gui.ComboItemName;
 import com.locate.client.gui.HistoryFrame;
-import com.locate.client.gui.ItemNameLabel;
 import com.locate.client.gui.LogoPanel;
 import com.locate.client.gui.StatusBar;
 import com.locate.client.gui.Tab;
@@ -64,6 +52,7 @@ import com.locate.common.ClientConstant;
 import com.locate.common.constant.LocateMessageTypes;
 import com.locate.common.exception.LocateException;
 import com.locate.common.logging.biz.BizLogHandler;
+import com.locate.common.model.ClientLocateUnionMessage;
 import com.locate.common.model.CustomerFiled;
 import com.locate.common.model.LocateUnionMessage;
 import com.locate.common.utils.NetTimeUtil;
@@ -71,7 +60,6 @@ import com.locate.common.utils.SystemProperties;
 import com.locate.face.IBussiness;
 import com.locate.face.IClientConnector;
 import com.locate.gate.handler.ClientConnector;
-import com.locate.gate.handler.ClientHandler;
 import com.locate.stock.chart.RealTimeChart;
 
 /**
@@ -368,8 +356,6 @@ public class RFApplication extends JFrame {
 						}
 						HistoryFrame historyFrame = new HistoryFrame();
 						historyFrame.loadHistory(itemName);
-						historyFrame.pack();
-						historyFrame.setVisible(true);
 					}catch(LocateException le){
 						serverBar.setStatusFixed("Open history error!");
 					}
@@ -434,7 +420,7 @@ public class RFApplication extends JFrame {
 		Map<Integer,CustomerFiled> data = new HashMap<Integer,CustomerFiled>();
 		String[] columns = { "编号", "域名", "值" };
 
-		public PriceTableModel(LocateUnionMessage message) {
+		public PriceTableModel(ClientLocateUnionMessage message) {
 			List<String[]> palyLoadSet = message.getPayLoadSet();
 			Integer rowid=0;
 			for (String[] filed : palyLoadSet) {
@@ -778,7 +764,7 @@ public class RFApplication extends JFrame {
 		 * @see com.locate.client.gui.BussinessInterface#handleMessage(java.lang.String)
 		 */
 		@Override
-		public void handleMessage(final LocateUnionMessage message){
+		public void handleMessage(final ClientLocateUnionMessage message){
 			if (message == null) {
 				logger.warn("Received server's  message is null \n");
 				return;

@@ -247,7 +247,7 @@ public class ItemManager extends IProcesser implements Client
         	ommParser.handelLocateState(respMsg, locateMessage);
         	GateWayResponser.notifyAllCustomersStateChange(locateMessage);
         	if(!StringUtils.isBlank(derivactiveItemName)){
-        		GateWayResponser.notifyAllCustomersStateChange(locateMessage.clone());
+        		GateWayResponser.notifyAllCustomersStateChange(locateMessage.derivedClone());
         	}
 			_logger.warn("RFA server has new state. streamState:"+locateMessage.getStreamingState()+" datasstate "+locateMessage.getDataingState());
 			return;
@@ -276,7 +276,7 @@ public class ItemManager extends IProcesser implements Client
 		}
 		EngineLine derivedEngline = EngineLinerManager.engineLineCache.get(derivactiveItemName);
 		if(derivedEngline!=null){
-			derivedEngineFuture = derivedEngline.applyStrategy(locateMessage.clone());
+			derivedEngineFuture = derivedEngline.applyStrategy(locateMessage.derivedClone());
 			if(!StringUtils.isBlank(derivactiveItemName)){
 				if(derivedEngineFuture!=null){
 					try {
