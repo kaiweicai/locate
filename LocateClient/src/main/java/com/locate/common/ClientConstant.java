@@ -3,8 +3,8 @@ package com.locate.common;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.locate.RFApplication.PriceTableModel;
 import com.locate.RFApplication.UpdateTableColore;
+import com.locate.common.model.PriceTableModel;
 import com.locate.stock.chart.RealTimeChart;
 
 public class ClientConstant {

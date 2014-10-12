@@ -46,6 +46,7 @@ public class LoggerAnalyzer {
 			String content = "";
 			while((content = bufferReader.readLine())!=null){
 				LocateUnionMessage message = JsonUtil.translateJsonToUionMessage(JSONObject.fromObject(content));
+				message.transPayloadToMap();
 				if(itemName.equals(message.getItemName().trim())){
 					resultList.add(message);
 				}

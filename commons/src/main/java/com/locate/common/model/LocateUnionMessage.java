@@ -6,7 +6,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -54,6 +56,7 @@ public class LocateUnionMessage implements Cloneable{
 	@XmlElement(name="Field")
 	private List<String[]> payLoadSet = new ArrayList<String[]>();
 	
+	private Map<String,String[]> tradeRecodeMap;
 	/**
 	 * 克隆出一个衍生的商品Message用作衍生品消息处理.
 	 * 以免影响原产品的处理.
@@ -228,7 +231,12 @@ public class LocateUnionMessage implements Cloneable{
 		this.dataingState = dataingState;
 	}
 
-	
+	public void transPayloadToMap(){
+		tradeRecodeMap = new HashMap<String,String[]>();
+		for(String[] payLoad:payLoadSet){
+			tradeRecodeMap.put(payLoad[0], payLoad);
+		}
+	}
 	
 
 	@Override
@@ -279,4 +287,12 @@ public class LocateUnionMessage implements Cloneable{
 //		LocateUnionMessage p2 = (LocateUnionMessage) um.unmarshal(fr);
 //		System.out.println("Country:" + p2);
 		}
+
+	public Map<String, String[]> getTradeRecodeMap() {
+		return tradeRecodeMap;
+	}
+
+	public void setTradeRecodeMap(Map<String, String[]> tradeRecodeMap) {
+		this.tradeRecodeMap = tradeRecodeMap;
+	}
 }

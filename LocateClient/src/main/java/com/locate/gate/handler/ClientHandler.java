@@ -2,12 +2,8 @@ package com.locate.gate.handler;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.string.StringDecoder;
-
-import java.nio.charset.Charset;
-
 import net.sf.json.JSONObject;
 
-import com.locate.common.model.ClientLocateUnionMessage;
 import com.locate.common.model.LocateUnionMessage;
 import com.locate.common.utils.JsonUtil;
 import com.locate.face.IBussiness;
@@ -33,9 +29,9 @@ public class ClientHandler extends StringDecoder {
 	public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
 		JSONObject transJsonObject = JSONObject.fromObject(msg);
 		LocateUnionMessage myUnionMessage = JsonUtil.translateJsonToUionMessage(transJsonObject);
-		ClientLocateUnionMessage clintLocateUnionMessage = new ClientLocateUnionMessage(myUnionMessage);
+		myUnionMessage.transPayloadToMap();
 //		LocateUnionMessage myMessage = (LocateUnionMessage)JSONObject.toBean( transJsonObject, LocateUnionMessage.class);
-		bussinessHandler.handleMessage(clintLocateUnionMessage);
+		bussinessHandler.handleMessage(myUnionMessage);
 		t1 = System.currentTimeMillis();
 	};
 

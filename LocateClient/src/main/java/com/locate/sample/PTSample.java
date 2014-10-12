@@ -13,7 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.locate.common.constant.LocateMessageTypes;
-import com.locate.common.model.ClientLocateUnionMessage;
 import com.locate.common.model.LocateUnionMessage;
 import com.locate.common.utils.NetTimeUtil;
 import com.locate.face.IBussiness;
@@ -65,7 +64,7 @@ public class PTSample {
 		 * 客户可以根据需要将message转成XML或者JSON格式.
 		 */
 		@Override
-		public void handleMessage(ClientLocateUnionMessage message){
+		public void handleMessage(LocateUnionMessage message){
 			long starTime = message.getStartTime();
 			long endTime = NetTimeUtil.getCurrentNetTime();
 			//计算从服务器到收到该消息总共耗费的时间,由于使用的是网络时间,所以存在一定的误差.

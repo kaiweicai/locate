@@ -1,12 +1,8 @@
 package com.locate.common.model;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.swing.table.AbstractTableModel;
-
-import org.apache.commons.lang.StringUtils;
 
 public class HistoryTableModel extends AbstractTableModel {
 	private static final long serialVersionUID = 1L;
@@ -27,10 +23,11 @@ public class HistoryTableModel extends AbstractTableModel {
 		return historyList[rowIndex][columnIndex];
 	}
 	
-	public HistoryTableModel(List<ClientLocateUnionMessage> locateMessageList) {
+	public HistoryTableModel(List<LocateUnionMessage> locateMessageList) {
 		historyList = new String[locateMessageList.size()][];
 		for(int i = 0 ;i<locateMessageList.size();i++){
-			ClientLocateUnionMessage unionMessage = locateMessageList.get(i);
+			historyList[i]=new String[3];
+			LocateUnionMessage unionMessage = locateMessageList.get(i);
 			historyList[i][0]=unionMessage.getGeneratetime();
 			historyList[i][1]=unionMessage.getTradeRecodeMap().get(22)[3];
 			historyList[i][2]=unionMessage.getTradeRecodeMap().get(25)[3];

@@ -2,24 +2,24 @@ package com.locate.client.gui;
 
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.util.List;
 
 import javax.swing.JFrame;
-import javax.swing.JPanel;
+import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
 import com.locate.RFApplication;
-import com.locate.common.ClientConstant;
+import com.locate.common.model.HistoryTableModel;
 import com.locate.common.model.LocateUnionMessage;
 import com.locate.logging.LoggerAnalyzer;
 
 public class HistoryFrame extends JFrame {
 	private JScrollPane historyPanel;
 	private JTable histtoryTable;
+	private HistoryTableModel historyTableModel;
 	private LoggerAnalyzer analyzer = new LoggerAnalyzer();
 	private static final long serialVersionUID = 1L;
 	public HistoryFrame(){
@@ -30,7 +30,6 @@ public class HistoryFrame extends JFrame {
 		historyPanel = getHistoryPane(new Rectangle(10,10,800,600));
 		setSize(1024, 640);
 		setDefaultCloseOperation(RFApplication.DISPOSE_ON_CLOSE);
-		setTitle("History application");
 		getContentPane().setPreferredSize(this.getSize());
 		int windowWidth = getWidth(); // 获得窗口宽
 		int windowHeight = getHeight(); // 获得窗口高
@@ -41,7 +40,8 @@ public class HistoryFrame extends JFrame {
 		setLocation(screenWidth / 4 - windowWidth / 4, screenHeight / 4 - windowHeight /4);// 设置窗口居中显示
 		setVisible(true);
 		setResizable(true);
-		pack();
+		getContentPane().add(historyPanel);
+		this.pack();
 	}
 	
 
@@ -63,9 +63,7 @@ public class HistoryFrame extends JFrame {
 
 	public void loadHistory(String itemName){
 		List<LocateUnionMessage> historyList = analyzer.readLogFile(itemName);
-		for(LocateUnionMessage message : historyList){
-			System.out.println(message);
-		}
-		System.out.println(historyList);
+		historyTableModel = new HistoryTableModel(historyList);
+		histtoryTable.setModel(historyTableModel);
 	}
 }

@@ -1,6 +1,5 @@
 package com.locate.face;
 
-import com.locate.common.model.ClientLocateUnionMessage;
 import com.locate.common.model.LocateUnionMessage;
 
 /**
@@ -22,7 +21,7 @@ public interface IBussiness {
 	 * handle the message content.
 	 * @param message The JSON format data
 	 */
-	public void handleMessage(ClientLocateUnionMessage message);
+	public void handleMessage(LocateUnionMessage message);
 
 	/**
 	 * Handle the network disconnected

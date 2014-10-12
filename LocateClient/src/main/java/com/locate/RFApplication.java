@@ -27,7 +27,6 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 
@@ -52,9 +51,9 @@ import com.locate.common.ClientConstant;
 import com.locate.common.constant.LocateMessageTypes;
 import com.locate.common.exception.LocateException;
 import com.locate.common.logging.biz.BizLogHandler;
-import com.locate.common.model.ClientLocateUnionMessage;
 import com.locate.common.model.CustomerFiled;
 import com.locate.common.model.LocateUnionMessage;
+import com.locate.common.model.PriceTableModel;
 import com.locate.common.utils.NetTimeUtil;
 import com.locate.common.utils.SystemProperties;
 import com.locate.face.IBussiness;
@@ -348,6 +347,7 @@ public class RFApplication extends JFrame {
 				public void mouseClicked(MouseEvent event) {
 					try{
 						String itemName = "";
+						String productName = "";
 						Object object = itemNameComboBox.getSelectedItem();
 						if(object instanceof String){
 							itemName = (String)object;
@@ -356,6 +356,7 @@ public class RFApplication extends JFrame {
 						}
 						HistoryFrame historyFrame = new HistoryFrame();
 						historyFrame.loadHistory(itemName);
+						historyFrame.setTitle(itemName+"历史记录");
 					}catch(LocateException le){
 						serverBar.setStatusFixed("Open history error!");
 					}
@@ -414,117 +415,7 @@ public class RFApplication extends JFrame {
 		return connetedButton;
 	}
 	
-	public class PriceTableModel extends AbstractTableModel{
-		private static final long serialVersionUID = 1L;
-		private Map<String,Integer> IdAtRowidMap = new HashMap<String,Integer>();
-		Map<Integer,CustomerFiled> data = new HashMap<Integer,CustomerFiled>();
-		String[] columns = { "编号", "域名", "值" };
-
-		public PriceTableModel(ClientLocateUnionMessage message) {
-			List<String[]> palyLoadSet = message.getPayLoadSet();
-			Integer rowid=0;
-			for (String[] filed : palyLoadSet) {
-					String id = "";
-					if(filed[0]!=null){
-						id = filed[0];
-					}
-					String name = "";
-					
-					if(filed[1]!=null){
-						name = filed[1];
-					}
-					String value ="";
-					if(filed[3]!=null){
-						value = filed[3];
-					}
-					CustomerFiled customerFiled = new CustomerFiled(id, name, value);
-					IdAtRowidMap.put(id, rowid);
-					data.put(rowid++,customerFiled);
-			}
-		}
-		
-		public void update(CustomerFiled field,int rowIndex){
-			String id = field.getId();
-			String name =field.getName();
-			String value = field.getValue();
-			CustomerFiled customerField=data.get(rowIndex);
-//			customerField.setId(id);
-//			customerField.setName(name);
-			customerField.setValue(value);
-		}
-
-		@Override
-		public Class<?> getColumnClass(int columnIndex) {
-			switch (columnIndex) {
-			case 0:
-				return Object.class;
-			case 1:
-				return Object.class;
-			case 2: 
-				return String.class;
-			default:
-				return Object.class;
-			}
-		}
-		
-		@Override
-		public int getRowCount() {
-			if (this.data == null)
-				return 0;
-			return this.data.size();
-		}
-
-		@Override
-		public int getColumnCount() {
-			return columns.length;
-		}
-
-		@Override
-		public Object getValueAt(int rowIndex, int columnIndex) {
-			CustomerFiled customerFiled = data.get(rowIndex);
-
-			if(customerFiled==null){
-				logger.info("error rowindex is "+rowIndex);
-				return "";
-			}
-			String r = "";
-			switch (columnIndex) {
-			case 0:
-				r = customerFiled.getId();
-				break;
-			case 1:
-				r = customerFiled.getName();
-				String exchangeName = CustomerFiled.filedExchangeMap.get(customerFiled.getId());
-				if(!StringUtils.isBlank(exchangeName)){
-					r = exchangeName;
-				}
-				break;
-			case 2:
-				if(customerFiled.getValue()!=null){
-					r = customerFiled.getValue();
-				}
-				break;
-			}
-			return r;
-		}
-
-		@Override
-		public String getColumnName(int column) {
-			return columns[column];
-		}
-
-		public boolean isCellEditable(int rowIndex, int columnIndex) {
-			return false;
-		}
-		
-		public Map<String, Integer> getIdAtRowidMap() {
-			return IdAtRowidMap;
-		}
-
-		public void setIdAtRowidMap(Map<String, Integer> idAtRowidMap) {
-			IdAtRowidMap = idAtRowidMap;
-		}
-	}
+	
 	
 	private JTable getMarketPriceTable() {
 		JTable marketPriceTable = new JTable();
@@ -764,7 +655,7 @@ public class RFApplication extends JFrame {
 		 * @see com.locate.client.gui.BussinessInterface#handleMessage(java.lang.String)
 		 */
 		@Override
-		public void handleMessage(final ClientLocateUnionMessage message){
+		public void handleMessage(final LocateUnionMessage message){
 			if (message == null) {
 				logger.warn("Received server's  message is null \n");
 				return;
