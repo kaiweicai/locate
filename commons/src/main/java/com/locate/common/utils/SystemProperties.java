@@ -45,7 +45,9 @@ public class SystemProperties {
 	public static final String RIPPLE = "ripple";
 
 	public static final String RIC_ARRAY = "ric.array";
+	//Client 配置项
 	public static final String ITEM_NAME = "item.name";
+	public static final String SERVER_LIST = "server.list";
 
 	//filter config
 	public static final String FILTER_CONFIG_NAME = "filter.config.name";

@@ -53,14 +53,14 @@ public class LogoPanel extends JPanel {
 		setImgHeight(image.getHeight(this));
 	}
 
-	@Override
-	public void paintComponent(Graphics g1) {
-		Graphics g = (Graphics) g1;
-		if (null == image) {
-			return;
-		}
-
-		g.drawImage(image, xPosition, yPosition, image.getWidth(this), image.getHeight(this), this);
-		g = null;
-	}
+//	@Override
+//	public void paintComponent(Graphics g1) {
+//		Graphics g = (Graphics) g1;
+//		if (null == image) {
+//			return;
+//		}
+//
+//		g.drawImage(image, xPosition, yPosition, image.getWidth(this), image.getHeight(this), this);
+//		g = null;
+//	}
 }

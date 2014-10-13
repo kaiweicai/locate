@@ -14,6 +14,7 @@ import net.sf.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.locate.common.exception.LocateException;
 import com.locate.common.model.LocateUnionMessage;
 import com.locate.common.utils.JsonUtil;
 
@@ -53,14 +54,19 @@ public class LoggerAnalyzer {
 			}
 		} catch (FileNotFoundException e) {
 			logger.error("File not exist, logFileName is " + logFileName, e);
+			throw new LocateException("File not exist, logFileName is " + logFileName,e);
 		} catch (IOException e) {
-			logger.error("read log file error,",e);
+			logger.error("read log file error!",e);
+			throw new LocateException("read log file error!",e);
 		}finally{
 			try {
 				bufferReader.close();
 			} catch (IOException e) {
 				logger.error("close buffer error!",e);
 			}
+		}
+		if(resultList.size()==0){
+			throw new LocateException("该产品没有记录!");
 		}
 		return resultList;
 	}

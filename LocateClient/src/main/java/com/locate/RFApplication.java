@@ -2,6 +2,7 @@ package com.locate;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Rectangle;
@@ -16,8 +17,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -40,7 +43,9 @@ import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.core.joran.spi.JoranException;
 
+import com.locate.client.gui.ComboCellRenderer;
 import com.locate.client.gui.ComboItemName;
+import com.locate.client.gui.ComboName;
 import com.locate.client.gui.HistoryFrame;
 import com.locate.client.gui.LogoPanel;
 import com.locate.client.gui.StatusBar;
@@ -100,7 +105,7 @@ public class RFApplication extends JFrame {
 	private JLabel passwordLabel;
 	private JTextField passwordTextField;
 	private JLabel serverAddressLabel;
-	private JTextField serverAddressTextField;
+	private JComboBox<ComboName> serverAddressCombox;
 	private JLabel portLabel;
 	private JTextField portTextField;
 	private JButton connetedButton;
@@ -151,39 +156,39 @@ public class RFApplication extends JFrame {
 				SubstanceLookAndFeel.setSkin(new org.pushingpixels.substance.api.skin.ModerateSkin());
 				try {
 					setSize(1344, 720);
-					LogoPanel panel = new LogoPanel(1150, 40);
-					panel.setImagePath(ClientConstant.iamgeDirectory + "PTLOGO.png");
-					panel.setPreferredSize(new Dimension(panel.getImgWidth(), panel.getImgHeight()));
+					LogoPanel logoPanel = new LogoPanel(1150, 40);
+//					logoPanel.setImagePath(ClientConstant.iamgeDirectory + "PTLOGO.png");
+					logoPanel.setPreferredSize(new Dimension(logoPanel.getImgWidth(), logoPanel.getImgHeight()));
 
-					panel.setLayout(null);
-					JScrollPane sp = new JScrollPane(panel);
+					logoPanel.setLayout(null);
+					JScrollPane sp = new JScrollPane(logoPanel);
 					sp.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 					sp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 					// sp.setLayout(mainGroupLayout);
 					getContentPane().add(sp);
 					int inputX = 870;
 					int inputY = 20;
-					panel.add(getCloseButton(new Rectangle(inputX + 200, inputY, 100, 20)));
-					panel.add(getUserNameLabel(new Rectangle(inputX, inputY, 100, 20)));
-					panel.add(getUserNameTextField(new Rectangle(inputX + 70, inputY, 100, 20)));
-					panel.add(getPasswordLabel(new Rectangle(inputX, inputY += 30, 100, 20)));
-					panel.add(getPasswordTextField(new Rectangle(inputX + 70, inputY, 100, 20)));
-					panel.add(getServerAddressLabel(new Rectangle(inputX, inputY += 30, 100, 20)));
-					panel.add(getServerAddressTextField(new Rectangle(inputX + 120, inputY, 100, 20)));
-					panel.add(getPortLabel(new Rectangle(inputX, inputY += 30, 100, 20)));
-					panel.add(getPortTextField(new Rectangle(inputX + 120, inputY, 100, 20)));
+					logoPanel.add(getCloseButton(new Rectangle(inputX + 200, inputY, 100, 20)));
+					logoPanel.add(getUserNameLabel(new Rectangle(inputX, inputY, 100, 20)));
+					logoPanel.add(getUserNameTextField(new Rectangle(inputX + 70, inputY, 100, 20)));
+					logoPanel.add(getPasswordLabel(new Rectangle(inputX, inputY += 30, 100, 20)));
+					logoPanel.add(getPasswordTextField(new Rectangle(inputX + 70, inputY, 100, 20)));
+					logoPanel.add(getServerAddressLabel(new Rectangle(inputX, inputY += 30, 100, 20)));
+					logoPanel.add(getServerAddressTextField(new Rectangle(inputX + 120, inputY, 100, 20)));
+					logoPanel.add(getPortLabel(new Rectangle(inputX, inputY += 30, 100, 20)));
+					logoPanel.add(getPortTextField(new Rectangle(inputX + 120, inputY, 100, 20)));
 
-					panel.add(getConnetedButton(new Rectangle(inputX, inputY += 30, 100, 20)));
-					panel.add(getRicLabel(new Rectangle(inputX, inputY += 30, 100, 20)));
-					panel.add(getRicTextField(new Rectangle(inputX + 120, inputY, 150, 22)));
-					panel.add(getOpenButton(new Rectangle(inputX, inputY += 30, 100, 20)));
-					panel.add(getOpenHistoryButton(new Rectangle(inputX+120, inputY , 100, 20)));
-					panel.add(getTableScrollPane(new Rectangle(inputX, inputY += 30, 400, 400)));
-					panel.add(getUseTimeTextLabel(new Rectangle(inputX, 620, 500, 50)));
-					panel.add(getLogPanel(new Rectangle(30, 10, 820, 280)));
-					panel.add(getChartScrollPanel(new Rectangle(30, 300, 820, 250)));
-					panel.add(getStatusBar(new Rectangle(30, 570, 820, 50)));
-					panel.add(getServerBar(new Rectangle(30, 620, 820, 50)));
+					logoPanel.add(getConnetedButton(new Rectangle(inputX, inputY += 30, 100, 20)));
+					logoPanel.add(getRicLabel(new Rectangle(inputX, inputY += 30, 100, 20)));
+					logoPanel.add(getRicTextField(new Rectangle(inputX + 120, inputY, 150, 22)));
+					logoPanel.add(getOpenButton(new Rectangle(inputX, inputY += 30, 100, 20)));
+					logoPanel.add(getOpenHistoryButton(new Rectangle(inputX+120, inputY , 100, 20)));
+					logoPanel.add(getTableScrollPane(new Rectangle(inputX, inputY += 30, 400, 400)));
+					logoPanel.add(getUseTimeTextLabel(new Rectangle(inputX, 620, 500, 50)));
+					logoPanel.add(getLogPanel(new Rectangle(30, 10, 820, 280)));
+					logoPanel.add(getChartScrollPanel(new Rectangle(30, 300, 820, 250)));
+					logoPanel.add(getStatusBar(new Rectangle(30, 570, 820, 50)));
+					logoPanel.add(getServerBar(new Rectangle(30, 620, 820, 50)));
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -256,13 +261,21 @@ public class RFApplication extends JFrame {
 		return serverAddressLabel;
 	}
 	
-	private JTextField getServerAddressTextField(Rectangle r){
-		if(serverAddressTextField == null){
-//			serverAddressTextField = new JTextField("61.144.244.173");
-			serverAddressTextField = new JTextField("127.0.0.1");
+	private JComboBox<ComboName> getServerAddressTextField(Rectangle r){
+		if(serverAddressCombox == null){
+			serverAddressCombox = new JComboBox<ComboName>();
+			String[] serverArray = SystemProperties.getProperties(SystemProperties.SERVER_LIST).split(",");
+			ComboName[] comboNames = new ComboName[serverArray.length];
+			for(int i=0;i<serverArray.length;i++){
+				comboNames[i] = new ComboName(serverArray[i]);
+			}
+			ComboCellRenderer comboCellRenderer = new ComboCellRenderer();
+			serverAddressCombox.setModel(new DefaultComboBoxModel<ComboName>(comboNames));
+			serverAddressCombox.setRenderer(comboCellRenderer);
 		}
-		serverAddressTextField.setBounds(r);
-		return serverAddressTextField;
+		serverAddressCombox.setBounds(r);
+		serverAddressCombox.setEditable(true);
+		return serverAddressCombox;
 	}
 	
 	
@@ -354,11 +367,11 @@ public class RFApplication extends JFrame {
 						}else if(object instanceof ComboItemName){
 							itemName = ((ComboItemName)object).getItemValue();
 						}
-						HistoryFrame historyFrame = new HistoryFrame();
-						historyFrame.loadHistory(itemName);
+						HistoryFrame historyFrame = new HistoryFrame(itemName);
 						historyFrame.setTitle(itemName+"历史记录");
 					}catch(LocateException le){
-						serverBar.setStatusFixed("Open history error!");
+						JOptionPane.showMessageDialog(null, le.getMessage());
+//						serverBar.setStatusFixed(le.getMessage());
 					}
 				}
 			});
@@ -399,11 +412,17 @@ public class RFApplication extends JFrame {
 
 				public void mouseClicked(MouseEvent event) {
 					try{
-					String serverAddress = serverAddressTextField.getText();
-					int port = Integer.parseInt(portTextField.getText());
-					String userName = userNameTextField.getText();
-					String password = passwordTextField.getText();
-					clientConnetor.conneteLocateGateWay(serverAddress,port,userName,password);
+						Object selectedItem = serverAddressCombox.getSelectedItem();
+						String serverAddress="";
+						if(selectedItem instanceof ComboName){
+							serverAddress = ((ComboName)selectedItem).getValue();
+						}else if(selectedItem instanceof String){
+							serverAddress = (String)selectedItem;
+						}
+						int port = Integer.parseInt(portTextField.getText());
+						String userName = userNameTextField.getText();
+						String password = passwordTextField.getText();
+						clientConnetor.conneteLocateGateWay(serverAddress,port,userName,password);
 					}catch(Exception e){
 						serverBar.setStatusFixed("连接服务器错误.请检查服务器配置!");
 						JOptionPane.showMessageDialog(null, "连接服务器错误,请检查服务器配置!", "连接错误!", JOptionPane.ERROR_MESSAGE);
@@ -414,8 +433,6 @@ public class RFApplication extends JFrame {
 		}
 		return connetedButton;
 	}
-	
-	
 	
 	private JTable getMarketPriceTable() {
 		JTable marketPriceTable = new JTable();

@@ -4,9 +4,11 @@ import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
 
+import org.apache.commons.lang.StringUtils;
+
 public class HistoryTableModel extends AbstractTableModel {
 	private static final long serialVersionUID = 1L;
-	private String[] columns = {"时间", "买价", "卖价" };
+	private String[] columns = {"时间", "买价", "卖价","成交价" };
 	private String[][] historyList;
 	@Override
 	public int getRowCount() {
@@ -25,12 +27,17 @@ public class HistoryTableModel extends AbstractTableModel {
 	
 	public HistoryTableModel(List<LocateUnionMessage> locateMessageList) {
 		historyList = new String[locateMessageList.size()][];
-		for(int i = 0 ;i<locateMessageList.size();i++){
-			historyList[i]=new String[3];
+		for (int i = 0; i < locateMessageList.size(); i++) {
+			historyList[i] = new String[columns.length];
 			LocateUnionMessage unionMessage = locateMessageList.get(i);
-			historyList[i][0]=unionMessage.getGeneratetime();
-			historyList[i][1]=unionMessage.getTradeRecodeMap().get(22)[3];
-			historyList[i][2]=unionMessage.getTradeRecodeMap().get(25)[3];
+			String gernerateTime = unionMessage.getGeneratetime();
+			historyList[i][0] = gernerateTime == null ? "" : gernerateTime;
+			String bidPrice[] = unionMessage.getTradeRecodeMap().get("22");
+			historyList[i][1] = bidPrice == null ? "" : bidPrice[3];
+			String askPrice[] = unionMessage.getTradeRecodeMap().get("25");
+			historyList[i][2] = askPrice == null ? "" : askPrice[3];
+			String[] lastTradePrice = unionMessage.getTradeRecodeMap().get("6");
+			historyList[i][3] = lastTradePrice == null ? "" : lastTradePrice[3];
 		}
 	}
 	

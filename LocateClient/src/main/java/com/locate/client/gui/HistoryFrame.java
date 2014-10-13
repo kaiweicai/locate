@@ -26,6 +26,11 @@ public class HistoryFrame extends JFrame {
 		initComponents();
 	}
 	
+	public HistoryFrame(String itemName){
+		initComponents();
+		loadHistory(itemName);
+	}
+	
 	private void initComponents() {
 		historyPanel = getHistoryPane(new Rectangle(10,10,800,600));
 		setSize(1024, 640);
