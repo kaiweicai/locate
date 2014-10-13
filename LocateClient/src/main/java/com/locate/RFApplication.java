@@ -358,6 +358,7 @@ public class RFApplication extends JFrame {
 			openHistoryButton.setText("历史消息");
 			openHistoryButton.addMouseListener(new MouseAdapter() {
 				public void mouseClicked(MouseEvent event) {
+					HistoryFrame historyFrame = null;
 					try{
 						String itemName = "";
 						String productName = "";
@@ -367,11 +368,12 @@ public class RFApplication extends JFrame {
 						}else if(object instanceof ComboItemName){
 							itemName = ((ComboItemName)object).getItemValue();
 						}
-						HistoryFrame historyFrame = new HistoryFrame(itemName);
+						historyFrame = new HistoryFrame();
+						historyFrame.loadHistory(itemName);
 						historyFrame.setTitle(itemName+"历史记录");
 					}catch(LocateException le){
 						JOptionPane.showMessageDialog(null, le.getMessage());
-//						serverBar.setStatusFixed(le.getMessage());
+//						historyFrame.dispose();
 					}
 				}
 			});

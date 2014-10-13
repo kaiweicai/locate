@@ -26,7 +26,12 @@ public class HistoryTableModel extends AbstractTableModel {
 	}
 	
 	public HistoryTableModel(List<LocateUnionMessage> locateMessageList) {
-		historyList = new String[locateMessageList.size()][];
+		if(locateMessageList!=null&&locateMessageList.size()!=0){
+			historyList = new String[locateMessageList.size()][];
+		}else{
+			historyList = new String[0][];
+			return;
+		}
 		for (int i = 0; i < locateMessageList.size(); i++) {
 			historyList[i] = new String[columns.length];
 			LocateUnionMessage unionMessage = locateMessageList.get(i);

@@ -65,9 +65,9 @@ public class LoggerAnalyzer {
 				logger.error("close buffer error!",e);
 			}
 		}
-		if(resultList.size()==0){
-			throw new LocateException("该产品没有记录!");
-		}
+//		if(resultList.size()==0){
+//			throw new LocateException("该产品没有记录!");
+//		}
 		return resultList;
 	}
 	
