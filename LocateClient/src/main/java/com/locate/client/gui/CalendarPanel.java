@@ -22,8 +22,11 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
-public class CalendarPanel extends JPanel {
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+public class CalendarPanel extends JPanel {
+	private Logger logger = LoggerFactory.getLogger(getClass());
 	private static final long serialVersionUID = 1L;
 	private JLabel btn_lastYear = null;
 	private JLabel btn_nextYear = null;
@@ -63,7 +66,8 @@ public class CalendarPanel extends JPanel {
 	}
 
 	/**
-	 * 带参数的构造函数，该构造函数将构造一个CalenderPanel对象实例，该对象时候没有设置日历控件的载体组件 * @param patern
+	 * 带参数的构造函数，该构造函数将构造一个CalenderPanel对象实例，该对象时候没有设置日历控件的载体组件 * 
+	 * @param patern
 	 * 日期格式，默认为yyyy-MM-dd
 	 */
 	public CalendarPanel(String patern) {
@@ -88,7 +92,6 @@ public class CalendarPanel extends JPanel {
 	 */
 	public CalendarPanel() {
 		super();
-
 		// 初始化日期格式化
 		sdf = new SimpleDateFormat(patern);
 		nowDatetime = sdf.format(new Date());
@@ -172,7 +175,7 @@ public class CalendarPanel extends JPanel {
 		try {
 			today = sdf.parse(date);
 		} catch (ParseException e1) {
-			e1.printStackTrace();
+			logger.error("parser date error",e1);
 			return;
 		}
 
@@ -264,7 +267,7 @@ public class CalendarPanel extends JPanel {
 						}
 
 					} catch (ParseException e2) {
-						e2.printStackTrace();
+						logger.error("parse date error!",e2);
 					}
 
 					// 为了能够让那个载体组件自用空，这里也需要设置returnDateStr并调用回调接口
@@ -359,38 +362,38 @@ public class CalendarPanel extends JPanel {
 		add(lb_datetime);
 		lb_datetime.setText(nowDatetime);
 
-		lblNewLabel = new JLabel("\\日");
+		lblNewLabel = new JLabel("日");
 		lblNewLabel.setForeground(Color.RED);
 		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNewLabel.setBounds(2, 22, 27, 23);
 		add(lblNewLabel);
 
-		label = new JLabel("\\一");
+		label = new JLabel("一");
 		label.setHorizontalAlignment(SwingConstants.CENTER);
 		label.setBounds(39, 22, 27, 23);
 		add(label);
 
-		label_1 = new JLabel("\\二");
+		label_1 = new JLabel("二");
 		label_1.setHorizontalAlignment(SwingConstants.CENTER);
 		label_1.setBounds(76, 22, 27, 23);
 		add(label_1);
 
-		label_2 = new JLabel("\\三");
+		label_2 = new JLabel("三");
 		label_2.setHorizontalAlignment(SwingConstants.CENTER);
 		label_2.setBounds(113, 22, 27, 23);
 		add(label_2);
 
-		label_3 = new JLabel("\\四");
+		label_3 = new JLabel("四");
 		label_3.setHorizontalAlignment(SwingConstants.CENTER);
 		label_3.setBounds(147, 22, 27, 23);
 		add(label_3);
 
-		label_4 = new JLabel("\\五");
+		label_4 = new JLabel("五");
 		label_4.setHorizontalAlignment(SwingConstants.CENTER);
 		label_4.setBounds(184, 22, 27, 23);
 		add(label_4);
 
-		label_5 = new JLabel("\\六");
+		label_5 = new JLabel("六");
 		label_5.setForeground(Color.GREEN);
 		label_5.setHorizontalAlignment(SwingConstants.CENTER);
 		label_5.setBounds(221, 22, 27, 23);
@@ -410,7 +413,7 @@ public class CalendarPanel extends JPanel {
 		});
 
 		// 用于快速显示今天日期的按钮
-		btn_today = new JButton("\\今\\天");
+		btn_today = new JButton("今天");
 		btn_today.setBounds(10, 213, 60, 23);
 		btn_today.setContentAreaFilled(false);
 		btn_today.setBorder(BorderFactory.createLineBorder(Color.GRAY));
@@ -424,7 +427,7 @@ public class CalendarPanel extends JPanel {
 		});
 
 		// 用于取消日期选择的按钮
-		btn_cancel = new JButton("\\取\\消");
+		btn_cancel = new JButton("取消");
 		btn_cancel.setBounds(179, 213, 60, 23);
 		btn_cancel.setContentAreaFilled(false);
 		btn_cancel.setBorder(BorderFactory.createLineBorder(Color.GRAY));
@@ -490,9 +493,8 @@ public class CalendarPanel extends JPanel {
 			int h = j.getHeight();
 			int x = j.getX();
 			int y = j.getY();
-			System.out.println("with:" + w + "height:" + h + "x:" + x + "y:" + y);
 			this.setComponent(component);
-			this.setBounds((x), y + h, 251, 245);
+			this.setBounds((x+110), y + h+30, 251, 245);
 			this.setVisible(false);
 			j.addMouseListener(new MouseAdapter() {
 				@Override

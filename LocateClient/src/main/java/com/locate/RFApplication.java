@@ -190,7 +190,7 @@ public class RFApplication extends JFrame {
 					logoPanel.add(getStatusBar(new Rectangle(30, 570, 820, 50)));
 					logoPanel.add(getServerBar(new Rectangle(30, 620, 820, 50)));
 				} catch (Exception e) {
-					e.printStackTrace();
+					logger.error("Initial Locate Application error!",e);
 				}
 			}
 		});
@@ -741,7 +741,9 @@ public class RFApplication extends JFrame {
 							marketPriceTable.getColumnModel().getColumn(2).setPreferredWidth(20);
 							UpdateTableColore updateThread = new UpdateTableColore();
 							updateThread.setMarketPriceTable(marketPriceTable);
-							ClientConstant.updateThreadMap.put(itemName, updateThread);
+							synchronized (ClientConstant.updateThreadMap) {
+								ClientConstant.updateThreadMap.put(itemName, updateThread);
+							}
 							ClientConstant.itemName2PriceTableModeMap.put(itemName, tableModel);
 							
 							List<String[]> dataPayLoad = message.getPayLoadSet();
@@ -781,8 +783,9 @@ public class RFApplication extends JFrame {
 						tModel = new PriceTableModel(message); 
 					}
 					updateMarketPriceTable(tModel,message);
-					ClientConstant.updateThreadMap.get(itemName).setUpdate(true);
-					
+					synchronized (ClientConstant.updateThreadMap) {
+						ClientConstant.updateThreadMap.get(itemName).setUpdate(true);
+					}
 					RealTimeChart realTimeChart = ClientConstant.itemName2RealTimeChartMap.get(itemName);
 					long currentTime = System.currentTimeMillis();
 					
@@ -795,7 +798,7 @@ public class RFApplication extends JFrame {
 						realTimeChart = ClientConstant.itemName2RealTimeChartMap.get(itemName);
 					}
 					
-					if(currentTime-realTimeChart.getLastUpdateTime()<1000){
+					if(currentTime-realTimeChart.getLastUpdateTime()<=1000){
 						return;
 					}
 					List<String[]> dataPayLoad = message.getPayLoadSet();
@@ -815,7 +818,7 @@ public class RFApplication extends JFrame {
 							amount = Integer.parseInt(payLoad[3]);
 						}
 					}
-					realTimeChart.updatePriceChart(ComboItemName.exhangeCode2Name(itemName),System.currentTimeMillis(), price, amount);
+					realTimeChart.updatePriceChart(ComboItemName.exhangeCode2Name(itemName),currentTime, price, amount);
 //					chartPanel.getGraphics().drawLine(12, 21, 54, 99);
 					break;
 				//Locate send the state info to client

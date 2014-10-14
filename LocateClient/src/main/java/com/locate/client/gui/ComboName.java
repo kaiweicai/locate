@@ -10,10 +10,10 @@ public class ComboName {
 		switch (serverIP) {
 		case "127.0.0.1":
 			return "本地服务器";
-		case "61.144.244.173":
-			return "深圳服务器1";
 		case "61.144.244.149":
-			return "深圳服务器2";
+			return "深圳服务器1";
+		case "61.144.244.173":
+			return "上海服务器1";
 		default:
 			return serverIP;
 		}

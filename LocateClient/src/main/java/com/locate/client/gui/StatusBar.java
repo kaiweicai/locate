@@ -64,11 +64,13 @@ public class StatusBar extends Panel {
 			String dataState = stateColum[1].trim();
 			if(state.equalsIgnoreCase("NONE")&&dataState.equalsIgnoreCase("OK")){
 				this._statusText.setForeground(Color.BLUE);
+				this._statusText.setText("Price server Link is Ok!");
 			}else{
 				this._statusText.setForeground(Color.RED);
+				this._statusText.setText("Price server link broken!");
 			}
 		}
-		this._statusText.setText(newStatus);
+//		this._statusText.setText(newStatus);
 		this._timer.stop();
 	}
 	

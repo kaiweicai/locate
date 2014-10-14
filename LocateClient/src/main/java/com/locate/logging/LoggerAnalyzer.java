@@ -38,6 +38,11 @@ public class LoggerAnalyzer {
 		return logFileName;
 	}
 	
+	public String getLoggerFileName(String date) {
+		String logFileName = LOG_FILE_HEADER + date + LOG_FILE_ENDDER;
+		return logFileName;
+	}
+	
 	public List<LocateUnionMessage> readLogFile(String itemName) {
 		List<LocateUnionMessage> resultList = new ArrayList<LocateUnionMessage>();
 		String logFileName = logPath+getLoggerFileName();
@@ -53,16 +58,53 @@ public class LoggerAnalyzer {
 				}
 			}
 		} catch (FileNotFoundException e) {
-			logger.error("File not exist, logFileName is " + logFileName, e);
+//			logger.error("File not exist, logFileName is " + logFileName, e);
 			throw new LocateException("File not exist, logFileName is " + logFileName,e);
 		} catch (IOException e) {
-			logger.error("read log file error!",e);
+//			logger.error("read log file error!",e);
 			throw new LocateException("read log file error!",e);
 		}finally{
 			try {
 				bufferReader.close();
 			} catch (IOException e) {
 				logger.error("close buffer error!",e);
+				throw new LocateException("read log file error!",e);
+			}
+		}
+//		if(resultList.size()==0){
+//			throw new LocateException("该产品没有记录!");
+//		}
+		return resultList;
+	}
+	
+	public List<LocateUnionMessage> readLogFile(String itemName,String date) {
+		List<LocateUnionMessage> resultList = new ArrayList<LocateUnionMessage>();
+		String logFileName = logPath+getLoggerFileName(date);
+		BufferedReader bufferReader = null;
+		try {
+			bufferReader = new BufferedReader(new FileReader(logFileName));
+			String content = "";
+			while((content = bufferReader.readLine())!=null){
+				LocateUnionMessage message = JsonUtil.translateJsonToUionMessage(JSONObject.fromObject(content));
+				message.transPayloadToMap();
+				if(itemName.equals(message.getItemName().trim())){
+					resultList.add(message);
+				}
+			}
+		} catch (FileNotFoundException e) {
+//			logger.error("File not exist, logFileName is " + logFileName, e);
+			throw new LocateException("历史文件不存在, 历史文件名是 " + logFileName,e);
+		} catch (IOException e) {
+//			logger.error("read log file error!",e);
+			throw new LocateException("读取历史文件错误!",e);
+		}finally{
+			try {
+				if(bufferReader!=null){
+					bufferReader.close();
+				}
+			} catch (Exception e) {
+//				logger.error("close buffer error!",e);
+				throw new LocateException("加载历史文件错误!",e);
 			}
 		}
 //		if(resultList.size()==0){
