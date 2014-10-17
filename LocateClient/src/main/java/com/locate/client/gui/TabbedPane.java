@@ -28,7 +28,9 @@ import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -50,6 +52,7 @@ public class TabbedPane extends JPanel{
 	private Icon closeActiveButtonIcon;
 	private boolean closeEnabled = false;
 	private int dragTabIndex = -1;
+	private static List<Tab> tabList = new ArrayList<Tab>();
 
 	/**
 	 * The default Hand cursor.
@@ -106,8 +109,12 @@ public class TabbedPane extends JPanel{
 
 	public Tab addTab(String title, Icon icon, final Component component,
 			String tip) {
-		final Tab tab = new Tab(this, component);
-
+		Tab tab = new Tab(this, component);
+		tab.setTitle(title);
+		boolean tabHasAdded = tabList.contains(tab);
+		if(tabHasAdded){
+			return tab;
+		}
 		TabPanel tabpanel = new TabPanel(tab, title, icon);
 		pane.addTab(null, null, tab, tip);
 		int index = pane.getTabCount() - 1;
@@ -259,6 +266,7 @@ public class TabbedPane extends JPanel{
 		if (index != -1) {
 			removeTabAt(index);
 		}
+		tabList.remove(comp);
 	}
 
 	public void fireTabRemoved(Tab tab, Component component, int index) {

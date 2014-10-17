@@ -64,13 +64,13 @@ public class StatusBar extends Panel {
 			String dataState = stateColum[1].trim();
 			if(state.equalsIgnoreCase("NONE")&&dataState.equalsIgnoreCase("OK")){
 				this._statusText.setForeground(Color.BLUE);
-				this._statusText.setText("Price server Link is Ok!");
+				newStatus = exchangeState(newStatus);
 			}else{
 				this._statusText.setForeground(Color.RED);
-				this._statusText.setText("Price server link broken!");
+				newStatus = exchangeState(newStatus);
 			}
 		}
-//		this._statusText.setText(newStatus);
+		this._statusText.setText(newStatus);
 		this._timer.stop();
 	}
 	
@@ -126,5 +126,20 @@ public class StatusBar extends Panel {
 
 	public String getText() {
 		return this._statusText.getText();
+	}
+	
+	public static String exchangeState(String newStatus) {
+		String reusult = "";
+		String[] stateColum = newStatus.split(",");
+		if (stateColum.length > 3) {
+			String state = stateColum[2].trim();
+			String dataState = stateColum[1].trim();
+			if (state.equalsIgnoreCase("NONE") && dataState.equalsIgnoreCase("OK")) {
+				reusult = "Price server Link is Ok!";
+			} else {
+				reusult = "Price server link broken!";
+			}
+		}
+		return reusult;
 	}
 }

@@ -12,6 +12,7 @@ public class Tab extends JPanel {
 	private static final long serialVersionUID = 2027267184472260195L;
 	private TabbedPane pane = null;
 	private Component component = null;
+	private String title;
 
 	public Tab(TabbedPane pane, Component comp) {
 		this.pane = pane;
@@ -60,5 +61,21 @@ public class Tab extends JPanel {
 		invalidate();
 		validate();
 		repaint();
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if(obj instanceof Tab){
+			return this.getTitle().equals(((Tab) obj).getTitle());
+		}
+		return super.equals(obj);
 	}
 }

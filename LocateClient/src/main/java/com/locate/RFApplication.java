@@ -2,7 +2,6 @@ package com.locate;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Rectangle;
@@ -20,7 +19,6 @@ import java.util.Map;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -715,10 +713,18 @@ public class RFApplication extends JFrame {
 					if(ask==null){
 						ask = bidAsk[1];
 					}
-					bidAsk[0]=bid;
-					bidAsk[1]=ask;
+					if(bid!=null){
+						bidAsk[0]=bid;
+					}
+					if(ask !=null ){
+						bidAsk[1]=ask;
+					}
 				}
-				average = bid.add(ask).divide(new BigDecimal("2")).setScale(4, BigDecimal.ROUND_HALF_UP).doubleValue();
+				if(bid!=null&&ask!=null){
+					average = bid.add(ask).divide(new BigDecimal("2")).setScale(4, BigDecimal.ROUND_HALF_UP).doubleValue();
+				}else{
+					average = 0;
+				}
 //				DecimalFormat df = new DecimalFormat("#.000");
 				payLoadList.add(new String[] { "100000", "中间价", "double", String.valueOf(average) });
 			}
@@ -741,9 +747,7 @@ public class RFApplication extends JFrame {
 							marketPriceTable.getColumnModel().getColumn(2).setPreferredWidth(20);
 							UpdateTableColore updateThread = new UpdateTableColore();
 							updateThread.setMarketPriceTable(marketPriceTable);
-							synchronized (ClientConstant.updateThreadMap) {
 								ClientConstant.updateThreadMap.put(itemName, updateThread);
-							}
 							ClientConstant.itemName2PriceTableModeMap.put(itemName, tableModel);
 							
 							List<String[]> dataPayLoad = message.getPayLoadSet();
@@ -783,7 +787,7 @@ public class RFApplication extends JFrame {
 						tModel = new PriceTableModel(message); 
 					}
 					updateMarketPriceTable(tModel,message);
-					synchronized (ClientConstant.updateThreadMap) {
+					if(ClientConstant.updateThreadMap.get(itemName)!=null){
 						ClientConstant.updateThreadMap.get(itemName).setUpdate(true);
 					}
 					RealTimeChart realTimeChart = ClientConstant.itemName2RealTimeChartMap.get(itemName);

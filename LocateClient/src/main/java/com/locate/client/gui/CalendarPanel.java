@@ -494,7 +494,7 @@ public class CalendarPanel extends JPanel {
 			int x = j.getX();
 			int y = j.getY();
 			this.setComponent(component);
-			this.setBounds((x+110), y + h+30, 251, 245);
+			this.setBounds((x+10), y + h+30, 251, 245);
 			this.setVisible(false);
 			j.addMouseListener(new MouseAdapter() {
 				@Override
