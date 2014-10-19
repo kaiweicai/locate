@@ -164,5 +164,13 @@ public class ClientConnector implements IClientConnector {
 		clientchannel.writeAndFlush(jsonObject.toString());
 		logger.info("client downStream message is :"+jsonObject.toString());
 	}
+
+	public Channel getClientchannel() {
+		return clientchannel;
+	}
+
+	public void setClientchannel(Channel clientchannel) {
+		this.clientchannel = clientchannel;
+	}
 	
 }

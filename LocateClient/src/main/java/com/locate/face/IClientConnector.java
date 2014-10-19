@@ -1,5 +1,7 @@
 package com.locate.face;
 
+import io.netty.channel.Channel;
+
 /**
  * 服务器请求调用接口
  * Customers main usage interface
@@ -23,5 +25,7 @@ public interface IClientConnector {
 	 * @param itemName RIC字符串
 	 */
 	public abstract void openRICMarket(String itemName);
+	
+	public Channel getClientchannel();
 
 }

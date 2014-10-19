@@ -76,12 +76,12 @@ public class GatewayServerHandler extends StringDecoder {
 	
 	@Override
 	public void exceptionCaught(io.netty.channel.ChannelHandlerContext ctx, Throwable cause) throws Exception {
-		super.exceptionCaught(ctx, cause);
+//		super.exceptionCaught(ctx, cause);
 		if(cause instanceof IOException){
-			logger.warn(((IOException) cause).getMessage(),cause);
+			logger.warn("A client force close a connection!");
 			return;
 		}else{
-			logger.error("Unexpect Exception from downstream! please contact the developer!",cause);
+			logger.error("Netty catch a exception !",cause);
 		}
 	}
 	
