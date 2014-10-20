@@ -25,8 +25,12 @@ import javax.swing.SwingConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.locate.RFApplication;
+import com.locate.common.logging.err.ErrorLogHandler;
+
 public class CalendarPanel extends JPanel {
 	private Logger logger = LoggerFactory.getLogger(getClass());
+	private ErrorLogHandler errorLogHandler = ErrorLogHandler.getLogger(getClass());
 	private static final long serialVersionUID = 1L;
 	private JLabel btn_lastYear = null;
 	private JLabel btn_nextYear = null;
@@ -175,7 +179,7 @@ public class CalendarPanel extends JPanel {
 		try {
 			today = sdf.parse(date);
 		} catch (ParseException e1) {
-			logger.error("parser date error",e1);
+			errorLogHandler.error("parser date error",e1);
 			return;
 		}
 

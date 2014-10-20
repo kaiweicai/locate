@@ -13,10 +13,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.locate.common.exception.LocateException;
+import com.locate.common.logging.err.ErrorLogHandler;
 import com.locate.common.utils.SystemProperties;
 
 public class FilterManager {
 	private static Logger logger = LoggerFactory.getLogger(FilterManager.class);
+	private static ErrorLogHandler errorLogHandler = ErrorLogHandler.getLogger(FilterManager.class);
 	private static String filterConfigFileName = SystemProperties.getProperties(SystemProperties.FILTER_CONFIG_NAME);
 	//List<Integer> is the filter.
 	public static Map<String, List<Integer>> filterMap = new HashMap<String,List<Integer>>();
@@ -40,13 +42,13 @@ public class FilterManager {
 			}
 			logger.info("Load filterConfig success!");
 		} catch (Exception e) {
-			logger.error("Load filterConfig failed!",e);
+			errorLogHandler.error("Load filterConfig failed!",e);
 			throw new LocateException("Load the filter config failed by exeption!", e);
 		} finally {
 			try {
 				filterConfigReader.close();
 			} catch (IOException ioe) {
-				logger.error("Close the filter config failed by exeption",ioe);
+				errorLogHandler.error("Close the filter config failed by exeption",ioe);
 				throw new LocateException("Close the filter config failed by exeption!", ioe);
 			}
 		}

@@ -2,14 +2,9 @@ package com.locate.gate.server;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
-import io.netty.handler.codec.LengthFieldPrepender;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
@@ -19,9 +14,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.locate.common.exception.LocateException;
+import com.locate.common.logging.err.ErrorLogHandler;
 import com.locate.common.utils.SystemProperties;
-import com.locate.gate.coder.EncrytDecoder;
-import com.locate.gate.coder.EncrytEncoder;
 import com.locate.gate.hanlder.AdapterHandler;
 import com.locate.gate.hanlder.GatewayServerHandler;
 import com.locate.gate.hanlder.ServerChannelInitializer;
@@ -29,7 +23,7 @@ import com.locate.gate.hanlder.ServerChannelInitializer;
 @Service
 public class GateWayServer {
 	static Logger logger = LoggerFactory.getLogger(GateWayServer.class.getName());
-	
+	private ErrorLogHandler errorLogHandler = ErrorLogHandler.getLogger(getClass());
 	@Resource
 	private GatewayServerHandler gateWayServerHandler;
 	
@@ -60,7 +54,7 @@ public class GateWayServer {
 	        // Wait until the server socket is closed.
 //	        f.channel().closeFuture().sync();
 		}catch(Exception e){
-			logger.error("Create the Locate netty server error!",e);
+			errorLogHandler.error("Create the Locate netty server error!",e);
 			throw new LocateException("Create the Locate netty server error!",e);
 		}
 	}

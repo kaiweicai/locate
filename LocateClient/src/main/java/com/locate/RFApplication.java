@@ -54,6 +54,7 @@ import com.locate.common.ClientConstant;
 import com.locate.common.constant.LocateMessageTypes;
 import com.locate.common.exception.LocateException;
 import com.locate.common.logging.biz.BizLogHandler;
+import com.locate.common.logging.err.ErrorLogHandler;
 import com.locate.common.model.CustomerFiled;
 import com.locate.common.model.LocateUnionMessage;
 import com.locate.common.model.PriceTableModel;
@@ -73,6 +74,8 @@ import com.locate.stock.chart.RealTimeChart;
 public class RFApplication extends JFrame {
 	private Logger logger = LoggerFactory.getLogger(RFApplication.class);
 	private BizLogHandler bizLogger = BizLogHandler.getLogger(RFApplication.class);
+	private ErrorLogHandler errorLogHandler = ErrorLogHandler.getLogger(RFApplication.class);
+	
 	private boolean conLocate;
 	private static final long serialVersionUID = 1L;
 	private JLabel currentUserTitle;
@@ -188,7 +191,7 @@ public class RFApplication extends JFrame {
 					logoPanel.add(getStatusBar(new Rectangle(30, 570, 820, 50)));
 					logoPanel.add(getServerBar(new Rectangle(30, 620, 820, 50)));
 				} catch (Exception e) {
-					logger.error("Initial Locate Application error!",e);
+					errorLogHandler.error("Initial Locate Application error!",e);
 				}
 			}
 		});
@@ -653,17 +656,17 @@ public class RFApplication extends JFrame {
 		public void handleException(Throwable e){
 			if(e instanceof ConnectException){
 				sBuilder.append("Connection refused! please check the server info!");
-				logger.error("Connection refused! please check the server info!",e);
+				errorLogHandler.error("Connection refused! please check the server info!",e);
 				updateLog(sBuilder);
 				serverBar.setStatusFixed("Connection refused! please check the server info!",Color.RED);
 			}else if(e instanceof IOException){
 				sBuilder.append("Connection close! Locate Server is down!");
-				logger.error("Connection close! Locate Server is down!",e);
+				errorLogHandler.error("Connection close! Locate Server is down!",e);
 				updateLog(sBuilder);
 				serverBar.setStatusFixed("Connection close! Locate Server is down!",Color.RED);
 			}else{
 				sBuilder.append("Client has been occure Exception. Please contact the developer! ");
-				logger.error("Client has been occure Exception. Please contact the developer!",e);
+				errorLogHandler.error("Client has been occure Exception. Please contact the developer!",e);
 	//			updateLog(sBuilder.toString());
 				serverBar.setStatusFixed("Client has been occure Exception. Please contact the developer!",Color.RED);
 			}

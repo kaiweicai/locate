@@ -14,12 +14,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
+import com.locate.common.logging.err.ErrorLogHandler;
 import com.locate.rmds.processer.face.IPriceKeeper;
 
 @Service("filePriceKeeper")
 @Scope("prototype")
 public class FilePriceKeeper implements IPriceKeeper {
 	Logger logger = LoggerFactory.getLogger(getClass());
+	private ErrorLogHandler errorLogHandler = ErrorLogHandler.getLogger(getClass());
 	private File keepFile;
 	private String ric;
 	private BufferedWriter bufferedWriter;
@@ -54,7 +56,7 @@ public class FilePriceKeeper implements IPriceKeeper {
 			bufferedWriter.append(jsonObjectt.toString());
 			bufferedWriter.flush();
 		} catch (IOException e) {
-			logger.error("write file error!",e);
+			errorLogHandler.error("write file error!",e);
 		}
 	}
 }

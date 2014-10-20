@@ -7,6 +7,7 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.locate.common.logging.err.ErrorLogHandler;
 import com.locate.common.model.LocateUnionMessage;
 import com.locate.common.utils.NetTimeUtil;
 import com.locate.rmds.QSConsumerProxy;
@@ -54,6 +55,7 @@ public class OneTimeItemManager extends IProcesser implements Client
 	Handle  itemHandle;
 	QSConsumerProxy _mainApp;
     static Logger _logger = LoggerFactory.getLogger(OneTimeItemManager.class.getName());
+    private ErrorLogHandler errorLogHandler = ErrorLogHandler.getLogger(getClass());
     ItemGroupManager _itemGroupManager;
     public String clientRequestItemName;
 //    public String clientName;
@@ -168,7 +170,7 @@ public class OneTimeItemManager extends IProcesser implements Client
 			try {
 				engineFuture.get();
 			} catch (InterruptedException | ExecutionException e) {
-				_logger.error("get the engine result error!",e);
+				errorLogHandler.error("get the engine result error!",e);
 			}
 		}
 		engineFuture=EngineLinerManager.engineLineCache.get(clientRequestItemName).applyStrategy(locateMessage,channelID);
@@ -177,7 +179,7 @@ public class OneTimeItemManager extends IProcesser implements Client
 				try {
 					derivedEngineFuture.get();
 				} catch (InterruptedException | ExecutionException e) {
-					_logger.error("get the dervied engine result error!",e);
+					errorLogHandler.error("get the dervied engine result error!",e);
 				}
 			}
 			derivedEngineFuture = EngineLinerManager.engineLineCache.get(derivactiveItemName).applyStrategy(locateMessage.clone());

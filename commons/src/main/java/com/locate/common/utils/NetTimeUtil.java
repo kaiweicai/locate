@@ -4,12 +4,7 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
 import java.net.UnknownHostException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 
 import org.apache.commons.net.ntp.NTPUDPClient;
 import org.apache.commons.net.ntp.NtpV3Impl;
@@ -19,10 +14,11 @@ import org.apache.commons.net.ntp.TimeStamp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.locate.common.datacache.DataBaseCache;
+import com.locate.common.logging.err.ErrorLogHandler;
 
 public class NetTimeUtil {
-	static Logger logger = LoggerFactory.getLogger(NetTimeUtil.class);
+	private static Logger logger = LoggerFactory.getLogger(NetTimeUtil.class);
+	private static ErrorLogHandler errorLogHandler = ErrorLogHandler.getLogger(NetTimeUtil.class);
 //	public static final long NET_SUB_LOCAL_TIME = getNetTime() - System.currentTimeMillis();
 	public static final long NET_SUB_LOCAL_TIME = 0;
 	private static String timeServerUrl1 = "ntp.sjtu.edu.cn";
@@ -38,16 +34,16 @@ public class NetTimeUtil {
 			TimeStamp timeStamp = timeInfo.getMessage().getTransmitTimeStamp();
 			time = timeStamp.getTime();
 		} catch (UnknownHostException e) {
-			logger.error("malfFormat URl:ntp.sjtu.edu.cn", e.getCause());
+			errorLogHandler.error("malfFormat URl:ntp.sjtu.edu.cn", e.getCause());
 		} catch (IOException e) {
-			logger.error("IOException ", e);
+			errorLogHandler.error("IOException ", e);
 			try {
 				InetAddress timeServerAddress = InetAddress.getByName(timeServerUrl2);
 				TimeInfo timeInfo = getTime(timeServerAddress, 123);
 				TimeStamp timeStamp = timeInfo.getMessage().getTransmitTimeStamp();
 				time = timeStamp.getTime();
 			} catch (IOException ioe) {
-				logger.error("IOException ", ioe);
+				errorLogHandler.error("IOException ", ioe);
 			}
 		}
 		return time;

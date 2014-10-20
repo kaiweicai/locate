@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.locate.common.constant.LocateMessageTypes;
+import com.locate.common.logging.err.ErrorLogHandler;
 import com.locate.common.model.LocateUnionMessage;
 import com.locate.common.utils.NetTimeUtil;
 import com.locate.face.IBussiness;
@@ -27,6 +28,7 @@ import com.locate.gate.handler.ClientConnector;
  */
 public class PTSample {
 	private Logger logger = LoggerFactory.getLogger(getClass());
+	private ErrorLogHandler errorLogHandler = ErrorLogHandler.getLogger(getClass());
 	public static final String COMEX_GOLD_ITEM = "XAU=";
 	public static final String COMEX_SILVER_ITEM = "XAG=";
 	//客户端接口声明.
@@ -44,7 +46,7 @@ public class PTSample {
 		try {
 			context = JAXBContext.newInstance(LocateUnionMessage.class);
 		} catch (JAXBException e) {
-			logger.error("Json initial JAXBContext error!",e);
+			errorLogHandler.error("Json initial JAXBContext error!",e);
 		}
 	}
 	

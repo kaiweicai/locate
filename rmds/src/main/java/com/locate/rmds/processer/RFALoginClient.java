@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 import com.locate.bridge.GateWayResponser;
 import com.locate.common.constant.LocateMessageTypes;
 import com.locate.common.constant.SystemConstant;
+import com.locate.common.logging.err.ErrorLogHandler;
 import com.locate.common.model.LocateUnionMessage;
 import com.locate.common.utils.MessageEncapsulator;
 import com.locate.common.utils.NetTimeUtil;
@@ -80,6 +81,7 @@ public class RFALoginClient implements Client {
 	public static String STATE = "";
 	public static LocateUnionMessage rfaStateMessage;
 	static Logger logger = LoggerFactory.getLogger(RFALoginClient.class.getName());
+	private ErrorLogHandler errorLogHandler = ErrorLogHandler.getLogger(getClass());
 	// static Logger _logger;
 	Map<String, ServiceInfo> _services = new HashMap<String, ServiceInfo>();
 	private HashMap<Handle, Integer> _dictHandles = new HashMap<Handle, Integer>();
@@ -102,7 +104,7 @@ public class RFALoginClient implements Client {
 		try {
 			position = InetAddress.getLocalHost().getHostAddress() + "/" + InetAddress.getLocalHost().getHostName();
 		} catch (Exception e) {
-			logger.error("Generate locat host address and host name error!",e);
+			errorLogHandler.error("Generate locat host address and host name error!",e);
 		}
 
 		OMMEncoder encoder = _mainApp.getEncoder();

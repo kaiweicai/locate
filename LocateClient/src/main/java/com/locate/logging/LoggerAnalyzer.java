@@ -15,11 +15,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.locate.common.exception.LocateException;
+import com.locate.common.logging.err.ErrorLogHandler;
 import com.locate.common.model.LocateUnionMessage;
 import com.locate.common.utils.JsonUtil;
 
 public class LoggerAnalyzer {
-	private Logger logger = LoggerFactory.getLogger(getClass());
+//	private Logger logger = LoggerFactory.getLogger(getClass());
+	private ErrorLogHandler errorLogHandler = ErrorLogHandler.getLogger(getClass());
 	public String logPath = "log/biz/";
 	public static final String LOG_FILE_HEADER = "biz.";
 	public static final String LOG_FILE_ENDDER = ".log";
@@ -67,7 +69,7 @@ public class LoggerAnalyzer {
 			try {
 				bufferReader.close();
 			} catch (IOException e) {
-				logger.error("close buffer error!",e);
+				errorLogHandler.error("close buffer error!",e);
 				throw new LocateException("read log file error!",e);
 			}
 		}

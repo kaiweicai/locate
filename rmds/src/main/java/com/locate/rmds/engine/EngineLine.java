@@ -13,12 +13,14 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import com.locate.bridge.GateWayResponser;
+import com.locate.common.logging.err.ErrorLogHandler;
 import com.locate.common.model.LocateUnionMessage;
 
 @Component("engineLine")
 @Scope("prototype")
 public class EngineLine {
 	private static Logger logger = LoggerFactory.getLogger(EngineLine.class);
+	private ErrorLogHandler errorLogHandler = ErrorLogHandler.getLogger(getClass());
 	public static ExecutorService executeService = Executors.newCachedThreadPool();
 	private Map<String, Engine> engineMap;
 	public Map<String, Engine> swapEngineMap;
@@ -65,7 +67,7 @@ public class EngineLine {
 		try{
 			return executeService.submit(engineTask);
 		}catch(Exception e){
-			logger.error("ocurrer error !!!!",e);
+			errorLogHandler.error("ocurrer error !!!!",e);
 			return null;
 		}
 	}

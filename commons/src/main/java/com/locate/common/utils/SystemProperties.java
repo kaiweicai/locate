@@ -11,10 +11,12 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.locate.common.logging.err.ErrorLogHandler;
+
 public class SystemProperties {
 
 	static Logger _logger = LoggerFactory.getLogger(SystemProperties.class.getName());
-
+	private static ErrorLogHandler errorLogHandler = ErrorLogHandler.getLogger(SystemProperties.class);
 	static Map<String, String> systemProperties = new HashMap<String, String>();
 	public static final String RFA_USER_FILE = "client.user.file";
 	public static final String SOCKET_PORT = "socket.port";
@@ -63,7 +65,7 @@ public class SystemProperties {
 //			p.load(ClassLoader.getSystemResource(propertiesFile).openStream());
 			p.load(new FileReader( propertiesFile));
 		} catch (IOException e) {
-			_logger.error("Initialize system config file failed", e);
+			errorLogHandler.error("Initialize system config file failed", e);
 		}
 		Iterator<Object> keys = p.keySet().iterator();
 		String key;

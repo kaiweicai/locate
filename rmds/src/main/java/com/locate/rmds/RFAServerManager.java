@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.locate.common.constant.SystemConstant;
+import com.locate.common.logging.err.ErrorLogHandler;
 import com.locate.rmds.engine.filter.FilterManager;
 import com.locate.rmds.statistic.StatisticThread;
 
@@ -15,7 +16,7 @@ import com.locate.rmds.statistic.StatisticThread;
 public class RFAServerManager extends Thread {
 
 	static Logger _logger = LoggerFactory.getLogger(RFAServerManager.class);
-
+	private ErrorLogHandler errorLogHandler = ErrorLogHandler.getLogger(getClass());
 	@Resource
 	private QSConsumerProxy demo;
 	public static boolean stop = false;
@@ -47,7 +48,7 @@ public class RFAServerManager extends Thread {
 				demo.startDispatch();
 			}
 		} catch (Exception e) {
-			_logger.error("System error occure, Please contact with Cloud.Wei",e);
+			errorLogHandler.error("System error occure, Please contact with Cloud.Wei",e);
 //			demo.cleanup();
 		}
 	}

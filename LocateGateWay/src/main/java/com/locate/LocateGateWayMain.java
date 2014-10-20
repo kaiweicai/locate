@@ -1,7 +1,5 @@
 package com.locate;
 
-import java.io.IOException;
-
 import org.slf4j.ILoggerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,10 +11,10 @@ import ch.qos.logback.core.joran.spi.JoranException;
 
 import com.locate.common.constant.SystemConstant;
 import com.locate.common.exception.LocateException;
+import com.locate.common.logging.err.ErrorLogHandler;
 import com.locate.common.utils.LogbackShutdownHook;
 import com.locate.common.utils.ShutdownWorker;
 import com.locate.common.utils.SystemProperties;
-import com.locate.rmds.QSConsumerProxy;
 
 /**
  * 
@@ -25,6 +23,7 @@ import com.locate.rmds.QSConsumerProxy;
  */
 public class LocateGateWayMain {
 	static Logger logger = LoggerFactory.getLogger(LocateGateWayMain.class);
+	private static ErrorLogHandler errorLogHandler = ErrorLogHandler.getLogger(LocateGateWayMain.class);
 	protected static final String configFile = "config/rfaConfig.properties";
 	static {
 		SystemProperties.init(configFile);
@@ -50,14 +49,7 @@ public class LocateGateWayMain {
 		ShutdownWorker shutdownWorker = new ShutdownWorker();
 		shutdownWorker.setName("shutdownWorker");
 		Runtime.getRuntime().addShutdownHook(shutdownWorker);
-//		QSConsumerProxy proxy = SystemConstant.springContext.getBean(QSConsumerProxy.class);
-//		proxy.cleanup();
 		SystemConstant.springContext.registerShutdownHook();
-//	    try {
-//			Thread.sleep(10000);
-//		} catch (InterruptedException e) {
-//			e.printStackTrace();
-//		}
-//	    System.exit(0);
+		logger.info("start LocateGateWay success!");
 	}
 }

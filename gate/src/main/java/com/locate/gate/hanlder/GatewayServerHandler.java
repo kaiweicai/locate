@@ -28,17 +28,16 @@ import org.springframework.stereotype.Service;
 
 import com.locate.bridge.GateForwardRFA;
 import com.locate.common.constant.LocateMessageTypes;
-import com.locate.common.constant.SystemConstant;
 import com.locate.common.datacache.DataBaseCache;
 import com.locate.common.datacache.GateChannelCache;
+import com.locate.common.logging.err.ErrorLogHandler;
 import com.locate.common.model.ClientRequest;
-import com.locate.common.model.ClientSession;
 import com.locate.common.utils.DerivedUtils;
 
 @Service
 public class GatewayServerHandler extends StringDecoder {
-	static Logger logger = LoggerFactory.getLogger(GatewayServerHandler.class.getName());
-	
+	private Logger logger = LoggerFactory.getLogger(GatewayServerHandler.class.getName());
+	private ErrorLogHandler errorLogHandler = ErrorLogHandler.getLogger(getClass());
 	/** The number of message to receive */
 	public static final int MAX_RECEIVED = 100000;
 
@@ -81,7 +80,7 @@ public class GatewayServerHandler extends StringDecoder {
 			logger.warn("A client force close a connection!");
 			return;
 		}else{
-			logger.error("Netty catch a exception !",cause);
+			errorLogHandler.error("Netty catch a exception !",cause);
 		}
 	}
 	
@@ -210,7 +209,7 @@ public class GatewayServerHandler extends StringDecoder {
 			// RFAClientHandler process message and send the request to RFA.
 			gateForwardRFA.process(clientInfo);
 		} catch (Throwable throwable) {
-			logger.error("Unexpected error ocurres", throwable);
+			errorLogHandler.error("Unexpected error ocurres", throwable);
 		}
 	};
 	

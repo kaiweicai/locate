@@ -13,12 +13,16 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.locate.common.logging.err.ErrorLogHandler;
+
 public class CustomerFiled {
 	private static Logger logger = LoggerFactory.getLogger(CustomerFiled.class);
+	private static ErrorLogHandler errorLogHandler = ErrorLogHandler.getLogger(CustomerFiled.class);
 	public static Map<String,String> filedExchangeMap = new HashMap<String,String>();
 	static{
 		loadExchangFile();
 	}
+	
 	public static void loadExchangFile(){
 		BufferedReader bufferReader = null;
 		
@@ -33,12 +37,12 @@ public class CustomerFiled {
 				}
 			}
 		}catch(Exception e){
-			logger.error("read exhange file error!",e);
+			errorLogHandler.error("read exhange file error!",e);
 		}finally{
 			try {
 				bufferReader.close();
 			} catch (IOException e) {
-				logger.error("close buffer reader error!",e);
+				errorLogHandler.error("close buffer reader error!",e);
 			}
 		}
 	}

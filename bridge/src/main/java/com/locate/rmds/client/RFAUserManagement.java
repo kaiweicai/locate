@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.locate.common.constant.RFANodeconstant;
+import com.locate.common.logging.err.ErrorLogHandler;
 import com.locate.common.utils.RFAUtils;
 import com.locate.common.utils.SystemProperties;
 import com.locate.rmds.user.RFAUser;
@@ -22,7 +23,7 @@ import com.locate.rmds.user.RFAUserPermission;
 public class RFAUserManagement {
 	
 	static Logger _logger = LoggerFactory.getLogger(RFAUserManagement.class.getName());
-	
+	private static ErrorLogHandler errorLogHandler = ErrorLogHandler.getLogger(RFAUserManagement.class);
 	public static Map<String,RFAUser> RFAUserList = new HashMap<String,RFAUser>();
 	public static Map<String,RFAUser> RFAUserBusiness = new HashMap<String,RFAUser>();
 	
@@ -33,7 +34,7 @@ public class RFAUserManagement {
 		try {
 			userData = reader.read(userFile);
 		} catch (DocumentException e) {
-			_logger.error("Inital RFA user data error.", e);
+			errorLogHandler.error("Inital RFA user data error.", e);
 		}
 		Element rmds = userData.getRootElement();
 		List<Element> userNodeList = rmds.elements();//(RFANodeconstant.SELECT_USER);

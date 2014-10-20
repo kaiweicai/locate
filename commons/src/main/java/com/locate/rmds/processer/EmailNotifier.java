@@ -18,9 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-
-
-
+import com.locate.common.logging.err.ErrorLogHandler;
 import com.locate.common.utils.SystemProperties;
 import com.locate.rmds.processer.face.INotifier;
 
@@ -31,7 +29,7 @@ import com.locate.rmds.processer.face.INotifier;
 @Component
 public class EmailNotifier implements INotifier {
 	private Logger logger = LoggerFactory.getLogger(EmailNotifier.class);
-
+	private ErrorLogHandler errorLogHandler = ErrorLogHandler.getLogger(getClass());
 	@Override
 	public void notifyAdmin(String title, String content) {
 		InetAddress localAddress = null;
@@ -39,7 +37,7 @@ public class EmailNotifier implements INotifier {
 		try {
 			localAddress = InetAddress.getLocalHost();
 		} catch (UnknownHostException e1) {
-			logger.error("Can not get the localHost name.", e1);
+			errorLogHandler.error("Can not get the localHost name.", e1);
 		}
 		hostName = localAddress.getHostName();
 		title = title + ", Message from host " + hostName;
