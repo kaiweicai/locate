@@ -1,0 +1,22 @@
+LME镍3个月,PT_NID,MNI3=LX
+LME铅3个月,PT_PBD,MPB3=LX
+LME锡3个月,PT_SND,empty
+LME锌3个月,PT_ZSD,MZN3=LX
+LME铝3个月,PT_AHD,MAL3=LX
+LME铜3个月,PT_CAD,MCU3=LX
+CBOT-黄豆	,PT_S,empty
+CBOT-小麦	,PT_W,empty
+CBOT-玉米	,PT_C,empty
+CBOT-黄豆油,PT_BO,empty
+CBOT-黄豆粉,PT_SM,empty
+COMEX铜,PT_HG,empty
+NYMEX天然气,PT_NG,empty
+NYMEX原油	,PT_CL,empty
+COMEX白银	,PT_SI,SIv1
+COMEX黄金	,PT_GC,GCv1
+CME-瘦肉猪,PT_LHC,empty
+布伦特原油,PT_OIL,LCOv1
+伦敦金,PT_XAU,XAU=
+伦敦银,PT_XAG,XAG=
+伦敦铂金,PT_XPT,XPT=
+伦敦钯金,PT_XPD,XPD=

@@ -15,6 +15,14 @@ import com.locate.rmds.RFAServerManager;
 import com.locate.rmds.processer.ItemManager;
 import com.locate.rmds.processer.RFALoginClient;
 
+/**
+ * 期货类产品请求类.
+ * 现在所有产品基本都是用该类进行请求.
+ * 如果以后有新闻类产品,可能会使用newsRequest记性请求.
+ * @author CloudWei kaiweicai@163.com
+ * create time 2014年10月21日
+ * @copyRight by Author
+ */
 @Service
 public class FuthureRequestHandler extends BaseRequestHandler {
 	private static Logger logger = LoggerFactory.getLogger(FuthureRequestHandler.class.getName());
@@ -24,6 +32,7 @@ public class FuthureRequestHandler extends BaseRequestHandler {
 	public int processRequest(ClientRequest req,String clientName,byte responseMsgType, int channelId ){
 		int resultCode = LocateResultCode.SUCCESS_RESULT;
 		String[] itemNames = req.getRIC().split(",");
+		//这里判断可以移到QSComsumerProxey中,让这个requester专注于处理期货.
 		if(!RFAServerManager.isConnectedDataSource()){
 			logger.warn("The RFA Datasource not connected.Can not register the intresting Product!");
 			resultCode = LocateResultCode.RFA_SERVER_NOT_READY;

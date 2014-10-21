@@ -20,6 +20,7 @@ import org.springframework.stereotype.Component;
 import com.locate.common.constant.LocateMessageTypes;
 import com.locate.common.constant.SystemConstant;
 import com.locate.common.datacache.RmdsDataCache;
+import com.locate.common.model.InstrumentCodeData;
 import com.locate.common.utils.DerivedUtils;
 import com.locate.common.utils.SystemProperties;
 import com.locate.rmds.client.RFAUserManagement;
@@ -58,6 +59,7 @@ import com.reuters.rfa.session.Session;
 import com.reuters.rfa.session.omm.OMMConsumer;
 import com.reuters.rfa.session.omm.OMMItemIntSpec;
 /**  
+ * instrument请求的业务处理类.
 *  作者:Cloud wei   
 *  E-mail:kaiweicai@163.com   
 *  创建时间：2014.5.26   
@@ -188,6 +190,7 @@ public class QSConsumerProxy{
 					.getProperties(SystemProperties.RFA_SERVICE_NAME);
 		}
 		login();
+		InstrumentCodeData.loadInstrumentData();
 		//newsItemRequests();
 	}
 

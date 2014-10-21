@@ -56,6 +56,7 @@ import com.locate.common.exception.LocateException;
 import com.locate.common.logging.biz.BizLogHandler;
 import com.locate.common.logging.err.ErrorLogHandler;
 import com.locate.common.model.CustomerFiled;
+import com.locate.common.model.InstrumentCodeData;
 import com.locate.common.model.LocateUnionMessage;
 import com.locate.common.model.PriceTableModel;
 import com.locate.common.utils.NetTimeUtil;
@@ -136,6 +137,7 @@ public class RFApplication extends JFrame {
 		LoggerContext loggerContext = (LoggerContext) loggerFactory;
 		loggerContext.reset();
 		configurator.setContext(loggerContext);
+		InstrumentCodeData.loadInstrumentData();
 		try {
 			configurator.doConfigure("config/logback.xml");
 		} catch (JoranException e) {

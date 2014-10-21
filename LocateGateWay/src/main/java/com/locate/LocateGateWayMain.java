@@ -12,6 +12,7 @@ import ch.qos.logback.core.joran.spi.JoranException;
 import com.locate.common.constant.SystemConstant;
 import com.locate.common.exception.LocateException;
 import com.locate.common.logging.err.ErrorLogHandler;
+import com.locate.common.model.InstrumentCodeData;
 import com.locate.common.utils.LogbackShutdownHook;
 import com.locate.common.utils.ShutdownWorker;
 import com.locate.common.utils.SystemProperties;

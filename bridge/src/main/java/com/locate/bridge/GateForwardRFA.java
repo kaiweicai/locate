@@ -78,7 +78,6 @@ public class GateForwardRFA {
 		    case LocateMessageTypes.STOCK_LINK_REQUEST:
 		    	resultCode = requestHandler.processOneTimesRequest(request,clientName,LocateMessageTypes.RESPONSE_STOCK_LINK,channelID);
 		    	break;
-//
 		    case LocateMessageTypes.CURRENCY_REQUEST:
 		    	responseMsgType = LocateMessageTypes.RESPONSE_CURRENCY;
 		    	resultCode=requestHandler.processRequest(request,clientName,responseMsgType,channelID);

@@ -32,6 +32,7 @@ import com.locate.common.datacache.DataBaseCache;
 import com.locate.common.datacache.GateChannelCache;
 import com.locate.common.logging.err.ErrorLogHandler;
 import com.locate.common.model.ClientRequest;
+import com.locate.common.model.InstrumentCodeData;
 import com.locate.common.utils.DerivedUtils;
 
 @Service
@@ -176,6 +177,8 @@ public class GatewayServerHandler extends StringDecoder {
 			if (msgType != LocateMessageTypes.LOGIN) {
 				for (String subcribeItemName : request.getRIC().split(",")) {
 					Map<String, ChannelGroup> subscribeChannelMap = GateChannelCache.itemNameChannelGroupMap;
+					//将客户端的instrumentCode转成Locate系统使用的sourceCode.
+					subcribeItemName = InstrumentCodeData.exchangeInstrumentCodeToSourceCode(subcribeItemName);
 					boolean isDerived = DerivedUtils.isDerived(subcribeItemName);
 					ChannelGroup subChannelGroup = subscribeChannelMap.get(subcribeItemName);
 					if (subChannelGroup == null) {

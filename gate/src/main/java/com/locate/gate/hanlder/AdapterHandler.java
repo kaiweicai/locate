@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.locate.common.model.InstrumentCodeData;
 import com.locate.common.model.LocateUnionMessage;
 import com.locate.common.utils.SystemProperties;
 
@@ -28,6 +29,9 @@ public class AdapterHandler extends MessageToMessageEncoder<LocateUnionMessage> 
 	@Override
 	protected void encode(io.netty.channel.ChannelHandlerContext ctx, LocateUnionMessage msg, List<Object> out)
 			throws Exception {
+		String itemName = msg.getItemName();
+		itemName = InstrumentCodeData.exchangeInstrumentCodeToSourceCode(itemName);
+		msg.setItemName(itemName);
 		String content = "";
 		switch (defaultEncode) {
 		case "JSON":
