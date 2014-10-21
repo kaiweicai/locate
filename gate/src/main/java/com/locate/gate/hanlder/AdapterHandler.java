@@ -11,6 +11,7 @@ import javax.xml.bind.Marshaller;
 import net.sf.json.JSON;
 import net.sf.json.JSONObject;
 
+import org.apache.commons.lang.StringUtils;
 import org.dom4j.io.DocumentResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,8 +31,10 @@ public class AdapterHandler extends MessageToMessageEncoder<LocateUnionMessage> 
 	protected void encode(io.netty.channel.ChannelHandlerContext ctx, LocateUnionMessage msg, List<Object> out)
 			throws Exception {
 		String itemName = msg.getItemName();
-		itemName = InstrumentCodeData.exchangeInstrumentCodeToSourceCode(itemName);
-		msg.setItemName(itemName);
+		if(StringUtils.isNotBlank(itemName)){
+			itemName = InstrumentCodeData.exchangeInstrumentCodeToSourceCode(itemName);
+			msg.setItemName(itemName);
+		}
 		String content = "";
 		switch (defaultEncode) {
 		case "JSON":
