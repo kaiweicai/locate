@@ -25,7 +25,7 @@ public class EngineLine {
 	public static ExecutorService executeService = Executors.newCachedThreadPool();
 	private Map<String, Engine> engineMap;
 	public Map<String, Engine> swapEngineMap;
-
+	private static LocateUnionMessage lastMessage;
 	public EngineLine() {
 		init();
 	}
@@ -61,6 +61,7 @@ public class EngineLine {
 	}
 
 	public Future<LocateUnionMessage> applyStrategy(final LocateUnionMessage locateMessage) {
+		lastMessage = locateMessage.clone();
 		Callable<LocateUnionMessage> engineTask = new Callable<LocateUnionMessage>() {
 			@Override
 			public LocateUnionMessage call() throws Exception {
@@ -79,6 +80,28 @@ public class EngineLine {
 			return null;
 		}
 	}
+	
+	public Future<LocateUnionMessage> applyStrategy() {
+		final LocateUnionMessage locateMessage = lastMessage.clone();
+		Callable<LocateUnionMessage> engineTask = new Callable<LocateUnionMessage>() {
+			@Override
+			public LocateUnionMessage call() throws Exception {
+				for (final String engineName : swapEngineMap.keySet()) {
+					Engine engine = swapEngineMap.get(engineName);
+					engine.doEngine(locateMessage);
+				}
+				GateWayResponser.sentMrketPriceToSubsribeChannel(locateMessage);
+				return locateMessage;
+			}
+		};
+		try {
+			return executeService.submit(engineTask);
+		} catch (Exception e) {
+			errorLogHandler.error("ocurrer error !!!!", e);
+			return null;
+		}
+	}
+	
 	
 	public Future<LocateUnionMessage> applyStrategy(final LocateUnionMessage locateMessage,final int channelId) {
 		Future<LocateUnionMessage> future = null;

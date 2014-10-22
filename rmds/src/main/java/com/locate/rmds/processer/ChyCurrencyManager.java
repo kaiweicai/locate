@@ -1,26 +1,24 @@
 package com.locate.rmds.processer;
 
+
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 import javax.annotation.Resource;
 
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
-import com.locate.bridge.GateWayResponser;
-import com.locate.common.datacache.RmdsDataCache;
 import com.locate.common.model.LocateUnionMessage;
 import com.locate.common.utils.NetTimeUtil;
 import com.locate.rmds.QSConsumerProxy;
+import com.locate.rmds.engine.CurrencyEngine;
 import com.locate.rmds.engine.EngineLine;
 import com.locate.rmds.engine.filter.EngineManager;
-import com.locate.rmds.engine.filter.FilterManager;
 import com.locate.rmds.parser.face.IOmmParser;
-import com.locate.rmds.processer.face.IProcesser;
 import com.locate.rmds.statistic.CycleStatistics;
 import com.locate.rmds.statistic.LogTool;
 import com.locate.rmds.statistic.OutputFormatter;
@@ -28,7 +26,6 @@ import com.locate.rmds.statistic.ResourceStatistics;
 import com.reuters.rfa.common.Client;
 import com.reuters.rfa.common.Event;
 import com.reuters.rfa.common.Handle;
-import com.reuters.rfa.omm.OMMItemGroup;
 import com.reuters.rfa.omm.OMMMsg;
 import com.reuters.rfa.omm.OMMPool;
 import com.reuters.rfa.rdm.RDMInstrument;
@@ -37,29 +34,13 @@ import com.reuters.rfa.session.omm.OMMItemEvent;
 import com.reuters.rfa.session.omm.OMMItemIntSpec;
 import com.reuters.rfa.session.omm.OMMSolicitedItemEvent;
 
-// This class is a Client implementation that is utilized to handle item requests
-// and responses between application and RFA.
-// An instance of this class is created by QSConsumerDemo.
-// This class performs the following functions:
-// - Creates and encodes item request messages and registers the client (itself) 
-// - with RFA (method sendRequest()). The registration will cause RFA
-//  to send item open request. RFA will return back a handle instance.
-// This application will request two items - TRI.N and MSFT.O.
-// - Unregisters the client in RFA (method closeRequest()).
-// - Processes events for this client (method processEvent()). processEvent() method
-// must be implemented by a class that implements Client interface.
-//
-// The class keeps the following members:
-// ArrayList<Handle> _itemHandles - handles returned by RFA on registering the items
-//							application uses this handles to identify the items
-// QSConsumerDemo _mainApp - main application class
 /**
  * 该类有多个实例.一个订阅的产品对应一个itemManager.
  * @author Cloud.Wei
  *
  */
 @Service("chyCurrencyManager")@Scope("prototype")
-public class ChyCurrencyManager extends IProcesser implements Client{
+public class ChyCurrencyManager implements Client{
 	private static final String CNY_CURRENCY_SOURCE_CODE = "CNY=CFXS";
 	
 	Handle  itemHandle;
@@ -141,13 +122,11 @@ public class ChyCurrencyManager extends IProcesser implements Client{
 //        this.clientName = clientName;
 //    }
     // creates streaming request messages for items and register them to RFA
-    public void sendRicRequest(String pItemName,byte responseMsgType)
+    public void sendRicRequest()
     {
-    	this.responseMessageType = responseMsgType;
-    	_logger.info("sendRequest: Sending item("+pItemName+") requests to server ");
+    	_logger.info("sendRequest: Sending item("+CNY_CURRENCY_SOURCE_CODE+") requests to server ");
         String serviceName = _mainApp.serviceName;
-        this.clientRequestItemName = pItemName;
-        String[] itemNames = {pItemName};
+        String[] itemNames = {CNY_CURRENCY_SOURCE_CODE};
         short msgModelType = RDMMsgTypes.MARKET_PRICE;
 
         OMMItemIntSpec ommItemIntSpec = new OMMItemIntSpec();
@@ -196,24 +175,17 @@ public class ChyCurrencyManager extends IProcesser implements Client{
 	public void closeRequest() {
 		_itemGroupManager._handles.remove(itemHandle);
 		_mainApp.getOMMConsumer().unregisterClient(itemHandle);
-		RmdsDataCache.RIC_ITEMMANAGER_Map.remove(this.clientRequestItemName);
-		RmdsDataCache.RIC_ITEMMANAGER_Map.remove(this.derivactiveItemName);
-		RmdsDataCache.CLIENT_ITEMMANAGER_MAP.remove(this.clientRequestItemName);
-		RmdsDataCache.CLIENT_ITEMMANAGER_MAP.remove(this.derivactiveItemName);
+//		RmdsDataCache.RIC_ITEMMANAGER_Map.remove(this.clientRequestItemName);
+//		RmdsDataCache.RIC_ITEMMANAGER_Map.remove(this.derivactiveItemName);
+//		RmdsDataCache.CLIENT_ITEMMANAGER_MAP.remove(this.clientRequestItemName);
+//		RmdsDataCache.CLIENT_ITEMMANAGER_MAP.remove(this.derivactiveItemName);
 	}
 
     // This is a Client method. When an event for this client is dispatched,
     // this method gets called.
     public void processEvent(Event event)
     {
-    	long startTime = NetTimeUtil.getCurrentNetTime();
-    	switch (event.getType())
-        {
-            case Event.OMM_SOLICITED_ITEM_EVENT:
-                processOMMSolicitedItemEvent((OMMSolicitedItemEvent)event);
-                break;
-        }
-    	
+    	long startTime = System.currentTimeMillis();
     	// Completion event indicates that the stream was closed by RFA
     	if (event.getType() == Event.COMPLETION_EVENT) 
     	{
@@ -222,8 +194,6 @@ public class ChyCurrencyManager extends IProcesser implements Client{
     		return;
     	}
 
-    	// check for an event type; it should be item event.
-        _logger.info("processEvent: Received Item("+clientRequestItemName+") Event from server ");
         if (event.getType() != Event.OMM_ITEM_EVENT) 
         {
         	//这里程序太危险了,因为RFA给的消息有误就要退出程序.恐怖的逻辑啊.还是去掉cleanup好了.
@@ -235,54 +205,39 @@ public class ChyCurrencyManager extends IProcesser implements Client{
         OMMItemEvent ommItemEvent = (OMMItemEvent) event;
         OMMMsg respMsg = ommItemEvent.getMsg();
         //可以考虑将以下的动作放入到
-        final LocateUnionMessage locateMessage = ommParser.parse(respMsg, clientRequestItemName);
+        final LocateUnionMessage locateMessage = ommParser.parse(respMsg, CNY_CURRENCY_SOURCE_CODE);
         locateMessage.setStartTime(startTime);
         //将信息开始处理时间加入到消息中
 //		XmlMessageUtil.addStartHandleTime(responseMsg, startTime);
         //如果是状态消息.处理后直接发送给客户端.
         if(respMsg.getMsgType()==OMMMsg.MsgType.STATUS_RESP && (respMsg.has(OMMMsg.HAS_STATE))){
         	ommParser.handelLocateState(respMsg, locateMessage);
-        	GateWayResponser.notifyAllCustomersStateChange(locateMessage);
-        	if(!StringUtils.isBlank(derivactiveItemName)){
-        		GateWayResponser.notifyAllCustomersStateChange(locateMessage.derivedClone());
-        	}
 			_logger.warn("RFA server has new state. streamState:"+locateMessage.getStreamingState()+" datasstate "+locateMessage.getDataingState());
 			return;
         }
         
-        // Status response can contain group id
-		if ((respMsg.getMsgType() == OMMMsg.MsgType.REFRESH_RESP)
-				|| (respMsg.getMsgType() == OMMMsg.MsgType.STATUS_RESP && respMsg.has(OMMMsg.HAS_ITEM_GROUP))) {
-			OMMItemGroup group = respMsg.getItemGroup();
-			Handle itemHandle = event.getHandle();
-			_itemGroupManager.applyGroup(itemHandle, group);
-		}
-		List<Integer> fieldFilterList = FilterManager.filterMap.get(clientRequestItemName);
-		filedFiltrMessage(locateMessage, fieldFilterList);
-		EngineLine engineLine = EngineManager.engineLineCache.get(clientRequestItemName);
-		engineFuture=engineLine.applyStrategy(locateMessage);
-		if(engineFuture!=null){
-			try {
-				engineFuture.get();
-			} catch (InterruptedException | ExecutionException e) {
-				_logger.warn("get the engine result error!",e);
-			}
-		}
-		EngineLine derivedEngline = EngineManager.engineLineCache.get(derivactiveItemName);
-		if(derivedEngline!=null){
-			derivedEngineFuture = derivedEngline.applyStrategy(locateMessage.derivedClone());
-			if(!StringUtils.isBlank(derivactiveItemName)){
-				if(derivedEngineFuture!=null){
-					try {
-						derivedEngineFuture.get();
-					} catch (InterruptedException | ExecutionException e) {
-						_logger.warn("get the dervied engine result error!",e);
-					}
+        List<String[]> payLoadList=locateMessage.getPayLoadSet();
+        for(String[] payLoad:payLoadList){
+        	if("6".equalsIgnoreCase(payLoad[0])){
+        		if(payLoad.length>3){
+        			CurrencyEngine.currency=payLoad[3];
+        		}
+        	}
+        }
+        
+		EngineLine engineLine = EngineManager.engineLineCache.get("DE_XAG=_CNY");
+		if (engineLine != null) {
+			Future<LocateUnionMessage> engineFuture = engineLine.applyStrategy();
+			if (engineFuture != null) {
+				try {
+					engineFuture.get();
+				} catch (InterruptedException | ExecutionException e) {
+					_logger.warn("get the engine result error!", e);
 				}
 			}
 		}
 		long endTime = NetTimeUtil.getCurrentNetTime();
-		_logger.info("publish Item " + clientRequestItemName + " use time " + (endTime - startTime) + " microseconds");
+		_logger.info("publish Item " + CNY_CURRENCY_SOURCE_CODE + " use time " + (endTime - startTime) + " microseconds");
     }
     
     /**

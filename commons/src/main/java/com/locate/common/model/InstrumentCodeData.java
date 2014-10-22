@@ -38,8 +38,13 @@ public class InstrumentCodeData {
 	}
 	
 	public static String exchangeSourceCode2InstrumentCode(String sourceCode){
+		String instrumentCode = null;
 		InstrumentCodeModel instrumentCodeModel = sourceCodeMap.get(sourceCode);
-		String instrumentCode = instrumentCodeModel.getInstrumentCode();
+		if(instrumentCodeModel==null){
+			instrumentCode = sourceCode;
+		}else{
+			instrumentCode = instrumentCodeModel.getInstrumentCode();
+		}
 		return instrumentCode;
 	}
 	

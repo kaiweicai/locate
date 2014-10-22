@@ -31,6 +31,7 @@ import com.locate.rmds.engine.CurrencyEngine;
 import com.locate.rmds.engine.Engine;
 import com.locate.rmds.engine.EngineLine;
 import com.locate.rmds.engine.filter.EngineManager;
+import com.locate.rmds.processer.ChyCurrencyManager;
 import com.locate.rmds.processer.ItemGroupManager;
 import com.locate.rmds.processer.ItemManager;
 import com.locate.rmds.processer.NewsItemManager;
@@ -344,7 +345,7 @@ public class QSConsumerProxy{
 				EngineManager.engineLineCache.put(derivactiveItemName, derivedEngineLine);
 			}
 			itemName = DerivedUtils.restoreRic(itemName);
-			CurrencyEngine.currency = SystemProperties.getProperties(SystemProperties.CUR_US_CYN);
+//			CurrencyEngine.currency = SystemProperties.getProperties(SystemProperties.CUR_US_CYN);
 			Map<String,Engine> engineMap = EngineManager.genEgines(derivactiveItemName);
 			derivedEngineLine.addEngine("currencyEngine", engineMap);
 		}

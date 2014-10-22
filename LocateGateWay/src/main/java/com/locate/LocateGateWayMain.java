@@ -16,6 +16,7 @@ import com.locate.common.model.InstrumentCodeData;
 import com.locate.common.utils.LogbackShutdownHook;
 import com.locate.common.utils.ShutdownWorker;
 import com.locate.common.utils.SystemProperties;
+import com.locate.rmds.processer.ChyCurrencyManager;
 
 /**
  * 
@@ -44,6 +45,8 @@ public class LocateGateWayMain {
 	public static void main(String[] args) {
 		logger.info("start LocateGateWay!");
 		SystemConstant.springContext = new FileSystemXmlApplicationContext(new String[] { "config/propholder.xml" });
+		ChyCurrencyManager currencyManager = SystemConstant.springContext.getBean("chyCurrencyManager",ChyCurrencyManager.class);
+		currencyManager.sendRicRequest();
 		Thread logbackShutdownHook = new LogbackShutdownHook();
 		logbackShutdownHook.setName("logbackshutdownWork!");
 		Runtime.getRuntime().addShutdownHook(logbackShutdownHook);
