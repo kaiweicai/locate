@@ -3,13 +3,19 @@ package com.locate.rmds.engine;
 import java.math.BigDecimal;
 import java.util.List;
 
+import javax.annotation.Resource;
+
 import org.apache.commons.lang.StringUtils;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import com.locate.common.model.LocateUnionMessage;
 import com.locate.common.utils.SystemProperties;
 
+@Component("CNY")
 public class CurrencyEngine implements Engine {
-	public static float currency;
+	public static String currency = "1";
+	public static final BigDecimal OZ2GRAM = new BigDecimal("28.3495231");
 	public static String currencyFiled = SystemProperties.getProperties(SystemProperties.CURRENCY_FIELD);
 	private static String[] curFields = currencyFiled.split(",");
 	@Override
@@ -17,17 +23,17 @@ public class CurrencyEngine implements Engine {
 		List<String[]> payLoadList = message.getPayLoadSet();
 		for(String[] payLoad:payLoadList){
 			String id = payLoad[0];
-			if(StringUtils.isBlank(payLoad[3])){
-				continue;
-			}
 			if(fieldInChange(id,curFields)){
+				if(StringUtils.isBlank(payLoad[3])){
+					continue;
+				}
 				BigDecimal payLoadValue = new BigDecimal(payLoad[3]);
-				BigDecimal currencyValue = new BigDecimal(Double.toString(currency));
-				BigDecimal resultValue = payLoadValue.multiply(currencyValue);
-				double exchangValue = resultValue.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
-				payLoad[3] = "" + exchangValue;
+				BigDecimal currencyValue = new BigDecimal(currency);
+				BigDecimal resultValue = payLoadValue.multiply(currencyValue).multiply(OZ2GRAM);
+//				double exchangValue = resultValue.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+				double exchangValue = resultValue.doubleValue();
 //				float exchangValue=Float.parseFloat(payLoad[3])*currency;
-				payLoad[3]=""+exchangValue;
+				payLoad[3] = "" + exchangValue;
 			}
 		}
 		return message;

@@ -1,6 +1,7 @@
 package com.locate.rmds.engine;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -38,6 +39,13 @@ public class EngineLine {
 		engineMap = new HashMap<String, Engine>();
 		engineMap.putAll(swapEngineMap);
 		engineMap.put(engineName, engine);
+		swap();
+	}
+	
+	public void addEngine(String engineName, Map<String,Engine> addEngineMap) {
+		engineMap = new HashMap<String, Engine>();
+		engineMap.putAll(swapEngineMap);
+		engineMap.putAll(addEngineMap);
 		swap();
 	}
 

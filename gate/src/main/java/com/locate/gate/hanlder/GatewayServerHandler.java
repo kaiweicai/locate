@@ -175,11 +175,14 @@ public class GatewayServerHandler extends StringDecoder {
 			}
 			// store the channel of customer in a map according by the RIC
 			if (msgType != LocateMessageTypes.LOGIN) {
+				StringBuilder sourceRic = new StringBuilder();
 				for (String subcribeItemName : request.getRIC().split(",")) {
 					Map<String, ChannelGroup> subscribeChannelMap = GateChannelCache.itemNameChannelGroupMap;
 					//将客户端的instrumentCode转成Locate系统使用的sourceCode.
 					subcribeItemName = InstrumentCodeData.exchangeInstrumentCodeToSourceCode(subcribeItemName);
+					sourceRic.append(subcribeItemName+",");
 					boolean isDerived = DerivedUtils.isDerived(subcribeItemName);
+					//订阅了该产品,则将该产品的channel放入到该产品对应的channelGroup中.
 					ChannelGroup subChannelGroup = subscribeChannelMap.get(subcribeItemName);
 					if (subChannelGroup == null) {
 						subChannelGroup = new DefaultChannelGroup(subcribeItemName,GlobalEventExecutor.INSTANCE);
@@ -188,7 +191,9 @@ public class GatewayServerHandler extends StringDecoder {
 					if (!subChannelGroup.contains(channel)) {
 						subChannelGroup.add(channel);
 					}
+					//如果该产品是一种衍生品的化,将衍生品和它的源单品对应起来.
 					if (isDerived) {
+						
 						String itemName = DerivedUtils.restoreRic(subcribeItemName);
 						List<String> derivedChannelList = GateChannelCache.item2derivedMap.get(itemName);
 						if (derivedChannelList == null) {
@@ -200,17 +205,24 @@ public class GatewayServerHandler extends StringDecoder {
 						}
 					}
 				}
+				request.setRIC(sourceRic.toString());
 			}
 			if (StringUtils.isBlank(userName)) {
 				userName = DataBaseCache._userConnection.get(clientIP);
 			}
+			
 			int channelId = channel.hashCode();
-			if(GateChannelCache.id2ChannelMap.get(channelId)==null){
-				GateChannelCache.id2ChannelMap.put(channelId, channel);
+			if (msgType == LocateMessageTypes.LOGIN) {
+				if(GateChannelCache.id2ChannelMap.get(channelId)==null){
+					GateChannelCache.id2ChannelMap.put(channelId, channel);
+				}else{
+					Channel channle = GateChannelCache.id2ChannelMap.get(channelId);
+					logger.error("channel has been used by other user! Used Channel is "+channle);
+				}
 			}
-			ClientRequest clientInfo = new ClientRequest(request, userName, channelId, clientIP);
+			request.encapNetInfo(userName, channelId, clientIP);
 			// RFAClientHandler process message and send the request to RFA.
-			gateForwardRFA.process(clientInfo);
+			gateForwardRFA.process(request);
 		} catch (Throwable throwable) {
 			errorLogHandler.error("Unexpected error ocurres", throwable);
 		}

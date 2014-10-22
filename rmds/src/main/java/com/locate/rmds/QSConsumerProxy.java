@@ -28,8 +28,9 @@ import com.locate.rmds.dict.DirectoryClient;
 import com.locate.rmds.dict.RDMServiceInfo;
 import com.locate.rmds.dict.ServiceInfo;
 import com.locate.rmds.engine.CurrencyEngine;
+import com.locate.rmds.engine.Engine;
 import com.locate.rmds.engine.EngineLine;
-import com.locate.rmds.engine.filter.EngineLinerManager;
+import com.locate.rmds.engine.filter.EngineManager;
 import com.locate.rmds.processer.ItemGroupManager;
 import com.locate.rmds.processer.ItemManager;
 import com.locate.rmds.processer.NewsItemManager;
@@ -333,23 +334,24 @@ public class QSConsumerProxy{
 
 	// This method utilizes ItemManager class to request items
 	public ItemManager itemRequests(String itemName, byte responseMsgType,int channelId) {
-		//如果ITEM以PT开头,则表示为客户自定义的产品,需要实施产品策略.以后策略添加在这个位置.
+		//如果ITEM以DE开头,则表示为客户自定义的产品,需要实施产品策略.以后策略添加在这个位置.
 		String derivactiveItemName = "";
 		if (DerivedUtils.isDerived(itemName)) {
 			derivactiveItemName = itemName;
-			EngineLine derivedEngineLine = EngineLinerManager.engineLineCache.get(derivactiveItemName);
+			EngineLine derivedEngineLine = EngineManager.engineLineCache.get(derivactiveItemName);
 			if(derivedEngineLine == null){
 				derivedEngineLine = new EngineLine();
-				EngineLinerManager.engineLineCache.put(derivactiveItemName, derivedEngineLine);
+				EngineManager.engineLineCache.put(derivactiveItemName, derivedEngineLine);
 			}
 			itemName = DerivedUtils.restoreRic(itemName);
-			CurrencyEngine.currency = Float.parseFloat(SystemProperties.getProperties(SystemProperties.CUR_US_CYN));
-			derivedEngineLine.addEngine("currencyEngine", new CurrencyEngine());
+			CurrencyEngine.currency = SystemProperties.getProperties(SystemProperties.CUR_US_CYN);
+			Map<String,Engine> engineMap = EngineManager.genEgines(derivactiveItemName);
+			derivedEngineLine.addEngine("currencyEngine", engineMap);
 		}
-		EngineLine originalEngineLine = EngineLinerManager.engineLineCache.get(itemName);
+		EngineLine originalEngineLine = EngineManager.engineLineCache.get(itemName);
 		if(originalEngineLine == null){
 			originalEngineLine= new EngineLine();
-			EngineLinerManager.engineLineCache.put(itemName, originalEngineLine);
+			EngineManager.engineLineCache.put(itemName, originalEngineLine);
 		}
 		Map<String,IProcesser> subscribeItemManagerMap = RmdsDataCache.RIC_ITEMMANAGER_Map;
 		boolean needRenewSubscribeItem=checkSubscribeStatus(itemName);

@@ -33,13 +33,12 @@ public class GateForwardRFA {
 	@Resource
 	private IProcesser itemManager;
 	
-	public int process(ClientRequest clientInfo){
+	public int process(ClientRequest clientRequest){
 //		long startTime = System.currentTimeMillis();
-		int channelID = clientInfo.getChannelID();
-		ClientRequest request =clientInfo.getClientRequest();
-		String clientName = clientInfo.getUserName();
-		String clientIP = clientInfo.getClientIP();
-		byte _msgType=clientInfo.getMsgType();
+		int channelID = clientRequest.getChannelID();
+		String clientName = clientRequest.getUserName();
+		String clientIP = clientRequest.getClientIP();
+		byte _msgType=clientRequest.getMsgType();
 		ClientUserValidator clientUserLogin = new ClientUserValidator(clientIP);
 		
 		int resultCode =-1;
@@ -60,7 +59,7 @@ public class GateForwardRFA {
 		
 		switch( _msgType){
 		    case LocateMessageTypes.LOGIN : 
-		    	resultCode = clientUserLogin.authUserLogin(request,clientIP);
+		    	resultCode = clientUserLogin.authUserLogin(clientRequest,clientIP);
 		    	LocateUnionMessage message = new LocateUnionMessage();
 		    	message.setStartTime(NetTimeUtil.getCurrentNetTime());
 				byte msgType = LocateMessageTypes.SERVER_STATE;
@@ -69,18 +68,18 @@ public class GateForwardRFA {
 		    	return resultCode;
 		    case LocateMessageTypes.UNREGISTER_REQUEST:
 		    	responseMsgType = LocateMessageTypes.RESPONSE_UNREGISTER;
-		    	resultCode = requestHandler.processRequest(request,clientName,responseMsgType,channelID);
+		    	resultCode = requestHandler.processRequest(clientRequest,clientName,responseMsgType,channelID);
 		    	break;
 		    case LocateMessageTypes.STOCK_REQUEST:
 		    	responseMsgType = LocateMessageTypes.RESPONSE_STOCK;
-		    	resultCode = requestHandler.processRequest(request,clientName,responseMsgType,channelID);
+		    	resultCode = requestHandler.processRequest(clientRequest,clientName,responseMsgType,channelID);
 		    	break;
 		    case LocateMessageTypes.STOCK_LINK_REQUEST:
-		    	resultCode = requestHandler.processOneTimesRequest(request,clientName,LocateMessageTypes.RESPONSE_STOCK_LINK,channelID);
+		    	resultCode = requestHandler.processOneTimesRequest(clientRequest,clientName,LocateMessageTypes.RESPONSE_STOCK_LINK,channelID);
 		    	break;
 		    case LocateMessageTypes.CURRENCY_REQUEST:
 		    	responseMsgType = LocateMessageTypes.RESPONSE_CURRENCY;
-		    	resultCode=requestHandler.processRequest(request,clientName,responseMsgType,channelID);
+		    	resultCode=requestHandler.processRequest(clientRequest,clientName,responseMsgType,channelID);
 		    	break;
 //		    case RFAMessageTypes.CURRENCY_LINK_REQUEST:
 //		    	processOneTimesRequest(request,clientName,RFAMessageTypes.RESPONSE_CURRENCY_LINK);
@@ -88,20 +87,20 @@ public class GateForwardRFA {
 //		    	
 		    case LocateMessageTypes.OPTION_REQUEST:
 		    	responseMsgType = LocateMessageTypes.RESPONSE_OPTION;
-		    	resultCode=requestHandler.processRequest(request,clientName,responseMsgType,channelID);
+		    	resultCode=requestHandler.processRequest(clientRequest,clientName,responseMsgType,channelID);
 		    	break;
 //		    case RFAMessageTypes.OPTION_LINK_REQUEST:
 //		    	processOneTimesRequest(request,clientName,RFAMessageTypes.RESPONSE_OPTION_LINK);
 //		    	break;
 		    case LocateMessageTypes.FUTURE_REQUEST:
 		    	responseMsgType = LocateMessageTypes.RESPONSE_FUTURE;
-		    	resultCode = requestHandler.processRequest(request,clientName,responseMsgType,channelID);
+		    	resultCode = requestHandler.processRequest(clientRequest,clientName,responseMsgType,channelID);
 		    	break;
 //		    case RFAMessageTypes.FUTURE_LINK_REQUEST:
 //		    	processOneTimesRequest(request,clientName,RFAMessageTypes.RESPONSE_FUTURE_LINK);
 //		    	break;
 		    case LocateMessageTypes.INDEX_REQUEST:
-		    	resultCode = requestHandler.processRequest(request,clientName,LocateMessageTypes.RESPONSE_INDEX,channelID);
+		    	resultCode = requestHandler.processRequest(clientRequest,clientName,LocateMessageTypes.RESPONSE_INDEX,channelID);
 		    	break;
 //		    case RFAMessageTypes.INDEX_LINK_REQUEST:
 //		    	processOneTimesRequest(request,clientName,RFAMessageTypes.RESPONSE_INDEX_LINK);

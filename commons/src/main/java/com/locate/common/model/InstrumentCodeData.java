@@ -25,9 +25,15 @@ public class InstrumentCodeData {
 	public static final String instrumentCodeFileName = "config/PTInstrumentCode";
 	public static ErrorLogHandler errorLogHandler = ErrorLogHandler.getLogger(InstrumentCodeData.class);
 
-	public static String exchangeInstrumentCodeToSourceCode(String intrumentCode){
+	public static String exchangeInstrumentCodeToSourceCode(String intrumentCode) {
 		InstrumentCodeModel instrumentCodeModel = instrumentCodeMap.get(intrumentCode);
+		if(instrumentCodeModel==null){
+			return intrumentCode;
+		}
 		String sourceCode = instrumentCodeModel.getSourceCode();
+		if ("empty".equals(sourceCode)) {
+			return intrumentCode;
+		}
 		return sourceCode;
 	}
 	

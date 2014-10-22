@@ -32,7 +32,7 @@ public class AdapterHandler extends MessageToMessageEncoder<LocateUnionMessage> 
 			throws Exception {
 		String itemName = msg.getItemName();
 		if(StringUtils.isNotBlank(itemName)){
-			itemName = InstrumentCodeData.exchangeInstrumentCodeToSourceCode(itemName);
+			itemName = InstrumentCodeData.exchangeSourceCode2InstrumentCode(itemName);
 			msg.setItemName(itemName);
 		}
 		String content = "";

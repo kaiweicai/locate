@@ -11,7 +11,7 @@ import com.locate.common.logging.err.ErrorLogHandler;
 import com.locate.common.model.LocateUnionMessage;
 import com.locate.common.utils.NetTimeUtil;
 import com.locate.rmds.QSConsumerProxy;
-import com.locate.rmds.engine.filter.EngineLinerManager;
+import com.locate.rmds.engine.filter.EngineManager;
 import com.locate.rmds.engine.filter.FilterManager;
 import com.locate.rmds.parser.LocateOMMParser;
 import com.locate.rmds.processer.face.IProcesser;
@@ -173,7 +173,7 @@ public class OneTimeItemManager extends IProcesser implements Client
 				errorLogHandler.error("get the engine result error!",e);
 			}
 		}
-		engineFuture=EngineLinerManager.engineLineCache.get(clientRequestItemName).applyStrategy(locateMessage,channelID);
+		engineFuture=EngineManager.engineLineCache.get(clientRequestItemName).applyStrategy(locateMessage,channelID);
 		if(!StringUtils.isBlank(derivactiveItemName)){
 			if(derivedEngineFuture!=null){
 				try {
@@ -182,7 +182,7 @@ public class OneTimeItemManager extends IProcesser implements Client
 					errorLogHandler.error("get the dervied engine result error!",e);
 				}
 			}
-			derivedEngineFuture = EngineLinerManager.engineLineCache.get(derivactiveItemName).applyStrategy(locateMessage.clone());
+			derivedEngineFuture = EngineManager.engineLineCache.get(derivactiveItemName).applyStrategy(locateMessage.clone());
 		}
         if(locateMessage != null){
         	long endTime = NetTimeUtil.getCurrentNetTime();

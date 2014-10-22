@@ -58,13 +58,14 @@ import com.reuters.rfa.session.omm.OMMSolicitedItemEvent;
  * @author Cloud.Wei
  *
  */
-@Service("itemManager")@Scope("prototype")
-public class ItemManager extends IProcesser implements Client
-{
+@Service("chyCurrencyManager")@Scope("prototype")
+public class ChyCurrencyManager extends IProcesser implements Client{
+	private static final String CNY_CURRENCY_SOURCE_CODE = "CNY=CFXS";
+	
 	Handle  itemHandle;
 	@Resource
 	QSConsumerProxy _mainApp;
-    static Logger _logger = LoggerFactory.getLogger(ItemManager.class.getName());
+    static Logger _logger = LoggerFactory.getLogger(ChyCurrencyManager.class);
     @Resource
     ItemGroupManager _itemGroupManager;
     @Resource(name="locateOMMParser")
@@ -72,10 +73,6 @@ public class ItemManager extends IProcesser implements Client
 	//    public String clientName;
     public byte responseMessageType;
 
-    private	String	_className = "ItemManager";
-
-	private LocateUnionMessage snapshotLocateMessage;
-	
 	// requests
 	static private int _request_count;
     static private CycleStatistics _request_cycleStats;
@@ -147,7 +144,7 @@ public class ItemManager extends IProcesser implements Client
     public void sendRicRequest(String pItemName,byte responseMsgType)
     {
     	this.responseMessageType = responseMsgType;
-    	_logger.info(_className+".sendRequest: Sending item("+pItemName+") requests to server ");
+    	_logger.info("sendRequest: Sending item("+pItemName+") requests to server ");
         String serviceName = _mainApp.serviceName;
         this.clientRequestItemName = pItemName;
         String[] itemNames = {pItemName};
@@ -174,7 +171,7 @@ public class ItemManager extends IProcesser implements Client
 		for (int i = 0; i < itemNames.length; i++) {
 			String itemName = itemNames[i];
 //			this.clientRequestItemName = itemName;
-			_logger.info(_className + ": Subscribing to " + itemName);
+			_logger.info("Subscribing to " + itemName);
 
 			ommmsg.setAttribInfo(serviceName, itemName, RDMInstrument.NameType.RIC);
 
@@ -220,17 +217,17 @@ public class ItemManager extends IProcesser implements Client
     	// Completion event indicates that the stream was closed by RFA
     	if (event.getType() == Event.COMPLETION_EVENT) 
     	{
-    		_logger.info(_className+": Receive a COMPLETION_EVENT, "+ event.getHandle());
+    		_logger.info("Receive a COMPLETION_EVENT, "+ event.getHandle());
     		//@TODO 判断是否通知所有现存客户端某个产品已经停止发布.
     		return;
     	}
 
     	// check for an event type; it should be item event.
-        _logger.info(_className+".processEvent: Received Item("+clientRequestItemName+") Event from server ");
+        _logger.info("processEvent: Received Item("+clientRequestItemName+") Event from server ");
         if (event.getType() != Event.OMM_ITEM_EVENT) 
         {
         	//这里程序太危险了,因为RFA给的消息有误就要退出程序.恐怖的逻辑啊.还是去掉cleanup好了.
-            _logger.error("ERROR: "+_className+" Received an unsupported Event type.");
+            _logger.error("Received an unsupported Event type.");
 //            _mainApp.cleanup();
             return;
         }
@@ -251,9 +248,6 @@ public class ItemManager extends IProcesser implements Client
         	}
 			_logger.warn("RFA server has new state. streamState:"+locateMessage.getStreamingState()+" datasstate "+locateMessage.getDataingState());
 			return;
-        }
-        if (respMsg.getMsgType() == OMMMsg.MsgType.REFRESH_RESP){
-        	snapshotLocateMessage = locateMessage;
         }
         
         // Status response can contain group id
@@ -290,14 +284,6 @@ public class ItemManager extends IProcesser implements Client
 		long endTime = NetTimeUtil.getCurrentNetTime();
 		_logger.info("publish Item " + clientRequestItemName + " use time " + (endTime - startTime) + " microseconds");
     }
-    
-    public void sendInitialDocument(int channelId) {
-    	if(snapshotLocateMessage!=null){
-    		long startTime = System.currentTimeMillis();
-//    		XmlMessageUtil.addStartHandleTime(snapshotLocateMessage, startTime);
-    		GateWayResponser.sendSnapShotToChannel( snapshotLocateMessage,channelId);
-    	}
-	}
     
     /**
      * Handle solicited item events.

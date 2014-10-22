@@ -23,6 +23,7 @@
 			<pattern>%date %level [%thread] %logger.%class{0}#%method
 				[%file:%line] %msg%n</pattern>
 		</encoder>
+		<appender-ref ref="ERR_APPENDER"/>
 	</appender>
 	<!-- 异步输出 -->
 	<appender name="ASYNC" class="ch.qos.logback.classic.AsyncAppender">
