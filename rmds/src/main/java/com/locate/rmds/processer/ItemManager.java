@@ -265,6 +265,7 @@ public class ItemManager extends IProcesser implements Client
 		}
 		List<Integer> fieldFilterList = FilterManager.filterMap.get(clientRequestItemName);
 		filedFiltrMessage(locateMessage, fieldFilterList);
+		LocateUnionMessage derivedLocateUnionMessage = locateMessage.derivedClone();
 		EngineLine engineLine = EngineManager.engineLineCache.get(clientRequestItemName);
 		engineFuture=engineLine.applyStrategy(locateMessage);
 		if(engineFuture!=null){
@@ -276,7 +277,7 @@ public class ItemManager extends IProcesser implements Client
 		}
 		EngineLine derivedEngline = EngineManager.engineLineCache.get(derivactiveItemName);
 		if(derivedEngline!=null){
-			derivedEngineFuture = derivedEngline.applyStrategy(locateMessage.derivedClone());
+			derivedEngineFuture = derivedEngline.applyStrategy(derivedLocateUnionMessage);
 			if(!StringUtils.isBlank(derivactiveItemName)){
 				if(derivedEngineFuture!=null){
 					try {

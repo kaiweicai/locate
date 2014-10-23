@@ -48,7 +48,7 @@ public class GateWayResponser {
 		String itemName = locateMessage.getItemName();
 		ChannelGroup channelGroup = GateChannelCache.itemNameChannelGroupMap.get(itemName);
 		if(channelGroup==null){
-			logger.warn("channel can not find ! The itemName"+itemName);
+			logger.error("channel can not find ! The itemName "+itemName);
 			return;
 		}
 		if(channelGroup.size()==0){

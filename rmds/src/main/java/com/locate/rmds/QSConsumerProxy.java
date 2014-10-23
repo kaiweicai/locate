@@ -341,7 +341,7 @@ public class QSConsumerProxy{
 			derivactiveItemName = itemName;
 			EngineLine derivedEngineLine = EngineManager.engineLineCache.get(derivactiveItemName);
 			if(derivedEngineLine == null){
-				derivedEngineLine = new EngineLine();
+				derivedEngineLine = new EngineLine(derivactiveItemName);
 				EngineManager.engineLineCache.put(derivactiveItemName, derivedEngineLine);
 			}
 			itemName = DerivedUtils.restoreRic(itemName);
@@ -351,7 +351,7 @@ public class QSConsumerProxy{
 		}
 		EngineLine originalEngineLine = EngineManager.engineLineCache.get(itemName);
 		if(originalEngineLine == null){
-			originalEngineLine= new EngineLine();
+			originalEngineLine= new EngineLine(itemName);
 			EngineManager.engineLineCache.put(itemName, originalEngineLine);
 		}
 		Map<String,IProcesser> subscribeItemManagerMap = RmdsDataCache.RIC_ITEMMANAGER_Map;

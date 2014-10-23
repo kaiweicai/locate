@@ -66,7 +66,6 @@
 	</root>
 
 	<logger name="com.locate" level="debug">
-		<appender-ref ref="ERR_APPENDER" />
 	</logger>
 
 	<logger name="quartz" level="ERROR">
@@ -83,7 +82,7 @@
 	<logger name="com.locate.common.logging.biz" level="INFO" additivity="false">
 		<appender-ref ref="BIZ_APPENDER" />
 	</logger>
-	<logger name="com.locate.common.logging.err" level="ERROR" additivity="false">
+	<logger name="com.locate.common.logging.err" level="ERROR" additivity="true">
 		<appender-ref ref="ERR_APPENDER" />
 	</logger>
 </configuration>

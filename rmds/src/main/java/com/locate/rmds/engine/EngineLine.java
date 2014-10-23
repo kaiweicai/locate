@@ -20,13 +20,19 @@ import com.locate.common.model.LocateUnionMessage;
 @Component("engineLine")
 @Scope("prototype")
 public class EngineLine {
+	private String itemName;
 	private static Logger logger = LoggerFactory.getLogger(EngineLine.class);
 	private ErrorLogHandler errorLogHandler = ErrorLogHandler.getLogger(getClass());
 	public static ExecutorService executeService = Executors.newCachedThreadPool();
 	private Map<String, Engine> engineMap;
 	public Map<String, Engine> swapEngineMap;
-	private static LocateUnionMessage lastMessage;
-	public EngineLine() {
+	private LocateUnionMessage lastMessage;
+//	public EngineLine() {
+//		init();
+//	}
+	
+	public EngineLine(String itemName){
+		this.itemName = itemName;
 		init();
 	}
 
@@ -82,24 +88,33 @@ public class EngineLine {
 	}
 	
 	public Future<LocateUnionMessage> applyStrategy() {
-		final LocateUnionMessage locateMessage = lastMessage.clone();
-		Callable<LocateUnionMessage> engineTask = new Callable<LocateUnionMessage>() {
-			@Override
-			public LocateUnionMessage call() throws Exception {
-				for (final String engineName : swapEngineMap.keySet()) {
-					Engine engine = swapEngineMap.get(engineName);
-					engine.doEngine(locateMessage);
-				}
-				GateWayResponser.sentMrketPriceToSubsribeChannel(locateMessage);
-				return locateMessage;
+		if (lastMessage != null) {
+			final LocateUnionMessage locateMessage = lastMessage.clone();
+			String locateItemName = locateMessage.getItemName();
+			if (locateItemName.equalsIgnoreCase(this.itemName)) {
+				logger.error("The strategy forbbiden apply to this product!The engineLine item name is "
+						+ this.itemName + " The locate itemName is " + locateItemName);
+				return null;
 			}
-		};
-		try {
-			return executeService.submit(engineTask);
-		} catch (Exception e) {
-			errorLogHandler.error("ocurrer error !!!!", e);
-			return null;
+			Callable<LocateUnionMessage> engineTask = new Callable<LocateUnionMessage>() {
+				@Override
+				public LocateUnionMessage call() throws Exception {
+					for (final String engineName : swapEngineMap.keySet()) {
+						Engine engine = swapEngineMap.get(engineName);
+						engine.doEngine(locateMessage);
+					}
+					GateWayResponser.sentMrketPriceToSubsribeChannel(locateMessage);
+					return locateMessage;
+				}
+			};
+			try {
+				return executeService.submit(engineTask);
+			} catch (Exception e) {
+				errorLogHandler.error("ocurrer error !!!!", e);
+				return null;
+			}
 		}
+		return null;
 	}
 	
 	
