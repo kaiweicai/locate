@@ -347,12 +347,13 @@ public class QSConsumerProxy{
 			itemName = DerivedUtils.restoreRic(itemName);
 //			CurrencyEngine.currency = SystemProperties.getProperties(SystemProperties.CUR_US_CYN);
 			Map<String,Engine> engineMap = EngineManager.genEgines(derivactiveItemName);
-			derivedEngineLine.addEngine("currencyEngine", engineMap);
-		}
-		EngineLine originalEngineLine = EngineManager.engineLineCache.get(itemName);
-		if(originalEngineLine == null){
-			originalEngineLine= new EngineLine(itemName);
-			EngineManager.engineLineCache.put(itemName, originalEngineLine);
+			derivedEngineLine.addEngine(engineMap);
+		}else{
+			EngineLine originalEngineLine = EngineManager.engineLineCache.get(itemName);
+			if(originalEngineLine == null){
+				originalEngineLine= new EngineLine(itemName);
+				EngineManager.engineLineCache.put(itemName, originalEngineLine);
+			}
 		}
 		Map<String,IProcesser> subscribeItemManagerMap = RmdsDataCache.RIC_ITEMMANAGER_Map;
 		boolean needRenewSubscribeItem=checkSubscribeStatus(itemName);
@@ -362,9 +363,11 @@ public class QSConsumerProxy{
 			 * 已经将该用户加入到订阅该产品的用户组中.所以该用户能够收到该产品的更新信息.
 			 */
 			OneTimeItemManager oneTimeItemManager =  new OneTimeItemManager(this, _itemGroupManager,channelId);
-			oneTimeItemManager.setDerivactiveItemName(derivactiveItemName);
-			//如果是衍生品是后面订阅的.需要将衍生品加入到itemManager,否则接收不到update的订阅信息.
-			subscribeItemManagerMap.get(itemName).setDerivactiveItemName(derivactiveItemName);
+			if(StringUtils.isNotBlank(derivactiveItemName)){
+				oneTimeItemManager.setDerivactiveItemName(derivactiveItemName);
+				//如果是衍生品是后面订阅的.需要将衍生品加入到itemManager,否则接收不到update的订阅信息.
+				subscribeItemManagerMap.get(itemName).setDerivactiveItemName(derivactiveItemName);
+			}
 			oneTimeItemManager.sendRicRequest(itemName, responseMsgType);
 			oneTimeItemManager = null;
 //			ItemManager subscibeItemManager =  subscribeItemManagerMap.get(itemName);
@@ -379,7 +382,9 @@ public class QSConsumerProxy{
 //			if(FilterManager.filterMap.containsKey(itemName)){
 //				engineLine.addEngine("filedFilter", FilterManager.filterMap.get(itemName));
 //			}
-			itemManager.setDerivactiveItemName(derivactiveItemName);
+			if(StringUtils.isNotBlank(derivactiveItemName)){
+				itemManager.setDerivactiveItemName(derivactiveItemName);
+			}
 			// Send requests
 			itemManager.sendRicRequest(itemName, responseMsgType);
 			return itemManager;

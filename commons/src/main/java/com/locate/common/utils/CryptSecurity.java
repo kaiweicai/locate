@@ -79,7 +79,7 @@ public class CryptSecurity {
 			cipherByte = c1.doFinal(Base64.decode(sInfo));
 			result = new String(cipherByte, "UTF-8");
 		} catch (Exception e) {
-			logger.error("Decrypt error! String is "+sInfo+e);
+			logger.error("Decrypt error! String is "+sInfo,e);
 		}
 		// return byte2hex(cipherByte);
 		return result;

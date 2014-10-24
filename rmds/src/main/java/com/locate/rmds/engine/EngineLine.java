@@ -48,7 +48,7 @@ public class EngineLine {
 		swap();
 	}
 	
-	public void addEngine(String engineName, Map<String,Engine> addEngineMap) {
+	public void addEngine(Map<String,Engine> addEngineMap) {
 		engineMap = new HashMap<String, Engine>();
 		engineMap.putAll(swapEngineMap);
 		engineMap.putAll(addEngineMap);
@@ -91,7 +91,7 @@ public class EngineLine {
 		if (lastMessage != null) {
 			final LocateUnionMessage locateMessage = lastMessage.clone();
 			String locateItemName = locateMessage.getItemName();
-			if (locateItemName.equalsIgnoreCase(this.itemName)) {
+			if (!locateItemName.equalsIgnoreCase(this.itemName)) {
 				logger.error("The strategy forbbiden apply to this product!The engineLine item name is "
 						+ this.itemName + " The locate itemName is " + locateItemName);
 				return null;

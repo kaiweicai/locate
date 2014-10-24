@@ -1,13 +1,21 @@
 package com.locate.common.model;
 
 import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+
+
+
 
 import com.locate.common.logging.err.ErrorLogHandler;
 import com.locate.common.utils.DerivedUtils;
@@ -19,11 +27,12 @@ import com.locate.common.utils.DerivedUtils;
  * @copyRight by Author
  */
 public class InstrumentCodeData {
+	private static Logger logger = LoggerFactory.getLogger(InstrumentCodeData.class); 
 	public static Map<String, InstrumentCodeModel> chineseNameMap = new HashMap<String, InstrumentCodeModel>();
 	public static Map<String, InstrumentCodeModel> instrumentCodeMap = new HashMap<String, InstrumentCodeModel>();
 	public static Map<String, InstrumentCodeModel> sourceCodeMap = new HashMap<String, InstrumentCodeModel>();
 	public static final String instrumentCodeFileName = "config/PTInstrumentCode";
-	public static ErrorLogHandler errorLogHandler = ErrorLogHandler.getLogger(InstrumentCodeData.class);
+	private static ErrorLogHandler errorLogHandler = ErrorLogHandler.getLogger(InstrumentCodeData.class);
 
 	public static String exchangeInstrumentCodeToSourceCode(String intrumentCode) {
 		InstrumentCodeModel instrumentCodeModel = instrumentCodeMap.get(intrumentCode);
@@ -51,7 +60,7 @@ public class InstrumentCodeData {
 	public static void loadInstrumentData() {
 		BufferedReader bufferedReader = null;
 		try {
-			bufferedReader = new BufferedReader(new FileReader(instrumentCodeFileName));
+			bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(instrumentCodeFileName), "UTF-8"));
 			String instrumentCodeLine = null;
 			while ((instrumentCodeLine = bufferedReader.readLine()) != null) {
 				if (StringUtils.isNotBlank(instrumentCodeLine)) {

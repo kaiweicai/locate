@@ -40,9 +40,7 @@ public abstract class IProcesser{
 	}
 
 	public void setDerivactiveItemName(String derivactiveItemName) {
-		if(!StringUtils.isBlank(derivactiveItemName)){
-			this.derivactiveItemName = derivactiveItemName;
-		}
+		this.derivactiveItemName = derivactiveItemName;
 	}
 
 	public abstract void closeRequest();

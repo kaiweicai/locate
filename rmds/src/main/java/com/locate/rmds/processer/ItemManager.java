@@ -267,12 +267,14 @@ public class ItemManager extends IProcesser implements Client
 		filedFiltrMessage(locateMessage, fieldFilterList);
 		LocateUnionMessage derivedLocateUnionMessage = locateMessage.derivedClone();
 		EngineLine engineLine = EngineManager.engineLineCache.get(clientRequestItemName);
-		engineFuture=engineLine.applyStrategy(locateMessage);
-		if(engineFuture!=null){
-			try {
-				engineFuture.get();
-			} catch (InterruptedException | ExecutionException e) {
-				_logger.warn("get the engine result error!",e);
+		if(engineLine!=null){
+			engineFuture=engineLine.applyStrategy(locateMessage);
+			if(engineFuture!=null){
+				try {
+					engineFuture.get();
+				} catch (InterruptedException | ExecutionException e) {
+					_logger.warn("get the engine result error!",e);
+				}
 			}
 		}
 		EngineLine derivedEngline = EngineManager.engineLineCache.get(derivactiveItemName);
