@@ -312,7 +312,7 @@ public class GatewayServerHandler extends StringDecoder {
 				derivedName = itemName;
 				itemName = DerivedUtils.restoreRic(itemName);
 			}
-			if (GateChannelCache.isEmnpty(itemName)) {// 没有用户订阅了,退订该item
+			if (GateChannelCache.isEmnpty(itemName)) {//没有用户订阅了,退订该item
 				unregisterSet.add(itemName);
 				List<String> derivedList = GateChannelCache.item2derivedMap.get(itemName);
 				if(derivedList!=null){
@@ -327,6 +327,7 @@ public class GatewayServerHandler extends StringDecoder {
 			ChannelGroup itemChannelGroup = GateChannelCache.itemNameChannelGroupMap.get(itemName);
 			if (itemChannelGroup==null || itemChannelGroup.isEmpty()) {
 				GateChannelCache.itemNameChannelGroupMap.remove(itemName);
+				itemChannelGroup = null;
 			}
 		}
 	}

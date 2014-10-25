@@ -89,13 +89,14 @@ public class LocateUnionMessage implements Cloneable{
 	 * 克隆一个产品,并修改itemName为衍生品的名字
 	 * @return 衍生出来的Message
 	 */
-	public LocateUnionMessage derivedClone(){
-		LocateUnionMessage message = this.clone();
-		String itemName = message.getItemName();
-		itemName=DerivedUtils.derivesCurrencyRic(itemName);
-		message.setItemName(itemName);
-		return message;
-	}
+//	@Deprecated
+//	public LocateUnionMessage derivedClone(){
+//		LocateUnionMessage message = this.clone();
+//		String itemName = message.getItemName();
+//		itemName=DerivedUtils.derivesCurrencyRic(itemName);
+//		message.setItemName(itemName);
+//		return message;
+//	}
 	
 	public LocateUnionMessage() {
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

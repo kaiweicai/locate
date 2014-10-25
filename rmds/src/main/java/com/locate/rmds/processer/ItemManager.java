@@ -2,6 +2,7 @@ package com.locate.rmds.processer;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 import javax.annotation.Resource;
 
@@ -12,6 +13,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import com.locate.bridge.GateWayResponser;
+import com.locate.common.datacache.GateChannelCache;
 import com.locate.common.datacache.RmdsDataCache;
 import com.locate.common.model.LocateUnionMessage;
 import com.locate.common.utils.NetTimeUtil;
@@ -199,6 +201,10 @@ public class ItemManager extends IProcesser implements Client
 	public void closeRequest() {
 		_itemGroupManager._handles.remove(itemHandle);
 		_mainApp.getOMMConsumer().unregisterClient(itemHandle);
+		EngineManager.engineLineCache.remove(clientRequestItemName);
+		for(String derivedName:GateChannelCache.item2derivedMap.get(clientRequestItemName)){
+			EngineManager.engineLineCache.remove(derivedName);
+		}
 		RmdsDataCache.RIC_ITEMMANAGER_Map.remove(this.clientRequestItemName);
 		RmdsDataCache.RIC_ITEMMANAGER_Map.remove(this.derivactiveItemName);
 		RmdsDataCache.CLIENT_ITEMMANAGER_MAP.remove(this.clientRequestItemName);
@@ -246,9 +252,9 @@ public class ItemManager extends IProcesser implements Client
         if(respMsg.getMsgType()==OMMMsg.MsgType.STATUS_RESP && (respMsg.has(OMMMsg.HAS_STATE))){
         	ommParser.handelLocateState(respMsg, locateMessage);
         	GateWayResponser.notifyAllCustomersStateChange(locateMessage);
-        	if(!StringUtils.isBlank(derivactiveItemName)){
-        		GateWayResponser.notifyAllCustomersStateChange(locateMessage.derivedClone());
-        	}
+//        	if(!StringUtils.isBlank(derivactiveItemName)){
+//        		GateWayResponser.notifyAllCustomersStateChange(locateMessage.clone());
+//        	}
 			_logger.warn("RFA server has new state. streamState:"+locateMessage.getStreamingState()+" datasstate "+locateMessage.getDataingState());
 			return;
         }
@@ -265,10 +271,10 @@ public class ItemManager extends IProcesser implements Client
 		}
 		List<Integer> fieldFilterList = FilterManager.filterMap.get(clientRequestItemName);
 		filedFiltrMessage(locateMessage, fieldFilterList);
-		LocateUnionMessage derivedLocateUnionMessage = locateMessage.derivedClone();
+		LocateUnionMessage derivedLocateUnionMessage = locateMessage.clone();
 		EngineLine engineLine = EngineManager.engineLineCache.get(clientRequestItemName);
 		if(engineLine!=null){
-			engineFuture=engineLine.applyStrategy(locateMessage);
+			Future<LocateUnionMessage> engineFuture=engineLine.applyStrategy(locateMessage);
 			if(engineFuture!=null){
 				try {
 					engineFuture.get();
@@ -277,19 +283,26 @@ public class ItemManager extends IProcesser implements Client
 				}
 			}
 		}
-		EngineLine derivedEngline = EngineManager.engineLineCache.get(derivactiveItemName);
-		if(derivedEngline!=null){
-			derivedEngineFuture = derivedEngline.applyStrategy(derivedLocateUnionMessage);
-			if(!StringUtils.isBlank(derivactiveItemName)){
-				if(derivedEngineFuture!=null){
-					try {
-						derivedEngineFuture.get();
-					} catch (InterruptedException | ExecutionException e) {
-						_logger.warn("get the dervied engine result error!",e);
+		List<String> derivedNameList=GateChannelCache.item2derivedMap.get(clientRequestItemName);
+		if(derivedNameList!=null){
+			for(String derivedName:derivedNameList){
+				EngineLine derivedEngline = EngineManager.engineLineCache.get(derivedName);
+				if(derivedEngline!=null){
+					derivedLocateUnionMessage.setItemName(derivedName);
+					Future<LocateUnionMessage> derivedEngineFuture = derivedEngline.applyStrategy(derivedLocateUnionMessage);
+					if(!StringUtils.isBlank(derivactiveItemName)){
+						if(derivedEngineFuture!=null){
+							try {
+								derivedEngineFuture.get();
+							} catch (InterruptedException | ExecutionException e) {
+								_logger.warn("get the dervied engine result error!",e);
+							}
+						}
 					}
 				}
 			}
 		}
+		
 		long endTime = NetTimeUtil.getCurrentNetTime();
 		_logger.info("publish Item " + clientRequestItemName + " use time " + (endTime - startTime) + " microseconds");
     }

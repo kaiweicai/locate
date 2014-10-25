@@ -2,11 +2,13 @@ package com.locate.rmds.processer;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.locate.common.datacache.GateChannelCache;
 import com.locate.common.logging.err.ErrorLogHandler;
 import com.locate.common.model.LocateUnionMessage;
 import com.locate.common.utils.NetTimeUtil;
@@ -166,23 +168,38 @@ public class OneTimeItemManager extends IProcesser implements Client
 		}
 		List<Integer> fieldFilterList = FilterManager.filterMap.get(clientRequestItemName);
 		this.filedFiltrMessage(locateMessage, fieldFilterList);
-		if(engineFuture!=null){
-			try {
-				engineFuture.get();
-			} catch (InterruptedException | ExecutionException e) {
-				errorLogHandler.error("get the engine result error!",e);
-			}
-		}
-		engineFuture=EngineManager.engineLineCache.get(clientRequestItemName).applyStrategy(locateMessage,channelID);
-		if(!StringUtils.isBlank(derivactiveItemName)){
-			if(derivedEngineFuture!=null){
+		LocateUnionMessage derivedClienMessage = locateMessage.clone();
+		if (GateChannelCache.itemNameChannelGroupMap.get(locateMessage.getItemName()).contains(
+				GateChannelCache.id2ChannelMap.get(channelID))) {
+			Future<LocateUnionMessage> engineFuture=EngineManager.engineLineCache.get(clientRequestItemName).applyStrategy(locateMessage,channelID);
+			if(engineFuture!=null){
 				try {
-					derivedEngineFuture.get();
+					engineFuture.get();
 				} catch (InterruptedException | ExecutionException e) {
-					errorLogHandler.error("get the dervied engine result error!",e);
+					errorLogHandler.error("get the engine result error!",e);
 				}
 			}
-			derivedEngineFuture = EngineManager.engineLineCache.get(derivactiveItemName).applyStrategy(locateMessage.clone());
+		}
+		
+		List<String> derivedNameList=GateChannelCache.item2derivedMap.get(clientRequestItemName);
+		if (derivedNameList != null) {
+			for (String derivedName : derivedNameList) {
+				derivedClienMessage.setItemName(derivedName);
+				if (GateChannelCache.itemNameChannelGroupMap.get(derivedName).contains(
+						GateChannelCache.id2ChannelMap.get(channelID))) {
+					Future<LocateUnionMessage> derivedEngineFuture = EngineManager.engineLineCache.get(derivedName)
+							.applyStrategy(derivedClienMessage.clone(), channelID);
+					if (!StringUtils.isBlank(derivedName)) {
+						if (derivedEngineFuture != null) {
+							try {
+								derivedEngineFuture.get();
+							} catch (InterruptedException | ExecutionException e) {
+								errorLogHandler.error("get the dervied engine result error!", e);
+							}
+						}
+					}
+				}
+			}
 		}
         if(locateMessage != null){
         	long endTime = NetTimeUtil.getCurrentNetTime();

@@ -15,10 +15,10 @@ public class LocateMessageTest {
 		List<String[]> payloadSet = new ArrayList<String[]>();
 		payloadSet.add(new String[]{"25","ASK","Double","6816.50"});
 		message.setPayLoadSet(payloadSet);
-		LocateUnionMessage cloneMessage = message.derivedClone();
+		LocateUnionMessage cloneMessage = message.clone();
 		message.setItemName("oringeRicName");
 		message.getPayLoadSet().get(0)[3]="6900";
-		Assert.assertFalse(message.getItemName().equalsIgnoreCase(cloneMessage.getItemName()));
+		Assert.assertTrue(message.getItemName().equalsIgnoreCase(cloneMessage.getItemName()));
 		Assert.assertFalse(message.getPayLoadSet().get(0)[3].equals(cloneMessage.getPayLoadSet().get(0)[3]));
 		System.out.println(message);
 		System.out.println(cloneMessage);

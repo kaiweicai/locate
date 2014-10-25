@@ -4,6 +4,8 @@ import io.netty.channel.Channel;
 import io.netty.channel.group.ChannelGroup;
 
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.dom4j.Document;
 import org.slf4j.Logger;
@@ -84,16 +86,22 @@ public class GateWayResponser {
 
 	public static void notifyAllCustomersStateChange(LocateUnionMessage locateMessage) {
 		String itemName = locateMessage.getItemName();
-		ChannelGroup channelGroup = GateChannelCache.itemNameChannelGroupMap.get(itemName);
-		if(channelGroup==null){
-			logger.warn("channel group is null!");
-			return;
+		List<String> allItemNameList= new ArrayList<String>();
+		allItemNameList.add(itemName);
+		allItemNameList.addAll(GateChannelCache.item2derivedMap.get(itemName));
+		for(String allName:allItemNameList){
+			locateMessage.setItemName(allName);
+			ChannelGroup channelGroup = GateChannelCache.itemNameChannelGroupMap.get(allName);
+			if(channelGroup==null){
+				logger.warn("channel group is null!");
+				return;
+			}
+			if(channelGroup.size()==0){
+				logger.warn("channel has been clean,but the ric not be register! The itemName"+allName);
+				return;
+			}
+			channelGroup.write(locateMessage);
+			logger.info("send message is :" + locateMessage + " to order group" + channelGroup.name());
 		}
-		if(channelGroup.size()==0){
-			logger.warn("channel has been clean,but the ric not be register! The itemName"+itemName);
-			return;
-		}
-		channelGroup.write(locateMessage);
-		logger.info("send message is :" + locateMessage + " to order group" + channelGroup.name());
 	}
 }
