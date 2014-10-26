@@ -25,6 +25,10 @@ public class ErrorLogHandler extends BaseLogger {
 		super(clazz, replace, params);
 	}
 
+	public void error(String msgContext){
+		logger.error(msgContext);
+	}
+	
 	public void error(String msgContext, Throwable t) {
 		if (t == null) {
 			t = new Throwable();

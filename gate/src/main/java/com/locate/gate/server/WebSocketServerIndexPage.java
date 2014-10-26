@@ -10,9 +10,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.locate.common.logging.err.ErrorLogHandler;
+
 @Service
 public class WebSocketServerIndexPage {
 	private Logger logger = LoggerFactory.getLogger(getClass());
+	private static ErrorLogHandler errorLogHandler = ErrorLogHandler.getLogger(WebSocketServerIndexPage.class);
 	private static final String MARKET_WEB_SOCKET_PAGE = "web/MarkpriceWebSocket.html";
 	private static final String NEWLINE = "\r\n";
 
@@ -32,16 +35,16 @@ public class WebSocketServerIndexPage {
 				sBuilder.append(NEWLINE);
 			}
 		} catch (FileNotFoundException fnfe) {
-			logger.error("the html file not exist!" + file.getName() + fnfe);
+			errorLogHandler.error("the html file not exist!" + file.getName() + fnfe);
 			sBuilder.append("the marketprice page not found!");
 		} catch (IOException ioe) {
-			logger.error("can not read the file" + file.getName() + ioe);
+			errorLogHandler.error("can not read the file" + file.getName() + ioe);
 			sBuilder.append("the marketprice page not found!");
 		} finally {
 			try {
 				br.close();
 			} catch (IOException ioe) {
-				logger.error("file close error!");
+				errorLogHandler.error("file close error!");
 			}
 		}
 		return sBuilder.toString();

@@ -11,6 +11,7 @@ import ch.qos.logback.core.joran.spi.JoranException;
 
 import com.locate.common.constant.SystemConstant;
 import com.locate.common.exception.LocateException;
+import com.locate.common.logging.err.ErrorLogHandler;
 import com.locate.common.utils.ShutdownWorker;
 import com.locate.common.utils.SystemProperties;
 import com.locate.rmds.QSConsumerProxy;
@@ -23,7 +24,8 @@ import com.locate.rmds.QSConsumerProxy;
  * 使用spring来管理类.
  */
 public class LocatePersistentMain {
-	static Logger logger = LoggerFactory.getLogger(LocatePersistentMain.class);
+	private static Logger logger = LoggerFactory.getLogger(LocatePersistentMain.class);
+	private static ErrorLogHandler errorLogHandler = ErrorLogHandler.getLogger(LocatePersistentMain.class);
 	protected static final String configFile = "config/rfaConfig.properties";
 	static {
 		SystemProperties.init(configFile);
@@ -35,7 +37,7 @@ public class LocatePersistentMain {
 		try {
 			configurator.doConfigure("config/logback.xml");
 		} catch (JoranException e) {
-			logger.error("initial logback.xml error!");
+			errorLogHandler.error("initial logback.xml error!");
 			throw new LocateException("initial logback.xml error!", e);
 		}
 	}

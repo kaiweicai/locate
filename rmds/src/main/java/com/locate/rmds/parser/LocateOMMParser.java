@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import com.locate.common.logging.err.ErrorLogHandler;
 import com.locate.common.model.LocateUnionMessage;
 import com.locate.common.utils.SystemProperties;
 import com.locate.rmds.QSConsumerProxy;
@@ -57,6 +58,7 @@ public final class LocateOMMParser implements IOmmParser {
 	private static FieldDictionary CURRENT_DICTIONARY = QSConsumerProxy.dictionary;
 	private static Page CURRENT_PAGE;
 	static Logger logger = LoggerFactory.getLogger(LocateOMMParser.class.getName());
+	private ErrorLogHandler errorLogHandler = ErrorLogHandler.getLogger(getClass());
 
 	public static FieldDictionary getDictionary(int dictId) {
 		if (dictId == 0)
@@ -98,7 +100,7 @@ public final class LocateOMMParser implements IOmmParser {
 					}
 				}
 			} else if (msg.getDataType() != OMMTypes.NO_DATA) {
-				logger.error("OMM message data type not match the 'Field List' type. The data type is"
+				errorLogHandler.error("OMM message data type not match the 'Field List' type. The data type is"
 						+ msg.getDataType());
 			}
 		}
@@ -234,7 +236,7 @@ public final class LocateOMMParser implements IOmmParser {
 						putRippleValueIntoMessage(fieldValue, fiddef, locateMessage ,rippleMap);
 					}
 				} else {
-					logger.error("The CURRENT_DICTIONARY is null!");
+					errorLogHandler.error("The CURRENT_DICTIONARY is null!");
 				}
 			}
 				break;
@@ -251,7 +253,7 @@ public final class LocateOMMParser implements IOmmParser {
 			}
 			
 		} catch (OMMException e) {
-			logger.error("ERROR Invalid data: " + e.getMessage());
+			errorLogHandler.error("ERROR Invalid data: " + e.getMessage());
 		}
 	}
 

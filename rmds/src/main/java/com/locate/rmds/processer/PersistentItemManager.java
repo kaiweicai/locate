@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import com.locate.common.constant.SystemConstant;
 import com.locate.common.datacache.RmdsDataCache;
+import com.locate.common.logging.err.ErrorLogHandler;
 import com.locate.common.model.LocateUnionMessage;
 import com.locate.common.utils.NetTimeUtil;
 import com.locate.rmds.QSConsumerProxy;
@@ -63,6 +64,7 @@ public class PersistentItemManager extends IProcesser implements Client {
 	@Resource
 	QSConsumerProxy _mainApp;
     static Logger logger = LoggerFactory.getLogger(PersistentItemManager.class.getName());
+    private ErrorLogHandler errorLogHandler = ErrorLogHandler.getLogger(getClass());
     @Resource
     ItemGroupManager _itemGroupManager;
     @Resource(name="locateOMMParser")
@@ -183,7 +185,7 @@ public class PersistentItemManager extends IProcesser implements Client {
         logger.info(_className+".processEvent: Received Item("+clientRequestItemName+") Event from server ");
 		if (event.getType() != Event.OMM_ITEM_EVENT) {
 			//收到一个不支持的消息,记录该消息,直接返回.
-			logger.error("ERROR:Received an unsupported Event type. event is "+event);
+			errorLogHandler.error("ERROR:Received an unsupported Event type. event is "+event);
 //            _mainApp.cleanup();
             return;
         }

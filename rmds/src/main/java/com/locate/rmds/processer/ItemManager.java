@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import com.locate.bridge.GateWayResponser;
 import com.locate.common.datacache.GateChannelCache;
 import com.locate.common.datacache.RmdsDataCache;
+import com.locate.common.logging.err.ErrorLogHandler;
 import com.locate.common.model.LocateUnionMessage;
 import com.locate.common.utils.NetTimeUtil;
 import com.locate.rmds.QSConsumerProxy;
@@ -64,6 +65,7 @@ import com.reuters.rfa.session.omm.OMMSolicitedItemEvent;
 public class ItemManager extends IProcesser implements Client
 {
 	Handle  itemHandle;
+	private ErrorLogHandler errorLogHandler = ErrorLogHandler.getLogger(getClass());
 	@Resource
 	QSConsumerProxy _mainApp;
     static Logger _logger = LoggerFactory.getLogger(ItemManager.class.getName());
@@ -236,7 +238,7 @@ public class ItemManager extends IProcesser implements Client
         if (event.getType() != Event.OMM_ITEM_EVENT) 
         {
         	//这里程序太危险了,因为RFA给的消息有误就要退出程序.恐怖的逻辑啊.还是去掉cleanup好了.
-            _logger.error("ERROR: "+_className+" Received an unsupported Event type.");
+        	errorLogHandler.error("ERROR: "+_className+" Received an unsupported Event type.");
 //            _mainApp.cleanup();
             return;
         }

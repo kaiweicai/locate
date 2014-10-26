@@ -69,9 +69,9 @@ public class EmailNotifier implements INotifier {
 			transport.sendMessage(emailMessage, emailMessage.getAllRecipients());
 			transport.close();
 		} catch (AddressException e) {
-			logger.error("EmailSender, AddressException: " + e.getMessage());
+			errorLogHandler.error("EmailSender, AddressException: " + e.getMessage());
 		} catch (MessagingException e) {
-			logger.error("EmailSender, MessagingException: " + e.getMessage());
+			errorLogHandler.error("EmailSender, MessagingException: " + e.getMessage());
 		}
 	}
 

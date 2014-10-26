@@ -271,7 +271,7 @@ public class CalendarPanel extends JPanel {
 						}
 
 					} catch (ParseException e2) {
-						logger.error("parse date error!",e2);
+						errorLogHandler.error("parse date error!",e2);
 					}
 
 					// 为了能够让那个载体组件自用空，这里也需要设置returnDateStr并调用回调接口

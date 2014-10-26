@@ -37,7 +37,7 @@ public class LocateGateWayMain {
 		try {
 			configurator.doConfigure("config/logback.xml");
 		} catch (JoranException e) {
-			logger.error("initial logback.xml error!");
+			errorLogHandler.error("initial logback.xml error!");
 			throw new LocateException("initial logback.xml error!", e);
 		}
 	}

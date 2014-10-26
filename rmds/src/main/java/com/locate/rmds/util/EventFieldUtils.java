@@ -3,6 +3,7 @@ package com.locate.rmds.util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.locate.common.logging.err.ErrorLogHandler;
 import com.locate.rmds.QSConsumerProxy;
 import com.reuters.rfa.common.Event;
 import com.reuters.rfa.dictionary.FidDef;
@@ -19,7 +20,8 @@ import com.reuters.rfa.session.omm.OMMItemEvent;
 
 public class EventFieldUtils {
 
-	 static Logger _logger = LoggerFactory.getLogger(EventFieldUtils.class.getName());
+	static Logger _logger = LoggerFactory.getLogger(EventFieldUtils.class.getName());
+	private static ErrorLogHandler errorLogHandler = ErrorLogHandler.getLogger(EventFieldUtils.class);
 	   
     public static FieldDictionary dictionary = QSConsumerProxy.dictionary;
     
@@ -62,7 +64,7 @@ public class EventFieldUtils {
             short type = dictionary.getFidDef(fid).getOMMType();
             return fe.getData(type);
         }
-        _logger.error("OMMMsg type not find defined for "+fid);
+        errorLogHandler.error("OMMMsg type not find defined for "+fid);
         throw new IllegalArgumentException("OMMMsg payload must be field list");
     }
     

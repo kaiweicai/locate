@@ -141,7 +141,7 @@ public class RFApplication extends JFrame {
 		try {
 			configurator.doConfigure("config/logback.xml");
 		} catch (JoranException e) {
-			logger.error("initial logback.xml error!");
+			errorLogHandler.error("initial logback.xml error!");
 			throw new LocateException("initial logback.xml error!",e);
 		}
 		initComponents();
@@ -854,7 +854,7 @@ public class RFApplication extends JFrame {
 					break;
 //				Locate send the undefined message.
 				default:
-					logger.error("Not should to here! message type is "+message);
+					errorLogHandler.error("Not should to here! message type is "+message);
 					statusBar.setStatusFixed("The Message can not be handle according with correct message type match.",Color.RED);
 			}
 			

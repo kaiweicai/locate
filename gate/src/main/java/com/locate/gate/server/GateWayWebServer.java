@@ -26,7 +26,7 @@ public class GateWayWebServer {
 //			bootstrap.bind(new InetSocketAddress(serverPort));
 //			logger.info("gate way web Server started success!");
 //		} catch (Exception e) {
-//			logger.error("Create the Locate netty web server error!", e);
+//			errorLogHandler.error("Create the Locate netty web server error!", e);
 //			throw new LocateException("Create the Locate netty server error!", e);
 //		}
 //	}

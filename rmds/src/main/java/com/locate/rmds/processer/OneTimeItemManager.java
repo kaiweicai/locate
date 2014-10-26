@@ -150,7 +150,7 @@ public class OneTimeItemManager extends IProcesser implements Client
         if (event.getType() != Event.OMM_ITEM_EVENT) 
         {
         	//这里程序太危险了,因为RFA给的消息有误就要退出程序.恐怖的逻辑啊.还是去掉cleanup好了.
-            _logger.error("ERROR: "+_className+" Received an unsupported Event type.");
+        	errorLogHandler.error("ERROR: "+_className+" Received an unsupported Event type.");
 //            _mainApp.cleanup();
             return;
         }

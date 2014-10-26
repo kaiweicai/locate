@@ -60,10 +60,10 @@ public class LoggerAnalyzer {
 				}
 			}
 		} catch (FileNotFoundException e) {
-//			logger.error("File not exist, logFileName is " + logFileName, e);
+//			errorLogHandler.error("File not exist, logFileName is " + logFileName, e);
 			throw new LocateException("File not exist, logFileName is " + logFileName,e);
 		} catch (IOException e) {
-//			logger.error("read log file error!",e);
+//			errorLogHandler.error("read log file error!",e);
 			throw new LocateException("read log file error!",e);
 		}finally{
 			try {
@@ -94,10 +94,10 @@ public class LoggerAnalyzer {
 				}
 			}
 		} catch (FileNotFoundException e) {
-//			logger.error("File not exist, logFileName is " + logFileName, e);
+//			errorLogHandler.error("File not exist, logFileName is " + logFileName, e);
 			throw new LocateException("历史文件不存在, 历史文件名是 " + logFileName,e);
 		} catch (IOException e) {
-//			logger.error("read log file error!",e);
+//			errorLogHandler.error("read log file error!",e);
 			throw new LocateException("读取历史文件错误!",e);
 		}finally{
 			try {

@@ -59,7 +59,7 @@ public class RFAUserManagement {
 				try {
 					limit = RFAUtils.output(limit);
 				} catch (Exception e) {
-					_logger.error("User config has error.");
+					errorLogHandler.error("User config has error.");
 					System.exit(0);
 				}
 				if(NumberUtils.isNumber(limit)){
@@ -67,7 +67,7 @@ public class RFAUserManagement {
 				}
 //				else{
 //					if(!userPermisson.getName().equalsIgnoreCase(GateWayMessageTypes.RFAMessageName.getRFAMessageName(GateWayMessageTypes.NEWS_REQUEST))){
-//						_logger.error("User config has error.");
+//						errorLogHandler.error("User config has error.");
 //						System.exit(0);
 //					}
 //					userPermisson.setFilter(limit.toUpperCase());

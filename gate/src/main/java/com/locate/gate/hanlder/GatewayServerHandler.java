@@ -91,7 +91,7 @@ public class GatewayServerHandler extends StringDecoder {
 //			logger.warn(((IOException) e).getMessage(),e);
 //			return;
 //		}else{
-//			logger.error("Unexpect Exception from downstream! please contact the developer!",e);
+//			errorLogHandler.error("Unexpect Exception from downstream! please contact the developer!",e);
 //		}
 //	}
 
@@ -148,7 +148,7 @@ public class GatewayServerHandler extends StringDecoder {
 //			//RFAClientHandler process message and send the request to RFA.
 //			clientHandle.process(clientInfo);
 //		} catch (Throwable throwable) {
-//			_logger.error("Unexpected error ocurres", throwable);
+//			errorLogHandler.error("Unexpected error ocurres", throwable);
 //		}
 //	}
 	
@@ -217,7 +217,7 @@ public class GatewayServerHandler extends StringDecoder {
 					GateChannelCache.id2ChannelMap.put(channelId, channel);
 				}else{
 					Channel channle = GateChannelCache.id2ChannelMap.get(channelId);
-					logger.error("channel has been used by other user! Used Channel is "+channle);
+					errorLogHandler.error("channel has been used by other user! Used Channel is "+channle);
 				}
 			}
 			request.encapNetInfo(userName, channelId, clientIP);
@@ -286,7 +286,7 @@ public class GatewayServerHandler extends StringDecoder {
 //		    //RFAClientHandler process message and send the request to RFA.
 //	    	gateForwardRFA.process(clientInfo);
 //		} catch (Throwable throwable) {
-//			logger.error("Unexpected error ocurres", throwable);
+//			errorLogHandler.error("Unexpected error ocurres", throwable);
 //		}
 //	}
 
@@ -433,7 +433,7 @@ public class GatewayServerHandler extends StringDecoder {
 //			acceptor.bind(new InetSocketAddress(port));
 //		} catch (IOException e) {
 //			// TODO Auto-generated catch block
-//			_logger.error(e.getMessage(), e);
+//			errorLogHandler.error(e.getMessage(), e);
 //			System.exit(0);
 //		}
 //

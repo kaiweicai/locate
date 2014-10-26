@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
+import com.locate.common.logging.err.ErrorLogHandler;
 import com.locate.common.model.LocateUnionMessage;
 import com.locate.common.utils.NetTimeUtil;
 import com.locate.rmds.QSConsumerProxy;
@@ -47,6 +48,7 @@ public class ChyCurrencyManager implements Client{
 	@Resource
 	QSConsumerProxy _mainApp;
     static Logger _logger = LoggerFactory.getLogger(ChyCurrencyManager.class);
+    private ErrorLogHandler errorLogHandler = ErrorLogHandler.getLogger(getClass());
     @Resource
     ItemGroupManager _itemGroupManager;
     @Resource(name="locateOMMParser")
@@ -197,7 +199,7 @@ public class ChyCurrencyManager implements Client{
         if (event.getType() != Event.OMM_ITEM_EVENT) 
         {
         	//这里程序太危险了,因为RFA给的消息有误就要退出程序.恐怖的逻辑啊.还是去掉cleanup好了.
-            _logger.error("Received an unsupported Event type.");
+        	errorLogHandler.error("Received an unsupported Event type.");
 //            _mainApp.cleanup();
             return;
         }

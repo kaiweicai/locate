@@ -6,6 +6,7 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.locate.common.logging.err.ErrorLogHandler;
 import com.locate.rmds.QSConsumerProxy;
 import com.locate.rmds.util.EventFieldUtils;
 import com.reuters.rfa.common.Client;
@@ -40,6 +41,7 @@ import com.reuters.rfa.session.omm.OMMItemIntSpec;
 public class NewsContentManager  implements Client {
 	static Logger _logger = LoggerFactory
 			.getLogger(NewsContentManager.class.getName());
+	private ErrorLogHandler errorLogHandler = ErrorLogHandler.getLogger(getClass());
 //	ItemGroupManager _itemGroupManager;
 	Handle itemHandle ;
 	static boolean FidsInitialized = false;
@@ -92,7 +94,7 @@ public class NewsContentManager  implements Client {
 			_error = true;
 			_complete = true;
 			_errorText = "Initialize field id from dictionary fail";
-			_logger.error("Initialize field id from dictionary fail");
+			errorLogHandler.error("Initialize field id from dictionary fail");
 			return;
 		}
 

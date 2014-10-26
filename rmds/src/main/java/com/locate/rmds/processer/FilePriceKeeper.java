@@ -45,7 +45,7 @@ public class FilePriceKeeper implements IPriceKeeper {
 			}
 			bufferedWriter = new BufferedWriter(new FileWriter(keepFile));
 		} catch (IOException e) {
-			logger.error("can not create persistent file " + keepFile);
+			errorLogHandler.error("can not create persistent file " + keepFile);
 			logger.warn("System error and will exit! Please contact the developer!");
 			System.exit(-1);
 		}

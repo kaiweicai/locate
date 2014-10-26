@@ -3,14 +3,9 @@ package com.locate.gate.handler;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.socket.SocketChannel;
-import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
-import io.netty.handler.codec.LengthFieldPrepender;
 
 import java.net.InetSocketAddress;
 
@@ -23,13 +18,13 @@ import org.slf4j.LoggerFactory;
 import com.locate.common.constant.LocateMessageTypes;
 import com.locate.common.constant.SystemConstant;
 import com.locate.common.exception.LocateException;
+import com.locate.common.logging.err.ErrorLogHandler;
 import com.locate.common.model.ClientRequest;
 import com.locate.face.IBussiness;
 import com.locate.face.IClientConnector;
-import com.locate.gate.coder.EncrytDecoder;
-import com.locate.gate.coder.EncrytEncoder;
 
 public class ClientConnector implements IClientConnector {
+	private ErrorLogHandler errorLogHandler = ErrorLogHandler.getLogger(getClass());
 	Logger logger = LoggerFactory.getLogger(ClientConnector.class);
 	private int channelID;
 	private Channel clientchannel;
@@ -88,7 +83,7 @@ public class ClientConnector implements IClientConnector {
 		clientchannel = future.channel();
 		channelID = SystemConstant.channelId.incrementAndGet();
 		if (!clientchannel.isActive()) {
-			logger.error("NIO error, The connect server not success! Please check your server ip or port!");
+			errorLogHandler.error("NIO error, The connect server not success! Please check your server ip or port!");
 			throw new LocateException("NIO error, The connect server not success! Please check your server ip or port!");
 		}
 		this.conLocate = true;
@@ -104,7 +99,7 @@ public class ClientConnector implements IClientConnector {
 	@Override
 	public void openRICMarket(String itemName){
 		if(StringUtils.isBlank(itemName)){
-			logger.error("The RIC vlaue can not be blank!!");
+			errorLogHandler.error("The RIC vlaue can not be blank!!");
 			throw new LocateException("The RIC vlaue can not be blank!!");
 		}
     	ClientRequest request = createFutureRequest(itemName);
@@ -149,7 +144,7 @@ public class ClientConnector implements IClientConnector {
 	
 	private void sentMessageToServer( ClientRequest request){
 		if(clientchannel==null){
-			logger.error("The connection of server not establish. Please connect first.");
+			errorLogHandler.error("The connection of server not establish. Please connect first.");
 			throw new LocateException("The connection of server not establish. Please connect first.");
 		}
 		byte[] content = null;
@@ -157,7 +152,7 @@ public class ClientConnector implements IClientConnector {
 //		try {
 //			content = jsonObject.toString().getBytes("UTF-8");
 //		} catch (UnsupportedEncodingException e) {
-//			logger.error("Not surport encoding",e);
+//			errorLogHandler.error("Not surport encoding",e);
 //		}
 //		ChannelBuffer buffer = ChannelBuffers.buffer(content.length);
 //		buffer.writeBytes(jsonObject.toString());

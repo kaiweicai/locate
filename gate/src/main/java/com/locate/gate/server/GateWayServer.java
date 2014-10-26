@@ -89,7 +89,7 @@ public class GateWayServer {
 //			bootstrap.bind(new InetSocketAddress(serverPort));
 //			logger.info("gate way Server started success!");
 //		}catch(Exception e){
-//			logger.error("Create the Locate netty server error!",e);
+//			errorLogHandler.error("Create the Locate netty server error!",e);
 //			throw new LocateException("Create the Locate netty server error!",e);
 //		}
 //	}

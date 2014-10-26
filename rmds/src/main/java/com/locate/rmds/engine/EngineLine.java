@@ -92,7 +92,7 @@ public class EngineLine {
 			final LocateUnionMessage locateMessage = lastMessage.clone();
 			String locateItemName = locateMessage.getItemName();
 			if (!locateItemName.equalsIgnoreCase(this.itemName)) {
-				logger.error("The strategy forbbiden apply to this product!The engineLine item name is "
+				errorLogHandler.error("The strategy forbbiden apply to this product!The engineLine item name is "
 						+ this.itemName + " The locate itemName is " + locateItemName);
 				return null;
 			}

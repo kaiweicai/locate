@@ -20,6 +20,7 @@ import org.springframework.stereotype.Component;
 import com.locate.common.constant.LocateMessageTypes;
 import com.locate.common.constant.SystemConstant;
 import com.locate.common.datacache.RmdsDataCache;
+import com.locate.common.logging.err.ErrorLogHandler;
 import com.locate.common.model.InstrumentCodeData;
 import com.locate.common.utils.DerivedUtils;
 import com.locate.common.utils.SystemProperties;
@@ -27,11 +28,9 @@ import com.locate.rmds.client.RFAUserManagement;
 import com.locate.rmds.dict.DirectoryClient;
 import com.locate.rmds.dict.RDMServiceInfo;
 import com.locate.rmds.dict.ServiceInfo;
-import com.locate.rmds.engine.CurrencyEngine;
 import com.locate.rmds.engine.Engine;
 import com.locate.rmds.engine.EngineLine;
 import com.locate.rmds.engine.filter.EngineManager;
-import com.locate.rmds.processer.ChyCurrencyManager;
 import com.locate.rmds.processer.ItemGroupManager;
 import com.locate.rmds.processer.ItemManager;
 import com.locate.rmds.processer.NewsItemManager;
@@ -70,7 +69,7 @@ import com.reuters.rfa.session.omm.OMMItemIntSpec;
 @Component("qSConsumerProxy")
 public class QSConsumerProxy{
 	static Logger logger = LoggerFactory.getLogger(QSConsumerProxy.class.getName());
-
+	private ErrorLogHandler errorLogHandler = ErrorLogHandler.getLogger(getClass());
 	// RFA objects
 	protected Session _session;
 	protected EventQueue _eventQueue;
@@ -137,10 +136,10 @@ public class QSConsumerProxy{
 //		try {
 //            Preferences.importPreferences(new FileInputStream(SystemProperties.getProperties(SystemProperties.RFA_CONFIG_FILE)));
 //        } catch (IOException e) {
-//            logger.error("RFA file import error!",e);
+//            errorLogHandler.error("RFA file import error!",e);
 //            System.exit(-1);
 //        } catch (InvalidPreferencesFormatException e) {
-//        	logger.error("preference format error!",e);
+//        	errorLogHandler.error("preference format error!",e);
 //            System.exit(-1);
 //        }
 		// 2. Create an Event Queue
@@ -151,7 +150,7 @@ public class QSConsumerProxy{
 //		_session = Session.acquire("myNamespace::mySession");
 		
 		if (_session == null) {
-			logger.error("Could not acquire session.");
+			errorLogHandler.error("Could not acquire session.");
 			Context.uninitialize();
 			System.exit(1);
 		}
@@ -171,8 +170,8 @@ public class QSConsumerProxy{
 			_loadedDictionaries.add("RWFEnum");
 			FieldNameExchanger.loadFieldExchange();
 		} catch (DictionaryException ex) {
-			logger.error("ERROR: Unable to initialize dictionaries");
-			logger.error(ex.getMessage());
+			errorLogHandler.error("ERROR: Unable to initialize dictionaries");
+			errorLogHandler.error(ex.getMessage());
 			if (ex.getCause() != null)
 				System.err.println(": " + ex.getCause().getMessage());
 			cleanup();
@@ -317,7 +316,7 @@ public class QSConsumerProxy{
 	// This method is called when the login was not successful
 	// The application exits
 	public void loginFailure() {
-		logger.error("Login has been denied / rejected / closed ");
+		errorLogHandler.error("Login has been denied / rejected / closed ");
 		RFAServerManager.setConnectedDataSource(false);
 	}
 
@@ -456,7 +455,7 @@ public class QSConsumerProxy{
 	public void makeOrder() {
 		String ricArray = SystemProperties.getProperties(SystemProperties.RIC_ARRAY);
 		if(StringUtils.isBlank(ricArray)){
-			logger.error("persistent Ric is not config!");
+			errorLogHandler.error("persistent Ric is not config!");
 			return;
 		}
 		String[] rics = ricArray.split(",");
@@ -482,9 +481,9 @@ public class QSConsumerProxy{
 			try {
 				_eventQueue.dispatch(5000);
 			} catch (DeactivatedException e) {
-				logger.error("event queue not activate"+e);
+				errorLogHandler.error("event queue not activate"+e);
 			} catch (DispatchQueueInGroupException e) {
-				logger.error("event queue is dispatched."+e);
+				errorLogHandler.error("event queue is dispatched."+e);
 			}
 		}
 	}

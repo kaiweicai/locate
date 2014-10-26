@@ -207,7 +207,7 @@ public class RFALoginClient implements Client {
 		} else if (respMsg.getMsgType() == OMMMsg.MsgType.STATUS_RESP && respMsg.has(OMMMsg.HAS_STATE)
 				&& (respMsg.getState().getStreamState() == OMMState.Stream.OPEN)
 				&& respMsg.getState().getDataState() == OMMState.Data.SUSPECT) {
-			logger.error("The server has been suspect!\n Received Login Response - "
+			errorLogHandler.error("The server has been suspect!\n Received Login Response - "
 					+ OMMMsg.MsgType.toString(respMsg.getMsgType()));
 			_mainApp.loginFailure();
 			if (StringUtils.isBlank(NEED_NOTIFY) || NEED_NOTIFY.equalsIgnoreCase(SystemConstant.BOOLEAN_TRUE)) {
@@ -218,7 +218,7 @@ public class RFALoginClient implements Client {
 			}
 			ommParser.parse(respMsg, "RFALogin");
 		} else {
-			logger.error("Login not success.Please check!\n Received Login Response - "
+			errorLogHandler.error("Login not success.Please check!\n Received Login Response - "
 					+ OMMMsg.MsgType.toString(respMsg.getMsgType()));
 			_mainApp.loginFailure();
 			ommParser.parse(respMsg, "RFALogin");

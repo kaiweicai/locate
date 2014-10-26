@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import com.locate.common.constant.SystemConstant;
 import com.locate.common.datacache.GateChannelCache;
+import com.locate.common.logging.err.ErrorLogHandler;
 import com.locate.common.model.LocateUnionMessage;
 import com.locate.common.utils.XmlMessageUtil;
 
@@ -23,7 +24,7 @@ import com.locate.common.utils.XmlMessageUtil;
  * @copyRight by Author
  */
 public class GateWayResponser {
-
+	private static ErrorLogHandler errorLogHandler = ErrorLogHandler.getLogger(GateWayResponser.class);
 	public static final Charset CHARSET = Charset.forName("UTF-8");
 	static Logger logger = LoggerFactory.getLogger(GateWayResponser.class.getName());
 
@@ -33,7 +34,7 @@ public class GateWayResponser {
 		if (channel != null && channel.isActive()) {
 			channel.writeAndFlush(response);
 		} else {
-			logger.error("The channel had been closed when write login response to client. Channel ID is " + channelId);
+			errorLogHandler.error("The channel had been closed when write login response to client. Channel ID is " + channelId);
 		}
 		logger.info("downStream message is :"+response);
 	}
@@ -50,7 +51,7 @@ public class GateWayResponser {
 		String itemName = locateMessage.getItemName();
 		ChannelGroup channelGroup = GateChannelCache.itemNameChannelGroupMap.get(itemName);
 		if(channelGroup==null){
-			logger.error("channel can not find ! The itemName "+itemName);
+			errorLogHandler.error("channel can not find ! The itemName "+itemName);
 			return;
 		}
 		if(channelGroup.size()==0){
@@ -71,7 +72,7 @@ public class GateWayResponser {
 //		if (channel != null && channel.isConnected()) {
 //			channel.write(response);
 //		} else {
-//			logger.error("The channel had been closed when write login response to client. Channel ID is " + channelId);
+//			errorLogHandler.error("The channel had been closed when write login response to client. Channel ID is " + channelId);
 //		}
 //		logger.info("downStream message is :"+response);
 //	}

@@ -80,7 +80,7 @@ public class SystemProperties {
 			return System.getProperty(name);
 		} else {
 			if (StringUtils.isEmpty(systemProperties.get(name))) {
-				_logger.error("Can't find configuration for " + name);
+				errorLogHandler.error("Can't find configuration for " + name);
 				return "";
 			}
 			return systemProperties.get(name);
@@ -92,7 +92,7 @@ public class SystemProperties {
 			return System.getProperty(name);
 		} else {
 			if (StringUtils.isEmpty(systemProperties.get(name))) {
-				_logger.error("Can't find configuration for " + name);
+				errorLogHandler.error("Can't find configuration for " + name);
 				return defaultValue;
 			}
 			return systemProperties.get(name);

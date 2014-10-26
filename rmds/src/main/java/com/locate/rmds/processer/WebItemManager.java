@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.locate.common.constant.SystemConstant;
+import com.locate.common.logging.err.ErrorLogHandler;
 import com.locate.common.utils.XmlMessageUtil;
 import com.locate.rmds.QSConsumerProxy;
 import com.locate.rmds.parser.GenericOMMParser;
@@ -51,6 +52,7 @@ public class WebItemManager implements Client {
 	@Resource
 	QSConsumerProxy mainApp;
 	static Logger logger = LoggerFactory.getLogger(WebItemManager.class.getName());
+	private ErrorLogHandler errorLogHandler = ErrorLogHandler.getLogger(getClass());
 	public String clientRequestItemName;
 	// public String clientName;
 	public byte responseMessageType;
@@ -164,7 +166,7 @@ public class WebItemManager implements Client {
 		// check for an event type; it should be item event.
 		logger.info(_className + ".processEvent: Received Item(" + clientRequestItemName + ") Event from server ");
 		if (event.getType() != Event.OMM_ITEM_EVENT) {
-			logger.error("ERROR: " + _className + " Received an unsupported Event type.");
+			errorLogHandler.error("ERROR: " + _className + " Received an unsupported Event type.");
 			return;
 		}
 

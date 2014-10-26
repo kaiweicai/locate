@@ -7,11 +7,13 @@ import java.io.FileReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.locate.common.logging.err.ErrorLogHandler;
 import com.locate.rmds.QSConsumerProxy;
 
 public class FieldNameExchanger {
 	public static final String FIELD_FILE_NAME = "config/fieldNameExchange";
 	public static Logger logger = LoggerFactory.getLogger(FieldNameExchanger.class);
+	private static ErrorLogHandler errorLogHandler = ErrorLogHandler.getLogger(FieldNameExchanger.class);
 	public static void loadFieldExchange() {
 		BufferedReader fieldExchangeReader = null;
 		try {
@@ -26,7 +28,7 @@ public class FieldNameExchanger {
 				}
 			}
 		} catch (Exception e) {
-			logger.error("exchange field name error"+e);
+			errorLogHandler.error("exchange field name error"+e);
 			System.exit(-1);
 		}
 	}
