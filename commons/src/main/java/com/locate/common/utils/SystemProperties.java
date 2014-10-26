@@ -27,7 +27,7 @@ public class SystemProperties {
 	public static final String RFA_SERVICE_NAME = "rfa.service.name";
 	public static final String USE_SOCKET_MINA = "socket.mina";
 	public static final String DEFAULT_ENCODE = "default.encode";
-	
+	public static final String ENCRYPT_USED = "encrypt.used";
 	
 	public static final String RFA_CONFIG_FILE = "rfa.config.file";
 	
