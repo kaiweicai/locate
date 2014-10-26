@@ -17,8 +17,8 @@ import com.locate.gate.coder.NormalEncoder;
 public class ServerChannelInitializer extends ChannelInitializer<NioSocketChannel>{
 	private String encryptUsed = SystemProperties.getProperties(SystemProperties.ENCRYPT_USED);
 	private GatewayServerHandler gateWayServerHandler;
-	private AdapterHandler adapterHandler;
-	public ServerChannelInitializer(GatewayServerHandler gateWayServerHandler,AdapterHandler adapterHandler){
+	private AdapterHandlerEncoder adapterHandler;
+	public ServerChannelInitializer(GatewayServerHandler gateWayServerHandler,AdapterHandlerEncoder adapterHandler){
 		this.gateWayServerHandler = gateWayServerHandler;
 		this.adapterHandler = adapterHandler;
 	}

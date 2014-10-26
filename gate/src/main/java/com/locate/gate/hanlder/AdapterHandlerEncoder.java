@@ -23,7 +23,7 @@ import com.locate.common.utils.SystemProperties;
 
 @ChannelHandler.Sharable
 @Service
-public class AdapterHandler extends MessageToMessageEncoder<LocateUnionMessage> {
+public class AdapterHandlerEncoder extends MessageToMessageEncoder<LocateUnionMessage> {
 	Logger logger = LoggerFactory.getLogger(getClass());
 	private static String defaultEncode = SystemProperties.getProperties(SystemProperties.DEFAULT_ENCODE);
 	

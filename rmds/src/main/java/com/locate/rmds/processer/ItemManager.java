@@ -197,9 +197,6 @@ public class ItemManager extends IProcesser implements Client
     }
     
 
-    /**
-     * 
-     */
 	public void closeRequest() {
 		_itemGroupManager._handles.remove(itemHandle);
 		_mainApp.getOMMConsumer().unregisterClient(itemHandle);
@@ -207,10 +204,15 @@ public class ItemManager extends IProcesser implements Client
 		for(String derivedName:GateChannelCache.item2derivedMap.get(clientRequestItemName)){
 			EngineManager.engineLineCache.remove(derivedName);
 		}
+//		GateChannelCache.item2derivedMap.remove(clientRequestItemName);
 		RmdsDataCache.RIC_ITEMMANAGER_Map.remove(this.clientRequestItemName);
 		RmdsDataCache.RIC_ITEMMANAGER_Map.remove(this.derivactiveItemName);
 		RmdsDataCache.CLIENT_ITEMMANAGER_MAP.remove(this.clientRequestItemName);
 		RmdsDataCache.CLIENT_ITEMMANAGER_MAP.remove(this.derivactiveItemName);
+	}
+	
+	public void closeDerivedRequest(String derivedName){
+		EngineManager.engineLineCache.remove(derivedName);
 	}
 
     // This is a Client method. When an event for this client is dispatched,

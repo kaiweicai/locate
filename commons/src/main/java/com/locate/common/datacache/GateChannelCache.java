@@ -41,7 +41,7 @@ public class GateChannelCache {
 	 * @param itemName 原生商品名称
 	 * @return 是否都为空
 	 */
-	public static boolean isEmnpty(String itemName) {
+	public static boolean isEnmptyAll(String itemName) {
 		ChannelGroup itemGroup = itemNameChannelGroupMap.get(itemName);
 		boolean itemEnpty = false;
 		if (itemGroup == null || itemGroup.isEmpty()) {
@@ -60,5 +60,14 @@ public class GateChannelCache {
 		}
 		boolean result = itemEnpty & derivedItemEnpty;
 		return result;
+	}
+
+	public static boolean isEnmptyDerived(String derivedName) {
+		ChannelGroup derivedChannelGroup = itemNameChannelGroupMap.get(derivedName);
+		if (derivedChannelGroup != null && !derivedChannelGroup.isEmpty()) {
+			return false;
+		} else {
+			return true;
+		}
 	}
 }

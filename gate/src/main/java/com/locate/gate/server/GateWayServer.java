@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 import com.locate.common.exception.LocateException;
 import com.locate.common.logging.err.ErrorLogHandler;
 import com.locate.common.utils.SystemProperties;
-import com.locate.gate.hanlder.AdapterHandler;
+import com.locate.gate.hanlder.AdapterHandlerEncoder;
 import com.locate.gate.hanlder.GatewayServerHandler;
 import com.locate.gate.hanlder.ServerChannelInitializer;
 
@@ -28,7 +28,7 @@ public class GateWayServer {
 	private GatewayServerHandler gateWayServerHandler;
 	
 	@Resource
-	private AdapterHandler adapterHandler;
+	private AdapterHandlerEncoder adapterHandler;
 	
 	private static int serverPort = Integer.parseInt(SystemProperties.getProperties(SystemProperties.SOCKET_PORT));
 

@@ -312,7 +312,8 @@ public class GatewayServerHandler extends StringDecoder {
 				derivedName = itemName;
 				itemName = DerivedUtils.restoreRic(itemName);
 			}
-			if (GateChannelCache.isEmnpty(itemName)) {//没有用户订阅了,退订该item
+			//没有用户对该产品以及衍生品感兴趣.清除所有该项目的缓存.
+			if (GateChannelCache.isEnmptyAll(itemName)) {
 				unregisterSet.add(itemName);
 				List<String> derivedList = GateChannelCache.item2derivedMap.get(itemName);
 				if(derivedList!=null){
@@ -321,7 +322,7 @@ public class GatewayServerHandler extends StringDecoder {
 				gateForwardRFA.closeHandler(itemName);
 			}
 		}
-		//清空掉该itemname和ChannelGroup的对应关系.注意ITEMName和ChannelGroup的对应关系可以不用清除.
+		//清空掉该itemname和ChannelGroup的对应关系.注意ITEMName和devriedPiepline的对应关系可以不用清除.
 		//保存在内存中.
 		for (String itemName : unregisterSet) {
 			ChannelGroup itemChannelGroup = GateChannelCache.itemNameChannelGroupMap.get(itemName);

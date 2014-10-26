@@ -354,5 +354,11 @@ public class PersistentItemManager extends IProcesser implements Client {
 	public void setItemHandle(Handle itemHandle) {
 		this.itemHandle = itemHandle;
 	}
+
+
+	@Override
+	public void closeDerivedRequest(String derivedName) {
+		
+	}
 	
 }

@@ -236,6 +236,15 @@ public class GateForwardRFA {
 		}
 	}
 	
+	public void closeDerivedRequest(String itemName,String derivedName) {
+		IProcesser itemManager = RmdsDataCache.RIC_ITEMMANAGER_Map.get(itemName);
+		//取消订阅该产品
+		if(itemManager!=null){
+			itemManager.closeDerivedRequest(derivedName);
+		}
+	}
+	
+		
 //	private boolean checkRequestNews(byte msgType,String userName,List<String> newsKey){
 //		String businessName = RFAMessageTypes.RFAMessageName.getRFAMessageName(msgType).toUpperCase();
 //		if(!RFAUserManagement.checkNewsCodeValiable(userName,businessName,newsKey)){

@@ -257,4 +257,9 @@ public class OneTimeItemManager extends IProcesser implements Client
 	public void closeRequest() {
 		//do nothing
 	}
+
+	@Override
+	public void closeDerivedRequest(String derivedName) {
+		
+	}
 }

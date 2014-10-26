@@ -46,4 +46,6 @@ public abstract class IProcesser{
 	public abstract void closeRequest();
 
 	public abstract void sendRicRequest(String ric, byte responseFuture);
+
+	public abstract void closeDerivedRequest(String derivedName);
 }
