@@ -298,6 +298,7 @@ public class GatewayServerHandler extends StringDecoder {
 		Channel channel = ctx.channel();
 		GateChannelCache.allChannelGroup.remove(channel);
 		Set<String> unregisterSet = new HashSet<String>();
+		List<String> passedDevriedList = new ArrayList<String>();
 		//遍历所有的channelgoup,发现有该channel的就remove掉.如果该channelGroup为空,
 		for(Entry<String,ChannelGroup> entry:GateChannelCache.itemNameChannelGroupMap.entrySet()){
 			String itemName = entry.getKey();
@@ -321,6 +322,10 @@ public class GatewayServerHandler extends StringDecoder {
 				}
 				gateForwardRFA.closeHandler(itemName);
 			}
+			if(StringUtils.isNotBlank(derivedName))
+				if(GateChannelCache.isEnmptyDerived(derivedName)){
+					passedDevriedList.add(derivedName);
+				}
 		}
 		//清空掉该itemname和ChannelGroup的对应关系.注意ITEMName和devriedPiepline的对应关系可以不用清除.
 		//保存在内存中.
@@ -330,6 +335,20 @@ public class GatewayServerHandler extends StringDecoder {
 				GateChannelCache.itemNameChannelGroupMap.remove(itemName);
 				itemChannelGroup = null;
 			}
+		}
+		//衍生品没有用户订阅.删除该衍生品的对应关系.但是原产品不变.
+		for(String derived:passedDevriedList){
+			ChannelGroup itemChannelGroup = GateChannelCache.itemNameChannelGroupMap.get(derived);
+			if (itemChannelGroup==null || itemChannelGroup.isEmpty()) {
+				GateChannelCache.itemNameChannelGroupMap.remove(derived);
+				itemChannelGroup = null;
+			}
+			for(List<String> devridedList:GateChannelCache.item2derivedMap.values()){
+				if(devridedList!=null&&devridedList.contains(derived)){
+					devridedList.remove(derived);
+				}
+			}
+			gateForwardRFA.closeDerivedRequest(DerivedUtils.restoreRic(derived),derived);
 		}
 	}
 	

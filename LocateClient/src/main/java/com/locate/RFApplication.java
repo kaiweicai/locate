@@ -828,7 +828,11 @@ public class RFApplication extends JFrame {
 							amount = Integer.parseInt(payLoad[3]);
 						}
 					}
-					realTimeChart.updatePriceChart(ComboItemName.exhangeCode2Name(itemName),currentTime, price, amount);
+					try{
+						realTimeChart.updatePriceChart(ComboItemName.exhangeCode2Name(itemName),currentTime, price, amount);
+					}catch(Exception e){
+						errorLogHandler.error("The Real chart error. ",e);
+					}
 //					chartPanel.getGraphics().drawLine(12, 21, 54, 99);
 					break;
 				//Locate send the state info to client

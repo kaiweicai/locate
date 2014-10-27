@@ -201,9 +201,10 @@ public class ItemManager extends IProcesser implements Client
 		_itemGroupManager._handles.remove(itemHandle);
 		_mainApp.getOMMConsumer().unregisterClient(itemHandle);
 		EngineManager.engineLineCache.remove(clientRequestItemName);
-		for(String derivedName:GateChannelCache.item2derivedMap.get(clientRequestItemName)){
-			EngineManager.engineLineCache.remove(derivedName);
-		}
+		if(GateChannelCache.item2derivedMap.get(clientRequestItemName)!=null)
+			for(String derivedName:GateChannelCache.item2derivedMap.get(clientRequestItemName)){
+				EngineManager.engineLineCache.remove(derivedName);
+			}
 //		GateChannelCache.item2derivedMap.remove(clientRequestItemName);
 		RmdsDataCache.RIC_ITEMMANAGER_Map.remove(this.clientRequestItemName);
 		RmdsDataCache.RIC_ITEMMANAGER_Map.remove(this.derivactiveItemName);
