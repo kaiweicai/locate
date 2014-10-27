@@ -18,7 +18,7 @@ public class LocateMessageTest {
 		LocateUnionMessage cloneMessage = message.clone();
 		message.setItemName("oringeRicName");
 		message.getPayLoadSet().get(0)[3]="6900";
-		Assert.assertTrue(message.getItemName().equalsIgnoreCase(cloneMessage.getItemName()));
+		Assert.assertFalse(message.getItemName().equalsIgnoreCase(cloneMessage.getItemName()));
 		Assert.assertFalse(message.getPayLoadSet().get(0)[3].equals(cloneMessage.getPayLoadSet().get(0)[3]));
 		System.out.println(message);
 		System.out.println(cloneMessage);

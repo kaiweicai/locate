@@ -37,11 +37,11 @@ public class HistoryTableModel extends AbstractTableModel {
 			LocateUnionMessage unionMessage = locateMessageList.get(i);
 			String gernerateTime = unionMessage.getGeneratetime();
 			historyList[i][0] = gernerateTime == null ? "" : gernerateTime;
-			String bidPrice[] = unionMessage.getTradeRecodeMap().get("22");
+			String bidPrice[] = unionMessage.getPriceMap().get("22");
 			historyList[i][1] = bidPrice == null ? "" : bidPrice[3];
-			String askPrice[] = unionMessage.getTradeRecodeMap().get("25");
+			String askPrice[] = unionMessage.getPriceMap().get("25");
 			historyList[i][2] = askPrice == null ? "" : askPrice[3];
-			String[] lastTradePrice = unionMessage.getTradeRecodeMap().get("6");
+			String[] lastTradePrice = unionMessage.getPriceMap().get("6");
 			historyList[i][3] = lastTradePrice == null ? "" : lastTradePrice[3];
 		}
 	}
