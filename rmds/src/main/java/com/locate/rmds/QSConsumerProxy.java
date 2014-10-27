@@ -355,7 +355,7 @@ public class QSConsumerProxy{
 			}
 		}
 		Map<String,IProcesser> subscribeItemManagerMap = RmdsDataCache.RIC_ITEMMANAGER_Map;
-		boolean needRenewSubscribeItem=checkSubscribeStatus(itemName);
+		boolean needRenewSubscribeItem = checkSubscribeStatus(itemName);
 		if(needRenewSubscribeItem){
 			/**
 			 * 已经订阅过该产品,只需要发送一个一次订阅请求,返回一个snapshot即可.
@@ -422,14 +422,18 @@ public class QSConsumerProxy{
 	 * @return
 	 */
 	private boolean checkSubscribeStatus(String itemName) {
+		logger.debug("start checkSubscribeStatus, itemName is "+itemName);
 		Map<String, IProcesser> subscribeItemManagerMap = RmdsDataCache.RIC_ITEMMANAGER_Map;
+		logger.debug("subscribeItemManagerMap is "+subscribeItemManagerMap);
 		if (!subscribeItemManagerMap.containsKey(itemName)) {
 			return false;
 		}
 		ItemManager itemManager = (ItemManager)subscribeItemManagerMap.get(itemName);
 		if(itemManager!=null){
+			logger.debug("itemManager is not null");
 			Handle itemHandle = itemManager.getItemHandle();
 			if(itemHandle!=null&&!itemHandle.isActive()){
+				logger.debug("itemHandle is not null and itemHandle is actived");
 				return false;
 			}
 		}
