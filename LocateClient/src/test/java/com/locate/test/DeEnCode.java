@@ -18,23 +18,24 @@ public class DeEnCode {
 	}
 
 	public static String decode(byte[] dec) {
-		
 		byte[] dee = dec;
 		for (int i = 0, size = dec.length; i < size; i++) {
 			for (byte keyBytes0 : keyBytes) {
-				dec[i] = (byte) (dee[i] ^ keyBytes0);
+				dec[i] = (byte) (dec[i] ^ keyBytes0);
 			}
 		}
 		return new String(dee,charset);
 	}
 
 	public static void main(String[] args) {
-//		String s = "you are right`1234567890-=[]';/.,`1234567890-[]';/.,你好吗?我很好呀.";
-		String s = "你好啊短发的父亲为热爱的撒地方";
+		String s = "you are right`1234567890-=[]';/.,`1234567890-[]';/.,你好吗?我很好呀.";
+//		String s = "你好啊短发的父亲为热爱的撒地方";
 		byte[] ss=s.getBytes(charset);
 		byte[] enc = encode(ss);
+		for(int i=0;i<enc.length;i++){
+			System.out.println("enc is "+enc[i]);
+		}
 		String dec = decode(enc);
-		System.out.println("enc is "+enc);
 		System.out.println("dec is "+dec);
 	}
 }

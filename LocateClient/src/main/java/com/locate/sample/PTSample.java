@@ -29,8 +29,8 @@ import com.locate.gate.handler.ClientConnector;
 public class PTSample {
 	private Logger logger = LoggerFactory.getLogger(getClass());
 	private ErrorLogHandler errorLogHandler = ErrorLogHandler.getLogger(getClass());
-	public static final String COMEX_GOLD_ITEM = "XAU=";
-	public static final String COMEX_SILVER_ITEM = "XAG=";
+	public static final String COMEX_GOLD_ITEM = "PT_XAU";
+	public static final String COMEX_SILVER_ITEM = "PT_XAG";
 	//客户端接口声明.
 	public IClientConnector clientConnetor;
 	public IBussiness bussinessHandler;
@@ -159,8 +159,8 @@ public class PTSample {
 	public static void main(String[] args) {
 		PTSample sample = new PTSample();
 		//向服务器注册客户端信息.参数1服务器ip,参数2服务器端口,参数3客户名称,参数4客户密码.
-		sample.clientConnetor.conneteLocateGateWay("61.144.244.173", 8888, "demo", "demo");
-//		sample.clientConnetor.conneteLocateGateWay("127.0.0.1", 8888, "demo", "demo");
+//		sample.clientConnetor.conneteLocateGateWay("61.144.244.173", 8888, "demo", "demo");
+		sample.clientConnetor.conneteLocateGateWay("127.0.0.1", 8888, "demo", "demo");
 		//向服务器发送RIC请求.BussinessHandler的handleMessage方法就可以接收到服务器返回的市场价格了.
 		sample.clientConnetor.openRICMarket(COMEX_GOLD_ITEM);
 		sample.clientConnetor.openRICMarket(COMEX_SILVER_ITEM);
