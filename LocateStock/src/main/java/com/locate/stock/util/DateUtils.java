@@ -89,9 +89,9 @@ public class DateUtils {
 		return CALENDAR.getTime();
 	}
 	
-	public static Date beforeCurrentDate(int minutue){
+	public static Date afterCurrentDate(int minutue){
 		CALENDAR.setTime(new Date());
-		CALENDAR.add(Calendar.SECOND, -1);
+//		CALENDAR.add(Calendar.SECOND, -1);
 		CALENDAR.add(Calendar.MINUTE, minutue);
 		return CALENDAR.getTime();
 	}

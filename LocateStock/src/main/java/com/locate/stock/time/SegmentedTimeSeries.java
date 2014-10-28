@@ -110,7 +110,6 @@ public class SegmentedTimeSeries {
 	}
 	
 	public void pushItem(TimeSeriesDataItem item) {
-		timeseries.delete(0, 0,false);
 		if (lastItem != null) {
 			long lastStart = lastItem.getPeriod().getFirstMillisecond();
 			long thisStart = item.getPeriod().getFirstMillisecond();
@@ -128,16 +127,25 @@ public class SegmentedTimeSeries {
 				if (timeline != null) {
 					if (timeline.containsDomainValue(bufPeriod
 							.getLastMillisecond())) {
+//						if(timeseries.getItemCount()>1800)
+//							timeseries.delete(0, 0,false);
+//						System.out.println("*******************"+timeseries.getItemCount());
 						timeseries.add(bufItem);
 						size++;
 					}
 				} else {
+//					if(timeseries.getItemCount()>1800)
+//					timeseries.delete(0, 0,false);
+//					System.out.println("*******************"+timeseries.getItemCount());
 					timeseries.add(bufItem);
 					size++;
 				}
 				bufPeriod = bufItem.getPeriod().next();
 			}
 		}
+//		if(timeseries.getItemCount()>1800)
+		timeseries.delete(0, 0,false);
+//		System.out.println("*******************"+timeseries.getItemCount());
 		timeseries.add(item);
 		lastItem = item;
 	}

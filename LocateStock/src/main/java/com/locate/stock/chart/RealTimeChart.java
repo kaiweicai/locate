@@ -32,6 +32,7 @@ import com.locate.stock.model.TimeseriesItem;
 import com.locate.stock.util.DateUtils;
 
 public class RealTimeChart {
+	private static final Integer TIME_LINE_LENGTH = 3;
 	private static LogicDateAxis logicDateAxis = null;
 	SegmentedTimeline timeline = new SegmentedTimeline(SegmentedTimeline.MINUTE_SEGMENT_SIZE, 1440, 0);
 	// Creates timeseries data set.
@@ -50,13 +51,13 @@ public class RealTimeChart {
 		String dbFile = "data/jstockchart-timeseries.db4o";
 		ObjectContainer db = Db4o.openFile(GlobalConfig.globalConfig(), dbFile);
 		DataFactory dataFactory = new DataFactory(db);
-		Date startTime = DateUtils.beforeCurrentDate(10);
+		Date startTime = DateUtils.afterCurrentDate(10);
 		Date endTime = DateUtils.currentDate();
 		// 'data' is a list of TimeseriesItem instances.
 		List<TimeseriesItem> dataList = new ArrayList<TimeseriesItem>();
 		// the 'timeline' indicates the segmented time range '00:00-11:30,
 		// 13:00-24:00'.
-		long time = DateUtils.beforeCurrentDate(-3).getTime();
+		long time = DateUtils.afterCurrentDate(-3).getTime();
 		System.out.println("-----------------" + new Date(time));
 		double price = 17.8;
 		double amount = 300;
@@ -67,8 +68,8 @@ public class RealTimeChart {
 		// price += x * deltaPrice, amount += x
 		// * (int) (Math.random() * 5 + 1));
 		TimeseriesItem timeseriesItem = null;
-		for (int i = 0; i < 30; i++) {
-			for (int j = 0; j < 6; j++) {
+		for (int i = 0; i < 60; i++) {
+			for (int j = 0; j < TIME_LINE_LENGTH; j++) {
 				timeseriesItem = new TimeseriesItem(new Date(time += 1000L), price, amount);
 				dataList.add(timeseriesItem);
 			}
@@ -161,7 +162,7 @@ public class RealTimeChart {
 		List<TimeseriesItem> dataList = new ArrayList<TimeseriesItem>();
 		// the 'timeline' indicates the segmented time range '00:00-11:30,
 		// 13:00-24:00'.
-		long time = DateUtils.beforeCurrentDate(-3).getTime();
+		long time = DateUtils.afterCurrentDate(-10).getTime();
 		TimeseriesItem timeseriesItem = null;
 		this.certenPrice = price;
 		for (int i = 0; i < 30; i++) {
@@ -220,15 +221,24 @@ public class RealTimeChart {
 	private static LogicDateAxis createlogicDateAxis(Date baseDate) {
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss");
 		logicDateAxis = new LogicDateAxis(baseDate, simpleDateFormat);
-		int changedMinutes = -3;
-		String currentDate = simpleDateFormat.format(DateUtils.beforeCurrentDate(changedMinutes++));
+		int changedMinutes = -TIME_LINE_LENGTH;
+		String currentDate = simpleDateFormat.format(DateUtils.afterCurrentDate(changedMinutes++));
 		logicDateAxis.addDateTick(currentDate, TickAlignment.START);
-		currentDate = simpleDateFormat.format(DateUtils.beforeCurrentDate(changedMinutes++));
-		logicDateAxis.addDateTick(currentDate);
-		currentDate = simpleDateFormat.format(DateUtils.beforeCurrentDate(changedMinutes++));
-		logicDateAxis.addDateTick(currentDate);
-		currentDate = simpleDateFormat.format(DateUtils.beforeCurrentDate(changedMinutes++));
+		changedMinutes +=2;
+		while(changedMinutes<=0){
+			currentDate = simpleDateFormat.format(DateUtils.afterCurrentDate(changedMinutes++));
+			logicDateAxis.addDateTick(currentDate);
+		}
+		currentDate = simpleDateFormat.format(DateUtils.afterCurrentDate(changedMinutes++));
 		logicDateAxis.addDateTick(currentDate, TickAlignment.END);
+//		String currentDate = simpleDateFormat.format(DateUtils.afterCurrentDate(changedMinutes++));
+//		logicDateAxis.addDateTick(currentDate);
+//		currentDate = simpleDateFormat.format(DateUtils.afterCurrentDate(changedMinutes++));
+//		logicDateAxis.addDateTick(currentDate);
+//		currentDate = simpleDateFormat.format(DateUtils.afterCurrentDate(changedMinutes++));
+//		logicDateAxis.addDateTick(currentDate);
+//		currentDate = simpleDateFormat.format(DateUtils.afterCurrentDate(changedMinutes++));
+//		logicDateAxis.addDateTick(currentDate);
 		return logicDateAxis;
 	}
 
@@ -237,7 +247,7 @@ public class RealTimeChart {
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss");
 		LogicDateAxis logicDateAxis = new LogicDateAxis(DateUtils.createDate(2014, 10, 7), simpleDateFormat);
 		int changedMinutes = -3;
-		String currentDate = simpleDateFormat.format(DateUtils.beforeCurrentDate(changedMinutes++));
+		String currentDate = simpleDateFormat.format(DateUtils.afterCurrentDate(changedMinutes++));
 		logicDateAxis.pushDateTick(currentDate);
 		// int changedMinutes = -3;
 		// String currentDate =

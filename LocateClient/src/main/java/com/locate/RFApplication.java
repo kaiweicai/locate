@@ -397,7 +397,9 @@ public class RFApplication extends JFrame {
 					int flag = JOptionPane.showConfirmDialog(closeButton, "确定?", "注意!",
 							JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
 					if (JOptionPane.YES_OPTION == flag) {
-						clientConnetor.getClientchannel().close();
+						if(clientConnetor!=null&&clientConnetor.getClientchannel()!=null){
+							clientConnetor.getClientchannel().close();
+						}
 						System.exit(0);
 					} else {
 						return;

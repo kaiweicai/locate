@@ -1,5 +1,8 @@
 package com.locate.rmds.processer;
 
+import io.netty.channel.Channel;
+import io.netty.channel.group.ChannelGroup;
+
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -169,8 +172,11 @@ public class OneTimeItemManager extends IProcesser implements Client
 		List<Integer> fieldFilterList = FilterManager.filterMap.get(clientRequestItemName);
 		this.filedFiltrMessage(locateMessage, fieldFilterList);
 		LocateUnionMessage derivedClienMessage = locateMessage.clone();
-		if (GateChannelCache.itemNameChannelGroupMap.get(locateMessage.getItemName()).contains(
-				GateChannelCache.id2ChannelMap.get(channelID))) {
+		
+		ChannelGroup itemNameChannelGroup =GateChannelCache.itemNameChannelGroupMap.get(locateMessage.getItemName());
+		Channel itemChannel = GateChannelCache.id2ChannelMap.get(channelID);
+		//如果该channel只订阅了衍生品没有订阅原产品,则不能网该产品发送原产品的snapshort.
+		if (itemNameChannelGroup != null && itemChannel != null && itemNameChannelGroup.contains(itemChannel)) {
 			Future<LocateUnionMessage> engineFuture=EngineManager.engineLineCache.get(clientRequestItemName).applyStrategy(locateMessage,channelID);
 			if(engineFuture!=null){
 				try {

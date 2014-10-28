@@ -488,6 +488,8 @@ public class QSConsumerProxy{
 				errorLogHandler.error("event queue not activate"+e);
 			} catch (DispatchQueueInGroupException e) {
 				errorLogHandler.error("event queue is dispatched."+e);
+			}catch(Exception e){
+				errorLogHandler.error("_eventQueue.dispatch ERROR!",e);
 			}
 		}
 	}
