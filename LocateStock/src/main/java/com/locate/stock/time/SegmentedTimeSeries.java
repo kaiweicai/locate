@@ -127,25 +127,28 @@ public class SegmentedTimeSeries {
 				if (timeline != null) {
 					if (timeline.containsDomainValue(bufPeriod
 							.getLastMillisecond())) {
-//						if(timeseries.getItemCount()>1800)
-//							timeseries.delete(0, 0,false);
-//						System.out.println("*******************"+timeseries.getItemCount());
+						if(timeseries.getItemCount()>180)
+							timeseries.delete(0, 0,false);
+						System.out.println("*******************"+timeseries.getItemCount());
+						timeseries.setMaximumItemCount(180);
 						timeseries.add(bufItem);
-						size++;
+//						size++;
 					}
 				} else {
-//					if(timeseries.getItemCount()>1800)
-//					timeseries.delete(0, 0,false);
-//					System.out.println("*******************"+timeseries.getItemCount());
+					if(timeseries.getItemCount()>180)
+					timeseries.delete(0, 0,false);
+					System.out.println("*******************"+timeseries.getItemCount());
+					timeseries.setMaximumItemCount(180);
 					timeseries.add(bufItem);
-					size++;
+//					size++;
 				}
 				bufPeriod = bufItem.getPeriod().next();
 			}
 		}
-//		if(timeseries.getItemCount()>1800)
+		if(timeseries.getItemCount()>180)
 		timeseries.delete(0, 0,false);
-//		System.out.println("*******************"+timeseries.getItemCount());
+		System.out.println("*******************"+timeseries.getItemCount());
+		timeseries.setMaximumItemCount(180);
 		timeseries.add(item);
 		lastItem = item;
 	}

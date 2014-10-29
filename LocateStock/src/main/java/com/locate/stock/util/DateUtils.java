@@ -57,6 +57,15 @@ public class DateUtils {
 		return CALENDAR.getTime();
 	}
 	
+	public static synchronized Date getCurrentDate() {
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(Calendar.HOUR_OF_DAY,0);
+		calendar.set(Calendar.MINUTE,0);
+		calendar.set(Calendar.SECOND,0);
+		calendar.set(Calendar.MILLISECOND,0);
+		return calendar.getTime();
+	}
+	
 	public static synchronized Date createCurrentDate() {
 		Calendar cal = Calendar.getInstance();
 		int year = cal.get(Calendar.YEAR);
