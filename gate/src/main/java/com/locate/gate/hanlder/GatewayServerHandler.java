@@ -176,7 +176,7 @@ public class GatewayServerHandler extends StringDecoder {
 			// store the channel of customer in a map according by the RIC
 			if (msgType != LocateMessageTypes.LOGIN) {
 				StringBuilder sourceRic = new StringBuilder();
-				for (String subcribeItemName : request.getRIC().split(",")) {
+				for (String subcribeItemName : request.getItemCode().split(",")) {
 					Map<String, ChannelGroup> subscribeChannelMap = GateChannelCache.itemNameChannelGroupMap;
 					//将客户端的instrumentCode转成Locate系统使用的sourceCode.
 					subcribeItemName = InstrumentCodeData.exchangeInstrumentCodeToSourceCode(subcribeItemName);
@@ -205,7 +205,7 @@ public class GatewayServerHandler extends StringDecoder {
 						}
 					}
 				}
-				request.setRIC(sourceRic.toString());
+				request.setItemCode(sourceRic.toString());
 			}
 			if (StringUtils.isBlank(userName)) {
 				userName = DataBaseCache._userConnection.get(clientIP);

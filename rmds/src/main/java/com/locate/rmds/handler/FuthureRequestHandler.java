@@ -31,11 +31,11 @@ public class FuthureRequestHandler extends BaseRequestHandler {
 	@Override
 	public int processRequest(ClientRequest req,String clientName,byte responseMsgType, int channelId ){
 		int resultCode = LocateResultCode.SUCCESS_RESULT;
-		String[] itemNames = req.getRIC().split(",");
+		String[] itemNames = req.getItemCode().split(",");
 		//这里判断可以移到QSComsumerProxey中,让这个requester专注于处理期货.
 		if(!RFAServerManager.isConnectedDataSource()){
 			logger.warn("The RFA Datasource not connected.Can not register the intresting Product!");
-			resultCode = LocateResultCode.RFA_SERVER_NOT_READY;
+			resultCode = LocateResultCode.SERVER_NOT_READY;
 		}
 		logger.info("Begin register client request "+clientName);
 		for(String itemName : itemNames){
@@ -60,7 +60,7 @@ public class FuthureRequestHandler extends BaseRequestHandler {
 	 */
 	@Deprecated
 	public int processOneTimesRequest(ClientRequest req, String clientName, byte responseMsgType, int channel) {
-		String[] itemNames = req.getRIC().split(",");
+		String[] itemNames = req.getItemCode().split(",");
 		// if(!checkRequestItem(responseMsgType,clientName,itemNames))
 		// return;
 		logger.info("Begin register one time client request " + clientName);

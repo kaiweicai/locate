@@ -129,7 +129,7 @@ public class ClientConnector implements IClientConnector {
 	private ClientRequest createFutureRequest(String ric){
 		ClientRequest request = new ClientRequest();
 		request.setMsgType(LocateMessageTypes.FUTURE_REQUEST);
-		request.setRIC(ric);
+		request.setItemCode(ric);
 		request.setChannelID(channelID);
 		return request;
 	}

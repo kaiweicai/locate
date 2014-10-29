@@ -19,7 +19,7 @@ public class LocateResultCode {
 
 	public static final int CHANNEL_IDLE_TIMEOUT = 200;
 
-	public static final int RFA_SERVER_NOT_READY = 2000;
+	public static final int SERVER_NOT_READY = 2000;
 
 	public static final int NETTY_UNKONW_ERROR = 1000;
 
@@ -33,8 +33,8 @@ public class LocateResultCode {
 			return "Request business failed";
 		case USER_REQUEST_FAILTED:
 			return "Request data is wrong, Please check!";
-		case RFA_SERVER_NOT_READY:
-			return "The server can not conneted to Data Source of RFA Server!";
+		case SERVER_NOT_READY:
+			return "The server can not conneted to Data Source of Server!";
 		case CHANNEL_IDLE_TIMEOUT:
 			return "No message write to client for a long time,May be the RFA server not work correctly.";
 		case SUCCESS_RESULT:

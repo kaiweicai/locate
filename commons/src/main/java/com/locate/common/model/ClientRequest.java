@@ -4,7 +4,7 @@ package com.locate.common.model;
 public class ClientRequest {
 	private String userName;
 	private String password;
-	private String RIC;
+	private String ItemCode;
 	private int channelID;
 	private byte msgType;
 	private String clientIP;
@@ -12,12 +12,12 @@ public class ClientRequest {
 	public ClientRequest(){
 	}
 	
-	public String getRIC() {
-		return RIC;
+	public String getItemCode() {
+		return ItemCode;
 	}
 
-	public void setRIC(String rIC) {
-		RIC = rIC;
+	public void setItemCode(String itemCode) {
+		ItemCode = itemCode;
 	}
 
 	public String getUserName() {
@@ -64,7 +64,7 @@ public class ClientRequest {
 
 	@Override
 	public String toString() {
-		return "ClientRequest [userName=" + userName + ", password=" + password + ", RIC=" + RIC + ", channelID="
+		return "ClientRequest [userName=" + userName + ", password=" + password + ", RIC=" + ItemCode + ", channelID="
 				+ channelID + ", msgType=" + msgType + ", clientIP=" + clientIP + ", engineId=" + engineId + "]";
 	}
 
