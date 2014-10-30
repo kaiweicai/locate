@@ -89,7 +89,12 @@ public class GateWayResponser {
 		String itemName = locateMessage.getItemName();
 		List<String> allItemNameList= new ArrayList<String>();
 		allItemNameList.add(itemName);
-		allItemNameList.addAll(GateChannelCache.item2derivedMap.get(itemName));
+		List<String> derivedList = GateChannelCache.item2derivedMap.get(itemName);
+		if(derivedList==null){
+			logger.info("Item->"+itemName+" has no derived product");
+		}else{
+			allItemNameList.addAll(derivedList);
+		}
 		for(String allName:allItemNameList){
 			locateMessage.setItemName(allName);
 			ChannelGroup channelGroup = GateChannelCache.itemNameChannelGroupMap.get(allName);

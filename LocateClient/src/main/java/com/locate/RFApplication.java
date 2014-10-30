@@ -800,7 +800,6 @@ public class RFApplication extends JFrame {
 					}
 					RealTimeChart realTimeChart = ClientConstant.itemName2RealTimeChartMap.get(itemName);
 					long currentTime = System.currentTimeMillis();
-					
 					if(realTimeChart==null){
 						try {
 							Thread.sleep(1000);
@@ -809,29 +808,29 @@ public class RFApplication extends JFrame {
 						}
 						realTimeChart = ClientConstant.itemName2RealTimeChartMap.get(itemName);
 					}
-					
+					boolean repaintFlag = true;
 					if(currentTime-realTimeChart.getLastUpdateTime()<=1000){
-						return;
+						repaintFlag = false;
 					}
 					List<String[]> dataPayLoad = message.getPayLoadSet();
 					double price = 0d;
 					int amount = 0;
 					for(String[] payLoad :dataPayLoad){
+						if("32".equals(payLoad[0])){
+							if(StringUtils.isBlank(payLoad[3])){
+								amount=0;
+							}else
+							amount = Integer.parseInt(payLoad[3]);
+						}
 						if("100000".equals(payLoad[0])){
 							if(StringUtils.isBlank(payLoad[3])){
 								return;
 							}else
 							price = Double.parseDouble(payLoad[3]);
 						}
-						if("32".equals(payLoad[0])){
-							if(StringUtils.isBlank(payLoad[3])){
-								return;
-							}else
-							amount = Integer.parseInt(payLoad[3]);
-						}
 					}
 					try{
-						realTimeChart.updatePriceChart(ComboItemName.exhangeCode2Name(itemName),currentTime, price, amount);
+						realTimeChart.updatePriceChart(ComboItemName.exhangeCode2Name(itemName),currentTime, price, amount,repaintFlag);
 					}catch(Exception e){
 						errorLogHandler.error("The Real chart error. ",e);
 					}

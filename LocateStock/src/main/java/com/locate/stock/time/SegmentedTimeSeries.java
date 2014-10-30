@@ -104,7 +104,8 @@ public class SegmentedTimeSeries {
 				bufPeriod = bufItem.getPeriod().next();
 			}
 		}
-		timeseries.add(item);
+//		timeseries.add(item);
+		timeseries.addOrUpdate(item);
 		size++;
 		lastItem = item;
 	}
