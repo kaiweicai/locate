@@ -20,7 +20,6 @@ import com.locate.rmds.engine.CurrencyEngine;
 import com.locate.rmds.engine.EngineLine;
 import com.locate.rmds.engine.filter.EngineManager;
 import com.locate.rmds.parser.face.IOmmParser;
-import com.locate.rmds.statistic.CycleStatistics;
 import com.locate.rmds.statistic.LogTool;
 import com.locate.rmds.statistic.OutputFormatter;
 import com.locate.rmds.statistic.ResourceStatistics;
@@ -33,7 +32,6 @@ import com.reuters.rfa.rdm.RDMInstrument;
 import com.reuters.rfa.rdm.RDMMsgTypes;
 import com.reuters.rfa.session.omm.OMMItemEvent;
 import com.reuters.rfa.session.omm.OMMItemIntSpec;
-import com.reuters.rfa.session.omm.OMMSolicitedItemEvent;
 
 /**
  * 该类有多个实例.一个订阅的产品对应一个itemManager.
@@ -56,32 +54,10 @@ public class ChyCurrencyManager implements Client{
 	//    public String clientName;
     public byte responseMessageType;
 
-	// requests
-	static private int _request_count;
-    static private CycleStatistics _request_cycleStats;
-    
-    //refreshes
-    static private int _refresh_count;
-    static private CycleStatistics _refresh_cycleStats;
-    
-	// updates
-    static private int _update_count;
-    static private CycleStatistics _update_cycleStats;
-    static long _update_begin_milliTime;
-	
-	// posts
-    static private int _post_received_count;
-    static private int _post_resent_count;
-    static private CycleStatistics _post_received_cycleStats;
-    static private CycleStatistics _post_resent_cycleStats;
     
  // resource usage ( CPU and Memory )
     static ResourceStatistics _resourceStats;
     
- // close
-    static private int _close_count;
-    static private CycleStatistics _close_cycleStats;
-	
     // display
     static LogTool _consoleLogger;
     static LogTool _statsFileLogger;
@@ -104,26 +80,10 @@ public class ChyCurrencyManager implements Client{
 
 		_statsFileLogger.println("UTC, " + "Requests Received, " + "Images Sent, " + "Updates sent, "
 				+ "Posts Reflected, " + "CPU usage (%), " + "Memory usage (MB)");
-
 		// metrics
 		_resourceStats = new ResourceStatistics();
-
-		_request_cycleStats = new CycleStatistics("request");
-		_refresh_cycleStats = new CycleStatistics("refresh");
-		_update_cycleStats = new CycleStatistics("updates");
-		_close_cycleStats = new CycleStatistics("close");
-		_post_received_cycleStats = new CycleStatistics("postReceived");
-		_post_resent_cycleStats = new CycleStatistics("postResent");
 	}
     
-    // constructor
-//    public ItemManager(QSConsumerProxy mainApp, ItemGroupManager itemGroupManager,String clientName)
-//    {
-//    	this._mainApp = mainApp;
-//        this._itemGroupManager = itemGroupManager;
-//        this.clientName = clientName;
-//    }
-    // creates streaming request messages for items and register them to RFA
     public void sendRicRequest()
     {
     	_logger.info("sendRequest: Sending item("+CNY_CURRENCY_SOURCE_CODE+") requests to server ");
@@ -171,16 +131,9 @@ public class ChyCurrencyManager implements Client{
     }
     
 
-    /**
-     * 
-     */
 	public void closeRequest() {
 		_itemGroupManager._handles.remove(itemHandle);
 		_mainApp.getOMMConsumer().unregisterClient(itemHandle);
-//		RmdsDataCache.RIC_ITEMMANAGER_Map.remove(this.clientRequestItemName);
-//		RmdsDataCache.RIC_ITEMMANAGER_Map.remove(this.derivactiveItemName);
-//		RmdsDataCache.CLIENT_ITEMMANAGER_MAP.remove(this.clientRequestItemName);
-//		RmdsDataCache.CLIENT_ITEMMANAGER_MAP.remove(this.derivactiveItemName);
 	}
 
     // This is a Client method. When an event for this client is dispatched,
@@ -227,7 +180,7 @@ public class ChyCurrencyManager implements Client{
         	}
         }
         
-		EngineLine engineLine = EngineManager.engineLineCache.get("DE_XAG=_CNY");
+		EngineLine engineLine = EngineManager.item2EngineLineCache.get("DE_XAG=_CNY");
 		if (engineLine != null) {
 			Future<LocateUnionMessage> engineFuture = engineLine.applyStrategy();
 			if (engineFuture != null) {
@@ -242,68 +195,9 @@ public class ChyCurrencyManager implements Client{
 		_logger.info("publish Item " + CNY_CURRENCY_SOURCE_CODE + " use time " + (endTime - startTime) + " microseconds");
     }
     
-    /**
-     * Handle solicited item events.
-     * 
-     * @param event the event to be processed.
-     */
-	protected void processOMMSolicitedItemEvent(OMMSolicitedItemEvent event) {
-		OMMMsg msg = event.getMsg();
-
-		if (msg.getMsgModelType() > RDMMsgTypes.DICTIONARY) {
-			handleItemEvent(event);
-		}
-	}
-	/**
-     * Process incoming item events and call the appropriate method to process
-     * the event. Called from the AdminClient.
-     * 
-     * @param event the event to process/handle.
-     */
-    @SuppressWarnings("deprecation")
-    void handleItemEvent(OMMSolicitedItemEvent event)
-    {
-        switch (event.getMsg().getMsgType())
-        {
-            case OMMMsg.MsgType.REQUEST:
-            {
-            	++_request_count;
-//                processItemRequest(event);
-                return;
-            }
-
-//            case OMMMsg.MsgType.POST:
-//            {
-//                processPostMessage(event);
-//                return;
-//            }
-//
-//            case OMMMsg.MsgType.CLOSE_REQ:
-//            {
-//                processCloseItem(event);
-//                return;
-//            }
-
-            case OMMMsg.MsgType.STREAMING_REQ:
-            case OMMMsg.MsgType.NONSTREAMING_REQ:
-            case OMMMsg.MsgType.PRIORITY_REQ:
-            {
-                OMMMsg ommMsg = event.getMsg();
-
-                _consoleLogger.println("Received deprecated message type of "
-                        + OMMMsg.MsgType.toString(ommMsg.getMsgType()) + ", not supported. ");
-                return;
-            }
-
-            default:
-                break;
-        }
-    }
-    
 	public Handle getItemHandle() {
 		return itemHandle;
 	}
-
 
 	public void setItemHandle(Handle itemHandle) {
 		this.itemHandle = itemHandle;

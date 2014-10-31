@@ -338,20 +338,20 @@ public class QSConsumerProxy{
 		String derivactiveItemName = "";
 		if (DerivedUtils.isDerived(itemName)) {
 			derivactiveItemName = itemName;
-			EngineLine derivedEngineLine = EngineManager.engineLineCache.get(derivactiveItemName);
+			EngineLine derivedEngineLine = EngineManager.item2EngineLineCache.get(derivactiveItemName);
 			if(derivedEngineLine == null){
 				derivedEngineLine = new EngineLine(derivactiveItemName);
-				EngineManager.engineLineCache.put(derivactiveItemName, derivedEngineLine);
+				EngineManager.item2EngineLineCache.put(derivactiveItemName, derivedEngineLine);
 			}
 			itemName = DerivedUtils.restoreRic(itemName);
 //			CurrencyEngine.currency = SystemProperties.getProperties(SystemProperties.CUR_US_CYN);
 			Map<String,Engine> engineMap = EngineManager.genEgines(derivactiveItemName);
 			derivedEngineLine.addEngine(engineMap);
 		}else{
-			EngineLine originalEngineLine = EngineManager.engineLineCache.get(itemName);
+			EngineLine originalEngineLine = EngineManager.item2EngineLineCache.get(itemName);
 			if(originalEngineLine == null){
 				originalEngineLine= new EngineLine(itemName);
-				EngineManager.engineLineCache.put(itemName, originalEngineLine);
+				EngineManager.item2EngineLineCache.put(itemName, originalEngineLine);
 			}
 		}
 		Map<String,IProcesser> subscribeItemManagerMap = RmdsDataCache.RIC_ITEMMANAGER_Map;

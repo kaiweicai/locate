@@ -10,11 +10,14 @@ import io.netty.util.concurrent.GlobalEventExecutor;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import com.locate.common.model.ClientSession;
 
 
 public class GateChannelCache {
+	public static ReentrantReadWriteLock item2ChannelGroupReadWriteLock = new ReentrantReadWriteLock();
+	public static ReentrantReadWriteLock item2derivedReadWriteLock = new ReentrantReadWriteLock();
 	//add by Cloud Wei
 	// 管理channelId和channel的映射关系.
 	public static ChannelGroup allChannelGroup; 

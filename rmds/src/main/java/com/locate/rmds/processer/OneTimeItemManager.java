@@ -177,7 +177,7 @@ public class OneTimeItemManager extends IProcesser implements Client
 		Channel itemChannel = GateChannelCache.id2ChannelMap.get(channelID);
 		//如果该channel只订阅了衍生品没有订阅原产品,则不能网该产品发送原产品的snapshort.
 		if (itemNameChannelGroup != null && itemChannel != null && itemNameChannelGroup.contains(itemChannel)) {
-			Future<LocateUnionMessage> engineFuture=EngineManager.engineLineCache.get(clientRequestItemName).applyStrategy(locateMessage,channelID);
+			Future<LocateUnionMessage> engineFuture=EngineManager.item2EngineLineCache.get(clientRequestItemName).applyStrategy(locateMessage,channelID);
 			if(engineFuture!=null){
 				try {
 					engineFuture.get();
@@ -193,7 +193,7 @@ public class OneTimeItemManager extends IProcesser implements Client
 				derivedClienMessage.setItemName(derivedName);
 				if (GateChannelCache.itemNameChannelGroupMap.get(derivedName).contains(
 						GateChannelCache.id2ChannelMap.get(channelID))) {
-					Future<LocateUnionMessage> derivedEngineFuture = EngineManager.engineLineCache.get(derivedName)
+					Future<LocateUnionMessage> derivedEngineFuture = EngineManager.item2EngineLineCache.get(derivedName)
 							.applyStrategy(derivedClienMessage.clone(), channelID);
 					if (!StringUtils.isBlank(derivedName)) {
 						if (derivedEngineFuture != null) {

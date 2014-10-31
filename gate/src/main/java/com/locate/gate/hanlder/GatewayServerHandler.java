@@ -78,7 +78,7 @@ public class GatewayServerHandler extends StringDecoder {
 	public void exceptionCaught(io.netty.channel.ChannelHandlerContext ctx, Throwable cause) throws Exception {
 //		super.exceptionCaught(ctx, cause);
 		if(cause instanceof IOException){
-			logger.warn("A client force close a connection!");
+			logger.warn("A client force close a connection!",cause);
 			return;
 		}else{
 			errorLogHandler.error("Netty catch a exception !",cause);
@@ -168,7 +168,7 @@ public class GatewayServerHandler extends StringDecoder {
 			String clientIP = ((InetSocketAddress) channel.remoteAddress()).getAddress().getHostAddress();
 			logger.info("Server received " + clientIP + " messages, Request message type:"
 					+ LocateMessageTypes.toString(msgType));
-
+			
 			// 将channelId和对应的channel放到map中,会写客户端的时候可以根据该id找到对应的channel.
 			if (!GateChannelCache.allChannelGroup.contains(channel)) {
 				GateChannelCache.allChannelGroup.add(channel);
@@ -199,7 +199,9 @@ public class GatewayServerHandler extends StringDecoder {
 						if (derivedChannelList == null) {
 							derivedChannelList = new ArrayList<String>();
 							derivedChannelList.add(subcribeItemName);
+							GateChannelCache.item2derivedReadWriteLock.writeLock().lock();
 							GateChannelCache.item2derivedMap.put(itemName, derivedChannelList);
+							GateChannelCache.item2derivedReadWriteLock.writeLock().unlock();
 						} else if (!derivedChannelList.contains(subcribeItemName)) {
 							derivedChannelList.add(subcribeItemName);
 						}
@@ -293,16 +295,16 @@ public class GatewayServerHandler extends StringDecoder {
 	@Override
 	public void channelInactive(ChannelHandlerContext ctx) throws Exception {
 		super.channelInactive(ctx);
-		logger.info("channel has been closed.");
-		
 		Channel channel = ctx.channel();
+		logger.info("channel has been closed. channel is "+channel);
 		GateChannelCache.allChannelGroup.remove(channel);
 		Set<String> unregisterSet = new HashSet<String>();
 		List<String> passedDevriedList = new ArrayList<String>();
-		//遍历所有的channelgoup,发现有该channel的就remove掉.如果该channelGroup为空,
+		//加入读取锁
+		GateChannelCache.item2ChannelGroupReadWriteLock.readLock().lock();
+		//遍历所有的channelgoup,发现有该channel的就remove掉.
 		for(Entry<String,ChannelGroup> entry:GateChannelCache.itemNameChannelGroupMap.entrySet()){
 			String itemName = entry.getKey();
-			
 			String derivedName = "";
 			boolean derived = DerivedUtils.isDerived(itemName);
 			ChannelGroup channelGroup = entry.getValue();
@@ -316,8 +318,10 @@ public class GatewayServerHandler extends StringDecoder {
 			//没有用户对该产品以及衍生品感兴趣.清除所有该项目的缓存.
 			if (GateChannelCache.isEnmptyAll(itemName)) {
 				unregisterSet.add(itemName);
+				GateChannelCache.item2derivedReadWriteLock.readLock().lock();
 				List<String> derivedList = GateChannelCache.item2derivedMap.get(itemName);
-				if(derivedList!=null){
+				GateChannelCache.item2derivedReadWriteLock.readLock().unlock();
+				if (derivedList != null) {
 					unregisterSet.addAll(derivedList);
 				}
 				gateForwardRFA.closeHandler(itemName);
@@ -327,27 +331,40 @@ public class GatewayServerHandler extends StringDecoder {
 					passedDevriedList.add(derivedName);
 				}
 		}
+		GateChannelCache.item2ChannelGroupReadWriteLock.readLock().unlock();
 		//清空掉该itemname和ChannelGroup的对应关系.注意ITEMName和devriedPiepline的对应关系可以不用清除.
 		//保存在内存中.
 		for (String itemName : unregisterSet) {
 			ChannelGroup itemChannelGroup = GateChannelCache.itemNameChannelGroupMap.get(itemName);
 			if (itemChannelGroup==null || itemChannelGroup.isEmpty()) {
+				//写锁锁住
+				GateChannelCache.item2ChannelGroupReadWriteLock.writeLock().lock();
 				GateChannelCache.itemNameChannelGroupMap.remove(itemName);
+				//写锁解开
+				GateChannelCache.item2ChannelGroupReadWriteLock.writeLock().unlock();
+				logger.debug("debug infomation: removed "+itemName+" from itemNameChannelGroupMap!");
 				itemChannelGroup = null;
+			}else{
+				errorLogHandler.error("The channelGroup should be null or empty, but the it is not. The itemName is "
+						+ itemName);
 			}
 		}
 		//衍生品没有用户订阅.删除该衍生品的对应关系.但是原产品不变.
 		for(String derived:passedDevriedList){
 			ChannelGroup itemChannelGroup = GateChannelCache.itemNameChannelGroupMap.get(derived);
 			if (itemChannelGroup==null || itemChannelGroup.isEmpty()) {
+				GateChannelCache.item2ChannelGroupReadWriteLock.writeLock().lock();
 				GateChannelCache.itemNameChannelGroupMap.remove(derived);
+				GateChannelCache.item2ChannelGroupReadWriteLock.writeLock().unlock();
 				itemChannelGroup = null;
 			}
+			GateChannelCache.item2derivedReadWriteLock.writeLock().lock();
 			for(List<String> devridedList:GateChannelCache.item2derivedMap.values()){
 				if(devridedList!=null&&devridedList.contains(derived)){
 					devridedList.remove(derived);
 				}
 			}
+			GateChannelCache.item2derivedReadWriteLock.writeLock().unlock();
 			gateForwardRFA.closeDerivedRequest(DerivedUtils.restoreRic(derived),derived);
 		}
 	}

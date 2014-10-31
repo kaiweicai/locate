@@ -15,7 +15,7 @@ import com.locate.rmds.engine.EngineLine;
 public class EngineManager {
 	private static Logger logger = LoggerFactory.getLogger(EngineManager.class);
 	private static ErrorLogHandler errorLogHandler = ErrorLogHandler.getLogger(EngineManager.class);
-	public static Map<String, EngineLine> engineLineCache = new HashMap<String, EngineLine>();
+	public static Map<String, EngineLine> item2EngineLineCache = new HashMap<String, EngineLine>();
 
 	/**
 	 * 根据衍生商品名称后面的字符生成engineList.

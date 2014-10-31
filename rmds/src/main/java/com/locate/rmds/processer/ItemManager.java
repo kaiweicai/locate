@@ -200,11 +200,11 @@ public class ItemManager extends IProcesser implements Client
 	public void closeRequest() {
 		_itemGroupManager._handles.remove(itemHandle);
 		_mainApp.getOMMConsumer().unregisterClient(itemHandle);
-		EngineManager.engineLineCache.remove(clientRequestItemName);
+		EngineManager.item2EngineLineCache.remove(clientRequestItemName);
 		RmdsDataCache.RIC_ITEMMANAGER_Map.remove(this.clientRequestItemName);
 		if(GateChannelCache.item2derivedMap.get(clientRequestItemName)!=null)
 			for(String derivedName:GateChannelCache.item2derivedMap.get(clientRequestItemName)){
-				EngineManager.engineLineCache.remove(derivedName);
+				EngineManager.item2EngineLineCache.remove(derivedName);
 				RmdsDataCache.RIC_ITEMMANAGER_Map.remove(derivedName);
 			}
 //		GateChannelCache.item2derivedMap.remove(clientRequestItemName);
@@ -214,7 +214,7 @@ public class ItemManager extends IProcesser implements Client
 	}
 	
 	public void closeDerivedRequest(String derivedName){
-		EngineManager.engineLineCache.remove(derivedName);
+		EngineManager.item2EngineLineCache.remove(derivedName);
 	}
 
     // This is a Client method. When an event for this client is dispatched,
@@ -232,7 +232,7 @@ public class ItemManager extends IProcesser implements Client
     	// Completion event indicates that the stream was closed by RFA
     	if (event.getType() == Event.COMPLETION_EVENT) 
     	{
-    		_logger.info(_className+": Receive a COMPLETION_EVENT, "+ event.getHandle());
+    		_logger.info(_className+": Receive a COMPLETION_EVENT, itemName is "+ clientRequestItemName);
     		//@TODO 判断是否通知所有现存客户端某个产品已经停止发布.
     		return;
     	}
@@ -278,7 +278,7 @@ public class ItemManager extends IProcesser implements Client
 		List<Integer> fieldFilterList = FilterManager.filterMap.get(clientRequestItemName);
 		filedFiltrMessage(locateMessage, fieldFilterList);
 		LocateUnionMessage derivedLocateUnionMessage = locateMessage.clone();
-		EngineLine engineLine = EngineManager.engineLineCache.get(clientRequestItemName);
+		EngineLine engineLine = EngineManager.item2EngineLineCache.get(clientRequestItemName);
 		if(engineLine!=null){
 			Future<LocateUnionMessage> engineFuture=engineLine.applyStrategy(locateMessage);
 			if(engineFuture!=null){
@@ -292,7 +292,7 @@ public class ItemManager extends IProcesser implements Client
 		List<String> derivedNameList=GateChannelCache.item2derivedMap.get(clientRequestItemName);
 		if(derivedNameList!=null){
 			for(String derivedName:derivedNameList){
-				EngineLine derivedEngline = EngineManager.engineLineCache.get(derivedName);
+				EngineLine derivedEngline = EngineManager.item2EngineLineCache.get(derivedName);
 				if(derivedEngline!=null){
 					derivedLocateUnionMessage.setItemName(derivedName);
 					Future<LocateUnionMessage> derivedEngineFuture = derivedEngline.applyStrategy(derivedLocateUnionMessage);
