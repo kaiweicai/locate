@@ -1,4 +1,4 @@
-package com.locate.rmds;
+package com.locate.rmds.redundance;
 
 import java.text.DecimalFormat;
 import java.util.HashMap;
@@ -24,6 +24,8 @@ import com.locate.common.logging.err.ErrorLogHandler;
 import com.locate.common.model.InstrumentCodeData;
 import com.locate.common.utils.DerivedUtils;
 import com.locate.common.utils.SystemProperties;
+import com.locate.rmds.IConsumerProxy;
+import com.locate.rmds.RFAServerManager;
 import com.locate.rmds.client.RFAUserManagement;
 import com.locate.rmds.dict.DirectoryClient;
 import com.locate.rmds.dict.RDMServiceInfo;
@@ -67,8 +69,8 @@ import com.reuters.rfa.session.omm.OMMItemIntSpec;
 *  类说明  netty game  
 */  
 @Component("qSConsumerProxy")
-public class QSConsumerProxy implements IConsumerProxy{
-	static Logger logger = LoggerFactory.getLogger(QSConsumerProxy.class.getName());
+public class BackupConsumerProxy implements IConsumerProxy{
+	static Logger logger = LoggerFactory.getLogger(BackupConsumerProxy.class.getName());
 	private ErrorLogHandler errorLogHandler = ErrorLogHandler.getLogger(getClass());
 	// RFA objects
 	protected Session _session;
@@ -91,7 +93,7 @@ public class QSConsumerProxy implements IConsumerProxy{
 	private boolean dispath = true;
 	DirectoryClient _directoryClient;
 	// class constructor
-	public QSConsumerProxy() {
+	public BackupConsumerProxy() {
 		System.out
 				.println("*****************************************************************************");
 		System.out
@@ -110,10 +112,6 @@ public class QSConsumerProxy implements IConsumerProxy{
 	// 5. Create event source
 	// 6. Load dictionaries
 	// It also instantiates application specific objects: memory pool, encoder.
-	/* (non-Javadoc)
-	 * @see com.locate.rmds.IConsumerProxy#init()
-	 */
-	@Override
 	@PostConstruct
 	public void init() {
 		// Context.initialize();
@@ -200,19 +198,11 @@ public class QSConsumerProxy implements IConsumerProxy{
 	}
 
 	// This method utilizes the LoginClient class to send login request
-	/* (non-Javadoc)
-	 * @see com.locate.rmds.IConsumerProxy#login()
-	 */
-	@Override
 	public void login() {
 		// Send login request
 		_loginClient.sendRequest();
 	}
 
-	/* (non-Javadoc)
-	 * @see com.locate.rmds.IConsumerProxy#registerDirectory(com.reuters.rfa.common.Client)
-	 */
-	@Override
 	public Handle registerDirectory(Client client)
     {
         OMMItemIntSpec spec = new OMMItemIntSpec();
@@ -233,11 +223,7 @@ public class QSConsumerProxy implements IConsumerProxy{
 	 /*
      * get all the dictionaries included in the argument Set
      */
-    /* (non-Javadoc)
-	 * @see com.locate.rmds.IConsumerProxy#getDictionaries(java.util.Set, com.reuters.rfa.common.Client)
-	 */
-    @Override
-	public void getDictionaries(Set<String> dictionariesUsed,Client client)
+    public void getDictionaries(Set<String> dictionariesUsed,Client client)
     {
         for (Iterator<String> iter = dictionariesUsed.iterator(); iter.hasNext();)
         {
@@ -277,10 +263,6 @@ public class QSConsumerProxy implements IConsumerProxy{
 		_pendingDictionaries.put(handle, dictionaryName);
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.locate.rmds.IConsumerProxy#addNewService(java.lang.String)
-	 */
-	@Override
 	public void addNewService(String serviceName) {
 		ServiceInfo service = new RDMServiceInfo(serviceName);
 		_services.put(serviceName, service);
@@ -327,10 +309,6 @@ public class QSConsumerProxy implements IConsumerProxy{
 	
 	// This method is called by _loginClient upon receiving successful login
 	// response.
-	/* (non-Javadoc)
-	 * @see com.locate.rmds.IConsumerProxy#loginSuccess()
-	 */
-	@Override
 	public void loginSuccess() {
 		logger.info("QSConsumerDemo Login successful");
 		RFAServerManager.setConnectedDataSource(true);
@@ -339,10 +317,6 @@ public class QSConsumerProxy implements IConsumerProxy{
 
 	// This method is called when the login was not successful
 	// The application exits
-	/* (non-Javadoc)
-	 * @see com.locate.rmds.IConsumerProxy#loginFailure()
-	 */
-	@Override
 	public void loginFailure() {
 		errorLogHandler.error("Login has been denied / rejected / closed ");
 		RFAServerManager.setConnectedDataSource(false);
@@ -361,10 +335,6 @@ public class QSConsumerProxy implements IConsumerProxy{
 	// }
 
 	// This method utilizes ItemManager class to request items
-	/* (non-Javadoc)
-	 * @see com.locate.rmds.IConsumerProxy#itemRequests(java.lang.String, byte, int)
-	 */
-	@Override
 	public ItemManager itemRequests(String itemName, byte responseMsgType,int channelId) {
 		//如果ITEM以DE开头,则表示为客户自定义的产品,需要实施产品策略.以后策略添加在这个位置.
 		String derivactiveItemName = "";
@@ -393,8 +363,7 @@ public class QSConsumerProxy implements IConsumerProxy{
 			 * 已经订阅过该产品,只需要发送一个一次订阅请求,返回一个snapshot即可.
 			 * 已经将该用户加入到订阅该产品的用户组中.所以该用户能够收到该产品的更新信息.
 			 */
-			OneTimeItemManager oneTimeItemManager = 
-					new OneTimeItemManager(_itemGroupManager,channelId);
+			OneTimeItemManager oneTimeItemManager =  new OneTimeItemManager( _itemGroupManager,channelId);
 			if(StringUtils.isNotBlank(derivactiveItemName)){
 				oneTimeItemManager.setDerivactiveItemName(derivactiveItemName);
 				//如果是衍生品是后面订阅的.需要将衍生品加入到itemManager,否则接收不到update的订阅信息.
@@ -473,10 +442,6 @@ public class QSConsumerProxy implements IConsumerProxy{
 		return true;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.locate.rmds.IConsumerProxy#newsItemRequests()
-	 */
-	@Override
 	public void newsItemRequests() {
 		// Initialize item manager for item domains
 		NewsItemManager newsItemManager = new NewsItemManager(_itemGroupManager);
@@ -489,10 +454,9 @@ public class QSConsumerProxy implements IConsumerProxy{
 		// newsItemManager.sendRequest("nASA0590H");
 	}
 
-	/* (non-Javadoc)
-	 * @see com.locate.rmds.IConsumerProxy#makeOrder()
+	/**
+	 * 订阅指定的集中产品
 	 */
-	@Override
 	public void makeOrder() {
 		String ricArray = SystemProperties.getProperties(SystemProperties.RIC_ARRAY);
 		if(StringUtils.isBlank(ricArray)){
@@ -505,10 +469,6 @@ public class QSConsumerProxy implements IConsumerProxy{
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.locate.rmds.IConsumerProxy#itemPersistentRequests(java.lang.String)
-	 */
-	@Override
 	public void itemPersistentRequests(String ric) {
 		// Initialize item manager for item domains
 		IProcesser persistentItemManager = SystemConstant.springContext.getBean("persistentItemManager",PersistentItemManager.class);
@@ -517,10 +477,6 @@ public class QSConsumerProxy implements IConsumerProxy{
 	}
 	
 	// This method dispatches events
-	/* (non-Javadoc)
-	 * @see com.locate.rmds.IConsumerProxy#startDispatch()
-	 */
-	@Override
 	public void startDispatch(){
 		while(dispath){
 			try {
@@ -545,10 +501,6 @@ public class QSConsumerProxy implements IConsumerProxy{
 	// 5. Destroy event source
 	// 6. Release session
 	// 7. Uninitialize context
-	/* (non-Javadoc)
-	 * @see com.locate.rmds.IConsumerProxy#cleanup()
-	 */
-	@Override
 	@PreDestroy
 	public void cleanup() {
 		logger.info("Start to clean up QsConsumerProxy!");
@@ -588,42 +540,22 @@ public class QSConsumerProxy implements IConsumerProxy{
 		// RFApplication.stop = true;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.locate.rmds.IConsumerProxy#getEventQueue()
-	 */
-	@Override
 	public EventQueue getEventQueue() {
 		return _eventQueue;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.locate.rmds.IConsumerProxy#getOMMConsumer()
-	 */
-	@Override
 	public OMMConsumer getOMMConsumer() {
 		return _consumer;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.locate.rmds.IConsumerProxy#getEncoder()
-	 */
-	@Override
 	public OMMEncoder getEncoder() {
 		return _encoder;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.locate.rmds.IConsumerProxy#getPool()
-	 */
-	@Override
 	public OMMPool getPool() {
 		return _pool;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.locate.rmds.IConsumerProxy#getLoginHandle()
-	 */
-	@Override
 	public Handle getLoginHandle() {
 		if (_loginClient != null) {
 			return _loginClient.getHandle();
@@ -632,7 +564,7 @@ public class QSConsumerProxy implements IConsumerProxy{
 		return null;
 	}
 
-	public String getServiceName() {
+	protected String getServiceName() {
 		return serviceName;
 	}
 
@@ -649,7 +581,7 @@ public class QSConsumerProxy implements IConsumerProxy{
 	// Shutdown and cleanup
 	public static void main(String argv[]) {
 		// Create a demo instance
-		QSConsumerProxy demo = new QSConsumerProxy();
+		BackupConsumerProxy demo = new BackupConsumerProxy();
 
 		// If the user is connecting to the Enterprise Platform, the serviceName
 		// should be set to the service name that is offered by the provider.
@@ -682,18 +614,10 @@ public class QSConsumerProxy implements IConsumerProxy{
 		demo.cleanup();
 	}
 
-	/* (non-Javadoc)
-	 * @see com.locate.rmds.IConsumerProxy#isDispath()
-	 */
-	@Override
 	public boolean isDispath() {
 		return dispath;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.locate.rmds.IConsumerProxy#setDispath(boolean)
-	 */
-	@Override
 	public void setDispath(boolean dispath) {
 		this.dispath = dispath;
 	}

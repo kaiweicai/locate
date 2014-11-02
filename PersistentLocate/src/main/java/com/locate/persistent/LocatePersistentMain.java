@@ -14,6 +14,7 @@ import com.locate.common.exception.LocateException;
 import com.locate.common.logging.err.ErrorLogHandler;
 import com.locate.common.utils.ShutdownWorker;
 import com.locate.common.utils.SystemProperties;
+import com.locate.rmds.IConsumerProxy;
 import com.locate.rmds.QSConsumerProxy;
 
 /**
@@ -45,7 +46,7 @@ public class LocatePersistentMain {
 	public static void main(String[] args) {
 		logger.info("start LocateGateWay!");
 		SystemConstant.springContext = new FileSystemXmlApplicationContext("config/propholder.xml");
-		QSConsumerProxy proxy = SystemConstant.springContext.getBean("qSConsumerProxy", QSConsumerProxy.class);
+		IConsumerProxy proxy = SystemConstant.springContext.getBean("qSConsumerProxy", QSConsumerProxy.class);
 		ShutdownWorker shutdownWorker = new ShutdownWorker();
 		shutdownWorker.setName("shutdownWorker");
 		Runtime.getRuntime().addShutdownHook(shutdownWorker);

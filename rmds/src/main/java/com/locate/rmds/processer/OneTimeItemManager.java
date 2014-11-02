@@ -7,14 +7,20 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
+import javax.annotation.Resource;
+
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import com.locate.common.datacache.GateChannelCache;
 import com.locate.common.logging.err.ErrorLogHandler;
 import com.locate.common.model.LocateUnionMessage;
 import com.locate.common.utils.NetTimeUtil;
+import com.locate.rmds.IConsumerProxy;
 import com.locate.rmds.QSConsumerProxy;
 import com.locate.rmds.engine.filter.EngineManager;
 import com.locate.rmds.engine.filter.FilterManager;
@@ -55,10 +61,12 @@ import com.reuters.rfa.session.omm.OMMSolicitedItemEvent;
  * @author Cloud.Wei
  *
  */
+@Service("oneTimeItemManager")@Scope("prototype")
 public class OneTimeItemManager extends IProcesser implements Client
 {
 	Handle  itemHandle;
-	QSConsumerProxy _mainApp;
+	@Resource(name="qSConsumerProxy")
+	IConsumerProxy _mainApp;
     static Logger _logger = LoggerFactory.getLogger(OneTimeItemManager.class.getName());
     private ErrorLogHandler errorLogHandler = ErrorLogHandler.getLogger(getClass());
     ItemGroupManager _itemGroupManager;
@@ -78,9 +86,8 @@ public class OneTimeItemManager extends IProcesser implements Client
     static int _timeline;
     private LocateOMMParser locateGenericOMMParser = new LocateOMMParser();
     // constructor
-    public OneTimeItemManager(QSConsumerProxy mainApp, ItemGroupManager itemGroupManager,int channelID)
+    public OneTimeItemManager(ItemGroupManager itemGroupManager,int channelID)
     {
-    	this._mainApp = mainApp;
         this._itemGroupManager = itemGroupManager;
         this.channelID = channelID;
     }
@@ -91,7 +98,7 @@ public class OneTimeItemManager extends IProcesser implements Client
     {
     	this.responseMessageType = responseMsgType;
     	_logger.info(_className+".sendOneTimeRequest: Sending item("+pItemName+") requests to server ");
-        String serviceName = _mainApp.serviceName;
+        String serviceName = _mainApp.getServiceName();
         this.clientRequestItemName = pItemName;
         String[] itemNames = {pItemName};
         short msgModelType = RDMMsgTypes.MARKET_PRICE;

@@ -17,8 +17,8 @@ public class RFAServerManager extends Thread {
 
 	static Logger _logger = LoggerFactory.getLogger(RFAServerManager.class);
 	private ErrorLogHandler errorLogHandler = ErrorLogHandler.getLogger(getClass());
-	@Resource
-	private QSConsumerProxy demo;
+	@Resource(name="qSConsumerProxy")
+	private IConsumerProxy demo;
 	public static boolean stop = false;
 	StatisticThread statisticDemo;
 	
@@ -67,11 +67,11 @@ public class RFAServerManager extends Thread {
 		RFAServerManager.connectedDataSource = connectedDataSource;
 	}
 	
-	public QSConsumerProxy getDemo() {
+	public IConsumerProxy getDemo() {
 		return demo;
 	}
 
-	public void setDemo(QSConsumerProxy demo) {
+	public void setDemo(IConsumerProxy demo) {
 		this.demo = demo;
 	}
 }

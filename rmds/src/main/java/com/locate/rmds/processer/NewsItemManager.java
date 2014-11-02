@@ -5,11 +5,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Resource;
+
 import org.apache.commons.lang.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 import com.locate.bridge.GateWayResponser;
 import com.locate.common.constant.LocateMessageTypes;
@@ -51,8 +55,10 @@ import com.reuters.rmtes.RmtesCharsetProvider;
 //							application uses this handles to identify the items
 // QSConsumerDemo _mainApp - main application class
 
+@Component("newsItemManager")@Scope("prototype")
 public class NewsItemManager implements Client {
 	Handle itemHandle;
+	@Resource(name="qSConsumerProxy")
 	static QSConsumerProxy _mainApp;
 //	public static Map<String, Map<String,IoSession>> newsQueue = new HashMap();
 	public static Map<String, List<String>> userNewsCode = new HashMap();
@@ -93,9 +99,7 @@ public class NewsItemManager implements Client {
 	private String _className = "ItemManager";
 
 	// constructor
-	public NewsItemManager(QSConsumerProxy mainApp,
-			ItemGroupManager itemGroupManager) {
-		_mainApp = mainApp;
+	public NewsItemManager(ItemGroupManager itemGroupManager) {
 		_itemGroupManager = itemGroupManager;
 	}
 

@@ -13,7 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import com.locate.rmds.QSConsumerProxy;
+import com.locate.rmds.IConsumerProxy;
 import com.reuters.rfa.common.Client;
 import com.reuters.rfa.common.Event;
 import com.reuters.rfa.common.Handle;
@@ -52,8 +52,8 @@ public class ItemGroupManager implements Client
 {
 
 	static Logger _logger = LoggerFactory.getLogger(ItemGroupManager.class.getName());
-	@Resource
-	QSConsumerProxy _mainApp;
+	@Resource(name="qSConsumerProxy")
+	IConsumerProxy _mainApp;
     Handle _directoryHandle;
     private String _name = "ItemGroupManager";;
 

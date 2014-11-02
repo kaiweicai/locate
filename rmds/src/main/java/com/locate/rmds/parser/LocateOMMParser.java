@@ -201,9 +201,9 @@ public final class LocateOMMParser implements IOmmParser {
 						FieldValue fieldValue = getValue(itemName, fiddef.getFieldId());
 						if (fieldValue == null) {
 							// Strange:在第一订阅该产品的map中无法找到该fieldId对应的fieldValue,不应该存在的逻辑
+							logger.debug("The fieldValue which can not be found is:" + fieldValue);
 							fieldValue = new FieldValue(null, fiddef);
 							fieldValue.update(fe);
-							logger.debug("The fieldValue which can not be found is:" + fieldValue);
 							ITEM_FIELD_MAP.get(itemName).put(fiddef.getFieldId(), fieldValue);
 						}
 						FidDef fieldDef = fiddef;

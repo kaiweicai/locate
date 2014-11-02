@@ -10,7 +10,7 @@ import com.locate.bridge.GateWayResponser;
 import com.locate.common.constant.LocateResultCode;
 import com.locate.common.datacache.DataBaseCache;
 import com.locate.common.model.ClientRequest;
-import com.locate.rmds.QSConsumerProxy;
+import com.locate.rmds.IConsumerProxy;
 import com.locate.rmds.RFAServerManager;
 import com.locate.rmds.processer.ItemManager;
 import com.locate.rmds.processer.RFALoginClient;
@@ -26,8 +26,8 @@ import com.locate.rmds.processer.RFALoginClient;
 @Service
 public class FuthureRequestHandler extends BaseRequestHandler {
 	private static Logger logger = LoggerFactory.getLogger(FuthureRequestHandler.class.getName());
-	@Resource
-	private QSConsumerProxy mainApp;
+	@Resource(name="qSConsumerProxy")
+	private IConsumerProxy mainApp;
 	@Override
 	public int processRequest(ClientRequest req,String clientName,byte responseMsgType, int channelId ){
 		int resultCode = LocateResultCode.SUCCESS_RESULT;

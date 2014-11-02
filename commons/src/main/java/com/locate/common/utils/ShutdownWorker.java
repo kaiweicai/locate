@@ -1,6 +1,5 @@
 package com.locate.common.utils;
 
-import com.locate.common.constant.SystemConstant;
 import com.locate.rmds.processer.EmailNotifier;
 import com.locate.rmds.processer.face.INotifier;
 

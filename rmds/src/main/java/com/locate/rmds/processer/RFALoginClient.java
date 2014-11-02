@@ -22,6 +22,7 @@ import com.locate.common.model.LocateUnionMessage;
 import com.locate.common.utils.MessageEncapsulator;
 import com.locate.common.utils.NetTimeUtil;
 import com.locate.common.utils.SystemProperties;
+import com.locate.rmds.IConsumerProxy;
 import com.locate.rmds.QSConsumerProxy;
 import com.locate.rmds.dict.RDMServiceInfo;
 import com.locate.rmds.dict.ServiceInfo;
@@ -70,8 +71,8 @@ public class RFALoginClient implements Client {
 	private static final String NEED_NOTIFY = SystemProperties.getProperties(SystemProperties.ADMIN_NEED_NOTIFY);
 	private static boolean checkRFAServerUp = false;
 	Handle _loginHandle;
-	@Resource
-	QSConsumerProxy _mainApp;
+	@Resource(name="qSConsumerProxy")
+	IConsumerProxy _mainApp;
 	@Resource(name = "emailNotifier")
 	INotifier notifier;
 	@Resource(name = "loginOMMParser")
