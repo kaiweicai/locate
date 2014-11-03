@@ -11,6 +11,7 @@ import com.reuters.rfa.common.EventQueue;
 import com.reuters.rfa.common.Handle;
 import com.reuters.rfa.omm.OMMEncoder;
 import com.reuters.rfa.omm.OMMPool;
+import com.reuters.rfa.session.Session;
 import com.reuters.rfa.session.omm.OMMConsumer;
 
 public interface IConsumerProxy {
@@ -47,7 +48,7 @@ public interface IConsumerProxy {
 	public abstract void loginFailure();
 
 	// This method utilizes ItemManager class to request items
-	public abstract ItemManager itemRequests(String itemName, byte responseMsgType, int channelId);
+	public abstract void itemRequests(String itemName, byte responseMsgType, int channelId);
 
 	public abstract void newsItemRequests();
 
@@ -88,4 +89,16 @@ public interface IConsumerProxy {
 	public abstract void setDispath(boolean dispath);
 
 	public abstract String getServiceName();
+	
+	public Session getBackupSession();
+
+	public void setBackupSession(Session backupSession);
+
+	public EventQueue getBackupEventQueue();
+
+	public void setBackupEventQueue(EventQueue backupEventQueue);
+
+	public OMMConsumer getBackupConsumer();
+
+	public void setBackupConsumer(OMMConsumer backupConsumer);
 }

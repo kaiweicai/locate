@@ -68,8 +68,8 @@ import com.reuters.rfa.session.omm.OMMItemIntSpec;
 *  创建时间：2014.5.26   
 *  类说明  netty game  
 */  
-@Component("qSConsumerProxy")
-public class BackupConsumerProxy implements IConsumerProxy{
+@Component("backupConsumerProxy")
+public class BackupConsumerProxy extends AbstractProxy implements IConsumerProxy{
 	static Logger logger = LoggerFactory.getLogger(BackupConsumerProxy.class.getName());
 	private ErrorLogHandler errorLogHandler = ErrorLogHandler.getLogger(getClass());
 	// RFA objects
@@ -84,11 +84,7 @@ public class BackupConsumerProxy implements IConsumerProxy{
 	protected OMMPool _pool;
 	public String serviceName;
 	private boolean all = true;
-	public static HashMap<Integer, FieldDictionary> DICTIONARIES = new HashMap<Integer, FieldDictionary>();
-	public static FieldDictionary dictionary;
 	DecimalFormat dataFormat = new DecimalFormat("0.00");
-	List<String> _loadedDictionaries;
-	Map<Handle, String> _pendingDictionaries;
 	Map<String, ServiceInfo> _services;
 	private boolean dispath = true;
 	DirectoryClient _directoryClient;
@@ -125,13 +121,13 @@ public class BackupConsumerProxy implements IConsumerProxy{
 		// Context.initialize();
 		// 1. Initialize system config
 		ConfigDb configDb = new ConfigDb();
-		configDb.addVariable("myNamespace.Connections.mySession.connectionType",
+		configDb.addVariable("myNamespace.Connections.myBackupSession.connectionType",
 				SystemProperties.getProperties(SystemProperties.RFA_CONNETION_TYPE));
-		configDb.addVariable("myNamespace.Connections.mySession.serverList", SystemProperties.getProperties(SystemProperties.RFA_CONNETION_SERVER_LIST));
-		configDb.addVariable("myNamespace.Connections.mySession.portNumber", SystemProperties.getProperties(SystemProperties.RFA_CONNETION_PORTNUMBER));
+		configDb.addVariable("myNamespace.Connections.myBackupSession.serverList", SystemProperties.getProperties(SystemProperties.RFA_CONNECTION_SERVER_BACKUP));
+		configDb.addVariable("myNamespace.Connections.myBackupSession.portNumber", SystemProperties.getProperties(SystemProperties.RFA_CONNETION_PORTNUMBER));
 		// configDb.addVariable("myNamespace.Connections.consConnection.userName",
 		// "");
-		configDb.addVariable("myNamespace.Sessions.mySession.connectionList", "mySession");
+		configDb.addVariable("myNamespace.Sessions.myBackupSession.connectionList", "myBackupSession");
 		Context.initialize(configDb);
 		
 		
@@ -145,20 +141,20 @@ public class BackupConsumerProxy implements IConsumerProxy{
 //            System.exit(-1);
 //        }
 		// 2. Create an Event Queue
-		_eventQueue = EventQueue.create("myEventQueue");
+		_eventQueue = EventQueue.create("myBackupEventQueue");
 
 		// 3. Acquire a Session
-		_session = Session.acquire("myNamespace::mySession");
+		_session = Session.acquire("myNamespace::myBackupSession");
 //		_session = Session.acquire("myNamespace::mySession");
 		
 		if (_session == null) {
-			errorLogHandler.error("Could not acquire session.");
+			errorLogHandler.error("Could not acquire backup session.");
 			Context.uninitialize();
 			System.exit(1);
 		}
 
 		// 4. Create an OMMConsumer event source
-		_consumer = (OMMConsumer) _session.createEventSource(EventSource.OMM_CONSUMER, "myOMMConsumer", true);
+		_consumer = (OMMConsumer) _session.createEventSource(EventSource.OMM_CONSUMER, "myBackupOMMConsumer", true);
 		// Initialize item group manager
 		// 5. Load dictionaries
 		// Application may choose to down-load the enumtype.def and
@@ -170,7 +166,7 @@ public class BackupConsumerProxy implements IConsumerProxy{
 			dictionary = initializeDictionary(fieldDictionaryFilename, enumDictionaryFilename);
 			_loadedDictionaries.add("RWFFld");
 			_loadedDictionaries.add("RWFEnum");
-			FieldNameExchanger.loadFieldExchange();
+//			FieldNameExchanger.loadFieldExchange();
 		} catch (DictionaryException ex) {
 			errorLogHandler.error("ERROR: Unable to initialize dictionaries");
 			errorLogHandler.error(ex.getMessage());
@@ -188,19 +184,19 @@ public class BackupConsumerProxy implements IConsumerProxy{
 
 		if (all) {
 			// Load RFA user config
-			RFAUserManagement.init();
+//			RFAUserManagement.init();
 			this.serviceName = SystemProperties
 					.getProperties(SystemProperties.RFA_SERVICE_NAME);
 		}
 		login();
-		InstrumentCodeData.loadInstrumentData();
+//		InstrumentCodeData.loadInstrumentData();
 		//newsItemRequests();
 	}
 
 	// This method utilizes the LoginClient class to send login request
 	public void login() {
 		// Send login request
-		_loginClient.sendRequest();
+		_loginClient.sendBackupRequest();
 	}
 
 	public Handle registerDirectory(Client client)
@@ -311,7 +307,7 @@ public class BackupConsumerProxy implements IConsumerProxy{
 	// response.
 	public void loginSuccess() {
 		logger.info("QSConsumerDemo Login successful");
-		RFAServerManager.setConnectedDataSource(true);
+		RFAServerManager.setBackupConnectedDataSource(true);
 	}
 	
 
@@ -319,7 +315,7 @@ public class BackupConsumerProxy implements IConsumerProxy{
 	// The application exits
 	public void loginFailure() {
 		errorLogHandler.error("Login has been denied / rejected / closed ");
-		RFAServerManager.setConnectedDataSource(false);
+		RFAServerManager.setBackupConnectedDataSource(false);
 	}
 
 	// This method utilizes ItemManager class to request items
@@ -335,7 +331,7 @@ public class BackupConsumerProxy implements IConsumerProxy{
 	// }
 
 	// This method utilizes ItemManager class to request items
-	public ItemManager itemRequests(String itemName, byte responseMsgType,int channelId) {
+	public void itemRequests(String itemName, byte responseMsgType,int channelId) {
 		//如果ITEM以DE开头,则表示为客户自定义的产品,需要实施产品策略.以后策略添加在这个位置.
 		String derivactiveItemName = "";
 		if (DerivedUtils.isDerived(itemName)) {
@@ -363,7 +359,9 @@ public class BackupConsumerProxy implements IConsumerProxy{
 			 * 已经订阅过该产品,只需要发送一个一次订阅请求,返回一个snapshot即可.
 			 * 已经将该用户加入到订阅该产品的用户组中.所以该用户能够收到该产品的更新信息.
 			 */
-			OneTimeItemManager oneTimeItemManager =  new OneTimeItemManager( _itemGroupManager,channelId);
+			OneTimeItemManager oneTimeItemManager = SystemConstant.springContext.getBean("oneTimeItemManager",OneTimeItemManager.class);
+			oneTimeItemManager.set_itemGroupManager(_itemGroupManager);
+			oneTimeItemManager.setChannelID(channelId);
 			if(StringUtils.isNotBlank(derivactiveItemName)){
 				oneTimeItemManager.setDerivactiveItemName(derivactiveItemName);
 				//如果是衍生品是后面订阅的.需要将衍生品加入到itemManager,否则接收不到update的订阅信息.
@@ -373,7 +371,6 @@ public class BackupConsumerProxy implements IConsumerProxy{
 			oneTimeItemManager = null;
 //			ItemManager subscibeItemManager =  subscribeItemManagerMap.get(itemName);
 //			subscibeItemManager.sendInitialDocument(channelId);
-			return null;
 		}else{//fist subscribe this RIC.
 			ItemManager itemManager = null;
 			//一个产品对应一个itemManager对象
@@ -388,7 +385,6 @@ public class BackupConsumerProxy implements IConsumerProxy{
 			}
 			// Send requests
 			itemManager.sendRicRequest(itemName, responseMsgType);
-			return itemManager;
 		}
 		
 	}

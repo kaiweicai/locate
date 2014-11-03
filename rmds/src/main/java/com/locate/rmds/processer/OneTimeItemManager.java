@@ -85,12 +85,15 @@ public class OneTimeItemManager extends IProcesser implements Client
     static StringBuilder _statsStringBuffer;
     static int _timeline;
     private LocateOMMParser locateGenericOMMParser = new LocateOMMParser();
-    // constructor
-    public OneTimeItemManager(ItemGroupManager itemGroupManager,int channelID)
-    {
-        this._itemGroupManager = itemGroupManager;
-        this.channelID = channelID;
+    public OneTimeItemManager(){
+    	
     }
+    // constructor
+//    public OneTimeItemManager(ItemGroupManager itemGroupManager,int channelID)
+//    {
+//        this._itemGroupManager = itemGroupManager;
+//        this.channelID = channelID;
+//    }
     
  // creates streaming request messages for items and register them to RFA
     @Override
@@ -274,5 +277,21 @@ public class OneTimeItemManager extends IProcesser implements Client
 	@Override
 	public void closeDerivedRequest(String derivedName) {
 		
+	}
+
+	public ItemGroupManager get_itemGroupManager() {
+		return _itemGroupManager;
+	}
+
+	public void set_itemGroupManager(ItemGroupManager _itemGroupManager) {
+		this._itemGroupManager = _itemGroupManager;
+	}
+
+	public Integer getChannelID() {
+		return channelID;
+	}
+
+	public void setChannelID(Integer channelID) {
+		this.channelID = channelID;
 	}
 }

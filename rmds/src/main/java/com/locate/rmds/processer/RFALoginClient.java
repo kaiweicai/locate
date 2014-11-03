@@ -73,6 +73,8 @@ public class RFALoginClient implements Client {
 	Handle _loginHandle;
 	@Resource(name="qSConsumerProxy")
 	IConsumerProxy _mainApp;
+	@Resource(name="backupConsumerProxy")
+	IConsumerProxy backupConsumerProxy;
 	@Resource(name = "emailNotifier")
 	INotifier notifier;
 	@Resource(name = "loginOMMParser")
@@ -95,6 +97,14 @@ public class RFALoginClient implements Client {
 		ommItemIntSpec.setMsg(ommmsg);
 		logger.info("Sending login request");
 		_loginHandle = _mainApp.getOMMConsumer().registerClient(_mainApp.getEventQueue(), ommItemIntSpec, this, null);
+	}
+	
+	public void sendBackupRequest() {
+		OMMMsg ommmsg = encodeLoginReqMsg();
+		OMMItemIntSpec ommItemIntSpec = new OMMItemIntSpec();
+		ommItemIntSpec.setMsg(ommmsg);
+		logger.info("Sending login request");
+		_loginHandle = _mainApp.getBackupConsumer().registerClient(_mainApp.getBackupEventQueue(), ommItemIntSpec, this, null);
 	}
 
 	// Encodes request message for login
@@ -135,6 +145,7 @@ public class RFALoginClient implements Client {
 
 		return encMsg; // return the encoded message
 	}
+	
 
 	// Unregisters/unsubscribes login handle
 	public void closeRequest() {

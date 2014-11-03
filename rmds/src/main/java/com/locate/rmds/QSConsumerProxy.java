@@ -1,6 +1,7 @@
 package com.locate.rmds;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -72,8 +73,11 @@ public class QSConsumerProxy implements IConsumerProxy{
 	private ErrorLogHandler errorLogHandler = ErrorLogHandler.getLogger(getClass());
 	// RFA objects
 	protected Session _session;
+	protected Session backupSession;
 	protected EventQueue _eventQueue;
+	protected EventQueue backupEventQueue;
 	protected OMMConsumer _consumer;
+	protected OMMConsumer backupConsumer;
 	@Resource
 	protected RFALoginClient _loginClient;
 	@Resource
@@ -90,6 +94,7 @@ public class QSConsumerProxy implements IConsumerProxy{
 	Map<String, ServiceInfo> _services;
 	private boolean dispath = true;
 	DirectoryClient _directoryClient;
+	private static List<String> requestList = new ArrayList<String>();
 	// class constructor
 	public QSConsumerProxy() {
 		System.out
@@ -131,8 +136,15 @@ public class QSConsumerProxy implements IConsumerProxy{
 				SystemProperties.getProperties(SystemProperties.RFA_CONNETION_TYPE));
 		configDb.addVariable("myNamespace.Connections.mySession.serverList", SystemProperties.getProperties(SystemProperties.RFA_CONNETION_SERVER_LIST));
 		configDb.addVariable("myNamespace.Connections.mySession.portNumber", SystemProperties.getProperties(SystemProperties.RFA_CONNETION_PORTNUMBER));
-		// configDb.addVariable("myNamespace.Connections.consConnection.userName",
-		// "");
+		
+		//add the backup Session
+		configDb.addVariable("myNamespace.Connections.myBackupSession.connectionType",
+				SystemProperties.getProperties(SystemProperties.RFA_CONNETION_TYPE));
+		configDb.addVariable("myNamespace.Connections.myBackupSession.serverList", SystemProperties.getProperties(SystemProperties.RFA_CONNECTION_SERVER_BACKUP));
+		configDb.addVariable("myNamespace.Connections.myBackupSession.portNumber", SystemProperties.getProperties(SystemProperties.RFA_CONNETION_PORTNUMBER));
+		configDb.addVariable("myNamespace.Sessions.myBackupSession.connectionList", "myBackupSession");
+		
+		
 		configDb.addVariable("myNamespace.Sessions.mySession.connectionList", "mySession");
 		Context.initialize(configDb);
 		
@@ -148,19 +160,27 @@ public class QSConsumerProxy implements IConsumerProxy{
 //        }
 		// 2. Create an Event Queue
 		_eventQueue = EventQueue.create("myEventQueue");
+		backupEventQueue = EventQueue.create("myBackupEventQueue");
 
 		// 3. Acquire a Session
 		_session = Session.acquire("myNamespace::mySession");
-//		_session = Session.acquire("myNamespace::mySession");
+		backupSession = Session.acquire("myNamespace::myBackupSession");
 		
 		if (_session == null) {
 			errorLogHandler.error("Could not acquire session.");
 			Context.uninitialize();
 			System.exit(1);
 		}
+		
+		if (backupSession == null) {
+			errorLogHandler.error("Could not acquire backup session.");
+			Context.uninitialize();
+			System.exit(1);
+		}
 
 		// 4. Create an OMMConsumer event source
 		_consumer = (OMMConsumer) _session.createEventSource(EventSource.OMM_CONSUMER, "myOMMConsumer", true);
+		backupConsumer = (OMMConsumer) backupSession.createEventSource(EventSource.OMM_CONSUMER, "myBackupOMMConsumer", true);
 		// Initialize item group manager
 		// 5. Load dictionaries
 		// Application may choose to down-load the enumtype.def and
@@ -207,6 +227,7 @@ public class QSConsumerProxy implements IConsumerProxy{
 	public void login() {
 		// Send login request
 		_loginClient.sendRequest();
+		_loginClient.sendBackupRequest();
 	}
 
 	/* (non-Javadoc)
@@ -365,7 +386,7 @@ public class QSConsumerProxy implements IConsumerProxy{
 	 * @see com.locate.rmds.IConsumerProxy#itemRequests(java.lang.String, byte, int)
 	 */
 	@Override
-	public ItemManager itemRequests(String itemName, byte responseMsgType,int channelId) {
+	public void itemRequests(String itemName, byte responseMsgType,int channelId) {
 		//如果ITEM以DE开头,则表示为客户自定义的产品,需要实施产品策略.以后策略添加在这个位置.
 		String derivactiveItemName = "";
 		if (DerivedUtils.isDerived(itemName)) {
@@ -393,8 +414,9 @@ public class QSConsumerProxy implements IConsumerProxy{
 			 * 已经订阅过该产品,只需要发送一个一次订阅请求,返回一个snapshot即可.
 			 * 已经将该用户加入到订阅该产品的用户组中.所以该用户能够收到该产品的更新信息.
 			 */
-			OneTimeItemManager oneTimeItemManager = 
-					new OneTimeItemManager(_itemGroupManager,channelId);
+			OneTimeItemManager oneTimeItemManager = SystemConstant.springContext.getBean("oneTimeItemManager",OneTimeItemManager.class);
+			oneTimeItemManager.set_itemGroupManager(_itemGroupManager);
+			oneTimeItemManager.setChannelID(channelId);
 			if(StringUtils.isNotBlank(derivactiveItemName)){
 				oneTimeItemManager.setDerivactiveItemName(derivactiveItemName);
 				//如果是衍生品是后面订阅的.需要将衍生品加入到itemManager,否则接收不到update的订阅信息.
@@ -404,7 +426,63 @@ public class QSConsumerProxy implements IConsumerProxy{
 			oneTimeItemManager = null;
 //			ItemManager subscibeItemManager =  subscribeItemManagerMap.get(itemName);
 //			subscibeItemManager.sendInitialDocument(channelId);
-			return null;
+		}else{//fist subscribe this RIC.
+			ItemManager itemManager = null;
+			//一个产品对应一个itemManager对象
+			itemManager = SystemConstant.springContext.getBean("itemManager",ItemManager.class);
+			subscribeItemManagerMap.put(itemName, itemManager);
+			//load filter.
+//			if(FilterManager.filterMap.containsKey(itemName)){
+//				engineLine.addEngine("filedFilter", FilterManager.filterMap.get(itemName));
+//			}
+			if(StringUtils.isNotBlank(derivactiveItemName)){
+				itemManager.setDerivactiveItemName(derivactiveItemName);
+			}
+			// Send requests
+			itemManager.sendRicRequest(itemName, responseMsgType);
+		}
+	}
+	
+	public void itemBackupRequests(String itemName, byte responseMsgType,int channelId) {
+		//如果ITEM以DE开头,则表示为客户自定义的产品,需要实施产品策略.以后策略添加在这个位置.
+		String derivactiveItemName = "";
+		if (DerivedUtils.isDerived(itemName)) {
+			derivactiveItemName = itemName;
+			EngineLine derivedEngineLine = EngineManager.item2EngineLineCache.get(derivactiveItemName);
+			if(derivedEngineLine == null){
+				derivedEngineLine = new EngineLine(derivactiveItemName);
+				EngineManager.item2EngineLineCache.put(derivactiveItemName, derivedEngineLine);
+			}
+			itemName = DerivedUtils.restoreRic(itemName);
+//			CurrencyEngine.currency = SystemProperties.getProperties(SystemProperties.CUR_US_CYN);
+			Map<String,Engine> engineMap = EngineManager.genEgines(derivactiveItemName);
+			derivedEngineLine.addEngine(engineMap);
+		}else{
+			EngineLine originalEngineLine = EngineManager.item2EngineLineCache.get(itemName);
+			if(originalEngineLine == null){
+				originalEngineLine= new EngineLine(itemName);
+				EngineManager.item2EngineLineCache.put(itemName, originalEngineLine);
+			}
+		}
+		Map<String,IProcesser> subscribeItemManagerMap = RmdsDataCache.RIC_ITEMMANAGER_Map;
+		boolean needRenewSubscribeItem = checkSubscribeStatus(itemName);
+		if(needRenewSubscribeItem){
+			/**
+			 * 已经订阅过该产品,只需要发送一个一次订阅请求,返回一个snapshot即可.
+			 * 已经将该用户加入到订阅该产品的用户组中.所以该用户能够收到该产品的更新信息.
+			 */
+			OneTimeItemManager oneTimeItemManager = SystemConstant.springContext.getBean("oneTimeItemManager",OneTimeItemManager.class);
+			oneTimeItemManager.set_itemGroupManager(_itemGroupManager);
+			oneTimeItemManager.setChannelID(channelId);
+			if(StringUtils.isNotBlank(derivactiveItemName)){
+				oneTimeItemManager.setDerivactiveItemName(derivactiveItemName);
+				//如果是衍生品是后面订阅的.需要将衍生品加入到itemManager,否则接收不到update的订阅信息.
+				subscribeItemManagerMap.get(itemName).setDerivactiveItemName(derivactiveItemName);
+			}
+			oneTimeItemManager.sendRicRequest(itemName, responseMsgType);
+			oneTimeItemManager = null;
+//			ItemManager subscibeItemManager =  subscribeItemManagerMap.get(itemName);
+//			subscibeItemManager.sendInitialDocument(channelId);
 		}else{//fist subscribe this RIC.
 			ItemManager itemManager = null;
 			//一个产品对应一个itemManager对象
@@ -419,9 +497,7 @@ public class QSConsumerProxy implements IConsumerProxy{
 			}
 			// Send requests
 			itemManager.sendRicRequest(itemName, responseMsgType);
-			return itemManager;
 		}
-		
 	}
 
 //	public void linkItemRequests(String itemName, String clientName,
@@ -479,7 +555,8 @@ public class QSConsumerProxy implements IConsumerProxy{
 	@Override
 	public void newsItemRequests() {
 		// Initialize item manager for item domains
-		NewsItemManager newsItemManager = new NewsItemManager(_itemGroupManager);
+		NewsItemManager newsItemManager = SystemConstant.springContext.getBean("newsItemManager",NewsItemManager.class);
+		newsItemManager.set_itemGroupManager(_itemGroupManager);
 		NewsItemManager.initializeFids();
 		// Send requests
 		newsItemManager.sendRequest(SystemProperties
@@ -730,5 +807,29 @@ public class QSConsumerProxy implements IConsumerProxy{
 		if (dictId == 0)
 			dictId = 1; // dictId == 0 is the same as dictId 1
 		DICTIONARIES.put(new Integer(dictId), dict);
+	}
+
+	public Session getBackupSession() {
+		return backupSession;
+	}
+
+	public void setBackupSession(Session backupSession) {
+		this.backupSession = backupSession;
+	}
+
+	public EventQueue getBackupEventQueue() {
+		return backupEventQueue;
+	}
+
+	public void setBackupEventQueue(EventQueue backupEventQueue) {
+		this.backupEventQueue = backupEventQueue;
+	}
+
+	public OMMConsumer getBackupConsumer() {
+		return backupConsumer;
+	}
+
+	public void setBackupConsumer(OMMConsumer backupConsumer) {
+		this.backupConsumer = backupConsumer;
 	}
 }

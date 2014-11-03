@@ -23,6 +23,7 @@ public class RFAServerManager extends Thread {
 	StatisticThread statisticDemo;
 	
 	private static boolean connectedDataSource;
+	private static boolean backupConnectedDataSource;
 	@PostConstruct
 	public void init() {
 		if(FilterManager.filterIsAffect.equals(SystemConstant.BOOLEAN_TRUE)){
@@ -73,5 +74,13 @@ public class RFAServerManager extends Thread {
 
 	public void setDemo(IConsumerProxy demo) {
 		this.demo = demo;
+	}
+
+	public static boolean isBackupConnectedDataSource() {
+		return backupConnectedDataSource;
+	}
+
+	public static void setBackupConnectedDataSource(boolean backupConnectedDataSource) {
+		RFAServerManager.backupConnectedDataSource = backupConnectedDataSource;
 	}
 }

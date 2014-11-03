@@ -16,7 +16,7 @@ import com.locate.common.utils.SystemProperties;
 
 @Component("CNY")
 public class CurrencyEngine implements Engine {
-	public static String currency = "1";
+	public static String CURRENCY = SystemProperties.getProperties(SystemProperties.CUR_US_CYN);
 	public static final BigDecimal OZ2GRAM = new BigDecimal("0.0311034768");
 	public static final BigDecimal KILOGRAM = new BigDecimal("1000");
 	public static String currencyFiled = SystemProperties.getProperties(SystemProperties.CURRENCY_FIELD);
@@ -32,7 +32,7 @@ public class CurrencyEngine implements Engine {
 					continue;
 				}
 				BigDecimal payLoadValue = new BigDecimal(payLoad[3]);
-				BigDecimal currencyValue = new BigDecimal(currency);
+				BigDecimal currencyValue = new BigDecimal(CURRENCY);
 				BigDecimal resultValue = payLoadValue.multiply(currencyValue).divide(OZ2GRAM,mc);
 //				double exchangValue = resultValue.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
 				double exchangValue = resultValue.doubleValue();

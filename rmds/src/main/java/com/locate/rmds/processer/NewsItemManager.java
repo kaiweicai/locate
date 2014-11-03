@@ -97,11 +97,14 @@ public class NewsItemManager implements Client {
 	// static Logger _logger;
 
 	private String _className = "ItemManager";
-
-	// constructor
-	public NewsItemManager(ItemGroupManager itemGroupManager) {
-		_itemGroupManager = itemGroupManager;
+	public NewsItemManager(){
+		
 	}
+	
+	// constructor
+//	public NewsItemManager(ItemGroupManager itemGroupManager) {
+//		_itemGroupManager = itemGroupManager;
+//	}
 
 	public static synchronized void initializeFids() {
 
@@ -331,6 +334,14 @@ public class NewsItemManager implements Client {
 		long endTime = System.currentTimeMillis();
 //		_mainApp.updateResponseStat((endTime - startTime), news);
 		_logger.info("#############updateResponseStat##############");
+	}
+
+	public ItemGroupManager get_itemGroupManager() {
+		return _itemGroupManager;
+	}
+
+	public void set_itemGroupManager(ItemGroupManager _itemGroupManager) {
+		this._itemGroupManager = _itemGroupManager;
 	}
 
 //	private boolean isSentForSession(IoSession session) {

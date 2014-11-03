@@ -33,6 +33,7 @@ public class SystemProperties {
 	
 	public static final String RFA_CONNETION_TYPE = "rfa.connetion.type";
 	public static final String RFA_CONNETION_SERVER_LIST = "rfa.connetion.serverList";
+	public static final String RFA_CONNECTION_SERVER_BACKUP = "rfa.connection.server.backup";
 	public static final String RFA_CONNETION_PORTNUMBER = "rfa.connetion.portNumber";
 	public static final String RFA_USER_NAME = "rfa.user.name";
 	public static final String RFA_APPLICATION = "rfa.application";

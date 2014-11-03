@@ -7,6 +7,7 @@ import java.util.concurrent.Future;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Scope;
@@ -174,8 +175,8 @@ public class ChyCurrencyManager implements Client{
         List<String[]> payLoadList=locateMessage.getPayLoadSet();
         for(String[] payLoad:payLoadList){
         	if("6".equalsIgnoreCase(payLoad[0])){
-        		if(payLoad.length>3){
-        			CurrencyEngine.currency=payLoad[3];
+        		if(payLoad.length>3&&StringUtils.isNotBlank(payLoad[3])){
+        			CurrencyEngine.CURRENCY=payLoad[3];
         		}
         	}
         }
