@@ -196,12 +196,12 @@ public class ItemManager extends IProcesser implements Client
         pool.releaseMsg(ommmsg);
     }
     
-
 	public void closeRequest() {
 		_itemGroupManager._handles.remove(itemHandle);
 		_mainApp.getOMMConsumer().unregisterClient(itemHandle);
 		EngineManager.item2EngineLineCache.remove(clientRequestItemName);
 		RmdsDataCache.RIC_ITEMMANAGER_Map.remove(this.clientRequestItemName);
+		QSConsumerProxy.backupItemList.remove(clientRequestItemName);
 		if(GateChannelCache.item2derivedMap.get(clientRequestItemName)!=null)
 			for(String derivedName:GateChannelCache.item2derivedMap.get(clientRequestItemName)){
 				EngineManager.item2EngineLineCache.remove(derivedName);

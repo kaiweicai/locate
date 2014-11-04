@@ -68,7 +68,7 @@ public class FuthureRequestHandler extends BaseRequestHandler {
 			DataBaseCache._clientResponseType.put(itemName, responseMsgType);
 			logger.info("Register client request item " + itemName);
 			DataBaseCache._clientRequestSession.put(clientName + itemName, channel);
-			ItemManager clientInstance = mainApp.itemRequests(itemName, responseMsgType, channel);
+			mainApp.itemRequests(itemName, responseMsgType, channel);
 //			regiestItemRequestManager(itemName, clientInstance);
 //			regiestClientRequestItem(clientName, itemName);
 		}

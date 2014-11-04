@@ -71,6 +71,7 @@ import com.reuters.rfa.session.omm.OMMItemIntSpec;
 public class QSConsumerProxy implements IConsumerProxy{
 	static Logger logger = LoggerFactory.getLogger(QSConsumerProxy.class.getName());
 	private ErrorLogHandler errorLogHandler = ErrorLogHandler.getLogger(getClass());
+	public static List<String> backupItemList = new ArrayList<String>();
 	// RFA objects
 	protected Session _session;
 	protected Session backupSession;
@@ -93,6 +94,7 @@ public class QSConsumerProxy implements IConsumerProxy{
 	Map<Handle, String> _pendingDictionaries;
 	Map<String, ServiceInfo> _services;
 	private boolean dispath = true;
+	public static boolean runBackup = false;
 	DirectoryClient _directoryClient;
 	private static List<String> requestList = new ArrayList<String>();
 	// class constructor
@@ -229,6 +231,7 @@ public class QSConsumerProxy implements IConsumerProxy{
 		_loginClient.sendRequest();
 		_loginClient.sendBackupRequest();
 	}
+	
 
 	/* (non-Javadoc)
 	 * @see com.locate.rmds.IConsumerProxy#registerDirectory(com.reuters.rfa.common.Client)
@@ -310,41 +313,37 @@ public class QSConsumerProxy implements IConsumerProxy{
 		}
 	}
 	
-	 private String findServiceForDictionary(String dictionaryName)
-	    {
-	        for (Iterator<ServiceInfo> iter = _services.values().iterator(); iter.hasNext();)
-	        {
-	            ServiceInfo service = iter.next();
+	private String findServiceForDictionary(String dictionaryName) {
+		for (Iterator<ServiceInfo> iter = _services.values().iterator(); iter.hasNext();) {
+			ServiceInfo service = iter.next();
 
-	            // stop, if serviceState is DOWN (0) or not available
-	            Object oServiceState = service.get(RDMService.SvcState.ServiceState);
-	            if(oServiceState == null)
-	            	continue;
-	            int serviceState = Integer.parseInt((String) oServiceState);
-	            if( serviceState == 0 )
-	            	continue;
-	            
-	            // stop, if acceptRequests is false (0) or not available
-	            Object oAcceptingRequests = service.get(RDMService.SvcState.ServiceState);
-	            if(oAcceptingRequests == null)
-	            	continue;
-	            int acceptingRequests = Integer.parseInt((String) oAcceptingRequests);
-	            if( acceptingRequests == 0 )
-	            	continue;
+			// stop, if serviceState is DOWN (0) or not available
+			Object oServiceState = service.get(RDMService.SvcState.ServiceState);
+			if (oServiceState == null)
+				continue;
+			int serviceState = Integer.parseInt((String) oServiceState);
+			if (serviceState == 0)
+				continue;
 
-	            String[] dictionariesProvided = (String[])service
-	                    .get(RDMService.Info.DictionariesProvided);
-	            if (dictionariesProvided == null)
-	                continue;
-	            
-	            for (int i = 0; i < dictionariesProvided.length; i++)
-	            {
-	                if (dictionariesProvided[i].equals(dictionaryName))
-	                    return service.getServiceName();
-	            }
-	        }
-	        return null;
-	    }
+			// stop, if acceptRequests is false (0) or not available
+			Object oAcceptingRequests = service.get(RDMService.SvcState.ServiceState);
+			if (oAcceptingRequests == null)
+				continue;
+			int acceptingRequests = Integer.parseInt((String) oAcceptingRequests);
+			if (acceptingRequests == 0)
+				continue;
+
+			String[] dictionariesProvided = (String[]) service.get(RDMService.Info.DictionariesProvided);
+			if (dictionariesProvided == null)
+				continue;
+
+			for (int i = 0; i < dictionariesProvided.length; i++) {
+				if (dictionariesProvided[i].equals(dictionaryName))
+					return service.getServiceName();
+			}
+		}
+		return null;
+	}
 	
 	// This method is called by _loginClient upon receiving successful login
 	// response.
@@ -366,7 +365,24 @@ public class QSConsumerProxy implements IConsumerProxy{
 	@Override
 	public void loginFailure() {
 		errorLogHandler.error("Login has been denied / rejected / closed ");
+		switchBackup();
 		RFAServerManager.setConnectedDataSource(false);
+	}
+	
+	public void switchBackup() {
+		Session tempSession = _session;
+		_session = backupSession;
+		backupSession = tempSession;
+
+		EventQueue tempQueue = _eventQueue;
+		_eventQueue = backupEventQueue;
+		backupEventQueue = tempQueue;
+
+		OMMConsumer temConsumer = _consumer;
+		_consumer = backupConsumer;
+		backupConsumer = temConsumer;
+		runBackup = !runBackup;
+		backupItemRequest();
 	}
 
 	// This method utilizes ItemManager class to request items
@@ -380,6 +396,15 @@ public class QSConsumerProxy implements IConsumerProxy{
 	// _itemManager.sendRequest(itemName,responseMsgType);
 	// return _itemManager;
 	// }
+	
+	public void backupItemRequest(){
+		Map<String,IProcesser> subscribeItemManagerMap = RmdsDataCache.RIC_ITEMMANAGER_Map;
+		for(String bucakupItemName:backupItemList){
+			IProcesser itemManager = subscribeItemManagerMap.get(bucakupItemName);
+			itemManager.sendRicRequest(bucakupItemName, LocateMessageTypes.RESPONSE_FUTURE);
+		}
+		backupItemList.clear();
+	}
 
 	// This method utilizes ItemManager class to request items
 	/* (non-Javadoc)
@@ -387,6 +412,9 @@ public class QSConsumerProxy implements IConsumerProxy{
 	 */
 	@Override
 	public void itemRequests(String itemName, byte responseMsgType,int channelId) {
+		if(!backupItemList.contains(itemName)){
+			backupItemList.add(itemName);
+		}
 		//如果ITEM以DE开头,则表示为客户自定义的产品,需要实施产品策略.以后策略添加在这个位置.
 		String derivactiveItemName = "";
 		if (DerivedUtils.isDerived(itemName)) {
@@ -599,9 +627,20 @@ public class QSConsumerProxy implements IConsumerProxy{
 	 */
 	@Override
 	public void startDispatch(){
-		while(dispath){
+		while(dispath&&!runBackup){
 			try {
 				_eventQueue.dispatch(5000);
+			} catch (DeactivatedException e) {
+				errorLogHandler.error("event queue not activate"+e);
+			} catch (DispatchQueueInGroupException e) {
+				errorLogHandler.error("event queue is dispatched."+e);
+			}catch(Exception e){
+				errorLogHandler.error("_eventQueue.dispatch ERROR!",e);
+			}
+		}
+		while(dispath&&runBackup){
+			try {
+				backupEventQueue.dispatch(5000);
 			} catch (DeactivatedException e) {
 				errorLogHandler.error("event queue not activate"+e);
 			} catch (DispatchQueueInGroupException e) {
@@ -632,9 +671,12 @@ public class QSConsumerProxy implements IConsumerProxy{
 		dispath = false;
 		try{
 		// 1. Deactivate event queue
-		if(_eventQueue!=null)
+		if(_eventQueue!=null){
 			_eventQueue.deactivate();
-
+		}
+		if(backupEventQueue!=null){
+			backupEventQueue.deactivate();
+		}
 		// 2. Unregister item interest
 		// if (_itemManager != null)
 		// _itemManager.closeRequest();
@@ -646,15 +688,22 @@ public class QSConsumerProxy implements IConsumerProxy{
 		// 4. Destroy event queue
 		if(_eventQueue!=null)
 			_eventQueue.destroy();
-
+		if(backupEventQueue!=null){
+			backupEventQueue.destroy();
+		}
 		// 5. Destroy event source
 		if (_consumer != null)
 			_consumer.destroy();
-
+		if(backupConsumer!=null){
+			backupConsumer.destroy();
+		}
 		// 6. Release session
 		if(_session!=null)
 		_session.release();
 
+		if(backupSession!=null){
+			backupSession.release();
+		}
 		// 7. Uninitialize context
 		Context.uninitialize();
 		}catch(Exception e){

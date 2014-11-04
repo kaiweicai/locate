@@ -68,13 +68,12 @@ import com.reuters.rfa.session.omm.OMMItemIntSpec;
 
 @Component
 public class RFALoginClient implements Client {
+	private int backupTolerance = 0;
 	private static final String NEED_NOTIFY = SystemProperties.getProperties(SystemProperties.ADMIN_NEED_NOTIFY);
 	private static boolean checkRFAServerUp = false;
 	Handle _loginHandle;
 	@Resource(name="qSConsumerProxy")
 	IConsumerProxy _mainApp;
-	@Resource(name="backupConsumerProxy")
-	IConsumerProxy backupConsumerProxy;
 	@Resource(name = "emailNotifier")
 	INotifier notifier;
 	@Resource(name = "loginOMMParser")
@@ -158,6 +157,7 @@ public class RFALoginClient implements Client {
 	// This is a Client method. When an event for this client is dispatched,
 	// this method gets called.
 	public void processEvent(Event event) {
+		backupTolerance++;
 		long startTime = NetTimeUtil.getCurrentNetTime();
 		// Completion event indicates that the stream was closed by RFA
 		if (event.getType() == Event.COMPLETION_EVENT) {
@@ -186,6 +186,7 @@ public class RFALoginClient implements Client {
 		// The login is unsuccessful, RFA forwards the message from the network
 		if (respMsg.isFinal()) {
 			logger.info(" Login Response message is final.");
+			if(backupTolerance>1)
 			_mainApp.loginFailure();
 			return;
 		}
@@ -221,6 +222,7 @@ public class RFALoginClient implements Client {
 				&& respMsg.getState().getDataState() == OMMState.Data.SUSPECT) {
 			errorLogHandler.error("The server has been suspect!\n Received Login Response - "
 					+ OMMMsg.MsgType.toString(respMsg.getMsgType()));
+			if(backupTolerance>1)
 			_mainApp.loginFailure();
 			if (StringUtils.isBlank(NEED_NOTIFY) || NEED_NOTIFY.equalsIgnoreCase(SystemConstant.BOOLEAN_TRUE)) {
 				String title="Server Info:The RFA server has been suspect";
@@ -232,12 +234,15 @@ public class RFALoginClient implements Client {
 		} else {
 			errorLogHandler.error("Login not success.Please check!\n Received Login Response - "
 					+ OMMMsg.MsgType.toString(respMsg.getMsgType()));
+			if(backupTolerance>1)
 			_mainApp.loginFailure();
 			ommParser.parse(respMsg, "RFALogin");
 		}
 		long endTime = NetTimeUtil.getCurrentNetTime();
+		if(backupTolerance>1){
+			backupTolerance = 0;
+		}
 		logger.info("login use time "+(endTime - startTime));
-		
 	}
 
 	protected void processDirectoryMsg(OMMMsg msg) {
